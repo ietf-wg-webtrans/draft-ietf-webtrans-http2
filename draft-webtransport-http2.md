@@ -17,10 +17,36 @@ pi: [toc, sortrefs, symrefs]
 
 author:
  -
-    ins: F. Last
-    name: First Last
-    organization: Company
-    email: first.last@company.com
+    ins: A. Frindell
+    name: Alan Frindell
+    organization: Facebook Inc.
+    email: afrind@fb.com
+ -
+    ins: E. Kinnear
+    name: Eric Kinnear
+    org: Apple Inc.
+    street: One Apple Park Way
+    city: Cupertino, California 95014
+    country: United States of America
+    email: ekinnear@apple.com
+ -
+    ins: T. Pauly
+    name: Tommy Pauly
+    org: Apple Inc.
+    street: One Apple Park Way
+    city: Cupertino, California 95014
+    country: United States of America
+    email: tpauly@apple.com
+ -
+    ins: V. Vasiliev
+    name: Victor Vasiliev
+    organization: Google
+    email: vasilvv@google.com
+ -
+    ins: G. Xie
+    name: Guowu Xie
+    organization: Facebook Inc.
+    email: woo@fb.com
 
 --- abstract
 

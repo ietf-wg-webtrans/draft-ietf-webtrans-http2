@@ -58,7 +58,7 @@ when, and only when, they appear in all capitals, as shown here.
 
 # Security Considerations
 
-TODO Security
+Security
 
 
 # IANA Considerations

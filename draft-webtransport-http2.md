@@ -45,7 +45,7 @@ The web API draft corresponding to this document can be found at
 
 # Introduction
 
-TODO Introduction
+Introduction
 
 
 # Conventions and Definitions

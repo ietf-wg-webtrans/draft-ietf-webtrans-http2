@@ -72,6 +72,6 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+Acknowledge.
 
 

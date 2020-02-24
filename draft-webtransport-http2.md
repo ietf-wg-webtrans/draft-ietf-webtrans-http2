@@ -390,10 +390,6 @@ on a WebTransport Connect Stream, it MUST reset that stream with a new error
 code, PROHIBITED_WT_CONNECT_DATA, indicating that additional data is prohibited
 on the Connect Stream when using "webtransport" as the `:protocol` value.
 
-In contrast, WebTransport Streams established with WTHEADERS frames can be
-opened at any time by either endpoint and therefore need not remain open beyond
-their immediate usage as part of the WebTransport protocol.
-
 
 ## Stream States
 

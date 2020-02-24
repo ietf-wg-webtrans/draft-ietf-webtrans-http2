@@ -401,9 +401,9 @@ they reference via their Connect Stream ID.
 
 If the corresponding Connect Stream is reset, endpoints MUST reset the
 WebTransport Streams associated with that Connect Stream. If the Connect Stream
-is closed, endpoints SHOULD allow any existing WebTransport Streams to complete
-normally, however the Connect Stream SHOULD remain open while communication is
-expected to continue.
+is closed gracefully, endpoints SHOULD allow any existing WebTransport Streams
+to complete normally, however the Connect Stream SHOULD remain open while
+communication is expected to continue.
 
 Endpoints SHOULD refresh any timeout on the Connect Stream while its associated
 WebTransport Streams are expected to remain open. For example, an endpoint might

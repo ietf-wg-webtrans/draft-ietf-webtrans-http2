@@ -424,7 +424,7 @@ features for streams still apply to WebTransport Streams. For example,
 WebTransport Streams are counted against the concurrent stream limit, which is
 defined in Section 5.1.2 of {{!RFC7540}}. The connection level and stream level
 flow control principles are still valid for WebTransport Streams. However, for
-stream priority and dependencies, WebTransport Streams have one extra
+stream priority and dependencies, WebTransport Streams have one additional
 constraint: a WebTransport Streams can only have a dependency on its Connect
 Stream, or any WebTransport Streams that also references the same Connect
 Stream. Prioritizing the WebTransport Streams across different Connect Stream

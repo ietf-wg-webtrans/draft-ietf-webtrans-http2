@@ -440,15 +440,6 @@ an implementation detail and SHOULD NOT be vended to clients via a WebTransport
 API.
 
 
-## Session Termination
-
-An Http2Transport session is terminated when either endpoint closes the stream
-associated with the CONNECT request that initiated the session. Upon learning
-about the session being terminated, both endpoints MUST stop sending new frames
-on the WebTransport Connect Stream associated with the CONNECT request and reset
-all WebTransport Streams associated with the session.
-
-
 ## Intermediaries
 
 WebTransport Connect Streams, and their corresponding WebTransport Streams, can
@@ -490,6 +481,15 @@ WTHEADERS frames.
     +------------------------+     +------------------------+
 ~~~
 {: #fig-server-routing-example title="A server initiates a WebTransport Stream to a client."}
+
+
+## Session Termination
+
+An Http2Transport session is terminated when either endpoint closes the stream
+associated with the CONNECT request that initiated the session. Upon learning
+about the session being terminated, both endpoints MUST stop sending new frames
+on the WebTransport Connect Stream associated with the CONNECT request and reset
+all WebTransport Streams associated with the session.
 
 
 # Security Considerations

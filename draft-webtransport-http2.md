@@ -273,15 +273,15 @@ This example is intended to closely follow the example in Section 5.1 of
 {{!RFC8441}} to help illustrate the differences defined in this document.
 
 ~~~
-[[ From Client ]]                       [[ From Server ]]
+[[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
 SETTINGS_ENABLE_CONNECT_[..] = 1
-SETTINGS_ENABLE_WEBTRANSPORT[..] = 1
+SETTINGS_ENABLE_WEBTRANSPORT = 1
 
-                                        SETTINGS
-                                        SETTINGS_ENABLE_CONNECT_[..] = 1
-                                        SETTINGS_ENABLE_WEBTRANSPORT[..] = 1
+                                    SETTINGS
+                                    SETTINGS_ENABLE_CONNECT_[..] = 1
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
 
 HEADERS + END_HEADERS
 + STREAM_ID = 3
@@ -291,9 +291,9 @@ HEADERS + END_HEADERS
 :path = /
 :authority = server.example.com
 
-                                        HEADERS + END_HEADERS
-                                        + STREAM_ID = 3
-                                        :status = 200
+                                    HEADERS + END_HEADERS
+                                    + STREAM_ID = 3
+                                    :status = 200
 
 WTHEADERS + END_HEADERS
 + STREAM_ID = 5
@@ -303,16 +303,16 @@ WTHEADERS + END_HEADERS
 :path = /
 :authority = server.example.com
 
-                                        WTHEADERS + END_HEADERS
-                                        + STREAM_ID = 5
-                                        + CONNECT_STREAM = 3
-                                        :status = 200
+                                    WTHEADERS + END_HEADERS
+                                    + STREAM_ID = 5
+                                    + CONNECT_STREAM = 3
+                                    :status = 200
 
 DATA + STREAM_ID = 5
 WebTransport Data
 
-                                        DATA + STREAM_ID = 5 + END_STREAM
-                                        WebTransport Data
+                                    DATA + STREAM_ID = 5 + END_STREAM
+                                    WebTransport Data
 
 DATA + STREAM_ID = 5 + END_STREAM
 WebTransport Data
@@ -322,15 +322,15 @@ An example of the server initiating a WebTransport Stream follows. The only
 difference here is the endpoint that sends the first WTHEADERS frame.
 
 ~~~
-[[ From Client ]]                       [[ From Server ]]
+[[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
 SETTINGS_ENABLE_CONNECT_[..] = 1
-SETTINGS_ENABLE_WEBTRANSPORT[..] = 1
+SETTINGS_ENABLE_WEBTRANSPORT = 1
 
-                                        SETTINGS
-                                        SETTINGS_ENABLE_CONNECT_[..] = 1
-                                        SETTINGS_ENABLE_WEBTRANSPORT[..] = 1
+                                    SETTINGS
+                                    SETTINGS_ENABLE_CONNECT_[..] = 1
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
 
 HEADERS + END_HEADERS
 + STREAM_ID = 3
@@ -340,31 +340,31 @@ HEADERS + END_HEADERS
 :path = /
 :authority = server.example.com
 
-                                        HEADERS + END_HEADERS
-                                        + STREAM_ID = 3
-                                        :status = 200
+                                    HEADERS + END_HEADERS
+                                    + STREAM_ID = 3
+                                    :status = 200
 
-                                        WTHEADERS + END_HEADERS
-                                        + STREAM_ID = 2
-                                        + CONNECT_STREAM = 3
-                                        :method = GET
-                                        :scheme = https
-                                        :path = /
-                                        :authority = client.example.com
+                                    WTHEADERS + END_HEADERS
+                                    + STREAM_ID = 2
+                                    + CONNECT_STREAM = 3
+                                    :method = GET
+                                    :scheme = https
+                                    :path = /
+                                    :authority = client.example.com
 
 WTHEADERS + END_HEADERS
 + STREAM_ID = 2
 + CONNECT_STREAM = 3
 :status = 200
 
-                                        DATA + STREAM_ID = 2
-                                        WebTransport Data
+                                    DATA + STREAM_ID = 2
+                                    WebTransport Data
 
 DATA + STREAM_ID = 2 + END_STREAM
 WebTransport Data
 
-                                        DATA + STREAM_ID = 2 + END_STREAM
-                                        WebTransport Data
+                                    DATA + STREAM_ID = 2 + END_STREAM
+                                    WebTransport Data
 ~~~
 
 

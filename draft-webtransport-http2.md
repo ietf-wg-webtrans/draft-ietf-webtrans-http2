@@ -496,9 +496,8 @@ security properties of this cryptographic context, as well as the security
 properties of client-server communication via HTTP/2 as described in
 {{!RFC7540}}.
 
-The security considerations of [RFC8441] Section 8 and [RFC7540]
-Section 10, and Section 10.5.2 especially, apply to this use of the
-CONNECT method.
+The security considerations of [RFC8441] Section 8 and [RFC7540] Section 10, and
+Section 10.5.2 especially, apply to this use of the CONNECT method.
 
 Http2Transport requires explicit opt-in through the use of a HTTP/2 SETTINGS
 parameter, avoiding potential protocol confusion attacks by ensuring the HTTP/2

@@ -1,7 +1,7 @@
 ---
 title: "WebTransport using HTTP/2"
 abbrev: "WebTransportHTTP2"
-docname: draft-webtransport-http2-latest
+docname: draft-kinnear-webtransport-http2-latest
 
 date: {DATE}
 category: std
@@ -149,21 +149,23 @@ HTTP/2 server.
 ## WebTransport Connect Streams
 
 After negotiating the use of this extension, clients initiate one or more
-WebTransport Connect streams to a Http2Transport Server.  Http2Transport servers
+WebTransport Connect Streams to a Http2Transport Server.  Http2Transport servers
 are identified by a pair of authority value and path value (defined in
 {{!RFC3986}} Sections 3.2 and 3.3 respectively).  The client uses the extended
 CONNECT method with a :protocol token "webtransport" to establish a WebTransport
 Connect Stream.  This stream is only used to establish a WebTransport session
 and is not intended for data exchange.
 
+
 ## WebTransport Streams
 
 Following the establishment of a WebTransport Connect stream, either the client
-or the server can initiate a WebTransport Stream by sending the `WTHEADERS`
-frame.  This frame references an open WebTransport Connect stream, which is used
-by any intermediaries to correctly forward the stream to the destination
-endpoint.  The only frames allowed on WebTransport Streams are WTHEADERS,
-CONTINUATION, DATA and any negotiated extension frames.
+or the server can initiate a WebTransport Stream by sending the WTHEADERS
+frame, defined in {{the-wtheaders-frame}}.  This frame references an open
+WebTransport Connect stream which is used by any intermediaries to correctly
+forward the stream to the destination endpoint.  The only frames allowed on
+WebTransport Streams are WTHEADERS, CONTINUATION, DATA and any negotiated
+extension frames.
 
 
 ## Negotiation
@@ -187,15 +189,39 @@ This token is used in the `:protocol` psuedo-header field to indicate that the
 endpoint wishes to use the WebTransport protocol on the new stream.
 
 
+## The SETTINGS_ENABLE_WEBTRANSPORT SETTINGS parameter
+
+As described in Section 5.5 of {{!RFC7540}}, SETTINGS parameters allow endpoints
+to negotiate use of protocol extensions that would otherwise generate protocol
+errors.
+
+This document introduces a new SETTINGS parameter, SETTINGS_ENABLE_WEBTRANSPORT,
+which MUST have a value of 0 or 1.
+
+Once a SETTINGS_ENABLE_WEBTRANSPORT parameter has been sent with a value of 1,
+an endpoint MUST NOT send the parameter with a value of 0.
+
+Upon receipt of SETTINGS_ENABLE_WEBTRANSPORT with a value of 1, an endpoint MAY
+use the WTHEADERS frame type defined in this document. An endpoint that supports
+receiving the WTHEADERS as part of the WebTransport protocol SHOULD send this
+setting with a value of 1.
+
+
 ## The WTHEADERS Frame
 
-Clients or servers use a WTHEADERS frame to initate a new WebTransport Stream.
+A new HTTP/2 frame called WTHEADERS is introduced for establishing streams in a
+bidirectional manner. A stream opened by a WTHEADERS frame is referred to as a
+WebTransport Stream, and it MAY be continued by CONTINUATION and DATA frames.
+WebTransport Streams can be initiated by either clients or servers via a
+WTHEADERS frame that refers to the corresponding WebTransport Connect Stream on
+which the WebTransport protocol was negotiated.
 
 The WTHEADERS frame (type=0xfb) has all the fields and frame header flags
 defined by HEADERS frame in HEADERS {{!RFC7540}}, Section 6.2.
 
 The WTHEADERS frame has one extra field, Connect Stream ID. WTHEADERS frames can
-be sent on a stream in the "idle", "open", or "half-closed (remote)" state.
+be sent on a stream in the "idle", "open", or "half-closed (remote)" state, see
+{{stream-states}}.
 
 Like HEADERS, the CONTINUATION frame (type=0x9) is used to continue a sequence
 of header block fragments, if the headers do not fit into one WTHEADERS frame.
@@ -233,24 +259,6 @@ stream state. This allows WebTransport Streams to participate in header
 compression and flow control.
 
 
-## The SETTINGS_ENABLE_WEBTRANSPORT SETTINGS parameter
-
-As described in Section 5.5 of {{!RFC7540}}, SETTINGS parameters allow endpoints
-to negotiate use of protocol extensions that would otherwise generate protocol
-errors.
-
-This document introduces a new SETTINGS parameter, SETTINGS_ENABLE_WEBTRANSPORT,
-which MUST have a value of 0 or 1.
-
-Once a SETTINGS_ENABLE_WEBTRANSPORT parameter has been sent with a value of 1,
-an endpoint MUST NOT send the parameter with a value of 0.
-
-Upon receipt of SETTINGS_ENABLE_WEBTRANSPORT with a value of 1, an endpoint MAY
-use the `WTHEADERS` frame type defined in this document. An endpoint that
-supports receiving the `WTHEADERS` as part of the WebTransport protocol SHOULD
-send this setting with a value of 1.
-
-
 ## Initiating the Extended CONNECT Handshake
 
 An endpoint that wishes to establish a WebTransport session over an HTTP/2
@@ -270,7 +278,9 @@ this handshake mechanism is not being used to negotiate a WebSocket connection.
 If the response to the extended CONNECT request indicates success of the
 handshake, then all further data sent or received on the new HTTP/2 stream is
 considered to be that of the WebTransport protocol and follows the semantics
-defined by that protocol.
+defined by that protocol. If the response indicates failure of the handshake,
+any WebTransport Streams that reference the WebTransport Connect Stream that
+failed to establish MUST also be reset.
 
 
 ## Examples
@@ -381,7 +391,7 @@ Once the extended CONNECT handshake has completed and a WebTransport connect
 stream has been established, WTHEADERS frames can be sent that reference that
 stream in the Connect Stream ID field to establish WebTransport Streams.
 WebTransport Connect Streams are intended for exchanging metadata only and are
-best treated as long lived streams. Once a WebTransport Connect Stream is
+RECOMMENDED to be long lived streams. Once a WebTransport Connect Stream is
 closed, all routing information it carries is lost, and subsequent WebTransport
 Streams cannot be created with WTHEADERS frames until the client completes
 another extended CONNECT handshake to establish a new WebTransport Connect
@@ -391,11 +401,12 @@ In contrast, WebTransport Streams established with WTHEADERS frames can be
 opened at any time by either endpoint and therefore need not remain open beyond
 their immediate usage as part of the WebTransport protocol.
 
-An endpoint MUST NOT send data on a WebTransport Connect Stream beyond the
-completion of the extended CONNECT handshake. If data is received by an endpoint
-on a WebTransport Connect Stream, it MUST reset that stream with a new error
-code, PROHIBITED_WT_CONNECT_DATA, indicating that additional data is prohibited
-on the Connect Stream when using "webtransport" as the `:protocol` value.
+An endpoint MUST NOT send DATA frames with a non-zero payload length on a
+WebTransport Connect Stream beyond the completion of the extended CONNECT
+handshake. If data is received by an endpoint on a WebTransport Connect Stream,
+it MUST reset that stream with a new error code, PROHIBITED_WT_CONNECT_DATA,
+indicating that additional data is prohibited on the Connect Stream when using
+"webtransport" as the `:protocol` value.
 
 
 ## Stream States
@@ -412,11 +423,12 @@ is closed gracefully, endpoints SHOULD allow any existing WebTransport Streams
 to complete normally, however the Connect Stream SHOULD remain open while
 communication is expected to continue.
 
-Endpoints SHOULD refresh any timeout on the Connect Stream while its associated
-WebTransport Streams are expected to remain open. For example, an endpoint might
-choose to refresh a timeout on a Connect Stream any time a corresponding timeout
-is refreshed on a corresponding WebTransport Stream, such as when any data is
-sent or received on that WebTransport Stream.
+Endpoints SHOULD take measures to prevent a peer or intermediary from timing out
+the Connect Stream while its associated WebTransport Streams are expected to
+remain open. For example, an endpoint might choose to refresh a timeout on a
+Connect Stream any time a corresponding timeout is refreshed on a corresponding
+WebTransport Stream, such as when any data is sent or received on that
+WebTransport Stream.
 
 An endpoint MUST NOT initiate new WebTransport Streams that reference a Connect
 Stream that is in the closed or half closed (remote) state. Endpoints process
@@ -430,12 +442,9 @@ WebTransport Streams are extended HTTP/2 streams, and all of the standard HTTP/2
 features for streams still apply to WebTransport Streams. For example,
 WebTransport Streams are counted against the concurrent stream limit, which is
 defined in Section 5.1.2 of {{!RFC7540}}. The connection level and stream level
-flow control principles are still valid for WebTransport Streams. However, for
-stream priority and dependencies, WebTransport Streams have one additional
-constraint: a WebTransport Streams can only have a dependency on its Connect
-Stream, or any WebTransport Streams that also references the same Connect
-Stream. Prioritizing the WebTransport Streams across different Connect Stream
-groupings does not make sense because they belong to different services.
+flow control principles are still valid for WebTransport Streams. Prioritizing
+the WebTransport Streams across different Connect Stream groupings does not make
+sense because they belong to different services.
 
 Note that while HTTP/2 Stream IDs are used by WebTransport Streams to refer to
 their corresponding WebTransport Connect Streams, the Stream IDs themselves are
@@ -451,12 +460,14 @@ for a WebTransport Connect Stream is to facilitate imtermediary traversal by
 WebTransport Streams.
 
 Any segment on which SETTINGS_ENABLE_WEBTRANSPORT has been negotiated MUST route
-all WebTransport Streams established by WTHEADERS frames identically to their
-corresponding WebTransport Connect Streams.
+all WebTransport Streams established by WTHEADERS frames on the same connection
+as their corresponding WebTransport Connect Streams.
 
 If an intermediary cannot route WebTransport Streams on a subsequent segment of
 the path, it can fail the extended CONNECT handshake and prevent a WebTransport
-Connect Stream from being established for a given endpoint.
+Connect Stream from being established for a given endpoint. In the event that
+additional WebTransport Streams reference that WebTransport Connect Stream, they
+will also be reset.
 
 An example of such routing, for both client-initiated and server-initiated
 WebTransport streams, is shown in {{fig-client-routing-example}} and in
@@ -497,7 +508,7 @@ all WebTransport Streams associated with the session.
 
 # Security Considerations
 
-WebTransport Streams established by the CONNECT handshake and the `WTHEADERS`
+WebTransport Streams established by the CONNECT handshake and the WTHEADERS
 frame are expected to be protected with a TLS connection. They inherit the
 security properties of this cryptographic context, as well as the security
 properties of client-server communication via HTTP/2 as described in

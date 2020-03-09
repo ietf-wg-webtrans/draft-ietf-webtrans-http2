@@ -5,7 +5,7 @@ docname: draft-webtransport-http2-latest
 
 date: {DATE}
 category: std
-consensus: true
+consensus: True
 
 ipr: trust200902
 area: art
@@ -72,62 +72,61 @@ The web API draft corresponding to this document can be found at
 # Introduction
 
 HTTP/2 {{?RFC7540}} transports HTTP messages via a framing layer that includes
-many technologies and optimizations designed to make communication more
-efficient between clients and servers. These include multiplexing of multiple
-streams on a single underlying transport connection, flow control, stream
-dependencies and priorities, header compression, and exchange of configuration
-information between endpoints.
+many optimizations designed to make communication more efficient between clients
+and servers. These include multiplexing of multiple streams on a single
+underlying transport connection, flow control, priorities, header compression,
+and exchange of configuration information between endpoints.
 
 Currently, the only mechanism in HTTP/2 for server to client communication is
 server push. That is, servers can initiate unidirectional push promised streams
-to clients, but clients cannot respond to them and either accept or discard them
-silently. Additionally, intermediaries along the path may have different server
-push policies and may not forward push promised streams to the downstream
-client. This best effort mechanism is not sufficient to reliably deliver content
-from servers to clients, limiting additional use-cases such as sending messages
-and notifications from servers to clients immediately when they become
-available.
+to clients, but clients cannot respond to them; they can only accept them or
+discard them. Additionally, intermediaries along the path may have different
+server push policies and may not forward push promised streams to the downstream
+client. This best effort mechanism is not sufficient to reliably deliver
+messages from servers to clients, limiting server to client use-cases such as
+chat messages or notifications.
 
 Several techniques have been developed to workaround these limitations: long
 polling {{?RFC6202}}, WebSocket {{?RFC8441}}, and tunneling using the CONNECT
 method. All of these approaches layer an application protocol on top of HTTP/2,
 using HTTP/2 streams as transport connections. This layering defeats the
-optimizations provided by HTTP/2. For example, multiplexing multiple parallel
-interactions onto one HTTP/2 stream reintroduces head of line blocking. Also,
-application metadata is encapsulated into DATA frames, rather than HEADERS
-frames, making header compression impossible. Further, user data is framed
-multiple times at different protocol layers, which offsets the wire efficiency
-of HTTP/2 binary framing.
+optimizations provided by HTTP/2. For example, application metadata is
+encapsulated in DATA frames rather than HEADERS frames, bypassing the advantages
+of HPACK header compression. Further, application data might be framed multiple
+times at different protocol layers, reducing the wire efficiency of the
+protocol.
 
-This document defines Http2Transport, a mechanism for multiplexing non-HTTP data
-with HTTP/2 in a manner that conforms with the WebTransport protocol framework
-{{?I-D.vvv-webtransport-overview}}. Using the mechanism described, multiple
-Http2Transport instances can be multiplexed simultaneously with regular HTTP
-traffic on the same HTTP/2 connection.
+This document defines Http2Transport, a mechanism for multiplexing
+non-request/response streams with HTTP/2 in a manner that conforms with the
+WebTransport protocol framework {{?I-D.vvv-webtransport-overview}}. Using the
+mechanism described, multiple Http2Transport instances can be multiplexed
+simultaneously with regular HTTP traffic on the same HTTP/2 connection.
 
 Section 8.3 of {{?RFC7540}} defines the HTTP CONNECT method for HTTP/2, which
-converts a HTTP/2 stream into a tunnel for arbitrary data. {{?RFC8441}}
+converts an HTTP/2 stream into a tunnel for arbitrary data. {{?RFC8441}}
 describes the use of the extended CONNECT method to negotiate the use of the
 WebSocket Protocol {{?RFC6455}} on an HTTP/2 stream. Http2Transport uses the
 extended CONNECT handshake to allow WebTransport endpoints to multiplex
-arbitrary data on HTTP/2 streams.
+arbitrary data streams on HTTP/2 connections.
 
-In this draft, a new HTTP/2 frame is introduced which has the routing properties
-of a PUSH_PROMISE frame and the bi-directionality of a HEADERS frame. The
-extension provides several benefits:
+In this draft, a new HTTP/2 frame is introduced which carries structured
+metadata like the HEADERS and PUSH_PROMISE frames, but without the constraints
+of the request/response state machine and semantics.
 
-1. After a HTTP/2 connection is established, a server can initiate streams to
-the client at any time, and the client can respond to the incoming streams
-accordingly. That is, the communication over HTTP/2 is bidirectional and
-symmetric.
+The WebTransport over HTTP/2 extension:
 
-2. All of the HTTP/2 technologies and optimizations still apply. Intermediaries
-also have all the necessary metadata to properly handle the communication
-between the client and the server.
+1. Enables bidirectional and symmetric communication over HTTP/2.  After a
+WebTransport session is established, a server can initiate a WebTransport stream
+to the client at any time, and the client can respond to server-initiated
+streams.
 
-3. Clients are able to group streams together for routing purposes, such that
-each individual stream group can be used for a different service, within the
-same HTTP/2 connection.
+2. Allows WebTransport streams to take advantage of HTTP/2 features such as
+header compression, prioritization and flow-control.
+
+3. Provides a mechanism for intermediaries to route server initiated messages to
+the correct client.
+
+4. Allows clients and servers to group streams and route them together.
 
 
 # Conventions and Definitions
@@ -145,47 +144,55 @@ application that accepts WebTransport sessions, which can be accessed via an
 HTTP/2 server.
 
 
-# Negotiating Http2Transport
+# Http2Transport Overview
 
-Http2Transport servers are identified by a pair of authority value and path
-value (defined in {{!RFC3986}} Sections 3.2 and 3.3 respectively).
-Http2Transport uses the extended CONNECT handshake to negotiate a new upgrade
-token, "webtransport". It also defines an HTTP/2 extension that introduces a new
-frame, `WTHEADERS`, which allows for bidirectional communication between the
-WebTransport server and the client, and it introduces a new HTTP/2 SETTINGS
-parameter to negotiate the use of the `WTHEADERS` frame.
+## WebTransport Connect Streams
+
+After negotiating the use of this extension, clients initiate one or more
+WebTransport Connect streams to a Http2Transport Server.  Http2Transport servers
+are identified by a pair of authority value and path value (defined in
+{{!RFC3986}} Sections 3.2 and 3.3 respectively).  The client uses the extended
+CONNECT method with a :protocol token "webtransport" to establish a WebTransport
+Connect Stream.  This stream is only used to establish a WebTransport session
+and is not intended for data exchange.
+
+## WebTransport Streams
+
+Following the establishment of a WebTransport Connect stream, either the client
+or the server can initiate a WebTransport Stream by sending the `WTHEADERS`
+frame.  This frame references an open WebTransport Connect stream, which is used
+by any intermediaries to correctly forward the stream to the destination
+endpoint.  The only frames allowed on WebTransport Streams are WTHEADERS,
+CONTINUATION, DATA and any negotiated extension frames.
 
 
-## The "webtransport" HTTP Upgrade Token
+## Negotiation
 
-Use of the extended CONNECT method extension defined in {{!RFC8441}}
-requires the SETTINGS_ENABLE_CONNECT_PROTOCOL parameter to be received by a
-client prior to its use. An endpoint that supports receiving the extended
-CONNECT method SHOULD send this setting with a value of 1.
+Clients negotiate the use of WebTransport ove HTTP/2 using both the SETTINGS
+frame and one or more extended CONNECT requests as defined in {{!RFC8441}}.
+
+Use of the extended CONNECT method extension requires the
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter to be received by a client prior to
+its use. An endpoint that supports receiving the extended CONNECT method SHOULD
+send this setting with a value of 1.
 
 The extended CONNECT method extension uses the `:protocol` psuedo-header field
 to negotiate the protocol that will be used on a given stream in an HTTP/2
-connection. This document registers a new token, "webtransport", in the "Hypertext Transfer
-Protocol (HTTP) Upgrade Token Registry" established by {{?RFC7230}} and located
-at <https://www.iana.org/assignments/http-upgrade-tokens/>.
+connection. This document registers a new token, "webtransport", in the
+"Hypertext Transfer Protocol (HTTP) Upgrade Token Registry" established by
+{{?RFC7230}} and located at
+<https://www.iana.org/assignments/http-upgrade-tokens/>.
 
 This token is used in the `:protocol` psuedo-header field to indicate that the
-endpoint wishes to use the WebTransport protocol on the new stream. If
-successful, the resulting stream established via the extended CONNECT handshake
-is referred to as a WebTransport Connect Stream, or simply a Connect Stream.
+endpoint wishes to use the WebTransport protocol on the new stream.
 
 
 ## The WTHEADERS Frame
 
-A new HTTP/2 frame called `WTHEADERS` is introduced for establishing streams in
-a bidirectional manner. A stream opened by a `WTHEADERS` frame is referred to as
-a WebTransport Stream, and it MAY be continued by CONTINUATION and DATA frames.
-WebTransport Streams can be initiated by either clients or servers via a
-`WTHEADERS` frame that refers to the corresponding client-initiated extended
-CONNECT stream on which the WebTransport protocol was negotiated.
+Clients or servers use a WTHEADERS frame to initate a new WebTransport Stream.
 
-The WTHEADERS frame (type=0xfb) has all the fields and frame header flags defined
-by HEADERS frame in HEADERS {{!RFC7540}}, Section 6.2.
+The WTHEADERS frame (type=0xfb) has all the fields and frame header flags
+defined by HEADERS frame in HEADERS {{!RFC7540}}, Section 6.2.
 
 The WTHEADERS frame has one extra field, Connect Stream ID. WTHEADERS frames can
 be sent on a stream in the "idle", "open", or "half-closed (remote)" state.
@@ -499,7 +506,7 @@ properties of client-server communication via HTTP/2 as described in
 The security considerations of [RFC8441] Section 8 and [RFC7540] Section 10, and
 Section 10.5.2 especially, apply to this use of the CONNECT method.
 
-Http2Transport requires explicit opt-in through the use of a HTTP/2 SETTINGS
+Http2Transport requires explicit opt-in through the use of an HTTP/2 SETTINGS
 parameter, avoiding potential protocol confusion attacks by ensuring the HTTP/2
 server explicitly supports the WebTransport protocol. It also requires the use
 of the Origin header, providing the server with the ability to deny access to
@@ -521,7 +528,7 @@ sending data and opening new streams.
 
 This document adds an entry to the "HTTP/2 Frame Type" registry, the "HTTP/2
 Settings" registry, and the "HTTP/2 Error Code" registry, all defined in
-{{!RFC7540}}. It also registers a HTTP upgrade token in the registry established
+{{!RFC7540}}. It also registers an HTTP upgrade token in the registry established
 by {{!RFC7230}}.
 
 ## HTTP/2 Frame Type Registry
@@ -635,5 +642,3 @@ document* and {{?I-D.vvv-webtransport-http3}}
 
 Thanks to Anthony Chivetta, Joshua Otto, and Valentin Pistol for their
 contributions in the design and implementation of this work.
-
-

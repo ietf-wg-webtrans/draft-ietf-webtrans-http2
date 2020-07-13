@@ -53,8 +53,8 @@ author:
 WebTransport is a protocol framework that enables clients constrained by the Web
 security model to communicate with a remote server using a secure multiplexed
 transport. This document describes Http2Transport, a WebTransport protocol that
-is based on HTTP/2 and provides support for bidirectional streams multiplexed
-within the same HTTP/2 connection.
+is based on HTTP/2 and provides support for either endpoint to initiate streams
+multiplexed within the same HTTP/2 connection.
 
 --- note_Note_to_Readers
 
@@ -102,32 +102,6 @@ WebTransport protocol framework {{?I-D.vvv-webtransport-overview}}. Using the
 mechanism described, multiple Http2Transport instances can be multiplexed
 simultaneously with regular HTTP traffic on the same HTTP/2 connection.
 
-Section 8.3 of {{?RFC7540}} defines the HTTP CONNECT method for HTTP/2, which
-converts an HTTP/2 stream into a tunnel for arbitrary data. {{?RFC8441}}
-describes the use of the extended CONNECT method to negotiate the use of the
-WebSocket Protocol {{?RFC6455}} on an HTTP/2 stream. Http2Transport uses the
-extended CONNECT handshake to allow WebTransport endpoints to multiplex
-arbitrary data streams on HTTP/2 connections.
-
-In this draft, a new HTTP/2 frame is introduced which carries structured
-metadata like the HEADERS and PUSH_PROMISE frames, but without the constraints
-of the request/response state machine and semantics.
-
-The WebTransport over HTTP/2 extension:
-
-1. Enables bidirectional and symmetric communication over HTTP/2.  After a
-WebTransport session is established, a server can initiate a WebTransport stream
-to the client at any time, and the client can respond to server-initiated
-streams.
-
-2. Allows WebTransport streams to take advantage of HTTP/2 features such as
-header compression, prioritization and flow-control.
-
-3. Provides a mechanism for intermediaries to route server initiated messages to
-the correct client.
-
-4. Allows clients and servers to group streams and route them together.
-
 
 # Conventions and Definitions
 
@@ -146,31 +120,57 @@ HTTP/2 server.
 
 # Http2Transport Overview
 
+Section 8.3 of {{?RFC7540}} defines the HTTP CONNECT method for HTTP/2, which
+converts an HTTP/2 stream into a tunnel for arbitrary data. {{?RFC8441}}
+describes the use of the extended CONNECT method to negotiate the use of the
+WebSocket Protocol {{?RFC6455}} on an HTTP/2 stream. Http2Transport uses the
+extended CONNECT handshake to allow WebTransport endpoints to multiplex
+arbitrary data streams on HTTP/2 connections.
+
+Http2Transport introduces a new HTTP/2 frame which carries structured metadata
+like the HEADERS and PUSH_PROMISE frames but without the constraints of the
+request/response state machine and semantics.
+
+The WebTransport over HTTP/2 extension:
+
+1. Enables bidirectional and symmetric communication over HTTP/2. After a
+WebTransport session is established, a server can initiate a WebTransport stream
+to the client at any time, and the client can respond to server-initiated
+streams.
+
+2. Allows WebTransport streams to take advantage of HTTP/2 features such as
+header compression, prioritization, and flow-control.
+
+3. Provides a mechanism for intermediaries to route server initiated messages to
+the correct client.
+
+4. Allows clients and servers to group streams and route them together.
+
+
 ## WebTransport Connect Streams
 
 After negotiating the use of this extension, clients initiate one or more
-WebTransport Connect Streams to a Http2Transport Server.  Http2Transport servers
+WebTransport Connect Streams to a Http2Transport Server. Http2Transport servers
 are identified by a pair of authority value and path value (defined in
-{{!RFC3986}} Sections 3.2 and 3.3 respectively).  The client uses the extended
+{{!RFC3986}} Sections 3.2 and 3.3 respectively). The client uses the extended
 CONNECT method with a :protocol token "webtransport" to establish a WebTransport
-Connect Stream.  This stream is only used to establish a WebTransport session
-and is not intended for data exchange.
+Connect Stream. This stream is only used to establish a WebTransport session and
+is not intended for data exchange.
 
 
 ## WebTransport Streams
 
 Following the establishment of a WebTransport Connect stream, either the client
-or the server can initiate a WebTransport Stream by sending the WTHEADERS
-frame, defined in {{the-wtheaders-frame}}.  This frame references an open
-WebTransport Connect stream which is used by any intermediaries to correctly
-forward the stream to the destination endpoint.  The only frames allowed on
-WebTransport Streams are WTHEADERS, CONTINUATION, DATA and any negotiated
-extension frames.
+or the server can initiate a WebTransport Stream by sending the WTHEADERS frame,
+defined in {{the-wtheaders-frame}}. This frame references an open WebTransport
+Connect stream which is used by any intermediaries to correctly forward the
+stream to the destination endpoint. The only frames allowed on WebTransport
+Streams are WTHEADERS, CONTINUATION, DATA and any negotiated extension frames.
 
 
 ## Negotiation
 
-Clients negotiate the use of WebTransport ove HTTP/2 using both the SETTINGS
+Clients negotiate the use of WebTransport over HTTP/2 using both the SETTINGS
 frame and one or more extended CONNECT requests as defined in {{!RFC8441}}.
 
 Use of the extended CONNECT method extension requires the
@@ -178,14 +178,14 @@ SETTINGS_ENABLE_CONNECT_PROTOCOL parameter to be received by a client prior to
 its use. An endpoint that supports receiving the extended CONNECT method SHOULD
 send this setting with a value of 1.
 
-The extended CONNECT method extension uses the `:protocol` psuedo-header field
+The extended CONNECT method extension uses the `:protocol` pseudo-header field
 to negotiate the protocol that will be used on a given stream in an HTTP/2
 connection. This document registers a new token, "webtransport", in the
 "Hypertext Transfer Protocol (HTTP) Upgrade Token Registry" established by
 {{?RFC7230}} and located at
 <https://www.iana.org/assignments/http-upgrade-tokens/>.
 
-This token is used in the `:protocol` psuedo-header field to indicate that the
+This token is used in the `:protocol` pseudo-header field to indicate that the
 endpoint wishes to use the WebTransport protocol on the new stream.
 
 
@@ -209,8 +209,8 @@ setting with a value of 1.
 
 ## The WTHEADERS Frame
 
-A new HTTP/2 frame called WTHEADERS is introduced for establishing streams in a
-bidirectional manner. A stream opened by a WTHEADERS frame is referred to as a
+A new HTTP/2 frame called WTHEADERS is introduced for either endpoint to
+establish streams. A stream opened by a WTHEADERS frame is referred to as a
 WebTransport Stream, and it MAY be continued by CONTINUATION and DATA frames.
 WebTransport Streams can be initiated by either clients or servers via a
 WTHEADERS frame that refers to the corresponding WebTransport Connect Stream on
@@ -263,9 +263,9 @@ compression and flow control.
 
 An endpoint that wishes to establish a WebTransport session over an HTTP/2
 stream follows the extended CONNECT handshake procedure defined in {{!RFC8441}},
-specifying "webtransport" for the :protocol psuedo-header field.
+specifying "webtransport" for the :protocol pseudo-header field.
 
-The :scheme and :path psuedo-headers are required by {{!RFC6455}}. The scheme of
+The :scheme and :path pseudo-headers are required by {{!RFC6455}}. The scheme of
 the target URI MUST be set to "https" for all :protocol values. The path is used
 to identify the specific WebTransport server instance for negotiation and MAY be
 set to "/" (an empty path component).
@@ -412,7 +412,7 @@ indicating that additional data is prohibited on the Connect Stream when using
 ## Stream States
 
 WebTransport Connect Streams are regular HTTP/2 streams that follow the stream
-lifecycle descirbed in Section 5.1 of {{!RFC7540}}. WebTransport Streams
+lifecycle described in Section 5.1 of {{!RFC7540}}. WebTransport Streams
 established with the WTHEADERS frame also follow the same lifecycle as regular
 HTTP/2 streams, but have an additional dependency on the Connect Stream that
 they reference via their Connect Stream ID.
@@ -442,7 +442,7 @@ WebTransport Streams are extended HTTP/2 streams, and all of the standard HTTP/2
 features for streams still apply to WebTransport Streams. For example,
 WebTransport Streams are counted against the concurrent stream limit, which is
 defined in Section 5.1.2 of {{!RFC7540}}. The connection level and stream level
-flow control principles are still valid for WebTransport Streams. Prioritizing
+flow control limits are still valid for WebTransport Streams. Prioritizing
 the WebTransport Streams across different Connect Stream groupings does not make
 sense because they belong to different services.
 
@@ -456,7 +456,7 @@ API.
 
 WebTransport Connect Streams, and their corresponding WebTransport Streams, can
 be independently routed by intermediaries on the network path. The main purpose
-for a WebTransport Connect Stream is to facilitate imtermediary traversal by
+for a WebTransport Connect Stream is to facilitate intermediary traversal by
 WebTransport Streams.
 
 Any segment on which SETTINGS_ENABLE_WEBTRANSPORT has been negotiated MUST route

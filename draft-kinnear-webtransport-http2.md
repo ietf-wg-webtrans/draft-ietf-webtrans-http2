@@ -511,8 +511,8 @@ all WebTransport Streams associated with the session.
 The WebTransport framework {{?I-D.vvv-webtransport-overview}} defines a set of
 optional transport properties that clients can use to determine the presence of
 features which might allow additional optimizations beyond the common set of
-properties available via all WebTransport protocols. Http2Transport supports the
-following properties.
+properties available via all WebTransport protocols. Below are details about
+support in Http2Transport for those properties.
 
 Stream Independence:
 

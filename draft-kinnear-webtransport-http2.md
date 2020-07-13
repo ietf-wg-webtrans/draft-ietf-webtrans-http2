@@ -506,6 +506,39 @@ on the WebTransport Connect Stream associated with the CONNECT request and reset
 all WebTransport Streams associated with the session.
 
 
+# Transport Properties
+
+The WebTransport framework {{?I-D.vvv-webtransport-overview}} defines a set of
+optional transport properties that clients can use to determine the presence of
+features which might allow additional optimizations beyond the common set of
+properties available via all WebTransport protocols. Http2Transport supports the
+following properties.
+
+Stream Independence:
+
+: Http2Transport does not support stream independence, as HTTP/2 inherently has
+    head of line blocking.
+
+Partial Reliability:
+
+: Http2Transport does not support partial reliability, as HTTP/2 retransmits any
+    lost data. This means that any datagrams sent via Http2Transport will be
+    retransmitted regardless of the preference of the application.
+
+Pooling Support:
+
+: Http2Transport supports pooling, as multiple transports using Http2Transport
+    may share the same underlying HTTP/2 connection and therefore share a
+    congestion controller and other transport context.
+
+Connection Mobility:
+
+: Http2Transport does not support connection mobility, unless an underlying
+    transport protocol that supports multipath or migration, such as MPTCP
+    {{?RFC7540}}, is used underneath HTTP/2 and TLS. Without such support,
+    Http2Transport connections cannot survive network transitions.
+
+
 # Security Considerations
 
 WebTransport Streams established by the CONNECT handshake and the WTHEADERS

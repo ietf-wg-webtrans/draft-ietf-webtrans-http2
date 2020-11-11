@@ -226,6 +226,10 @@ be sent on a stream in the "idle", "open", or "half-closed (remote)" state, see
 Like HEADERS, the CONTINUATION frame (type=0x9) is used to continue a sequence
 of header block fragments, if the headers do not fit into one WTHEADERS frame.
 
+Unlike HEADERS, the Header Block Fragment field MAY be empty.  There
+are no predefined semantics of the fields in the decoded block.  The
+application uses it to convey arbitrary structured metadata.
+
 The WTHEADERS frame is shown in {{fig-wtheaders}}.
 
 ~~~

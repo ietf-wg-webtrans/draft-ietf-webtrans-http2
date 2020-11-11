@@ -48,6 +48,19 @@ author:
     organization: Facebook Inc.
     email: woo@fb.com
 
+normative:
+  OVERVIEW:
+    title: "The WebTransport Protocol Framework"
+    date: {DATE}
+    seriesinfo:
+      Internet-Draft: draft-ietf-webtrans-overview-latest
+    author:
+      -
+        ins: V. Vasiliev
+        name: Victor Vasiliev
+        organization: Google
+
+
 --- abstract
 
 WebTransport is a protocol framework that enables clients constrained by the Web
@@ -167,6 +180,29 @@ Connect stream which is used by any intermediaries to correctly forward the
 stream to the destination endpoint. The only frames allowed on WebTransport
 Streams are WTHEADERS, CONTINUATION, DATA and any negotiated extension frames.
 
+
+# WebTransport Features
+
+WebTransport over HTTP/2 provides the following features described in
+[OVERVIEW]: unidirectional streams, bidirectional streams and datagrams,
+initiated by either endpoint.
+
+## Unidirectional streams
+
+Once a WebTransport session is established, either endpoint can initiate a
+unidirectional stream by sending a WTHEADERS frame with the Unidrectional flag
+set.
+
+## Bidirectional Streams
+
+Once a WebTransport session is established, either endpoint can initiate a
+bidirectional stream by sending a WTHEADERS frame.
+
+## Datagrams
+
+TBD
+
+# Http2Transport Protocol
 
 ## Negotiation
 

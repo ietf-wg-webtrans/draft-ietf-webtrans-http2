@@ -206,7 +206,6 @@ use the WTHEADERS frame type defined in this document. An endpoint that supports
 receiving the WTHEADERS as part of the WebTransport protocol SHOULD send this
 setting with a value of 1.
 
-
 ## The WTHEADERS Frame
 
 A new HTTP/2 frame called WTHEADERS is introduced for either endpoint to
@@ -218,6 +217,11 @@ which the WebTransport protocol was negotiated.
 
 The WTHEADERS frame (type=0xfb) has all the fields and frame header flags
 defined by HEADERS frame in HEADERS {{!RFC7540}}, Section 6.2.
+
+The WTHEADERS frame has one extra flag, Unidirectional (0x40).  When this flag
+is present, the stream starts in a half-closed state.  The sending endpoint
+stream state is "half-close (remote)" and the receiving endpoint stat is
+"half-closed (local)".
 
 The WTHEADERS frame has one extra field, Connect Stream ID. WTHEADERS frames can
 be sent on a stream in the "idle", "open", or "half-closed (remote)" state, see
@@ -257,7 +261,6 @@ exist, is not a stream established via extended CONNECT to use the
 "webtransport" protocol, or if it is in the closed or half-closed (remote)
 stream state. This allows WebTransport Streams to participate in header
 compression and flow control.
-
 
 ## Initiating the Extended CONNECT Handshake
 

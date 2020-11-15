@@ -218,9 +218,9 @@ which the WebTransport protocol was negotiated.
 The WTHEADERS frame (type=0xfb) has all the fields and frame header flags
 defined by HEADERS frame in HEADERS {{!RFC7540}}, Section 6.2.
 
-The WTHEADERS frame has one extra flag, Unidirectional (0x40).  When this flag
-is present, the stream starts in a half-closed state.  The sending endpoint
-stream state is "half-close (remote)" and the receiving endpoint stat is
+The WTHEADERS frame has an additional flag, Unidirectional (0x40).  When this flag
+is present, the stream starts in a half-closed state. The sending endpoint
+stream state is "half-closed (remote)" and the receiving endpoint state is
 "half-closed (local)".
 
 The WTHEADERS frame has one extra field, Connect Stream ID. WTHEADERS frames can

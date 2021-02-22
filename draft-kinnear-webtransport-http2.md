@@ -1,11 +1,10 @@
 ---
 title: "WebTransport using HTTP/2"
-abbrev: "WebTransportHTTP2"
+abbrev: "WebTransport-H2"
 docname: draft-kinnear-webtransport-http2-latest
 
 date: {DATE}
 category: std
-consensus: True
 
 ipr: trust200902
 area: art
@@ -48,13 +47,38 @@ author:
     organization: Facebook Inc.
     email: woo@fb.com
 
+normative:
+  OVERVIEW:
+    title: "The WebTransport Protocol Framework"
+    date: {DATE}
+    seriesinfo:
+      Internet-Draft: draft-ietf-webtrans-overview-latest
+    author:
+      -
+        ins: V. Vasiliev
+        name: Victor Vasiliev
+        organization: Google
+  WEBTRANSPORT-H3:
+    title: "WebTransport over HTTP/3"
+    date: {DATE}
+    seriesinfo:
+      Internet-Draft: draft-ietf-webtrans-http3-latest
+    author:
+      -
+        ins: V. Vasiliev
+        name: Victor Vasiliev
+        organization: Google
+
+informative:
+
 --- abstract
 
-WebTransport is a protocol framework that enables clients constrained by the Web
-security model to communicate with a remote server using a secure multiplexed
-transport. This document describes Http2Transport, a WebTransport protocol that
-is based on HTTP/2 and provides support for either endpoint to initiate streams
-multiplexed within the same HTTP/2 connection.
+WebTransport [OVERVIEW] is a protocol framework that enables clients
+constrained by the Web security model to communicate with a remote server using
+a secure multiplexed transport.  This document describes a WebTransport
+protocol that is based on HTTP/2 [RFC7540] and provides support for
+unidirectional streams, bidirectional streams and datagrams, all multiplexed
+within the same HTTP/2 connection.
 
 --- note_Note_to_Readers
 
@@ -63,19 +87,13 @@ Discussion of this draft takes place on the WebTransport mailing list
 \<https://mailarchive.ietf.org/arch/search/?email_list=webtransport\>.
 
 The repository tracking the issues for this draft can be found at
-\<https://github.com/erickinnear/draft-http-transport/issues\>.
-The web API draft corresponding to this document can be found at
-\<https://wicg.github.io/web-transport/\>.
+\<https://github.com/ekinnear/draft-webtransport-http2/issues\>.  The
+web API draft corresponding to this document can be found at
+\<https://w3c.github.io/webtransport/\>.
 
 --- middle
 
 # Introduction
-
-HTTP/2 {{?RFC7540}} transports HTTP messages via a framing layer that includes
-many optimizations designed to make communication more efficient between clients
-and servers. These include multiplexing of multiple streams on a single
-underlying transport connection, flow control, priorities, header compression,
-and exchange of configuration information between endpoints.
 
 Currently, the only mechanism in HTTP/2 for server to client communication is
 server push. That is, servers can initiate unidirectional push promised streams
@@ -88,149 +106,127 @@ chat messages or notifications.
 
 Several techniques have been developed to workaround these limitations: long
 polling {{?RFC6202}}, WebSocket {{?RFC8441}}, and tunneling using the CONNECT
-method. All of these approaches layer an application protocol on top of HTTP/2,
-using HTTP/2 streams as transport connections. This layering defeats the
-optimizations provided by HTTP/2. For example, application metadata is
-encapsulated in DATA frames rather than HEADERS frames, bypassing the advantages
-of HPACK header compression. Further, application data might be framed multiple
-times at different protocol layers, reducing the wire efficiency of the
-protocol.
+method. All of these approaches have limitations.
 
-This document defines Http2Transport, a mechanism for multiplexing
-non-request/response streams with HTTP/2 in a manner that conforms with the
-WebTransport protocol framework {{?I-D.vvv-webtransport-overview}}. Using the
-mechanism described, multiple Http2Transport instances can be multiplexed
-simultaneously with regular HTTP traffic on the same HTTP/2 connection.
+This document defines a mechanism for multiplexing non-HTTP data with HTTP/2 in
+a manner that conforms with the WebTransport protocol requirements and semantics
+[OVERVIEW].  Using the mechanism described here, multiple WebTransport
+instances can be multiplexed simultaneously with regular HTTP traffic on the
+same HTTP/2 connection.
 
+## Terminology
 
-# Conventions and Definitions
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
-This document follows terminology defined in Section 1.2 of
-{{?I-D.vvv-webtransport-overview}}. Note that this document distinguishes
-between a WebTransport server and an HTTP/2 server. An HTTP/2 server is the
-server that terminates HTTP/2 connections; a WebTransport server is an
-application that accepts WebTransport sessions, which can be accessed via an
-HTTP/2 server.
+This document follows terminology defined in Section 1.2 of [OVERVIEW].  Note
+that this document distinguishes between a WebTransport server and an HTTP/2
+server.  An HTTP/2 server is the server that terminates HTTP/2 connections; a
+WebTransport server is an application that accepts WebTransport sessions, which
+can be accessed via an HTTP/2 server.
 
+# Protocol Overview
 
-# Http2Transport Overview
+WebTransport servers are identified by a pair of authority value and
+path value (defined in {{!RFC3986}} Sections 3.2 and 3.3 correspondingly).
 
-Section 8.3 of {{?RFC7540}} defines the HTTP CONNECT method for HTTP/2, which
-converts an HTTP/2 stream into a tunnel for arbitrary data. {{?RFC8441}}
-describes the use of the extended CONNECT method to negotiate the use of the
-WebSocket Protocol {{?RFC6455}} on an HTTP/2 stream. Http2Transport uses the
-extended CONNECT handshake to allow WebTransport endpoints to multiplex
-arbitrary data streams on HTTP/2 connections.
+When an HTTP/2 connection is established, both the client and server have to
+send a SETTINGS_ENABLE_WEBTRANSPORT setting in order to indicate that they
+both support WebTransport over HTTP/2.
 
-Http2Transport introduces a new HTTP/2 frame which carries structured metadata
-like the HEADERS and PUSH_PROMISE frames but without the constraints of the
-request/response state machine and semantics.
+WebTransport sessions are initiated inside a given HTTP/2 connection by the
+client, who sends an extended CONNECT request {{!RFC8441}}.  If the server
+accepts the request, an WebTransport session is established.  The resulting
+stream will be further referred to as a *CONNECT stream*, and its stream ID is
+used to uniquely identify a given WebTransport session within the connection.
+The ID of the CONNECT stream that established a given WebTransport session will
+be further referred to as a *Session ID*.
 
-The WebTransport over HTTP/2 extension:
+After the session is established, the peers can exchange data using the
+following mechanisms:
 
-1. Enables bidirectional and symmetric communication over HTTP/2. After a
-WebTransport session is established, a server can initiate a WebTransport stream
-to the client at any time, and the client can respond to server-initiated
-streams.
+* Both client and server can create a bidirectional or unidirectional stream
+  using a new HTTP/2 extension frame (WT_STREAM)
+* A datagram can be sent using a new HTTP/2 extension frame WT_DATAGRAM.
 
-2. Allows WebTransport streams to take advantage of HTTP/2 features such as
-header compression, prioritization, and flow-control.
+A WebTransport session is terminated when the CONNECT stream that created it
+is closed.
 
-3. Provides a mechanism for intermediaries to route server initiated messages to
-the correct client.
+# Session Establishment
 
-4. Allows clients and servers to group streams and route them together.
+## Establishing a Transport-Capable HTTP/2 Connection
 
+In order to indicate support for WebTransport, both the client and the server
+MUST send a SETTINGS_ENABLE_WEBTRANSPORT value set to "1" in their SETTINGS
+frame.  Endpoints MUST NOT use any WebTransport-related functionality unless
+the parameter has been negotiated.
 
-## WebTransport Connect Streams
+## Extended CONNECT in HTTP/2
 
-After negotiating the use of this extension, clients initiate one or more
-WebTransport Connect Streams to a Http2Transport Server. Http2Transport servers
-are identified by a pair of authority value and path value (defined in
-{{!RFC3986}} Sections 3.2 and 3.3 respectively). The client uses the extended
-CONNECT method with a :protocol token "webtransport" to establish a WebTransport
-Connect Stream. This stream is only used to establish a WebTransport session and
-is not intended for data exchange.
+{{!RFC8441}} defines an extended CONNECT method in Section 4, enabled by the
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint doesn not need to send
+both SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_ENABLE_WEBTRANSPORT; the
+SETTINGS_ENABLE_WEBTRANSPORT setting implies that an endpoint supports extended
+CONNECT.
 
+## Creating a New Session
 
-## WebTransport Streams
+As WebTransport sessions are established over HTTP/2, they are identified
+using the `https` URI scheme {{!RFC7230}}.
 
-Following the establishment of a WebTransport Connect stream, either the client
-or the server can initiate a WebTransport Stream by sending the WTHEADERS frame,
-defined in {{the-wtheaders-frame}}. This frame references an open WebTransport
-Connect stream which is used by any intermediaries to correctly forward the
-stream to the destination endpoint. The only frames allowed on WebTransport
-Streams are WTHEADERS, CONTINUATION, DATA and any negotiated extension frames.
+In order to create a new WebTransport session, a client can send an HTTP CONNECT
+request.  The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
+`webtransport` (Section 7.1 [WEBTRANSPORT-H3]).  The `:scheme` field MUST be
+`https`.  Both the `:authority` and the `:path` value MUST be set; those fields
+indicate the desired WebTransport server.  An `Origin` header {{!RFC6454}} MUST
+be provided within the request.
 
+Upon receiving an extended CONNECT request with a `:protocol` field set to
+`webtransport`, the HTTP/2 server can check if it
+has a WebTransport server associated with the specified `:authority` and `:path`
+values.  If it does not, it SHOULD reply with status code 404 (Section 6.5.4,
+{{!RFC7231}}).  If it does, it MAY accept the session by replying with status
+code 200.  The WebTransport server MUST verify the `Origin` header to ensure
+that the specified origin is allowed to access the server in question.
 
-## Negotiation
+From the client's perspective, a WebTransport session is established when the
+client receives a 200 response.  From the server's perspective, a session is
+established once it sends a 200 response.  Both endpoints MUST NOT open any
+streams or send any datagrams on a given session before that session is
+established.
 
-Clients negotiate the use of WebTransport over HTTP/2 using both the SETTINGS
-frame and one or more extended CONNECT requests as defined in {{!RFC8441}}.
+## Limiting the Number of Simultaneous Sessions
 
-Use of the extended CONNECT method extension requires the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter to be received by a client prior to
-its use. An endpoint that supports receiving the extended CONNECT method SHOULD
-send this setting with a value of 1.
+From the flow control perspective, WebTransport sessions count against the
+stream flow control just like regular HTTP requests, since they are established
+via an HTTP CONNECT request.  This document does not make any effort to
+introduce a separate flow control mechanism for sessions, nor to separate HTTP
+requests from WebTransport data streams.  If the server needs to limit the rate
+of incoming requests, it has alternative mechanisms at its disposal:
 
-The extended CONNECT method extension uses the `:protocol` pseudo-header field
-to negotiate the protocol that will be used on a given stream in an HTTP/2
-connection. This document registers a new token, "webtransport", in the
-"Hypertext Transfer Protocol (HTTP) Upgrade Token Registry" established by
-{{?RFC7230}} and located at
-<https://www.iana.org/assignments/http-upgrade-tokens/>.
+* `HTTP_STREAM_REFUSED` error code defined in [RFC7540] indicates to the
+  receiving HTTP/2 stack that the request was not processed in any way.
+* HTTP status code 429 indicates that the request was rejected due to rate
+  limiting {{!RFC6585}}.  Unlike the previous method, this signal is directly
+  propagated to the application.
 
-This token is used in the `:protocol` pseudo-header field to indicate that the
-endpoint wishes to use the WebTransport protocol on the new stream.
+# WebTransport Features
 
+WebTransport over HTTP/2 provides the following features described in
+[OVERVIEW]: unidirectional streams, bidirectional streams and datagrams,
+initiated by either endpoint.
 
-## The SETTINGS_ENABLE_WEBTRANSPORT SETTINGS parameter
+Session IDs are used to demultiplex streams and datagrams belonging to different
+WebTransport sessions.  On the wire, session IDs are encoded using a 31-bit
+integer field.
 
-As described in Section 5.5 of {{!RFC7540}}, SETTINGS parameters allow endpoints
-to negotiate use of protocol extensions that would otherwise generate protocol
-errors.
+## WT_STREAM Frame
 
-This document introduces a new SETTINGS parameter, SETTINGS_ENABLE_WEBTRANSPORT,
-which MUST have a value of 0 or 1.
-
-Once a SETTINGS_ENABLE_WEBTRANSPORT parameter has been sent with a value of 1,
-an endpoint MUST NOT send the parameter with a value of 0.
-
-Upon receipt of SETTINGS_ENABLE_WEBTRANSPORT with a value of 1, an endpoint MAY
-use the WTHEADERS frame type defined in this document. An endpoint that supports
-receiving the WTHEADERS as part of the WebTransport protocol SHOULD send this
-setting with a value of 1.
-
-## The WTHEADERS Frame
-
-A new HTTP/2 frame called WTHEADERS is introduced for either endpoint to
-establish streams. A stream opened by a WTHEADERS frame is referred to as a
-WebTransport Stream, and it MAY be continued by CONTINUATION and DATA frames.
-WebTransport Streams can be initiated by either clients or servers via a
-WTHEADERS frame that refers to the corresponding WebTransport Connect Stream on
-which the WebTransport protocol was negotiated.
-
-The WTHEADERS frame (type=0xfb) has all the fields and frame header flags
-defined by HEADERS frame in HEADERS {{!RFC7540}}, Section 6.2.
-
-The WTHEADERS frame has an additional flag, Unidirectional (0x40).  When this flag
-is present, the stream starts in a half-closed state. The sending endpoint
-stream state is "half-closed (remote)" and the receiving endpoint state is
-"half-closed (local)".
-
-The WTHEADERS frame has one extra field, Connect Stream ID. WTHEADERS frames can
-be sent on a stream in the "idle", "open", or "half-closed (remote)" state, see
-{{stream-states}}.
-
-Like HEADERS, the CONTINUATION frame (type=0x9) is used to continue a sequence
-of header block fragments, if the headers do not fit into one WTHEADERS frame.
-
-The WTHEADERS frame is shown in {{fig-wtheaders}}.
+A new HTTP/2 frame called WT_STREAM is introduced for either endpoint to
+establish WebTransport streams. WT_STREAM frames can be sent on a stream in the
+"idle", "reserved (local)", "open", or "half-closed (remote)" state.
 
 ~~~
  0                   1                   2                   3
@@ -238,284 +234,109 @@ The WTHEADERS frame is shown in {{fig-wtheaders}}.
 +---------------+
 |Pad Length? (8)|
 +-+-------------+-----------------------------------------------+
-|E|                 Stream Dependency? (31)                     |
-+-+-------------+-----------------------------------------------+
-|  Weight? (8)  |
-+-+-------------+-----------------------------------------------+
-|R|                 Connect Stream ID (31)                      |
+|R|                     Session ID (31)                         |
 +-+-------------------------------------------------------------+
-|                   Header Block Fragment (*)                 ...
+|                           Padding (*)                       ...
++---------------------------------------------------------------+
+~~~
+{: #fig-wt_stream title="WT_STREAM Frame Format"}
+
+The WT_STREAM frame define the following fields:
+
+   Pad Length:  An 8-bit field containing the length of the frame
+      padding in units of octets.  This field is conditional (as
+      signified by a "?" in the diagram) and is only present if the
+      PADDED flag is set.
+
+   Session ID:  An unsigned 31-bit integer that identifies the
+      stream Connect Stream for this Web Transport stream.  The
+      Session ID MUST be MUST be an open stream negotiated via the
+      extended CONNECT protocol with a `:protocol` value of
+      "webtransport".
+
+The WT_STREAM frame defines the following flags:
+
+   UNIDIRECTIONAL (0x1):  When set, the stream begins in the
+      "half-closed (remote)" state at the sender, and in the
+      "half-closed (local)" state at the receiver.
+
+As with all HTTP/2 streams, WebTransport streams initiated by a client have
+odd stream IDs and those initiated by a server have even stream IDs.
+
+The recipient MUST respond with a stream error of type
+WT_STREAM_ERROR if the specified WebTransport Connect Stream does not
+exist, is not a stream established via extended CONNECT to use the
+"webtransport" protocol, or if it is in the "closed" or "half-closed (remote)"
+stream state.
+
+## WT_DATAGRAM Frame
+
+A new HTTP/2 frame called WT_DATAGRAM is introduced for either endpoint to
+transmit a datagram. WT_DATAGRAM frames are sent with Stream Identifier 0.
+
+~~~
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++---------------+
+|Pad Length? (8)|
++-+-------------+-----------------------------------------------+
+|R|                     Session ID (31)                         |
++-+-------------------------------------------------------------+
+|                            Data (*)                         ...
 +---------------------------------------------------------------+
 |                           Padding (*)                       ...
 +---------------------------------------------------------------+
 ~~~
-{: #fig-wtheaders title="WTHEADERS Frame Format"}
+{: #fig-wt_datagram title="WT_DATAGRAM Frame Format"}
 
-The Connect Stream specified in a WTHEADERS frame MUST be an open stream
-negotiated via the extended CONNECT protocol with a `:protocol` value of
-"webtransport".
+The WT_DATAGRAM frame define the following fields:
 
-The recipient MUST respond with a connection error of type
-WTHEADERS_STREAM_ERROR if the specified WebTransport Connect Stream does not
-exist, is not a stream established via extended CONNECT to use the
-"webtransport" protocol, or if it is in the closed or half-closed (remote)
-stream state. This allows WebTransport Streams to participate in header
-compression and flow control.
+   Pad Length:  An 8-bit field containing the length of the frame
+      padding in units of octets.  This field is conditional (as
+      signified by a "?" in the diagram) and is only present if the
+      PADDED flag is set.
 
-## Initiating the Extended CONNECT Handshake
+   Session ID:  An unsigned 31-bit integer that identifies the
+      stream Connect Stream for this Web Transport stream.  The
+      Session ID MUST be MUST be an open stream negotiated via the
+      extended CONNECT protocol with a `:protocol` value of
+      "webtransport".
 
-An endpoint that wishes to establish a WebTransport session over an HTTP/2
-stream follows the extended CONNECT handshake procedure defined in {{!RFC8441}},
-specifying "webtransport" for the :protocol pseudo-header field.
+   Data:  Application data.  The amount of data is the remainder of the
+      frame payload after subtracting the length of the other fields
+      that are present.
 
-The :scheme and :path pseudo-headers are required by {{!RFC6455}}. The scheme of
-the target URI MUST be set to "https" for all :protocol values. The path is used
-to identify the specific WebTransport server instance for negotiation and MAY be
-set to "/" (an empty path component).
+The WT_DATAGRAM frame does not define any flags.
 
-Implementations should note that the Origin, Sec-WebSocket-Version,
-Sec-WebSocket-Protocol, and Sec-WebSocket-Extensions header fields are not
-required to be included in the CONNECT request and response header fields, since
-this handshake mechanism is not being used to negotiate a WebSocket connection.
+The recipient MAY respond with a stream error of type WT_STREAM_ERROR if the
+specified WebTransport Connect Stream does not exist, is not a stream
+established via extended CONNECT to use the "webtransport" protocol, or if it is
+in the "closed" or "half-closed (remote)" stream state.
 
-If the response to the extended CONNECT request indicates success of the
-handshake, then all further data sent or received on the new HTTP/2 stream is
-considered to be that of the WebTransport protocol and follows the semantics
-defined by that protocol. If the response indicates failure of the handshake,
-any WebTransport Streams that reference the WebTransport Connect Stream that
-failed to establish MUST also be reset.
+The data in WT_DATAGRAM frames is not subject to flow control.  The receiver MAY
+discard this data if it does not have sufficient space to buffer it.
 
-
-## Examples
-
-An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
-This example is intended to closely follow the example in Section 5.1 of
-{{!RFC8441}} to help illustrate the differences defined in this document.
-
-~~~
-[[ From Client ]]                   [[ From Server ]]
-
-SETTINGS
-SETTINGS_ENABLE_CONNECT_[..] = 1
-SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-                                    SETTINGS
-                                    SETTINGS_ENABLE_CONNECT_[..] = 1
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-HEADERS + END_HEADERS
-+ STREAM_ID = 3
-:method = CONNECT
-:protocol = webtransport
-:scheme = https
-:path = /
-:authority = server.example.com
-
-                                    HEADERS + END_HEADERS
-                                    + STREAM_ID = 3
-                                    :status = 200
-
-WTHEADERS + END_HEADERS
-+ STREAM_ID = 5
-+ CONNECT_STREAM = 3
-:method = GET
-:scheme = https
-:path = /
-:authority = server.example.com
-
-                                    WTHEADERS + END_HEADERS
-                                    + STREAM_ID = 5
-                                    + CONNECT_STREAM = 3
-                                    :status = 200
-
-DATA + STREAM_ID = 5
-WebTransport Data
-
-                                    DATA + STREAM_ID = 5 + END_STREAM
-                                    WebTransport Data
-
-DATA + STREAM_ID = 5 + END_STREAM
-WebTransport Data
-~~~
-
-An example of the server initiating a WebTransport Stream follows. The only
-difference here is the endpoint that sends the first WTHEADERS frame.
-
-~~~
-[[ From Client ]]                   [[ From Server ]]
-
-SETTINGS
-SETTINGS_ENABLE_CONNECT_[..] = 1
-SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-                                    SETTINGS
-                                    SETTINGS_ENABLE_CONNECT_[..] = 1
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-HEADERS + END_HEADERS
-+ STREAM_ID = 3
-:method = CONNECT
-:protocol = webtransport
-:scheme = https
-:path = /
-:authority = server.example.com
-
-                                    HEADERS + END_HEADERS
-                                    + STREAM_ID = 3
-                                    :status = 200
-
-                                    WTHEADERS + END_HEADERS
-                                    + STREAM_ID = 2
-                                    + CONNECT_STREAM = 3
-                                    :method = GET
-                                    :scheme = https
-                                    :path = /
-                                    :authority = client.example.com
-
-WTHEADERS + END_HEADERS
-+ STREAM_ID = 2
-+ CONNECT_STREAM = 3
-:status = 200
-
-                                    DATA + STREAM_ID = 2
-                                    WebTransport Data
-
-DATA + STREAM_ID = 2 + END_STREAM
-WebTransport Data
-
-                                    DATA + STREAM_ID = 2 + END_STREAM
-                                    WebTransport Data
-~~~
+An intermediary could forward the data in a WT_DATAGRAM frame over another
+protocol, such as WebTransport over HTTP/3.  In QUIC, a datagram frame can span
+at most one packet.  Because of that, the applications have to know the maximum
+size of the datagram they can send.  However, when proxying the datagrams, the
+hop-by-hop MTUs can vary.
 
 
-# Using WebTransport Streams
+# Session Termination
 
-Once the extended CONNECT handshake has completed and a WebTransport connect
-stream has been established, WTHEADERS frames can be sent that reference that
-stream in the Connect Stream ID field to establish WebTransport Streams.
-WebTransport Connect Streams are intended for exchanging metadata only and are
-RECOMMENDED to be long lived streams. Once a WebTransport Connect Stream is
-closed, all routing information it carries is lost, and subsequent WebTransport
-Streams cannot be created with WTHEADERS frames until the client completes
-another extended CONNECT handshake to establish a new WebTransport Connect
-Stream.
-
-In contrast, WebTransport Streams established with WTHEADERS frames can be
-opened at any time by either endpoint and therefore need not remain open beyond
-their immediate usage as part of the WebTransport protocol.
-
-An endpoint MUST NOT send DATA frames with a non-zero payload length on a
-WebTransport Connect Stream beyond the completion of the extended CONNECT
-handshake. If data is received by an endpoint on a WebTransport Connect Stream,
-it MUST reset that stream with a new error code, PROHIBITED_WT_CONNECT_DATA,
-indicating that additional data is prohibited on the Connect Stream when using
-"webtransport" as the `:protocol` value.
-
-
-## Stream States
-
-WebTransport Connect Streams are regular HTTP/2 streams that follow the stream
-lifecycle described in Section 5.1 of {{!RFC7540}}. WebTransport Streams
-established with the WTHEADERS frame also follow the same lifecycle as regular
-HTTP/2 streams, but have an additional dependency on the Connect Stream that
-they reference via their Connect Stream ID.
-
-If the corresponding Connect Stream is reset, endpoints MUST reset the
-WebTransport Streams associated with that Connect Stream. If the Connect Stream
-is closed gracefully, endpoints SHOULD allow any existing WebTransport Streams
-to complete normally, however the Connect Stream SHOULD remain open while
-communication is expected to continue.
-
-Endpoints SHOULD take measures to prevent a peer or intermediary from timing out
-the Connect Stream while its associated WebTransport Streams are expected to
-remain open. For example, an endpoint might choose to refresh a timeout on a
-Connect Stream any time a corresponding timeout is refreshed on a corresponding
-WebTransport Stream, such as when any data is sent or received on that
-WebTransport Stream.
-
-An endpoint MUST NOT initiate new WebTransport Streams that reference a Connect
-Stream that is in the closed or half closed (remote) state. Endpoints process
-new WebTransport Streams only when the associated Connect Stream is in the open
-or half closed (local) state.
-
-
-## Interaction with HTTP/2 Features
-
-WebTransport Streams are extended HTTP/2 streams, and all of the standard HTTP/2
-features for streams still apply to WebTransport Streams. For example,
-WebTransport Streams are counted against the concurrent stream limit, which is
-defined in Section 5.1.2 of {{!RFC7540}}. The connection level and stream level
-flow control limits are still valid for WebTransport Streams. Prioritizing
-the WebTransport Streams across different Connect Stream groupings does not make
-sense because they belong to different services.
-
-Note that while HTTP/2 Stream IDs are used by WebTransport Streams to refer to
-their corresponding WebTransport Connect Streams, the Stream IDs themselves are
-an implementation detail and SHOULD NOT be vended to clients via a WebTransport
-API.
-
-
-## Intermediaries
-
-WebTransport Connect Streams, and their corresponding WebTransport Streams, can
-be independently routed by intermediaries on the network path. The main purpose
-for a WebTransport Connect Stream is to facilitate intermediary traversal by
-WebTransport Streams.
-
-Any segment on which SETTINGS_ENABLE_WEBTRANSPORT has been negotiated MUST route
-all WebTransport Streams established by WTHEADERS frames on the same connection
-as their corresponding WebTransport Connect Streams.
-
-If an intermediary cannot route WebTransport Streams on a subsequent segment of
-the path, it can fail the extended CONNECT handshake and prevent a WebTransport
-Connect Stream from being established for a given endpoint. In the event that
-additional WebTransport Streams reference that WebTransport Connect Stream, they
-will also be reset.
-
-An example of such routing, for both client-initiated and server-initiated
-WebTransport streams, is shown in {{fig-client-routing-example}} and in
-{{fig-server-routing-example}}. Note that "webtransport" is specified as the
-`:protocol` being negotiated by the CONNECT frame on both segments, and the
-corresponding stream is referenced by the Connect Stream ID field in the
-WTHEADERS frames.
-
-~~~
-+--------+   CONNECT (5)   +---------+    CONNECT (1)   +--------+
-| client |>--------------->|  proxy  |>---------------->| server |
-+--------+                 +---------+                  +--------+
-   v                        ^     v                        ^
-   |  WTHEADERS(7, CS=5)    |     |  WTHEADERS(3, CS=1)    |
-   +------------------------+     +------------------------+
-~~~
-{: #fig-client-routing-example title="A client initiates a WebTransport Stream to a server."}
-
-~~~
-+--------+   CONNECT (5)   +---------+    CONNECT (1)   +--------+
-| client |>--------------->|  proxy  |>---------------->| server |
-+--------+                 +---------+                  +--------+
-    ^                        v     ^                        v
-    |  WTHEADERS(4, CS=5)    |     |  WTHEADERS(2, CS=1)    |
-    +------------------------+     +------------------------+
-~~~
-{: #fig-server-routing-example title="A server initiates a WebTransport Stream to a client."}
-
-
-## Session Termination
-
-An Http2Transport session is terminated when either endpoint closes the stream
-associated with the CONNECT request that initiated the session. Upon learning
-about the session being terminated, both endpoints MUST stop sending new frames
-on the WebTransport Connect Stream associated with the CONNECT request and reset
-all WebTransport Streams associated with the session.
-
+An WebTransport session over HTTP/2 is terminated when either endpoint closes
+the stream associated with the CONNECT request that initiated the session.
+Upon learning about the session being terminated, the endpoint MUST stop
+sending new datagrams and reset all of the streams associated with the session.
 
 # Transport Properties
 
-The WebTransport framework {{?I-D.vvv-webtransport-overview}} defines a set of
-optional transport properties that clients can use to determine the presence of
-features which might allow additional optimizations beyond the common set of
-properties available via all WebTransport protocols. Below are details about
-support in Http2Transport for those properties.
+The WebTransport framework [OVERVIEW] defines a set of optional transport
+properties that clients can use to determine the presence of features which
+might allow additional optimizations beyond the common set of properties
+available via all WebTransport protocols. Below are details about support in
+Http2Transport for those properties.
 
 Stream Independence:
 
@@ -526,7 +347,8 @@ Partial Reliability:
 
 : Http2Transport does not support partial reliability, as HTTP/2 retransmits any
     lost data. This means that any datagrams sent via Http2Transport will be
-    retransmitted regardless of the preference of the application.
+    retransmitted regardless of the preference of the application.  The receiver
+    is permitted to drop them, however, if it is unable to buffer them.
 
 Pooling Support:
 
@@ -541,84 +363,89 @@ Connection Mobility:
     {{?RFC7540}}, is used underneath HTTP/2 and TLS. Without such support,
     Http2Transport connections cannot survive network transitions.
 
-
 # Security Considerations
 
-WebTransport Streams established by the CONNECT handshake and the WTHEADERS
-frame are expected to be protected with a TLS connection. They inherit the
-security properties of this cryptographic context, as well as the security
-properties of client-server communication via HTTP/2 as described in
-{{!RFC7540}}.
+WebTransport over HTTP/2 satisfies all of the security requirements imposed by
+[OVERVIEW] on WebTransport protocols, thus providing a secure framework for
+client-server communication in cases when the client is potentially untrusted.
 
-The security considerations of [RFC8441] Section 8 and [RFC7540] Section 10, and
-Section 10.5.2 especially, apply to this use of the CONNECT method.
-
-Http2Transport requires explicit opt-in through the use of an HTTP/2 SETTINGS
-parameter, avoiding potential protocol confusion attacks by ensuring the HTTP/2
-server explicitly supports the WebTransport protocol. It also requires the use
-of the Origin header, providing the server with the ability to deny access to
+WebTransport over HTTP/2 requires explicit opt-in through the use of HTTP
+SETTINGS; this avoids potential protocol confusion attacks by
+ensuring the HTTP/2 server explicitly supports it.  It also requires the use of
+the Origin header, providing the server with the ability to deny access to
 Web-based clients that do not originate from a trusted origin.
 
-Just like HTTP/2 itself, Http2Transport pools traffic to different origins
-within a single connection. Different origins imply different trust domains,
-meaning that the implementations have to treat each transport as potentially
-hostile towards others on the same connection. One potential attack is a
-resource exhaustion attack: since all of the transports share both congestion
-control and flow control context, a single client aggressively using up those
-resources can cause other transports to stall. The user agent thus SHOULD
-implement a fairness scheme that ensures that each WebTransport session within a
-connection is allocated a reasonable share of controlled resources, both when
-sending data and opening new streams.
-
+Just like HTTP traffic going over HTTP/2, WebTransport pools traffic to
+different origins within a single connection.  Different origins imply different
+trust domains, meaning that the implementations have to treat each transport as
+potentially hostile towards others on the same connection.  One potential attack
+is a resource exhaustion attack: since all of the transports share both
+congestion control and flow control context, a single client aggressively using
+up those resources can cause other transports to stall.  The user agent thus
+SHOULD implement a fairness scheme that ensures that each transport within
+connection gets a reasonable share of controlled resources; this applies both to
+sending data and to opening new streams.
 
 # IANA Considerations
 
-This document adds an entry to the "HTTP/2 Frame Type" registry, the "HTTP/2
-Settings" registry, and the "HTTP/2 Error Code" registry, all defined in
-{{!RFC7540}}. It also registers an HTTP upgrade token in the registry established
-by {{!RFC7230}}.
+## HTTP/2 SETTINGS Parameter Registration
 
-## HTTP/2 Frame Type Registry
+The following entry is added to the "HTTP/2 Settings" registry established by
+[RFC7540]:
 
-The following entry is added to the "HTTP/2 Frame Type" registry established by
-Section 11.2 of {{!RFC7540}}.
+The `SETTINGS_ENABLE_WEBTRANSPORT` parameter indicates that the specified
+HTTP/2 connection is WebTransport-capable.
 
-Frame Type:
+Setting Name:
 
-: WTHEADERS
+: ENABLE_WEBTRANSPORT
 
-Code:
+Value:
 
-: 0xFB
+: 0x2b603742
 
-Specification:
-
-: *RFC Editor: Please fill in this value with the RFC number for this
-document*
-
-
-## HTTP/2 Settings Registry
-
-The following entry is added to the "HTTP/2 Settings" registry that was
-established by Section 11.3 of {{!RFC7540}}.
-
-Code:
-
-: 0xFB
-
-Name:
-
-: SETTINGS_ENABLE_WEBTRANSPORT
-
-Initial Value:
+Default:
 
 : 0
 
 Specification:
 
-: *RFC Editor: Please fill in this value with the RFC number for this
-document*
+: This document
 
+## Frame Type Registration
+
+The following entries are added to the "HTTP/2 Frame Type" registry established
+by [RFC7540]:
+
+The `WT_STREAM` frame allows HTTP/2 client- and server-initiated unidirectional
+and bidirectional streams to be used by WebTransport:
+
+Code:
+
+: 0xTBD
+
+Frame Type:
+
+: WEBTRANSPORT_STREAM
+
+Specification:
+
+: This document
+
+The `WT_DATAGRAM` frame allows HTTP/2 client and server to exchange datagrams
+used by WebTransport:
+
+Code:
+
+: 0xTBD
+
+Frame Type:
+
+: WEBTRANSPORT_DATAGRAM
+
+Specification:
+
+: This document
 
 ## HTTP/2 Error Code Registry
 
@@ -627,15 +454,15 @@ established by Section 11.2 of {{!RFC7540}}.
 
 Name:
 
-: WTHEADERS_STREAM_ERROR
+: WT_STREAM_ERROR
 
 Code:
 
-: 0xFB
+: 0xTBD
 
 Description:
 
-: Invalid use of WTHEADERS frame
+: Invalid use of WT_STREAM frame
 
 Specification:
 
@@ -643,43 +470,92 @@ Specification:
 document*
 
 
-Name:
+## Examples
 
-: PROHIBITED_WT_CONNECT_DATA
+An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
+This example is intended to closely follow the example in Section 5.1 of
+{{!RFC8441}} to help illustrate the differences defined in this document.
 
-Code:
+~~~
+[[ From Client ]]                   [[ From Server ]]
 
-: 0xFC
+SETTINGS
+SETTINGS_ENABLE_WEBTRANSPORT = 1
 
-Description:
+                                    SETTINGS
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
 
-: Prohibited data sent on WebTransport Connect Stream
+HEADERS + END_HEADERS
+Stream ID = 3
+:method = CONNECT
+:protocol = webtransport
+:scheme = https
+:path = /
+:authority = server.example.com
+origin: server.example.com
 
-Specification:
+                                    HEADERS + END_HEADERS
+                                    Stream ID = 3
+                                    :status = 200
 
-: *RFC Editor: Please fill in this value with the RFC number for this
-document*
+WT_STREAM
+Stream ID = 5
+Session ID = 3
 
 
-## Upgrade Token Registration
+DATA
+Stream ID = 5
+WebTransport Data
 
-The following entry is added to the "Hypertext Transfer Protocol (HTTP) Upgrade
-Token Registry" registry established by {{!RFC7230}}.
+                                    DATA + END_STREAM
+                                    Stream ID = 5
+                                    WebTransport Data
 
-Value:
+DATA + END_STREAM
+Stream ID = 5
+WebTransport Data
+~~~
 
-: webtransport
+An example of the server initiating a WebTransport Stream follows. The only
+difference here is the endpoint that sends the first WT_STREAM frame.
 
-Description:
+~~~
+[[ From Client ]]                   [[ From Server ]]
 
-: WebTransport over HTTP
+SETTINGS
+SETTINGS_ENABLE_WEBTRANSPORT = 1
 
-Expected Version Tokens:
+                                    SETTINGS
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
 
-Reference:
+HEADERS + END_HEADERS
+Stream ID = 3
+:method = CONNECT
+:protocol = webtransport
+:scheme = https
+:path = /
+:authority = server.example.com
+origin: server.example.com
+                                    HEADERS + END_HEADERS
+                                    Stream ID = 3
+                                    :status = 200
 
-: *RFC Editor: Please fill in this value with the RFC number for this
-document* and {{?I-D.vvv-webtransport-http3}}
+                                    WT_STREAM
+                                    Stream ID = 2
+                                    Session ID = 3
+
+                                    DATA
+                                    Stream ID = 2
+                                    WebTransport Data
+
+DATA + END_STREAM
+Stream ID = 2
+WebTransport Data
+
+                                    DATA + END_STREAM
+                                    Stream ID = 2
+                                    WebTransport Data
+~~~
 
 
 --- back

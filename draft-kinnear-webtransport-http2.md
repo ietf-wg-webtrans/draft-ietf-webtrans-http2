@@ -166,7 +166,7 @@ the parameter has been negotiated.
 ## Extended CONNECT in HTTP/2
 
 {{!RFC8441}} defines an extended CONNECT method in Section 4, enabled by the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint doesn not need to send
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint does not need to send
 both SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_ENABLE_WEBTRANSPORT; the
 SETTINGS_ENABLE_WEBTRANSPORT setting implies that an endpoint supports extended
 CONNECT.

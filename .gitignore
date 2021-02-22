@@ -9,8 +9,7 @@
 .tags
 .targets.mk
 /*-[0-9][0-9].xml
-issues.json
-pulls.json
+archive.json
 report.xml
 venv/
 lib

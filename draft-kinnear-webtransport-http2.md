@@ -78,7 +78,7 @@ Discussion of this draft takes place on the WebTransport mailing list
 \<https://mailarchive.ietf.org/arch/search/?email_list=webtransport\>.
 
 The repository tracking the issues for this draft can be found at
-\<https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues\>.  The
+\<https://github.com/ekinnear/draft-webtransport-http2/issues\>.  The
 web API draft corresponding to this document can be found at
 \<https://w3c.github.io/webtransport/\>.
 
@@ -107,7 +107,7 @@ can be accessed via an HTTP/2 server.
 
 # Protocol Overview
 
-WebTransport servers in general are identified by a pair of authority value and
+WebTransport servers are identified by a pair of authority value and
 path value (defined in {{!RFC3986}} Sections 3.2 and 3.3 correspondingly).
 
 When an HTTP/2 connection is established, both the client and server have to
@@ -127,9 +127,9 @@ following mechanisms:
 
 * Both client and server can create a bidirectional or unidirectional stream
   using a new HTTP/2 extension frame (WT_STREAM)
-* A datagram can be sent using a a new HTTP/2 extension frame WT_DATAGRAM.
+* A datagram can be sent using a new HTTP/2 extension frame WT_DATAGRAM.
 
-An WebTransport session is terminated when the CONNECT stream that created it
+A WebTransport session is terminated when the CONNECT stream that created it
 is closed.
 
 # Session Establishment
@@ -265,7 +265,7 @@ transmit a datagram. WT_DATAGRAM frames are sent with Stream Identifier 0.
 |                           Padding (*)                       ...
 +---------------------------------------------------------------+
 ~~~
-{: #fig-wt_datagram title="WT_STREAM Frame Format"}
+{: #fig-wt_datagram title="WT_DATAGRAM Frame Format"}
 
 The WT_DATAGRAM frame define the following fields:
 
@@ -303,8 +303,6 @@ at most one packet.  Because of that, the applications have to know the maximum
 size of the datagram they can send.  However, when proxying the datagrams, the
 hop-by-hop MTUs can vary.
 
-TODO: Describe how the path MTU can be computed, specifically propagation across
-HTTP proxies.
 
 # Session Termination
 
@@ -540,7 +538,6 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
-TODO: DATAGRAM example
 
 --- back
 

@@ -47,13 +47,22 @@ author:
     organization: Facebook Inc.
     email: woo@fb.com
 
----
 normative:
   OVERVIEW:
     title: "The WebTransport Protocol Framework"
     date: {DATE}
     seriesinfo:
       Internet-Draft: draft-ietf-webtrans-overview-latest
+    author:
+      -
+        ins: V. Vasiliev
+        name: Victor Vasiliev
+        organization: Google
+  WEBTRANSPORT-H3:
+    title: "WebTransport over HTTP/3"
+    date: {DATE}
+    seriesinfo:
+      Internet-Draft: draft-ietf-webtrans-http3-latest
     author:
       -
         ins: V. Vasiliev
@@ -85,6 +94,19 @@ web API draft corresponding to this document can be found at
 --- middle
 
 # Introduction
+
+Currently, the only mechanism in HTTP/2 for server to client communication is
+server push. That is, servers can initiate unidirectional push promised streams
+to clients, but clients cannot respond to them; they can only accept them or
+discard them. Additionally, intermediaries along the path may have different
+server push policies and may not forward push promised streams to the downstream
+client. This best effort mechanism is not sufficient to reliably deliver
+messages from servers to clients, limiting server to client use-cases such as
+chat messages or notifications.
+
+Several techniques have been developed to workaround these limitations: long
+polling {{?RFC6202}}, WebSocket {{?RFC8441}}, and tunneling using the CONNECT
+method. All of these approaches have limitations.
 
 This document defines a mechanism for multiplexing non-HTTP data with HTTP/2 in
 a manner that conforms with the WebTransport protocol requirements and semantics
@@ -154,20 +176,20 @@ CONNECT.
 As WebTransport sessions are established over HTTP/2, they are identified
 using the `https` URI scheme {{!RFC7230}}.
 
-In order to create a new WebTransport session, a client can send an HTTP
-CONNECT request.  The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be
-set to `webtransport`.  The `:scheme` field MUST be `https`.  Both the
-`:authority` and the `:path` value MUST be set; those fields indicate the
-desired WebTransport server.  An `Origin` header {{!RFC6454}} MUST be provided
-within the request.
+In order to create a new WebTransport session, a client can send an HTTP CONNECT
+request.  The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
+`webtransport` (Section 7.1 [WEBTRANSPORT-H3]).  The `:scheme` field MUST be
+`https`.  Both the `:authority` and the `:path` value MUST be set; those fields
+indicate the desired WebTransport server.  An `Origin` header {{!RFC6454}} MUST
+be provided within the request.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
-`webtransport`, the HTTP/2 server can check if it has a WebTransport
-server associated with the specified `:authority` and `:path` values.  If it
-does not, it SHOULD reply with status code 404 (Section 6.5.4, {{!RFC7231}}).
-If it does, it MAY accept the session by replying with status code 200.
-The WebTransport server MUST verify the `Origin` header to ensure that the
-specified origin is allowed to access the server in question.
+`webtransport`, the HTTP/2 server can check if it
+has a WebTransport server associated with the specified `:authority` and `:path`
+values.  If it does not, it SHOULD reply with status code 404 (Section 6.5.4,
+{{!RFC7231}}).  If it does, it MAY accept the session by replying with status
+code 200.  The WebTransport server MUST verify the `Origin` header to ensure
+that the specified origin is allowed to access the server in question.
 
 From the client's perspective, a WebTransport session is established when the
 client receives a 200 response.  From the server's perspective, a session is
@@ -284,10 +306,7 @@ The WT_DATAGRAM frame define the following fields:
       frame payload after subtracting the length of the other fields
       that are present.
 
-The WT_DATAGRAM frame defines the following flags:
-
-   UNIDIRECTIONAL (0x1):  When set, the stream begins in the
-      "half-closed (remote)" state.
+The WT_DATAGRAM frame does not define any flags.
 
 The recipient MAY respond with a stream error of type WT_STREAM_ERROR if the
 specified WebTransport Connect Stream does not exist, is not a stream

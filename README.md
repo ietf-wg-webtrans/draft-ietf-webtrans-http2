@@ -1,10 +1,10 @@
 # WebTransport using HTTP/2
 
-This is the working area for the individual Internet-Draft, "WebTransport using HTTP/2".
+This is the working area for the IETF [WEBTRANS Working Group](https://datatracker.ietf.org/wg/webtrans/documents/) Internet-Draft, "WebTransport using HTTP/2".
 
-* [Editor's Copy](https://ekinnear.github.io/draft-webtransport-http2/#go.draft-kinnear-webtransport-http2.html)
-* [Individual Draft](https://tools.ietf.org/html/draft-kinnear-webtransport-http2)
-* [Compare Editor's Copy to Individual Draft](https://ekinnear.github.io/draft-webtransport-http2/#go.draft-kinnear-webtransport-http2.diff)
+* [Editor's Copy](https://ietf-wg-webtrans.github.io/draft-webtransport-http2/#go.draft-ietf-webtrans-http2.html)
+* [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-webtrans.github.io/draft-webtransport-http2/#go.draft-ietf-webtrans-http2.diff)
 
 ## Building the Draft
 
@@ -15,10 +15,10 @@ $ make
 ```
 
 This requires that you have the necessary software installed.  See
-[the instructions](https://github.com/martinthomson/i-d-template/blob/master/doc/SETUP.md).
+[the instructions](https://github.com/martinthomson/i-d-template/blob/main/doc/SETUP.md).
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/ekinnear/draft-webtransport-http2/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-webtrans/draft-webtransport-http2/blob/main/CONTRIBUTING.md).

@@ -1,7 +1,7 @@
 ---
 title: "WebTransport using HTTP/2"
 abbrev: "WebTransport-H2"
-docname: draft-kinnear-webtransport-http2-latest
+docname: draft-ietf-webtrans-http2-latest
 
 date: {DATE}
 category: std
@@ -87,7 +87,7 @@ Discussion of this draft takes place on the WebTransport mailing list
 \<https://mailarchive.ietf.org/arch/search/?email_list=webtransport\>.
 
 The repository tracking the issues for this draft can be found at
-\<https://github.com/ekinnear/draft-webtransport-http2/issues\>.  The
+\<https://github.com/ietf-wg-webtrans/draft-webtransport-http2\>.  The
 web API draft corresponding to this document can be found at
 \<https://w3c.github.io/webtransport/\>.
 

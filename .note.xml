@@ -1,7 +1,0 @@
-<note title="Discussion Venues" removeInRFC="true">
-<t>Discussion of this document takes place on the
-  WebTransport Working Group mailing list (webtransport@ietf.org),
-  which is archived at <eref target="https://mailarchive.ietf.org/arch/browse/webtransport/"/>.</t>
-<t>Source for this draft and an issue tracker can be found at
-  <eref target="https://github.com/ietf-wg-webtrans/draft-webtransport-http2"/>.</t>
-</note>

@@ -68,6 +68,7 @@ normative:
         ins: V. Vasiliev
         name: Victor Vasiliev
         organization: Google
+  HTTP: I-D.ietf-httpbis-semantics
 
 informative:
 
@@ -129,8 +130,8 @@ can be accessed via an HTTP/2 server.
 
 # Protocol Overview
 
-WebTransport servers are identified by a pair of authority value and
-path value (defined in {{!RFC3986}} Sections 3.2 and 3.3 correspondingly).
+WebTransport servers are identified by an HTTPS URI as defined in {{Section
+4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, both the client and server have to
 send a SETTINGS_ENABLE_WEBTRANSPORT setting in order to indicate that they

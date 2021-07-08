@@ -50,6 +50,7 @@ author:
 normative:
   OVERVIEW: I-D.ietf-webtrans-overview
   WEBTRANSPORT-H3: I-D.ietf-webtrans-http3
+  HTTP: I-D.ietf-httpbis-semantics
 
 informative:
 
@@ -65,13 +66,13 @@ within the same HTTP/2 connection.
 --- note_Note_to_Readers
 
 Discussion of this draft takes place on the WebTransport mailing list
-(webtransport@ietf.org), which is archived at
-\<https://mailarchive.ietf.org/arch/search/?email_list=webtransport\>.
+([webtransport@ietf.org](mailto:webtransport@ietf.org)), which is archived at
+[](https://mailarchive.ietf.org/arch/search/?email_list=webtransport).
 
 The repository tracking the issues for this draft can be found at
-\<https://github.com/ietf-wg-webtrans/draft-webtransport-http2\>.  The
+[](https://github.com/ietf-wg-webtrans/draft-webtransport-http2).  The
 web API draft corresponding to this document can be found at
-\<https://w3c.github.io/webtransport/\>.
+[](https://w3c.github.io/webtransport/).
 
 --- middle
 
@@ -111,8 +112,8 @@ can be accessed via an HTTP/2 server.
 
 # Protocol Overview
 
-WebTransport servers are identified by a pair of authority value and
-path value (defined in {{!RFC3986}} Sections 3.2 and 3.3 correspondingly).
+WebTransport servers are identified by an HTTPS URI as defined in {{Section
+4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, both the client and server have to
 send a SETTINGS_ENABLE_WEBTRANSPORT setting in order to indicate that they

@@ -48,26 +48,8 @@ author:
     email: woo@fb.com
 
 normative:
-  OVERVIEW:
-    title: "The WebTransport Protocol Framework"
-    date: {DATE}
-    seriesinfo:
-      Internet-Draft: draft-ietf-webtrans-overview-latest
-    author:
-      -
-        ins: V. Vasiliev
-        name: Victor Vasiliev
-        organization: Google
-  WEBTRANSPORT-H3:
-    title: "WebTransport over HTTP/3"
-    date: {DATE}
-    seriesinfo:
-      Internet-Draft: draft-ietf-webtrans-http3-latest
-    author:
-      -
-        ins: V. Vasiliev
-        name: Victor Vasiliev
-        organization: Google
+  OVERVIEW: I-D.ietf-webtrans-overview
+  WEBTRANSPORT-H3: I-D.ietf-webtrans-http3
   HTTP: I-D.ietf-httpbis-semantics
 
 informative:
@@ -122,7 +104,7 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
-This document follows terminology defined in Section 1.2 of [OVERVIEW].  Note
+This document follows terminology defined in {{Section 1.2 of OVERVIEW}}.  Note
 that this document distinguishes between a WebTransport server and an HTTP/2
 server.  An HTTP/2 server is the server that terminates HTTP/2 connections; a
 WebTransport server is an application that accepts WebTransport sessions, which
@@ -166,7 +148,7 @@ the parameter has been negotiated.
 
 ## Extended CONNECT in HTTP/2
 
-{{!RFC8441}} defines an extended CONNECT method in Section 4, enabled by the
+{{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
 SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint does not need to send
 both SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_ENABLE_WEBTRANSPORT; the
 SETTINGS_ENABLE_WEBTRANSPORT setting implies that an endpoint supports extended
@@ -179,7 +161,7 @@ using the `https` URI scheme {{!RFC7230}}.
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request.  The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
-`webtransport` (Section 7.1 [WEBTRANSPORT-H3]).  The `:scheme` field MUST be
+`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}).  The `:scheme` field MUST be
 `https`.  Both the `:authority` and the `:path` value MUST be set; those fields
 indicate the desired WebTransport server.  An `Origin` header {{!RFC6454}} MUST
 be provided within the request.
@@ -213,7 +195,7 @@ of incoming requests, it has alternative mechanisms at its disposal:
   limiting {{!RFC6585}}.  Unlike the previous method, this signal is directly
   propagated to the application.
 
-# WebTransport Features
+# WebTransport Features {#features}
 
 WebTransport over HTTP/2 provides the following features described in
 [OVERVIEW]: unidirectional streams, bidirectional streams and datagrams,

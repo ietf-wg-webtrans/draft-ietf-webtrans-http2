@@ -287,8 +287,8 @@ on a stream in the "open", or "half-closed (remote)" state.
 {: #fig-wt_rst_stream title="WT_RST_STREAM Frame Format"}
 
 The WT_RST_STREAM frame contains a single unsigned, 32-bit integer identifying
-the error code (Section 7).  The error code indicates why the stream is being
-abruptly terminated for writing.
+the error code.  The error code indicates why the stream is being abruptly
+terminated for writing.
 
 The WT_RST_STREAM frame does not define any flags.
 
@@ -339,8 +339,8 @@ on a stream in the "open", or "half-closed (local)" state.
 {: #fig-wt_stop_sending title="WT_STOP_SENDING Frame Format"}
 
 The WT_STOP_SENDING frame contains a single unsigned, 32-bit integer identifying
-the error code (Section 7).  The error code indicates why the reading the stream
-is being abanonded.
+the error code.  The error code indicates why the reading the stream is being
+abandoned.
 
 The WT_STOP_SENDING frame does not define any flags.
 
@@ -367,14 +367,14 @@ WT_STOP_SENDING frames MUST NOT be sent for a stream in any state other than
 "open" or "half-closed (local)".  It is possible to receive a WT_STOP_SENDING in
 another state however, because the sender might have closed or reset the stream
 while the WT_STOP_SENDING was in flight.  If a WT_STOP_SENDING frame identifying
-a stream that is already "closed" or "half-closed (local"), the recipient SHOULD
+a stream that is already "closed" or "half-closed (local)", the recipient SHOULD
 ignore the frame.
 
 It is also possible to receive DATA frames on a WebTransport stream in the
 "half-closed (remote)" or "closed" states if the stream transitioned there via
 WT_STOP_SENDING.  If a DATA frame is received on a WebTransport stream in one of
-these states, the recipient MUST ignore the frame and credit the frame length to
-the peer's connection flow control window.
+these states, the recipient MUST account for its contribution against the
+connection flow-control window and MUST NOT treat it as an error.
 
 A WT_STOP_SENDING frame with a length other than 4 octets MUST be treated as a
 connection error (Section 5.4.1) of type FRAME_SIZE_ERROR.

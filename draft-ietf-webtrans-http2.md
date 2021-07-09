@@ -252,6 +252,116 @@ exist, is not a stream established via extended CONNECT to use the
 "webtransport" protocol, or if it is in the "closed" or "half-closed (remote)"
 stream state.
 
+## WT_RST_STREAM Frame
+
+The RST_STREAM frame defined in HTTP/2 moves a stream to the "closed" state, but
+WebTransport streams can be reset unidirectionally, as in QUIC and HTTP/3.  A
+new HTTP/2 frame called WT_RST_STREAM is introduced for an endpoint to
+unidirectionally reset a stream for writing.  WT_RST_STREAM frames can be sent
+on a stream in the "open", or "half-closed (remote)" state.
+
+~~~
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++---------------------------------------------------------------+
+|                        Error Code (32)                        |
++---------------------------------------------------------------+
+~~~
+{: #fig-wt_rst_stream title="WT_RST_STREAM Frame Format"}
+
+The WT_RST_STREAM frame contains a single unsigned, 32-bit integer identifying
+the error code.  The error code indicates why the stream is being abruptly
+terminated for writing.
+
+The WT_RST_STREAM frame does not define any flags.
+
+The WT_RST_STREAM frame half-closes the referenced stream and effects the same
+state machine transitions as sending or receiving the END_STREAM flag.  If the
+sender is in the "open" state, it transitions to "half-closed (local)".  If the
+sender is in the "half-closed (remote)" state, it transitions to "closed".  If
+the receiver is in the "open" state, it transitions to "half-closed (remote)".
+If the receiver is in the "half-closed (local)" state, it transitions to
+"closed".
+
+After sending a WT_RST_STREAM on a stream, the sender MUST NOT send additional
+DATA frames for that stream.  If another frame is received on a stream after
+receiving a WT_RST_STREAM, the recipient MUST treat this as a connection error
+of type PROTOCOL_ERROR.
+
+WT_RST_STREAM frames MUST be associated with a WebTransport stream.  If a
+WT_RST_STREAM frame is received with a stream identifier of 0x0, or a request or
+push stream, the recipient MUST treat this as a connection error of type
+PROTOCOL_ERROR.
+
+WT_RST_STREAM frames MUST NOT be sent for a stream in any state other than
+"open" or "half-closed (remote)".  If a WT_RST_STREAM frame identifying a stream
+in the "idle", "reserved (local)", "reserved (remote)" state is received, the
+recipient MUST treat this as a connection error (Section 5.4.1) of type
+PROTOCOL_ERROR.  Because of race conditions with WT_STOP_SENDING, it is possible
+to receive a WT_RST_STREAM in the "half-closed (remote)" or "closed" state.  The
+recipient should ignore the frame in this case.
+
+A WT_RST_STREAM frame with a length other than 4 octets MUST be treated as a
+connection error (Section 5.4.1) of type FRAME_SIZE_ERROR.
+
+## WT_STOP_SENDING Frame
+
+The RST_STREAM frame defined in HTTP/2 moves a stream to the "closed" state, but
+WebTransport streams can be reset unidirectionally, as in QUIC and HTTP/3.  A
+new HTTP/2 frame called WT_STOP_SENDING is introduced for an endpoint to
+unidirectionally reset a stream for reading.  WT_STOP_SENDING frames can be sent
+on a stream in the "open", or "half-closed (local)" state.
+
+~~~
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++---------------------------------------------------------------+
+|                        Error Code (32)                        |
++---------------------------------------------------------------+
+~~~
+{: #fig-wt_stop_sending title="WT_STOP_SENDING Frame Format"}
+
+The WT_STOP_SENDING frame contains a single unsigned, 32-bit integer identifying
+the error code.  The error code indicates why the reading the stream is being
+abandoned.
+
+The WT_STOP_SENDING frame does not define any flags.
+
+The WT_STOP_SENDING frame half-closes the referenced stream and effects the same
+state machine transitions as sending or receiving the END_STREAM flag.  If the
+sender is in the open state, it transitions to "half-closed (remote)".  If the
+sender is in the "half-closed (local)" state, it transitions to "closed".  If
+the receiver is in the "open" state, it transitions to "half-closed (local)".
+If the receiver is in the "half-closed (remote)" state, it transitions to
+"closed".
+
+After receiving a WT_STOP_SENDING on a stream, the sender MUST NOT send
+additional frames for that stream.  After sending the WT_STOP_SENDING, the
+sending endpoint MUST be prepared to receive and handle additional frames sent
+on the stream that might have been sent by the peer prior to the arrival of the
+WT_STOP_SENDING.
+
+WT_STOP_SENDING frames MUST be associated with a WebTransport stream.  If a
+WT_STOP_SENDING frame is received with a stream identifier of 0x0, or a request
+or push stream, the recipient MUST treat this as a connection error of type
+PROTOCOL_ERROR.
+
+WT_STOP_SENDING frames MUST NOT be sent for a stream in any state other than
+"open" or "half-closed (local)".  It is possible to receive a WT_STOP_SENDING in
+another state however, because the sender might have closed or reset the stream
+while the WT_STOP_SENDING was in flight.  If a WT_STOP_SENDING frame identifying
+a stream that is already "closed" or "half-closed (local)", the recipient SHOULD
+ignore the frame.
+
+It is also possible to receive DATA frames on a WebTransport stream in the
+"half-closed (remote)" or "closed" states if the stream transitioned there via
+WT_STOP_SENDING.  If a DATA frame is received on a WebTransport stream in one of
+these states, the recipient MUST account for its contribution against the
+connection flow-control window and MUST NOT treat it as an error.
+
+A WT_STOP_SENDING frame with a length other than 4 octets MUST be treated as a
+connection error (Section 5.4.1) of type FRAME_SIZE_ERROR.
+
 ## WT_DATAGRAM Frame
 
 A new HTTP/2 frame called WT_DATAGRAM is introduced for either endpoint to
@@ -410,6 +520,36 @@ Code:
 Frame Type:
 
 : WEBTRANSPORT_STREAM
+
+Specification:
+
+: This document
+
+The `WT_RST_STREAM` frame allows HTTP/2 WebTransport streams to be
+unidirectionally reset for writing:
+
+Code:
+
+: 0xTBD
+
+Frame Type:
+
+: WEBTRANSPORT_RST_STREAM
+
+Specification:
+
+: This document
+
+The `WT_STOP_SENDING` frame allows HTTP/2 WebTransport streams to be
+unidirectionally reset for reading:
+
+Code:
+
+: 0xTBD
+
+Frame Type:
+
+: WEBTRANSPORT_STOP_SENDING
 
 Specification:
 

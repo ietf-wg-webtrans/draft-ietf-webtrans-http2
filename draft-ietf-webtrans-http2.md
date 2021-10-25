@@ -214,11 +214,12 @@ WebTransport frames on a given session before that session is established.
 
 ## Limiting the Number of Simultaneous Sessions
 
-From a flow control perspective, WebTransport sessions count against the stream
-flow control just like regular HTTP requests, since they are established via an
-HTTP CONNECT request. This document does not make any effort to introduce a
-separate flow control mechanism for sessions. If the server needs to limit the
-rate of incoming requests, it has alternative mechanisms at its disposal:
+From a flow control perspective, WebTransport sessions count against HTTP/2
+session flow control limits just like regular HTTP requests, since they are
+established via an HTTP CONNECT request. This document does not make any effort
+to introduce a separate flow control mechanism for WebTransport sessions. If
+the server needs to limit the rate of incoming requests, it has alternative
+mechanisms at its disposal:
 
 * `HTTP_STREAM_REFUSED` error code defined in [RFC7540] indicates to the
   receiving HTTP/2 stack that the request was not processed in any way.
@@ -296,11 +297,6 @@ document, this means a single-byte encoding, even though it is possible to
 encode these values as a two-, four-, or eight-byte variable-length integer.
 
 ## WT_PADDING Frames
-
-A WebTransport frame called WT_STREAM is introduced for either endpoint to
-establish WebTransport streams. WT_STREAM frames can be sent on a stream in
-the
-"idle", "reserved (local)", "open", or "half-closed (remote)" state.
 
 A WT_PADDING frame (type=0x00) has no semantic value. PADDING frames can be used
 to introduce additional data between other WebTransport frames and can also be
@@ -403,7 +399,7 @@ WT_STREAM Frame {
 ## WT_MAX_DATA Frames
 
 A WebTransport frame called WT_MAX_DATA is introduced to inform the peer of the
-maximum amount of data that can be sent on the WebTransport connection as a
+maximum amount of data that can be sent on the WebTransport session as a
 whole.
 
 ~~~
@@ -485,7 +481,7 @@ that are open.
 ## WT_DATA_BLOCKED Frames
 
 A sender SHOULD send a WT_DATA_BLOCKED frame (type=0x14) when it wishes to send
-data but is unable to do so due to WebTransport connection-level flow control.
+data but is unable to do so due to WebTransport session-level flow control.
 WT_DATA_BLOCKED frames can be used as input to tuning of flow control
 algorithms.
 
@@ -500,7 +496,7 @@ WT_DATA_BLOCKED Frame {
 
 WT_DATA_BLOCKED frames contain the following field:
 
-   Maximum Data: A variable-length integer indicating the connection-level limit
+   Maximum Data: A variable-length integer indicating the session-level limit
    at which blocking occurred.
 
 ## WT_STREAM_DATA_BLOCKED Frames

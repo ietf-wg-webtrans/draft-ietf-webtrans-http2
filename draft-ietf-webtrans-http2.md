@@ -140,30 +140,34 @@ When an HTTP/2 connection is established, both the client and server have to
 send a SETTINGS_ENABLE_WEBTRANSPORT setting in order to indicate that they
 both support WebTransport over HTTP/2.
 
-WebTransport sessions are initiated inside a given HTTP/2 connection by the
-client, who sends an extended CONNECT request {{!RFC8441}}. If the server
-accepts the request, an WebTransport session is established. The resulting
-stream will be further referred to as a *CONNECT stream*, and its stream ID is
-used to uniquely identify a given WebTransport session within the connection.
-The ID of the CONNECT stream that established a given WebTransport session will
-be further referred to as a *Session ID*.
+A client initiates a WebTransport session by sending an extended CONNECT request
+{{!RFC8441}}. If the server accepts the request, a WebTransport session is
+established. The stream that carries the CONNECT request is used to exchange
+bidirectional data for the session.  This stream will be referred to as a
+*CONNECT stream*.  The stream ID of a CONNECT stream, which will be referrred to
+as a *Session ID*, is used to uniquely identify a given WebTransport session
+within the connection.
 
-After the session is established, the peers can utilitze the bidirectional
-bytestream established by the extended CONNECT request to exchange WebTransport
-frames that multiplex flows of WebTransport data as *WebTransport streams*.
-These frames closely mirror a subset of QUIC frames and provide the essential
-WebTransport features, such as:
+After the session is established, endpoints exchange *WebTransport frames* using
+the bidirectional CONNECT stream. Within this stream, *WebTransport streams* and
+*WebTransport datagrams* are multiplexed.  In HTTP/2, WebTransport frames are
+carried in HTTP/2 DATA frames.  Multiple independent WebTransport sessions can
+share a connection if the HTTP version supports that, as HTTP/2 does.
+
+WebTransport frames closely mirror a subset of QUIC frames and provide the
+essential WebTransport features, such as:
 
 * Both client and server can create a bidirectional or unidirectional
   WebTransport stream within the WebTransport session using a WT_STREAM frame.
 * A datagram can be sent using a WT_DATAGRAM frame.
 
-Data flow on these streams is controlled via a flow control mechanism very
-similar to the one provided by QUIC using WT_MAX_DATA, WT_MAX_STREAM_DATA,
-WT_MAX_STREAMS, WT_DATA_BLOCKED, WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED
-frames.
+Data flow on the streams created within a WebTransport session is flow
+controlled.  This uses a flow control mechanism modeled on the one in QUIC using
+WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS, WT_DATA_BLOCKED,
+WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED frames. Flow control for the
+CONNECT stream, as provided by HTTP/2, also applies.
 
-WebTransport streams can be closed via a WT_RESET_STREAM frame and a receiver
+WebTransport streams can be aborted using a WT_RESET_STREAM frame and a receiver
 can request that a sender stop sending with a WT_STOP_SENDING frame.
 
 A WebTransport session is terminated when the CONNECT stream that created it is

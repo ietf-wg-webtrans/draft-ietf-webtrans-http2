@@ -61,14 +61,11 @@ informative:
 
 --- abstract
 
-WebTransport [OVERVIEW] is a protocol framework that enables clients constrained
-by the Web security model to communicate with a remote server using a secure
-multiplexed transport. This document describes a WebTransport protocol that
-uses HTTP semantics to provide support for unidirectional streams,
-bidirectional streams, and datagrams. This protocol can be used with any HTTP
-version, however this document focuses on TCP-based HTTP versions, specifically
-providing examples of these capabilities when multiplexed within the same
-HTTP/2 [RFC7540] connection.
+WebTransport defines a set of low-level communications features designed for
+client-server interactions that are initiated by Web clients.  This document
+describes a protocol that can provide all of the capabilities of WebTransport
+over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
+protocol is not available.
 
 --- note_Note_to_Readers
 
@@ -85,38 +82,21 @@ draft corresponding to this document can be found at[]
 
 # Introduction
 
-This protocol satisfies the WebTransport protocol framework's requirements using
-HTTP semantics to provide support for unidirectional streams, bidirectional
-streams, and datagrams.
+WebTransport {{OVERVIEW}} is designed to provide generic communication
+capabilities to Web clients that use HTTP/3 {{?HTTP3=I-D.ietf-quic-http}}.  The
+HTTP/3 WebTransport protocol {{?WTH3}} allows Web clients to use QUIC
+{{?QUIC=RFC9000}} features such as streams or datagrams
+{{?DATAGRAM=I-D.ietf-quic-datagram}}.  However, there are some environments
+where QUIC cannot be deployed.
 
-By using HTTP semantics, this protocol allows deployment using any HTTP version,
-although this document in particular focuses on HTTP/2 as the current most
-common TCP-based fallback to HTTP/3 running over QUIC {{?RFC9000}}.
+This document defines a protocol that provides all of the core functions of
+WebTransport using HTTP semantics. This includes unidirectional streams,
+bidirectional streams, and datagrams.
 
-Currently, the only mechanism in HTTP/2 for server to client communication is
-server push. That is, servers can initiate unidirectional push promised streams
-to clients, but clients cannot respond to them; they can only accept them or
-discard them. Additionally, intermediaries along the path may have different
-server push policies and may not forward push promised streams to the downstream
-client. This best effort mechanism is not sufficient to reliably deliver
-messages from servers to clients, limiting server to client use-cases such as
-chat messages or notifications.
-
-Several techniques have been developed to workaround these limitations: long
-polling {{?RFC6202}}, WebSocket {{?RFC8441}}, and tunneling using the CONNECT
-method. All of these approaches have limitations.
-
-This document defines a mechanism for establishing bidirectional communication
-using HTTP semantics in a manner that conforms with the WebTransport protocol
-requirements and semantics [OVERVIEW]. When running with HTTP/2, multiple
-WebTransport instances can be multiplexed simultaneously with regular HTTP
-traffic on the same HTTP/2 connection.
-
-It is important to note that, while it is possible to have the WebTransport
-session remain entirely "self contained" within a given HTTP flow, certain HTTP
-versions may provide native features, such as datagram support, which can allow
-for a better performing implementation of the WebTransport client's
-requirements.
+By relying only on generic HTTP semantics, this protocol might allows deployment
+using any HTTP version.  However, this document only defines negotiation for
+HTTP/2 {{!H2=I-D.ietf-httpbis-http2bis}} as the current most common TCP-based
+fallback to HTTP/3.
 
 ## Terminology
 
@@ -129,7 +109,7 @@ This document follows terminology defined in {{Section 1.2 of OVERVIEW}}. Note
 that this document distinguishes between a WebTransport server and an HTTP/2
 server. An HTTP/2 server is the server that terminates HTTP/2 connections; a
 WebTransport server is an application that accepts WebTransport sessions, which
-can be accessed via an HTTP/2 server.
+can be accessed using HTTP/2 and this protocol.
 
 # Protocol Overview
 

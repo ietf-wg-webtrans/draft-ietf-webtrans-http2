@@ -93,7 +93,7 @@ This document defines a protocol that provides all of the core functions of
 WebTransport using HTTP semantics. This includes unidirectional streams,
 bidirectional streams, and datagrams.
 
-By relying only on generic HTTP semantics, this protocol might allows deployment
+By relying only on generic HTTP semantics, this protocol might allow deployment
 using any HTTP version.  However, this document only defines negotiation for
 HTTP/2 {{!H2=I-D.ietf-httpbis-http2bis}} as the current most common TCP-based
 fallback to HTTP/3.

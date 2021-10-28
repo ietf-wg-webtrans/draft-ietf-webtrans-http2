@@ -84,7 +84,7 @@ draft corresponding to this document can be found at[]
 
 WebTransport {{OVERVIEW}} is designed to provide generic communication
 capabilities to Web clients that use HTTP/3 {{?HTTP3=I-D.ietf-quic-http}}.  The
-HTTP/3 WebTransport protocol {{?WTH3}} allows Web clients to use QUIC
+HTTP/3 WebTransport protocol {{WEBTRANSPORT-H3}} allows Web clients to use QUIC
 {{?QUIC=RFC9000}} features such as streams or datagrams
 {{?DATAGRAM=I-D.ietf-quic-datagram}}.  However, there are some environments
 where QUIC cannot be deployed.

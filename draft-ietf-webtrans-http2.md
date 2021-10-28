@@ -76,10 +76,10 @@ Discussion of this draft takes place on the WebTransport mailing list
 ([webtransport@ietf.org](mailto:webtransport@ietf.org)), which is archived at
 [](https://mailarchive.ietf.org/arch/search/?email_list=webtransport).
 
-The repository tracking the issues for this draft can be found at[]
-(https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
-draft corresponding to this document can be found at[]
-(https://w3c.github.io/webtransport/).
+The repository tracking the issues for this draft can be found at
+[](https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
+draft corresponding to this document can be found at
+[](https://w3c.github.io/webtransport/).
 
 --- middle
 

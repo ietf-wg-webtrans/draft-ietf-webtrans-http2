@@ -155,20 +155,28 @@ carried in HTTP/2 DATA frames.  Multiple independent WebTransport sessions can
 share a connection if the HTTP version supports that, as HTTP/2 does.
 
 WebTransport frames closely mirror a subset of QUIC frames and provide the
-essential WebTransport features, such as:
+essential WebTransport features.  Within a WebTransport session, endpoints can
 
-* Both client and server can create a bidirectional or unidirectional
-  WebTransport stream within the WebTransport session using a WT_STREAM frame.
-* A datagram can be sent using a WT_DATAGRAM frame.
+* create and use bidirectional or unidirectional streams with no additional
+  latency using [WT_STREAM](#wtstream-frames){format="none"} frames
 
-Data flow on the streams created within a WebTransport session is flow
-controlled.  This uses a flow control mechanism modeled on the one in QUIC using
-WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS, WT_DATA_BLOCKED,
-WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED frames. Flow control for the
-CONNECT stream, as provided by HTTP/2, also applies.
+* send datagrams using [WT_DATAGRAM](#wtdatagram-frames){:format="none"} frames
 
-WebTransport streams can be aborted using a WT_RESET_STREAM frame and a receiver
-can request that a sender stop sending with a WT_STOP_SENDING frame.
+Stream creation and data flow on streams uses flow control mechanisms modeled on
+those in QUIC. Flow control is managed using the WebTransport frames:
+[WT_MAX_DATA](#wtmaxdata-frames){:format="none"},
+[WT_MAX_STREAM_DATA](#wtmaxstreamdata-frames){:format="none"},
+[WT_MAX_STREAMS](#wtmaxstreams-frames){:format="none"},
+[WT_DATA_BLOCKED](#wtdatablocked-frames){:format="none"},
+[WT_STREAM_DATA_BLOCKED](#wtstreamdatablocked-frames){:format="none"}, and
+[WT_STREAMS_BLOCKED](#wtstreamsblocked-frames){:format="none"}. Flow control for
+the CONNECT stream as a whole, as provided by the HTTP version in use, applies
+in addition to any WebTransport-session-level flow control.
+
+WebTransport streams can be aborted using a
+[WT_RESET_STREAM](#wtresetstream-frames){:format="none"} frame and a receiver
+can request that a sender stop sending with a
+[WT_STOP_SENDING](#wtstopsending-frames){:format="none"} frame.
 
 A WebTransport session is terminated when the CONNECT stream that created it is
 closed. This implicitly closes all WebTransport streams that were
@@ -424,7 +432,7 @@ All data sent in WT_STREAM frames counts toward this limit. The sum of the final
 sizes on all streams, including streams in terminal states, MUST NOT exceed the
 value advertised by a receiver.
 
-## MAX_STREAM_DATA Frames
+## WT_MAX_STREAM_DATA Frames
 
 A WebTransport frame called WT_MAX_STREAM_DATA is introduced to inform a peer of
 the maximum amount of data that can be sent on a stream.

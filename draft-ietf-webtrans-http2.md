@@ -381,8 +381,8 @@ WT_STREAM frames carry stream data.
 The Type field in the WT_STREAM frame is either 0x0a or 0x0b.  This uses the
 same frame types as a QUIC STREAM frame with the OFF bit clear and the LEN bit
 set.  The FIN bit (0x01) in the frame type indicates that the frame marks the
-end of the stream.  Stream data consists of any number of 0x0a frames followed
-by a terminal 0x0b frame.
+end of the stream in one direction.  Stream data consists of any number of 0x0a
+frames followed by a terminal 0x0b frame.
 
 ~~~
 WT_STREAM Frame {

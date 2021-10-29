@@ -311,7 +311,9 @@ WT_PADDING Frame {
 ~~~
 {: #fig-wt_padding title="WT_PADDING Frame Format"}
 
-The Padding field MUST be set to an all-zero sequence of bytes of any length.
+The Padding field MUST be set to an all-zero sequence of bytes of any length as
+specified by the Length field.
+<!-- TODO validation and error handling -->
 
 ## WT_RESET_STREAM Frames
 

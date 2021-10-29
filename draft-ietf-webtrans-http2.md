@@ -401,7 +401,7 @@ Stream ID:
 Stream Data:
 : Zero or more bytes of data for the stream.  Empty WT_STREAM frames MUST NOT be
 used unless they open or close a stream; an endpoint MAY treat an empty
-WT_STREAM frame as a session error.
+WT_STREAM frame that neither starts nor ends a stream as a session error.
 
 ## WT_MAX_DATA Frames
 

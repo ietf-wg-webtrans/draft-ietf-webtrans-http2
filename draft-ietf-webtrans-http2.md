@@ -416,9 +416,9 @@ WT_MAX_DATA frames contain the following field:
    Maximum Data: A variable-length integer indicating the maximum amount of data
    that can be sent on the entire connection, in units of bytes.
 
-All data sent in WT_STREAM frames counts toward this limit. The sum of the final
-sizes on all streams, including streams in terminal states, MUST NOT exceed the
-value advertised by a receiver.
+All data sent in WT_STREAM frames counts toward this limit. The sum of the
+lengths of Stream Data fields in WT_STREAM frames MUST NOT exceed the value
+advertised by a receiver.
 
 ## MAX_STREAM_DATA Frames
 

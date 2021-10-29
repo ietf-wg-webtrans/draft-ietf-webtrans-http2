@@ -581,6 +581,85 @@ at most one packet. Because of that, the applications have to know the maximum
 size of the datagram they can send. However, when proxying the datagrams, the
 hop-by-hop MTUs can vary.
 
+# Examples
+
+An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
+This example is intended to closely follow the example in Section 5.1 of
+{{!RFC8441}} to help illustrate the differences defined in this document.
+
+~~~
+[[ From Client ]]                   [[ From Server ]]
+
+SETTINGS
+SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+                                    SETTINGS
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+HEADERS + END_HEADERS
+Stream ID = 3
+:method = CONNECT
+:protocol = webtransport
+:scheme = https
+:path = /
+:authority = server.example.com
+origin: server.example.com
+
+                                    HEADERS + END_HEADERS
+                                    Stream ID = 3
+                                    :status = 200
+
+WT_STREAM
+Stream ID = 5
+WebTransport Data
+
+                                    WT_STREAM + FIN
+                                    Stream ID = 5
+                                    WebTransport Data
+
+WT_STREAM + FIN
+Stream ID = 5
+WebTransport Data
+~~~
+
+An example of the server initiating a WebTransport Stream follows. The only
+difference here is the endpoint that sends the first WT_STREAM frame.
+
+~~~
+[[ From Client ]]                   [[ From Server ]]
+
+SETTINGS
+SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+                                    SETTINGS
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+HEADERS + END_HEADERS
+Stream ID = 3
+:method = CONNECT
+:protocol = webtransport
+:scheme = https
+:path = /
+:authority = server.example.com
+origin: server.example.com
+                                    HEADERS + END_HEADERS
+                                    Stream ID = 3
+                                    :status = 200
+
+                                    WT_STREAM
+                                    Stream ID = 2
+                                    WebTransport Data
+
+WT_STREAM + FIN
+Stream ID = 2
+WebTransport Data
+
+                                    WT_STREAM + FIN
+                                    Stream ID = 2
+                                    WebTransport Data
+~~~
+
+
 # Session Termination
 
 An WebTransport session over HTTP/2 is terminated when either endpoint closes
@@ -670,83 +749,6 @@ Specification:
 
 : This document
 
-## Examples
-
-An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
-This example is intended to closely follow the example in Section 5.1 of
-{{!RFC8441}} to help illustrate the differences defined in this document.
-
-~~~
-[[ From Client ]]                   [[ From Server ]]
-
-SETTINGS
-SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-                                    SETTINGS
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-HEADERS + END_HEADERS
-Stream ID = 3
-:method = CONNECT
-:protocol = webtransport
-:scheme = https
-:path = /
-:authority = server.example.com
-origin: server.example.com
-
-                                    HEADERS + END_HEADERS
-                                    Stream ID = 3
-                                    :status = 200
-
-WT_STREAM
-Stream ID = 5
-WebTransport Data
-
-                                    WT_STREAM + FIN
-                                    Stream ID = 5
-                                    WebTransport Data
-
-WT_STREAM + FIN
-Stream ID = 5
-WebTransport Data
-~~~
-
-An example of the server initiating a WebTransport Stream follows. The only
-difference here is the endpoint that sends the first WT_STREAM frame.
-
-~~~
-[[ From Client ]]                   [[ From Server ]]
-
-SETTINGS
-SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-                                    SETTINGS
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-HEADERS + END_HEADERS
-Stream ID = 3
-:method = CONNECT
-:protocol = webtransport
-:scheme = https
-:path = /
-:authority = server.example.com
-origin: server.example.com
-                                    HEADERS + END_HEADERS
-                                    Stream ID = 3
-                                    :status = 200
-
-                                    WT_STREAM
-                                    Stream ID = 2
-                                    WebTransport Data
-
-WT_STREAM + FIN
-Stream ID = 2
-WebTransport Data
-
-                                    WT_STREAM + FIN
-                                    Stream ID = 2
-                                    WebTransport Data
-~~~
 
 
 --- back

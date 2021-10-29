@@ -345,7 +345,7 @@ The WT_RESET_STREAM frame defines the following fields:
    closed.
 
 Unlike the equivalent QUIC frame, this frame does not include a Final Size
-field.  In order delivery of WT_STREAM frames ensures that the amount of
+field.  In-order delivery of WT_STREAM frames ensures that the amount of
 session-level flow control consumed by a stream is always known by both
 endpoints.
 

@@ -306,12 +306,12 @@ used to provide protection against traffic analysis or for other reasons.
 WT_PADDING Frame {
   Type (i) = 0x00,
   Length (i),
+  Padding (..),
 }
 ~~~
 {: #fig-wt_padding title="WT_PADDING Frame Format"}
 
-The padding extends to the end of the WT_PADDING frame and that many bytes can
-be discarded by the recipient.
+The Padding field MUST be set to an all-zero sequence of bytes of any length.
 
 ## WT_RESET_STREAM Frames
 

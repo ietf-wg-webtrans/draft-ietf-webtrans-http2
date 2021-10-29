@@ -419,7 +419,8 @@ WT_MAX_DATA Frame {
 
 WT_MAX_DATA frames contain the following field:
 
-   Maximum Data: A variable-length integer indicating the maximum amount of data
+   Maximum Data:
+   : A variable-length integer indicating the maximum amount of data
    that can be sent on the entire connection, in units of bytes.
 
 All data sent in WT_STREAM frames counts toward this limit. The sum of the
@@ -443,10 +444,12 @@ WT_MAX_STREAM_DATA Frame {
 
 WT_MAX_STREAM_DATA frames contain the following fields:
 
-   Stream ID: The stream ID of the affected WebTransport stream, encoded as a
+   Stream ID:
+   : The stream ID of the affected WebTransport stream, encoded as a
    variable-length integer.
 
-   Maximum Stream Data: A variable-length integer indicating the maximum amount
+   Maximum Stream Data:
+   : A variable-length integer indicating the maximum amount
    of data that can be sent on the identified stream, in units of bytes.
 
 All data sent in WT_STREAM frames for the identified stream counts toward this

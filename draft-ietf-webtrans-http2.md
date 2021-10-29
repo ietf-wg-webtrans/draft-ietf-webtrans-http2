@@ -339,10 +339,12 @@ WT_RESET_STREAM Frame {
 
 The WT_RESET_STREAM frame defines the following fields:
 
-   Stream ID: A variable-length integer encoding of the WebTransport stream ID
+   Stream ID:
+   : A variable-length integer encoding of the WebTransport stream ID
    of the stream being terminated.
 
-   Application Protocol Error Code: A variable-length integer containing the
+   Application Protocol Error Code:
+   : A variable-length integer containing the
    application protocol error code that indicates why the stream is being
    closed.
 
@@ -368,10 +370,12 @@ WT_STOP_SENDING Frame {
 
 The WT_STOP_SENDING frame defines the following fields:
 
-   Stream ID: A variable-length integer carrying the WebTransport stream ID of
+   Stream ID:
+   : A variable-length integer carrying the WebTransport stream ID of
    the stream being ignored.
 
-   Application Protocol Error Code: A variable-length integer containing the
+   Application Protocol Error Code:
+   : A variable-length integer containing the
    application-specified reason the sender is ignoring the stream.
 
 
@@ -390,7 +394,8 @@ of the Stream ID.
 
 ~~~
 WT_STREAM Frame {
-  Type (i) = 0x08..0x0f,
+  Type (i) = 0x0a..0x0b,
+  Length (i),
   Stream ID (i),
   Stream Data (..),
 }

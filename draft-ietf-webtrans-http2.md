@@ -252,12 +252,10 @@ DATAGRAM frames are delivered to the remote WebTransport endpoint reliably,
 however this does not require that the receiving implementation deliver that
 data to the application in a reliable manner.
 
-# WebTransport Protocol Details
-
 ## WebTransport Stream States
 
 WebTransport streams have states that mirror the states of QUIC streams
-(Section 3 of {{!RFC9000}}) as closely as possible to aid in ease of
+({{Section 3 of !RFC9000}}) as closely as possible to aid in ease of
 implementation.
 
 Because WebTransport does not provide an acknowledgement mechanism for

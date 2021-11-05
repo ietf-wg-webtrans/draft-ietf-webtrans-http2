@@ -201,12 +201,12 @@ include an `Origin` header field {{!ORIGIN=RFC6454}} that includes the origin of
 the site that requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
-`webtransport`, the HTTP server can check if it has a WebTransport server
-associated with the specified `:authority` and `:path` values. If it does not,
-it SHOULD reply with status code 404 (Section 6.5.4,{{!RFC7231}}). If it does,
-it MAY accept the session by replying with status code 200. The WebTransport
-server MUST verify the `Origin` header to ensure that the specified origin is
-allowed to access the server in question.
+`webtransport`, the HTTP server checks if the identified resource supports
+WebTransport sessions. If the resource does not, the server SHOULD reply with status
+code 404 ({{Section 6.5.4 of !RFC7231}}). To accept a WebTransport session the
+server replies with 2xx status code. Before accepting a session, a server MUST
+ensure that it authorizes use of the session by the site identified in the
+`Origin` header.
 
 From the client's perspective, a WebTransport session is established when the
 client receives a 200 response. From the server's perspective, a session is

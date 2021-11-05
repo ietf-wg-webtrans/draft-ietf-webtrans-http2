@@ -158,25 +158,17 @@ WebTransport frames closely mirror a subset of QUIC frames and provide the
 essential WebTransport features.  Within a WebTransport session, endpoints can
 
 * create and use bidirectional or unidirectional streams with no additional
-  round trips using [WT_STREAM](#wtstream-frames){format="none"} frames
-
-* send datagrams using [WT_DATAGRAM](#wtdatagram-frames){:format="none"} frames
+  round trips using WT_STREAM frames
 
 Stream creation and data flow on streams uses flow control mechanisms modeled on
 those in QUIC. Flow control is managed using the WebTransport frames:
-[WT_MAX_DATA](#wtmaxdata-frames){:format="none"},
-[WT_MAX_STREAM_DATA](#wtmaxstreamdata-frames){:format="none"},
-[WT_MAX_STREAMS](#wtmaxstreams-frames){:format="none"},
-[WT_DATA_BLOCKED](#wtdatablocked-frames){:format="none"},
-[WT_STREAM_DATA_BLOCKED](#wtstreamdatablocked-frames){:format="none"}, and
-[WT_STREAMS_BLOCKED](#wtstreamsblocked-frames){:format="none"}. Flow control for
-the CONNECT stream as a whole, as provided by the HTTP version in use, applies
-in addition to any WebTransport-session-level flow control.
+WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS, WT_DATA_BLOCKED,
+WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED. Flow control for the CONNECT
+stream as a whole, as provided by the HTTP version in use, applies in addition
+to any WebTransport-session-level flow control.
 
-WebTransport streams can be aborted using a
-[WT_RESET_STREAM](#wtresetstream-frames){:format="none"} frame and a receiver
-can request that a sender stop sending with a
-[WT_STOP_SENDING](#wtstopsending-frames){:format="none"} frame.
+WebTransport streams can be aborted using a WT_RESET_STREAM frame and a receiver
+can request that a sender stop sending with a WT_STOP_SENDING frame.
 
 A WebTransport session is terminated when the CONNECT stream that created it is
 closed. This implicitly closes all WebTransport streams that were
@@ -308,7 +300,9 @@ shortest possible encoding. For example, for the frame types defined in this
 document, this means a single-byte encoding, even though it is possible to
 encode these values as a two-, four-, or eight-byte variable-length integer.
 
-## WT_PADDING Frames
+## WT_PADDING Frames {#WT_PADDING}
+
+*[WT_PADDING]: #WT_PADDING
 
 A WT_PADDING frame (type=0x00) has no semantic value. PADDING frames can be used
 to introduce additional data between other WebTransport frames and can also be
@@ -325,7 +319,9 @@ WT_PADDING Frame {
 The padding extends to the end of the WT_PADDING frame and that many bytes can
 be discarded by the recipient.
 
-## WT_RESET_STREAM Frames
+## WT_RESET_STREAM Frames {#WT_RESET_STREAM}
+
+*[WT_RESET_STREAM]: #
 
 A WebTransport frame called WT_RESET_STREAM is introduced for either endpoint to
 abruptly terminate the sending part of a WebTransport stream.
@@ -361,7 +357,9 @@ The WT_RESET_STREAM frame defines the following fields:
    by the WT_RESET_STREAM sender, in units of bytes. This is the amount of flow
    control credit that is consumed by a stream, see Section 4.5 of {{!RFC9000}}.
 
-## WT_STOP_SENDING Frames
+## WT_STOP_SENDING Frames {#WT_STOP_SENDING}
+
+*[WT_STOP_SENDING]: #
 
 A WebTransport frame called WT_STOP_SENDING is introduced to communicate that
 incoming data is being discarded on receipt per application request.
@@ -386,7 +384,9 @@ The WT_STOP_SENDING frame defines the following fields:
    application-specified reason the sender is ignoring the stream.
 
 
-## WT_STREAM Frames
+## WT_STREAM Frames {#WT_STREAM}
+
+*[WT_STREAM]: #
 
 WT_STREAM frames implicitly create a stream and carry stream data. The Type
 field in the WT_STREAM frame takes the form 0b00001XXX (or the set of values
@@ -408,7 +408,9 @@ WT_STREAM Frame {
 ~~~
 {: #fig-wt_stream title="WT_STREAM Frame Format"}
 
-## WT_MAX_DATA Frames
+## WT_MAX_DATA Frames {#WT_MAX_DATA}
+
+*[WT_MAX_DATA]: #
 
 A WebTransport frame called WT_MAX_DATA is introduced to inform the peer of the
 maximum amount of data that can be sent on the WebTransport session as a
@@ -432,7 +434,9 @@ All data sent in WT_STREAM frames counts toward this limit. The sum of the final
 sizes on all streams, including streams in terminal states, MUST NOT exceed the
 value advertised by a receiver.
 
-## WT_MAX_STREAM_DATA Frames
+## WT_MAX_STREAM_DATA Frames {#WT_MAX_STREAM_DATA}
+
+*[WT_MAX_STREAM_DATA]: #
 
 A WebTransport frame called WT_MAX_STREAM_DATA is introduced to inform a peer of
 the maximum amount of data that can be sent on a stream.
@@ -460,7 +464,9 @@ amount of data that is sent or received on the stream. The data sent on a
 stream MUST NOT exceed the largest maximum stream data value advertised by the
 receiver.
 
-## WT_MAX_STREAMS Frames
+## WT_MAX_STREAMS Frames {#WT_MAX_STREAMS}
+
+*[WT_MAX_STREAMS]: #
 
 A WebTransport frame called WT_MAX_STREAMS is introduced to inform the peer of
 the cumulative number of streams of a given type it is permitted to open. A
@@ -490,7 +496,9 @@ stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream 15.
 Note that this limit includes streams that have been closed as well as those
 that are open.
 
-## WT_DATA_BLOCKED Frames
+## WT_DATA_BLOCKED Frames {#WT_DATA_BLOCKED}
+
+*[WT_DATA_BLOCKED]: #
 
 A sender SHOULD send a WT_DATA_BLOCKED frame (type=0x14) when it wishes to send
 data but is unable to do so due to WebTransport session-level flow control.
@@ -511,7 +519,9 @@ WT_DATA_BLOCKED frames contain the following field:
    Maximum Data: A variable-length integer indicating the session-level limit
    at which blocking occurred.
 
-## WT_STREAM_DATA_BLOCKED Frames
+## WT_STREAM_DATA_BLOCKED Frames {#WT_STREAM_DATA_BLOCKED}
+
+*[WT_STREAM_DATA_BLOCKED]: #
 
 A sender SHOULD send a WT_STREAM_DATA_BLOCKED frame (type=0x15) when it wishes
 to send data but is unable to do so due to stream-level flow control. This
@@ -535,7 +545,9 @@ WT_STREAM_DATA_BLOCKED frames contain the following fields:
    Maximum Stream Data: A variable-length integer indicating the offset of the
    stream at which the blocking occurred.
 
-## WT_STREAMS_BLOCKED Frames
+## WT_STREAMS_BLOCKED Frames {#WT_STREAMS_BLOCKED}
+
+*[WT_STREAMS_BLOCKED]: #
 
 A sender SHOULD send a WT_STREAMS_BLOCKED frame (type=0x16 or 0x17) when it
 wishes to open a stream but is unable to do so due to the maximum stream limit
@@ -562,7 +574,9 @@ WT_STREAMS_BLOCKED frames contain the following field:
    streams allowed at the time the frame was sent. This value cannot exceed
    2^60, as it is not possible to encode stream IDs larger than 2^(62-1).
 
-## WT_DATAGRAM Frames
+## WT_DATAGRAM Frames {#WT_DATAGRAM}
+
+*[WT_DATAGRAM]: #
 
 The WT_DATAGRAM frame type (0x31) is used to carry datagram traffic. Frame type
 0x30 is also reserved to maintain parity with QUIC, but unused, as all

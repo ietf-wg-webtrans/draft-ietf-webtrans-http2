@@ -288,8 +288,8 @@ The Frame Length field indicates the length of the WebTransport frame, including
 all type-dependent fields and other information. It does not include the size
 of the Frame Type or Frame Length fields themselves.
 
-Both of these fields use a variable-length integer encoding (see Section 16 of
-{{!RFC9000}}), with one exception. To ensure simple and efficient
+Both of these fields use a variable-length integer encoding (see {{Section 16 of
+!RFC9000}}), with one exception. To ensure simple and efficient
 implementations of frame parsing, the frame type and length MUST use the
 shortest possible encoding. For example, for the frame types defined in this
 document, this means a single-byte encoding, even though it is possible to
@@ -348,7 +348,7 @@ The WT_RESET_STREAM frame defines the following fields:
 
    Final Size: A variable-length integer indicating the final size of the stream
    by the WT_RESET_STREAM sender, in units of bytes. This is the amount of flow
-   control credit that is consumed by a stream, see Section 4.5 of {{!RFC9000}}.
+   control credit that is consumed by a stream, see {{Section 4.5 of !RFC9000}}.
 
 ## WT_STOP_SENDING Frames
 
@@ -674,8 +674,8 @@ Specification:
 ## Examples
 
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
-This example is intended to closely follow the example in Section 5.1 of
-{{!RFC8441}} to help illustrate the differences defined in this document.
+This example is intended to closely follow the example in {{Section 5.1 of
+!RFC8441}} to help illustrate the differences defined in this document.
 
 ~~~
 [[ From Client ]]                   [[ From Server ]]

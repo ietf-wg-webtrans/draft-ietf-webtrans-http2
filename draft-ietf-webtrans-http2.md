@@ -421,7 +421,7 @@ All data sent in WT_STREAM frames counts toward this limit. The sum of the
 lengths of Stream Data fields in WT_STREAM frames MUST NOT exceed the value
 advertised by a receiver.
 
-## MAX_STREAM_DATA Frames
+## WT_MAX_STREAM_DATA Frames
 
 A WebTransport frame called WT_MAX_STREAM_DATA is introduced to inform a peer of
 the maximum amount of data that can be sent on a stream.

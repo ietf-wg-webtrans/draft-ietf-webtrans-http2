@@ -158,7 +158,7 @@ WebTransport frames closely mirror a subset of QUIC frames and provide the
 essential WebTransport features.  Within a WebTransport session, endpoints can
 
 * create and use bidirectional or unidirectional streams with no additional
-  latency using [WT_STREAM](#wtstream-frames){format="none"} frames
+  round trips using [WT_STREAM](#wtstream-frames){format="none"} frames
 
 * send datagrams using [WT_DATAGRAM](#wtdatagram-frames){:format="none"} frames
 

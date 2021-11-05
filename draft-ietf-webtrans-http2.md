@@ -194,10 +194,11 @@ using the `https` URI scheme {{!RFC7230}}.
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
-`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST
-be `https`. Both the `:authority` and the `:path` value MUST be set; those
-fields indicate the desired WebTransport server. An `Origin` header {
-{!RFC6454}} MUST be provided within the request.
+`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST be
+`https`. Both the `:authority` and the `:path` value MUST be set; those fields
+indicate the desired WebTransport server. In a Web context, the request MUST
+include an `Origin` header field {{!ORIGIN=RFC6454}} that includes the origin of
+the site that requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server can check if it has a WebTransport server

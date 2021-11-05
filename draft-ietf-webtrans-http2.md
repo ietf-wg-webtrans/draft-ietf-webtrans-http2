@@ -201,7 +201,7 @@ fields indicate the desired WebTransport server. An `Origin` header {
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server checks if the identified resource supports
-WebTransport sessions. If the resource does not, it SHOULD reply with status
+WebTransport sessions. If the resource does not, the server SHOULD reply with status
 code 404 ({{Section 6.5.4 of !RFC7231}}). To accept a WebTransport session the
 server replies with 2xx status code. Before accepting a session, a server MUST
 ensure that it authorizes use of the session by the site identified in the

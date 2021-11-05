@@ -76,10 +76,10 @@ Discussion of this draft takes place on the WebTransport mailing list
 ([webtransport@ietf.org](mailto:webtransport@ietf.org)), which is archived at
 [](https://mailarchive.ietf.org/arch/search/?email_list=webtransport).
 
-The repository tracking the issues for this draft can be found at[]
-(https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
-draft corresponding to this document can be found at[]
-(https://w3c.github.io/webtransport/).
+The repository tracking the issues for this draft can be found at
+[](https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
+draft corresponding to this document can be found at
+[](https://w3c.github.io/webtransport/).
 
 --- middle
 
@@ -194,10 +194,11 @@ using the `https` URI scheme {{!RFC7230}}.
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
-`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST
-be `https`. Both the `:authority` and the `:path` value MUST be set; those
-fields indicate the desired WebTransport server. An `Origin` header {
-{!RFC6454}} MUST be provided within the request.
+`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST be
+`https`. Both the `:authority` and the `:path` value MUST be set; those fields
+indicate the desired WebTransport server. In a Web context, the request MUST
+include an `Origin` header field {{!ORIGIN=RFC6454}} that includes the origin of
+the site that requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server can check if it has a WebTransport server
@@ -251,12 +252,10 @@ DATAGRAM frames are delivered to the remote WebTransport endpoint reliably,
 however this does not require that the receiving implementation deliver that
 data to the application in a reliable manner.
 
-# WebTransport Protocol Details
-
 ## WebTransport Stream States
 
 WebTransport streams have states that mirror the states of QUIC streams
-(Section 3 of {{!RFC9000}}) as closely as possible to aid in ease of
+({{Section 3 of !RFC9000}}) as closely as possible to aid in ease of
 implementation.
 
 Because WebTransport does not provide an acknowledgement mechanism for
@@ -289,8 +288,8 @@ The Frame Length field indicates the length of the WebTransport frame, including
 all type-dependent fields and other information. It does not include the size
 of the Frame Type or Frame Length fields themselves.
 
-Both of these fields use a variable-length integer encoding (see Section 16 of
-{{!RFC9000}}), with one exception. To ensure simple and efficient
+Both of these fields use a variable-length integer encoding (see {{Section 16 of
+!RFC9000}}), with one exception. To ensure simple and efficient
 implementations of frame parsing, the frame type and length MUST use the
 shortest possible encoding. For example, for the frame types defined in this
 document, this means a single-byte encoding, even though it is possible to
@@ -306,12 +305,14 @@ used to provide protection against traffic analysis or for other reasons.
 WT_PADDING Frame {
   Type (i) = 0x00,
   Length (i),
+  Padding (..),
 }
 ~~~
 {: #fig-wt_padding title="WT_PADDING Frame Format"}
 
-The padding extends to the end of the WT_PADDING frame and that many bytes can
-be discarded by the recipient.
+The Padding field MUST be set to an all-zero sequence of bytes of any length as
+specified by the Length field.
+<!-- TODO validation and error handling -->
 
 ## WT_RESET_STREAM Frames
 
@@ -347,7 +348,7 @@ The WT_RESET_STREAM frame defines the following fields:
 
    Final Size: A variable-length integer indicating the final size of the stream
    by the WT_RESET_STREAM sender, in units of bytes. This is the amount of flow
-   control credit that is consumed by a stream, see Section 4.5 of {{!RFC9000}}.
+   control credit that is consumed by a stream, see {{Section 4.5 of !RFC9000}}.
 
 ## WT_STOP_SENDING Frames
 
@@ -416,9 +417,9 @@ WT_MAX_DATA frames contain the following field:
    Maximum Data: A variable-length integer indicating the maximum amount of data
    that can be sent on the entire connection, in units of bytes.
 
-All data sent in WT_STREAM frames counts toward this limit. The sum of the final
-sizes on all streams, including streams in terminal states, MUST NOT exceed the
-value advertised by a receiver.
+All data sent in WT_STREAM frames counts toward this limit. The sum of the
+lengths of Stream Data fields in WT_STREAM frames MUST NOT exceed the value
+advertised by a receiver.
 
 ## MAX_STREAM_DATA Frames
 
@@ -443,10 +444,9 @@ WT_MAX_STREAM_DATA frames contain the following fields:
    Maximum Stream Data: A variable-length integer indicating the maximum amount
    of data that can be sent on the identified stream, in units of bytes.
 
-When counting data toward this limit, an endpoint accounts for the largest
-amount of data that is sent or received on the stream. The data sent on a
-stream MUST NOT exceed the largest maximum stream data value advertised by the
-receiver.
+All data sent in WT_STREAM frames for the identified stream counts toward this
+limit. The sum of the lengths of Stream Data fields in WT_STREAM frames on the
+identified stream MUST NOT exceed the value advertised by a receiver.
 
 ## WT_MAX_STREAMS Frames
 
@@ -584,8 +584,8 @@ hop-by-hop MTUs can vary.
 # Examples
 
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
-This example is intended to closely follow the example in Section 5.1 of
-{{!RFC8441}} to help illustrate the differences defined in this document.
+This example is intended to closely follow the example in {{Section 5.1 of
+!RFC8441}} to help illustrate the differences defined in this document.
 
 ~~~
 [[ From Client ]]                   [[ From Server ]]
@@ -748,7 +748,6 @@ Default:
 Specification:
 
 : This document
-
 
 
 --- back

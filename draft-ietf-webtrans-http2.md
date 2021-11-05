@@ -329,7 +329,7 @@ WT_RESET_STREAM can discard any data that it already received on that stream.
 ~~~
 WT_RESET_STREAM Frame {
   Type (i) = 0x04,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
   Final Size (i),
@@ -339,10 +339,12 @@ WT_RESET_STREAM Frame {
 
 The WT_RESET_STREAM frame defines the following fields:
 
-   Stream ID: A variable-length integer encoding of the WebTransport stream ID
+   Stream ID:
+   : A variable-length integer encoding of the WebTransport stream ID
    of the stream being terminated.
 
-   Application Protocol Error Code: A variable-length integer containing the
+   Application Protocol Error Code:
+   : A variable-length integer containing the
    application protocol error code that indicates why the stream is being
    closed.
 
@@ -359,7 +361,7 @@ WT_STOP_SENDING requests that a peer cease transmission on a stream.
 ~~~
 WT_STOP_SENDING Frame {
   Type (i) = 0x05,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
 }
@@ -368,10 +370,12 @@ WT_STOP_SENDING Frame {
 
 The WT_STOP_SENDING frame defines the following fields:
 
-   Stream ID: A variable-length integer carrying the WebTransport stream ID of
+   Stream ID:
+   : A variable-length integer carrying the WebTransport stream ID of
    the stream being ignored.
 
-   Application Protocol Error Code: A variable-length integer containing the
+   Application Protocol Error Code:
+   : A variable-length integer containing the
    application-specified reason the sender is ignoring the stream.
 
 
@@ -390,7 +394,8 @@ of the Stream ID.
 
 ~~~
 WT_STREAM Frame {
-  Type (i) = 0x08..0x0f,
+  Type (i) = 0x0a..0x0b,
+  Length (i),
   Stream ID (i),
   Stream Data (..),
 }
@@ -406,7 +411,7 @@ whole.
 ~~~
 WT_MAX_DATA Frame {
   Type (i) = 0x10,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Data (i),
 }
 ~~~
@@ -414,7 +419,8 @@ WT_MAX_DATA Frame {
 
 WT_MAX_DATA frames contain the following field:
 
-   Maximum Data: A variable-length integer indicating the maximum amount of data
+   Maximum Data:
+   : A variable-length integer indicating the maximum amount of data
    that can be sent on the entire connection, in units of bytes.
 
 All data sent in WT_STREAM frames counts toward this limit. The sum of the
@@ -429,7 +435,7 @@ the maximum amount of data that can be sent on a stream.
 ~~~
 WT_MAX_STREAM_DATA Frame {
   Type (i) = 0x11,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
 }
@@ -438,10 +444,12 @@ WT_MAX_STREAM_DATA Frame {
 
 WT_MAX_STREAM_DATA frames contain the following fields:
 
-   Stream ID: The stream ID of the affected WebTransport stream, encoded as a
+   Stream ID:
+   : The stream ID of the affected WebTransport stream, encoded as a
    variable-length integer.
 
-   Maximum Stream Data: A variable-length integer indicating the maximum amount
+   Maximum Stream Data:
+   : A variable-length integer indicating the maximum amount
    of data that can be sent on the identified stream, in units of bytes.
 
 All data sent in WT_STREAM frames for the identified stream counts toward this
@@ -458,7 +466,7 @@ a WT_MAX_STREAMS frame with a type of 0x13 applies to unidirectional streams.
 ~~~
 WT_MAX_STREAMS Frame {
   Type (i) = 0x12..0x13,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Streams (i),
 }
 ~~~
@@ -466,10 +474,11 @@ WT_MAX_STREAMS Frame {
 
 WT_MAX_STREAMS frames contain the following field:
 
-   Maximum Streams: A count of the cumulative number of streams of the
+   Maximum Streams:
+   : A count of the cumulative number of streams of the
    corresponding type that can be opened over the lifetime of the connection.
-   This value cannot exceed 2^60, as it is not possible to encode stream IDs
-   larger than 2^(62-1).
+   This value cannot exceed 2<sup>60</sup>, as it is not possible to encode stream IDs
+   larger than 2<sup>62</sup>-1.
 
 An endpoint MUST NOT open more streams than permitted by the current stream
 limit set by its peer. For instance, a server that receives a unidirectional
@@ -488,7 +497,7 @@ algorithms.
 ~~~
 WT_DATA_BLOCKED Frame {
   Type (i) = 0x14,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Data (i),
 }
 ~~~
@@ -496,7 +505,8 @@ WT_DATA_BLOCKED Frame {
 
 WT_DATA_BLOCKED frames contain the following field:
 
-   Maximum Data: A variable-length integer indicating the session-level limit
+   Maximum Data:
+   : A variable-length integer indicating the session-level limit
    at which blocking occurred.
 
 ## WT_STREAM_DATA_BLOCKED Frames
@@ -508,7 +518,7 @@ frame is analogous to WT_DATA_BLOCKED.
 ~~~
 WT_STREAM_DATA_BLOCKED Frame {
   Type (i) = 0x15,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
 }
@@ -517,10 +527,12 @@ WT_STREAM_DATA_BLOCKED Frame {
 
 WT_STREAM_DATA_BLOCKED frames contain the following fields:
 
-   Stream ID: A variable-length integer indicating the WebTransport stream that
+   Stream ID:
+   : A variable-length integer indicating the WebTransport stream that
    is blocked due to flow control.
 
-   Maximum Stream Data: A variable-length integer indicating the offset of the
+   Maximum Stream Data:
+   : A variable-length integer indicating the offset of the
    stream at which the blocking occurred.
 
 ## WT_STREAMS_BLOCKED Frames
@@ -538,7 +550,7 @@ stream.
 ~~~
 WT_STREAMS_BLOCKED Frame {
   Type (i) = 0x16..0x17,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Streams (i),
 }
 ~~~
@@ -546,9 +558,10 @@ WT_STREAMS_BLOCKED Frame {
 
 WT_STREAMS_BLOCKED frames contain the following field:
 
-   Maximum Streams: A variable-length integer indicating the maximum number of
+   Maximum Streams:
+   : A variable-length integer indicating the maximum number of
    streams allowed at the time the frame was sent. This value cannot exceed
-   2^60, as it is not possible to encode stream IDs larger than 2^(62-1).
+   2<sup>60</sup>, as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
 
 ## WT_DATAGRAM Frames
 
@@ -567,10 +580,8 @@ WT_DATAGRAM Frame {
 
 WT_DATAGRAM frames contain the following fields:
 
-   Length: A variable-length integer specifying the length of the Datagram Data
-   in bytes. Note that empty (i.e., zero-length) datagrams are allowed.
-
-   Datagram Data: The content of the datagram to be delivered.
+   Datagram Data:
+   : The content of the datagram to be delivered.
 
 The data in WT_DATAGRAM frames is not subject to flow control. The receiver MAY
 discard this data if it does not have sufficient space to buffer it.

@@ -61,14 +61,11 @@ informative:
 
 --- abstract
 
-WebTransport [OVERVIEW] is a protocol framework that enables clients constrained
-by the Web security model to communicate with a remote server using a secure
-multiplexed transport. This document describes a WebTransport protocol that
-uses HTTP semantics to provide support for unidirectional streams,
-bidirectional streams, and datagrams. This protocol can be used with any HTTP
-version, however this document focuses on TCP-based HTTP versions, specifically
-providing examples of these capabilities when multiplexed within the same
-HTTP/2 [RFC7540] connection.
+WebTransport defines a set of low-level communications features designed for
+client-server interactions that are initiated by Web clients.  This document
+describes a protocol that can provide many of the capabilities of WebTransport
+over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
+protocol is not available.
 
 --- note_Note_to_Readers
 
@@ -76,47 +73,30 @@ Discussion of this draft takes place on the WebTransport mailing list
 ([webtransport@ietf.org](mailto:webtransport@ietf.org)), which is archived at
 [](https://mailarchive.ietf.org/arch/search/?email_list=webtransport).
 
-The repository tracking the issues for this draft can be found at[]
-(https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
-draft corresponding to this document can be found at[]
-(https://w3c.github.io/webtransport/).
+The repository tracking the issues for this draft can be found at
+[](https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
+draft corresponding to this document can be found at
+[](https://w3c.github.io/webtransport/).
 
 --- middle
 
 # Introduction
 
-This protocol satisfies the WebTransport protocol framework's requirements using
-HTTP semantics to provide support for unidirectional streams, bidirectional
-streams, and datagrams.
+WebTransport {{OVERVIEW}} is designed to provide generic communication
+capabilities to Web clients that use HTTP/3 {{?HTTP3=I-D.ietf-quic-http}}.  The
+HTTP/3 WebTransport protocol {{WEBTRANSPORT-H3}} allows Web clients to use QUIC
+{{?QUIC=RFC9000}} features such as streams or datagrams
+{{?DATAGRAM=I-D.ietf-quic-datagram}}.  However, there are some environments
+where QUIC cannot be deployed.
 
-By using HTTP semantics, this protocol allows deployment using any HTTP version,
-although this document in particular focuses on HTTP/2 as the current most
-common TCP-based fallback to HTTP/3 running over QUIC {{?RFC9000}}.
+This document defines a protocol that provides all of the core functions of
+WebTransport using HTTP semantics. This includes unidirectional streams,
+bidirectional streams, and datagrams.
 
-Currently, the only mechanism in HTTP/2 for server to client communication is
-server push. That is, servers can initiate unidirectional push promised streams
-to clients, but clients cannot respond to them; they can only accept them or
-discard them. Additionally, intermediaries along the path may have different
-server push policies and may not forward push promised streams to the downstream
-client. This best effort mechanism is not sufficient to reliably deliver
-messages from servers to clients, limiting server to client use-cases such as
-chat messages or notifications.
-
-Several techniques have been developed to workaround these limitations: long
-polling {{?RFC6202}}, WebSocket {{?RFC8441}}, and tunneling using the CONNECT
-method. All of these approaches have limitations.
-
-This document defines a mechanism for establishing bidirectional communication
-using HTTP semantics in a manner that conforms with the WebTransport protocol
-requirements and semantics [OVERVIEW]. When running with HTTP/2, multiple
-WebTransport instances can be multiplexed simultaneously with regular HTTP
-traffic on the same HTTP/2 connection.
-
-It is important to note that, while it is possible to have the WebTransport
-session remain entirely "self contained" within a given HTTP flow, certain HTTP
-versions may provide native features, such as datagram support, which can allow
-for a better performing implementation of the WebTransport client's
-requirements.
+By relying only on generic HTTP semantics, this protocol might allow deployment
+using any HTTP version.  However, this document only defines negotiation for
+HTTP/2 {{!H2=I-D.ietf-httpbis-http2bis}} as the current most common TCP-based
+fallback to HTTP/3.
 
 ## Terminology
 
@@ -129,7 +109,7 @@ This document follows terminology defined in {{Section 1.2 of OVERVIEW}}. Note
 that this document distinguishes between a WebTransport server and an HTTP/2
 server. An HTTP/2 server is the server that terminates HTTP/2 connections; a
 WebTransport server is an application that accepts WebTransport sessions, which
-can be accessed via an HTTP/2 server.
+can be accessed using HTTP/2 and this protocol.
 
 # Protocol Overview
 
@@ -194,18 +174,19 @@ using the `https` URI scheme {{!RFC7230}}.
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
-`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST
-be `https`. Both the `:authority` and the `:path` value MUST be set; those
-fields indicate the desired WebTransport server. An `Origin` header {
-{!RFC6454}} MUST be provided within the request.
+`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST be
+`https`. Both the `:authority` and the `:path` value MUST be set; those fields
+indicate the desired WebTransport server. In a Web context, the request MUST
+include an `Origin` header field {{!ORIGIN=RFC6454}} that includes the origin of
+the site that requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
-`webtransport`, the HTTP server can check if it has a WebTransport server
-associated with the specified `:authority` and `:path` values. If it does not,
-it SHOULD reply with status code 404 (Section 6.5.4,{{!RFC7231}}). If it does,
-it MAY accept the session by replying with status code 200. The WebTransport
-server MUST verify the `Origin` header to ensure that the specified origin is
-allowed to access the server in question.
+`webtransport`, the HTTP server checks if the identified resource supports
+WebTransport sessions. If the resource does not, the server SHOULD reply with status
+code 404 ({{Section 6.5.4 of !RFC7231}}). To accept a WebTransport session the
+server replies with 2xx status code. Before accepting a session, a server MUST
+ensure that it authorizes use of the session by the site identified in the
+`Origin` header.
 
 From the client's perspective, a WebTransport session is established when the
 client receives a 200 response. From the server's perspective, a session is
@@ -251,12 +232,10 @@ DATAGRAM frames are delivered to the remote WebTransport endpoint reliably,
 however this does not require that the receiving implementation deliver that
 data to the application in a reliable manner.
 
-# WebTransport Protocol Details
-
 ## WebTransport Stream States
 
 WebTransport streams have states that mirror the states of QUIC streams
-(Section 3 of {{!RFC9000}}) as closely as possible to aid in ease of
+({{Section 3 of !RFC9000}}) as closely as possible to aid in ease of
 implementation.
 
 Because WebTransport does not provide an acknowledgement mechanism for
@@ -289,8 +268,8 @@ The Frame Length field indicates the length of the WebTransport frame, including
 all type-dependent fields and other information. It does not include the size
 of the Frame Type or Frame Length fields themselves.
 
-Both of these fields use a variable-length integer encoding (see Section 16 of
-{{!RFC9000}}), with one exception. To ensure simple and efficient
+Both of these fields use a variable-length integer encoding (see {{Section 16 of
+!RFC9000}}), with one exception. To ensure simple and efficient
 implementations of frame parsing, the frame type and length MUST use the
 shortest possible encoding. For example, for the frame types defined in this
 document, this means a single-byte encoding, even though it is possible to
@@ -306,12 +285,14 @@ used to provide protection against traffic analysis or for other reasons.
 WT_PADDING Frame {
   Type (i) = 0x00,
   Length (i),
+  Padding (..),
 }
 ~~~
 {: #fig-wt_padding title="WT_PADDING Frame Format"}
 
-The padding extends to the end of the WT_PADDING frame and that many bytes can
-be discarded by the recipient.
+The Padding field MUST be set to an all-zero sequence of bytes of any length as
+specified by the Length field.
+<!-- TODO validation and error handling -->
 
 ## WT_RESET_STREAM Frames
 
@@ -328,7 +309,7 @@ WT_RESET_STREAM can discard any data that it already received on that stream.
 ~~~
 WT_RESET_STREAM Frame {
   Type (i) = 0x04,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
 }
@@ -337,15 +318,17 @@ WT_RESET_STREAM Frame {
 
 The WT_RESET_STREAM frame defines the following fields:
 
-   Stream ID: A variable-length integer encoding of the WebTransport stream ID
+   Stream ID:
+   : A variable-length integer encoding of the WebTransport stream ID
    of the stream being terminated.
 
-   Application Protocol Error Code: A variable-length integer containing the
+   Application Protocol Error Code:
+   : A variable-length integer containing the
    application protocol error code that indicates why the stream is being
    closed.
 
 Unlike the equivalent QUIC frame, this frame does not include a Final Size
-field.  In-order delivery of WT_STREAM frames ensures that the amount of
+field. In-order delivery of WT_STREAM frames ensures that the amount of
 session-level flow control consumed by a stream is always known by both
 endpoints.
 
@@ -358,7 +341,7 @@ WT_STOP_SENDING requests that a peer cease transmission on a stream.
 ~~~
 WT_STOP_SENDING Frame {
   Type (i) = 0x05,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
 }
@@ -367,10 +350,12 @@ WT_STOP_SENDING Frame {
 
 The WT_STOP_SENDING frame defines the following fields:
 
-   Stream ID: A variable-length integer carrying the WebTransport stream ID of
+   Stream ID:
+   : A variable-length integer carrying the WebTransport stream ID of
    the stream being ignored.
 
-   Application Protocol Error Code: A variable-length integer containing the
+   Application Protocol Error Code:
+   : A variable-length integer containing the
    application-specified reason the sender is ignoring the stream.
 
 
@@ -389,7 +374,8 @@ of the Stream ID.
 
 ~~~
 WT_STREAM Frame {
-  Type (i) = 0x08..0x0f,
+  Type (i) = 0x0a..0x0b,
+  Length (i),
   Stream ID (i),
   Stream Data (..),
 }
@@ -405,7 +391,7 @@ whole.
 ~~~
 WT_MAX_DATA Frame {
   Type (i) = 0x10,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Data (i),
 }
 ~~~
@@ -413,12 +399,13 @@ WT_MAX_DATA Frame {
 
 WT_MAX_DATA frames contain the following field:
 
-   Maximum Data: A variable-length integer indicating the maximum amount of data
+   Maximum Data:
+   : A variable-length integer indicating the maximum amount of data
    that can be sent on the entire connection, in units of bytes.
 
-All data sent in WT_STREAM frames counts toward this limit. The sum of the final
-sizes on all streams, including streams in terminal states, MUST NOT exceed the
-value advertised by a receiver.
+All data sent in WT_STREAM frames counts toward this limit. The sum of the
+lengths of Stream Data fields in WT_STREAM frames MUST NOT exceed the value
+advertised by a receiver.
 
 ## MAX_STREAM_DATA Frames
 
@@ -428,7 +415,7 @@ the maximum amount of data that can be sent on a stream.
 ~~~
 WT_MAX_STREAM_DATA Frame {
   Type (i) = 0x11,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
 }
@@ -437,16 +424,17 @@ WT_MAX_STREAM_DATA Frame {
 
 WT_MAX_STREAM_DATA frames contain the following fields:
 
-   Stream ID: The stream ID of the affected WebTransport stream, encoded as a
+   Stream ID:
+   : The stream ID of the affected WebTransport stream, encoded as a
    variable-length integer.
 
-   Maximum Stream Data: A variable-length integer indicating the maximum amount
+   Maximum Stream Data:
+   : A variable-length integer indicating the maximum amount
    of data that can be sent on the identified stream, in units of bytes.
 
-When counting data toward this limit, an endpoint accounts for the largest
-amount of data that is sent or received on the stream. The data sent on a
-stream MUST NOT exceed the largest maximum stream data value advertised by the
-receiver.
+All data sent in WT_STREAM frames for the identified stream counts toward this
+limit. The sum of the lengths of Stream Data fields in WT_STREAM frames on the
+identified stream MUST NOT exceed the value advertised by a receiver.
 
 ## WT_MAX_STREAMS Frames
 
@@ -458,7 +446,7 @@ a WT_MAX_STREAMS frame with a type of 0x13 applies to unidirectional streams.
 ~~~
 WT_MAX_STREAMS Frame {
   Type (i) = 0x12..0x13,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Streams (i),
 }
 ~~~
@@ -466,10 +454,11 @@ WT_MAX_STREAMS Frame {
 
 WT_MAX_STREAMS frames contain the following field:
 
-   Maximum Streams: A count of the cumulative number of streams of the
+   Maximum Streams:
+   : A count of the cumulative number of streams of the
    corresponding type that can be opened over the lifetime of the connection.
-   This value cannot exceed 2^60, as it is not possible to encode stream IDs
-   larger than 2^(62-1).
+   This value cannot exceed 2<sup>60</sup>, as it is not possible to encode stream IDs
+   larger than 2<sup>62</sup>-1.
 
 An endpoint MUST NOT open more streams than permitted by the current stream
 limit set by its peer. For instance, a server that receives a unidirectional
@@ -488,7 +477,7 @@ algorithms.
 ~~~
 WT_DATA_BLOCKED Frame {
   Type (i) = 0x14,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Data (i),
 }
 ~~~
@@ -496,7 +485,8 @@ WT_DATA_BLOCKED Frame {
 
 WT_DATA_BLOCKED frames contain the following field:
 
-   Maximum Data: A variable-length integer indicating the session-level limit
+   Maximum Data:
+   : A variable-length integer indicating the session-level limit
    at which blocking occurred.
 
 ## WT_STREAM_DATA_BLOCKED Frames
@@ -508,7 +498,7 @@ frame is analogous to WT_DATA_BLOCKED.
 ~~~
 WT_STREAM_DATA_BLOCKED Frame {
   Type (i) = 0x15,
-  Length (i) = 0x00,
+  Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
 }
@@ -517,10 +507,12 @@ WT_STREAM_DATA_BLOCKED Frame {
 
 WT_STREAM_DATA_BLOCKED frames contain the following fields:
 
-   Stream ID: A variable-length integer indicating the WebTransport stream that
+   Stream ID:
+   : A variable-length integer indicating the WebTransport stream that
    is blocked due to flow control.
 
-   Maximum Stream Data: A variable-length integer indicating the offset of the
+   Maximum Stream Data:
+   : A variable-length integer indicating the offset of the
    stream at which the blocking occurred.
 
 ## WT_STREAMS_BLOCKED Frames
@@ -538,7 +530,7 @@ stream.
 ~~~
 WT_STREAMS_BLOCKED Frame {
   Type (i) = 0x16..0x17,
-  Length (i) = 0x00,
+  Length (i),
   Maximum Streams (i),
 }
 ~~~
@@ -546,9 +538,10 @@ WT_STREAMS_BLOCKED Frame {
 
 WT_STREAMS_BLOCKED frames contain the following field:
 
-   Maximum Streams: A variable-length integer indicating the maximum number of
+   Maximum Streams:
+   : A variable-length integer indicating the maximum number of
    streams allowed at the time the frame was sent. This value cannot exceed
-   2^60, as it is not possible to encode stream IDs larger than 2^(62-1).
+   2<sup>60</sup>, as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
 
 ## WT_DATAGRAM Frames
 
@@ -567,10 +560,8 @@ WT_DATAGRAM Frame {
 
 WT_DATAGRAM frames contain the following fields:
 
-   Length: A variable-length integer specifying the length of the Datagram Data
-   in bytes. Note that empty (i.e., zero-length) datagrams are allowed.
-
-   Datagram Data: The content of the datagram to be delivered.
+   Datagram Data:
+   : The content of the datagram to be delivered.
 
 The data in WT_DATAGRAM frames is not subject to flow control. The receiver MAY
 discard this data if it does not have sufficient space to buffer it.
@@ -580,6 +571,85 @@ protocol, such as WebTransport over HTTP/3. In QUIC, a datagram frame can span
 at most one packet. Because of that, the applications have to know the maximum
 size of the datagram they can send. However, when proxying the datagrams, the
 hop-by-hop MTUs can vary.
+
+# Examples
+
+An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
+This example is intended to closely follow the example in {{Section 5.1 of
+!RFC8441}} to help illustrate the differences defined in this document.
+
+~~~
+[[ From Client ]]                   [[ From Server ]]
+
+SETTINGS
+SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+                                    SETTINGS
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+HEADERS + END_HEADERS
+Stream ID = 3
+:method = CONNECT
+:protocol = webtransport
+:scheme = https
+:path = /
+:authority = server.example.com
+origin: server.example.com
+
+                                    HEADERS + END_HEADERS
+                                    Stream ID = 3
+                                    :status = 200
+
+WT_STREAM
+Stream ID = 5
+WebTransport Data
+
+                                    WT_STREAM + FIN
+                                    Stream ID = 5
+                                    WebTransport Data
+
+WT_STREAM + FIN
+Stream ID = 5
+WebTransport Data
+~~~
+
+An example of the server initiating a WebTransport Stream follows. The only
+difference here is the endpoint that sends the first WT_STREAM frame.
+
+~~~
+[[ From Client ]]                   [[ From Server ]]
+
+SETTINGS
+SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+                                    SETTINGS
+                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
+
+HEADERS + END_HEADERS
+Stream ID = 3
+:method = CONNECT
+:protocol = webtransport
+:scheme = https
+:path = /
+:authority = server.example.com
+origin: server.example.com
+                                    HEADERS + END_HEADERS
+                                    Stream ID = 3
+                                    :status = 200
+
+                                    WT_STREAM
+                                    Stream ID = 2
+                                    WebTransport Data
+
+WT_STREAM + FIN
+Stream ID = 2
+WebTransport Data
+
+                                    WT_STREAM + FIN
+                                    Stream ID = 2
+                                    WebTransport Data
+~~~
+
 
 # Session Termination
 
@@ -669,84 +739,6 @@ Default:
 Specification:
 
 : This document
-
-## Examples
-
-An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
-This example is intended to closely follow the example in Section 5.1 of
-{{!RFC8441}} to help illustrate the differences defined in this document.
-
-~~~
-[[ From Client ]]                   [[ From Server ]]
-
-SETTINGS
-SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-                                    SETTINGS
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-HEADERS + END_HEADERS
-Stream ID = 3
-:method = CONNECT
-:protocol = webtransport
-:scheme = https
-:path = /
-:authority = server.example.com
-origin: server.example.com
-
-                                    HEADERS + END_HEADERS
-                                    Stream ID = 3
-                                    :status = 200
-
-WT_STREAM
-Stream ID = 5
-WebTransport Data
-
-                                    WT_STREAM + FIN
-                                    Stream ID = 5
-                                    WebTransport Data
-
-WT_STREAM + FIN
-Stream ID = 5
-WebTransport Data
-~~~
-
-An example of the server initiating a WebTransport Stream follows. The only
-difference here is the endpoint that sends the first WT_STREAM frame.
-
-~~~
-[[ From Client ]]                   [[ From Server ]]
-
-SETTINGS
-SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-                                    SETTINGS
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
-
-HEADERS + END_HEADERS
-Stream ID = 3
-:method = CONNECT
-:protocol = webtransport
-:scheme = https
-:path = /
-:authority = server.example.com
-origin: server.example.com
-                                    HEADERS + END_HEADERS
-                                    Stream ID = 3
-                                    :status = 200
-
-                                    WT_STREAM
-                                    Stream ID = 2
-                                    WebTransport Data
-
-WT_STREAM + FIN
-Stream ID = 2
-WebTransport Data
-
-                                    WT_STREAM + FIN
-                                    Stream ID = 2
-                                    WebTransport Data
-~~~
 
 
 --- back

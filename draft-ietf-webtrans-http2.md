@@ -312,7 +312,6 @@ WT_RESET_STREAM Frame {
   Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
-  Final Size (i),
 }
 ~~~
 {: #fig-wt_reset_stream title="WT_RESET_STREAM Frame Format"}
@@ -328,9 +327,10 @@ The WT_RESET_STREAM frame defines the following fields:
    application protocol error code that indicates why the stream is being
    closed.
 
-   Final Size: A variable-length integer indicating the final size of the stream
-   by the WT_RESET_STREAM sender, in units of bytes. This is the amount of flow
-   control credit that is consumed by a stream, see {{Section 4.5 of !RFC9000}}.
+Unlike the equivalent QUIC frame, this frame does not include a Final Size
+field. In-order delivery of WT_STREAM frames ensures that the amount of
+session-level flow control consumed by a stream is always known by both
+endpoints.
 
 ## WT_STOP_SENDING Frames
 

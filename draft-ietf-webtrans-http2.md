@@ -688,7 +688,7 @@ Connection Mobility:
 
 : Http2Transport does not support connection mobility, unless an underlying
     transport protocol that supports multipath or migration, such as MPTCP
-    {{?RFC7540}}, is used underneath HTTP/2 and TLS. Without such support,
+    {{?MPTCP=RFC6824}}, is used underneath HTTP/2 and TLS. Without such support,
     Http2Transport connections cannot survive network transitions.
 
 # Security Considerations

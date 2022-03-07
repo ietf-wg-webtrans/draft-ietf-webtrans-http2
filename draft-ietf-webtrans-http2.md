@@ -373,7 +373,7 @@ The WT_STOP_SENDING frame defines the following fields:
 
 *[WT_STREAM]: #
 
-WT_STREAM frames carry stream data.
+WT_STREAM frames implicitly create a stream and carry stream data.
 
 The Type field in the WT_STREAM frame is either 0x0a or 0x0b.  This uses the
 same frame types as a QUIC STREAM frame with the OFF bit clear and the LEN bit

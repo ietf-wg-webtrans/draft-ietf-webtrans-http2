@@ -206,7 +206,7 @@ to introduce a separate flow control mechanism for WebTransport sessions. If
 the server needs to limit the rate of incoming requests, it has alternative
 mechanisms at its disposal:
 
-* `HTTP_STREAM_REFUSED` error code defined in [RFC7540] indicates to the
+* `HTTP_STREAM_REFUSED` error code defined in {{!RFC7540}} indicates to the
   receiving HTTP/2 stack that the request was not processed in any way.
 * HTTP status code 429 indicates that the request was rejected due to rate
   limiting {{!RFC6585}}. Unlike the previous method, this signal is directly
@@ -752,7 +752,7 @@ to sending data and to opening new streams.
 ## HTTP/2 SETTINGS Parameter Registration
 
 The following entry is added to the "HTTP/2 Settings" registry established by
-[RFC7540]:
+{{!RFC7540}}:
 
 The `SETTINGS_ENABLE_WEBTRANSPORT` parameter indicates that the specified
 HTTP/2 connection is WebTransport-capable.

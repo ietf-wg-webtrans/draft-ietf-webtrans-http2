@@ -373,16 +373,13 @@ The WT_STOP_SENDING frame defines the following fields:
 
 *[WT_STREAM]: #
 
-WT_STREAM frames implicitly create a stream and carry stream data. The Type
-field in the WT_STREAM frame takes the form 0b00001XXX (or the set of values
-from 0x08 to 0x0f) to maximize compatibility with QUIC. However, unlike QUIC,
-there are only one bit used to determine the fields that are present in the
-frame:
+WT_STREAM frames implicitly create a stream and carry stream data.
 
-The FIN bit (0x01) indicates that the frame marks the end of the stream. The
-final size of the stream is the sum of the length, in bytes, of all data
-previously sent on this stream and the length of this frame without the length
-of the Stream ID.
+The Type field in the WT_STREAM frame is either 0x0a or 0x0b.  This uses the
+same frame types as a QUIC STREAM frame with the OFF bit clear and the LEN bit
+set.  The FIN bit (0x01) in the frame type indicates that the frame marks the
+end of the stream in one direction.  Stream data consists of any number of 0x0a
+frames followed by a terminal 0x0b frame.
 
 ~~~
 WT_STREAM Frame {
@@ -393,6 +390,16 @@ WT_STREAM Frame {
 }
 ~~~
 {: #fig-wt_stream title="WT_STREAM Frame Format"}
+
+WT_STREAM frames contain the following fields:
+
+Stream ID:
+: The stream ID for the stream.
+
+Stream Data:
+: Zero or more bytes of data for the stream.  Empty WT_STREAM frames MUST NOT be
+used unless they open or close a stream; an endpoint MAY treat an empty
+WT_STREAM frame that neither starts nor ends a stream as a session error.
 
 ## WT_MAX_DATA Frames {#WT_MAX_DATA}
 

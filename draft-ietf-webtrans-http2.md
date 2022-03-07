@@ -302,7 +302,7 @@ encode these values as a two-, four-, or eight-byte variable-length integer.
 
 ## WT_PADDING Frames {#WT_PADDING}
 
-*[WT_PADDING]: #WT_PADDING
+*[WT_PADDING]: #
 
 A WT_PADDING frame (type=0x00) has no semantic value. PADDING frames can be used
 to introduce additional data between other WebTransport frames and can also be

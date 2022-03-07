@@ -244,7 +244,7 @@ streams as closely as possible to aid in ease of implementation.
 
 WebTransport streams are identified by a numeric value, or stream ID. Stream IDs
 are only meaningful within the WebTransport session in which they were created.
-They share the same semantics as QUIC Stream IDs, with client initiated streams
+They share the same semantics as QUIC stream IDs, with client initiated streams
 having even-numbered stream IDs and server-initiated streams having
 odd-numbered stream IDs. Similarly, they can be bidirectional or
 unidirectional, indicated by the second least significant bit of the

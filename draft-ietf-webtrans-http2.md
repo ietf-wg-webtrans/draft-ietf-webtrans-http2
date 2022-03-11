@@ -236,11 +236,19 @@ DATAGRAM frames are delivered to the remote WebTransport endpoint reliably,
 however this does not require that the receiving implementation deliver that
 data to the application in a reliable manner.
 
-## WebTransport Stream States
+## WebTransport Streams
 
-WebTransport streams have states that mirror the states of QUIC streams
-({{Section 3 of !RFC9000}}) as closely as possible to aid in ease of
-implementation.
+WebTransport streams have identifiers and states that mirror the identifiers
+(({{Section 2.1 of !RFC9000}})) and states ({{Section 3 of !RFC9000}}) of QUIC
+streams as closely as possible to aid in ease of implementation.
+
+WebTransport streams are identified by a numeric value, or stream ID. Stream IDs
+are only meaningful within the WebTransport session in which they were created.
+They share the same semantics as QUIC stream IDs, with client initiated streams
+having even-numbered stream IDs and server-initiated streams having
+odd-numbered stream IDs. Similarly, they can be bidirectional or
+unidirectional, indicated by the second least significant bit of the
+stream ID.
 
 Because WebTransport does not provide an acknowledgement mechanism for
 WebTransport frames, it relies on the underlying transport's in order delivery

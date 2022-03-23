@@ -318,9 +318,9 @@ abruptly terminate the sending part of a WebTransport stream.
 An endpoint uses a WT_RESET_STREAM frame (type=0x04) to abruptly terminate the
 sending part of a stream.
 
-After sending a WT_RESET_STREAM, an endpoint ceases transmission and
-retransmission of WT_STREAM frames on the identified stream. A receiver of
-WT_RESET_STREAM can discard any data that it already received on that stream.
+After sending a WT_RESET_STREAM, an endpoint ceases transmission of WT_STREAM
+frames on the identified stream. A receiver of WT_RESET_STREAM can discard any
+data that it already received on that stream.
 
 ~~~
 WT_RESET_STREAM Frame {

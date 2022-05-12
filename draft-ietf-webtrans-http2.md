@@ -205,7 +205,9 @@ client receives a 200 response. From the server's perspective, a session is
 established once it sends a 200 response. Both endpoints MUST NOT send any
 WebTransport capsules on a given session before that session is established.
 
-## Limiting the Number of Simultaneous Sessions
+## Flow Control
+
+### Limiting the Number of Simultaneous Sessions
 
 From a flow control perspective, WebTransport sessions count against HTTP/2
 session flow control limits just like regular HTTP requests, since they are
@@ -219,6 +221,23 @@ mechanisms at its disposal:
 * HTTP status code 429 indicates that the request was rejected due to rate
   limiting {{!RFC6585}}. Unlike the previous method, this signal is directly
   propagated to the application.
+
+### Flow Control and Intermediaries {#flow-control-intermediaries}
+WebTransport over HTTP/2 defines several capsules for flow control, and all of
+these capsules define special intermediary handling as described in
+{{Section 3.2 of HTTP-DATAGRAM}}.  These capsules, referred to as the "flow
+control capsules" are WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS,
+WT_DATA_BLOCKED, WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED.
+
+Because flow control in WebTransport is hop-by-hop and does not provide an
+end-to-end signal, intermediaries MUST consume the flow control capsules and
+not translate or forward incoming flow control capsules on any other
+connections.  Similarly, other WebTransport over HTTP/2 or HTTP/3 connections
+will have their own flow control limits, and it is the responsibility of the
+intermediary to generate and send appropriate flow control signals to match its
+capabilities.  The intermediary can send these signals via HTTP/3 flow control
+messages, HTTP/2 flow control messages, or as WebTransport flow control
+capsules, where appropriate.
 
 # WebTransport Features {#features}
 
@@ -441,6 +460,11 @@ All data sent in WT_STREAM capsules counts toward this limit. The sum of the
 lengths of Stream Data fields in WT_STREAM capsules MUST NOT exceed the value
 advertised by a receiver.
 
+The WT_MAX_DATA capsule defines special intermediary handling, as described in
+{{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume WT_MAX_DATA
+capsules for flow control purposes and MUST generate and send approrpiate flow
+control signals for their limits; see {{flow-control-intermediaries}}.
+
 ## WT_MAX_STREAM_DATA Capsule {#WT_MAX_STREAM_DATA}
 
 *[WT_MAX_STREAM_DATA]: #
@@ -472,6 +496,12 @@ WT_MAX_STREAM_DATA capsules contain the following fields:
 All data sent in WT_STREAM capsules for the identified stream counts toward this
 limit. The sum of the lengths of Stream Data fields in WT_STREAM capsules on
 the identified stream MUST NOT exceed the value advertised by a receiver.
+
+The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+WT_MAX_STREAM_DATA capsules for flow control purposes and MUST generate and
+send approrpiate flow control signals for their limits; see
+{{flow-control-intermediaries}}.
 
 ## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 
@@ -508,6 +538,12 @@ stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream
 Note that this limit includes streams that have been closed as well as those
 that are open.
 
+The WT_MAX_STREAMS capsule defines special intermediary handling, as
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+WT_MAX_STREAMS capsules for flow control purposes and MUST generate and
+send approrpiate flow control signals for their limits; see
+{{flow-control-intermediaries}}.
+
 ## WT_DATA_BLOCKED Capsule {#WT_DATA_BLOCKED}
 
 *[WT_DATA_BLOCKED]: #
@@ -531,6 +567,12 @@ WT_DATA_BLOCKED capsules contain the following field:
    Maximum Data:
    : A variable-length integer indicating the session-level limit at which
      blocking occurred.
+
+The WT_DATA_BLOCKED capsule defines special intermediary handling, as
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+WT_DATA_BLOCKED capsules for flow control purposes and MUST generate and
+send approrpiate flow control signals for their limits; see
+{{flow-control-intermediaries}}.
 
 ## WT_STREAM_DATA_BLOCKED Capsule {#WT_STREAM_DATA_BLOCKED}
 
@@ -559,6 +601,12 @@ WT_STREAM_DATA_BLOCKED capsules contain the following fields:
    Maximum Stream Data:
    : A variable-length integer indicating the offset of the stream at which the
      blocking occurred.
+
+The WT_STREAM_DATA_BLOCKED capsule defines special intermediary handling, as
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
+send approrpiate flow control signals for their limits; see
+{{flow-control-intermediaries}}.
 
 ## WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
 
@@ -590,7 +638,13 @@ WT_STREAMS_BLOCKED capsules contain the following field:
      at the time the capsule was sent. This value cannot exceed 2<sup>60</sup>,
      as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
 
-## DATAGRAM Capsule {#DATAGRAM_CAPSULE}
+The WT_STREAMS_BLOCKED capsule defines special intermediary handling, as
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+WT_STREAMS_BLOCKED capsules for flow control purposes and MUST generate and
+send approrpiate flow control signals for their limits; see
+{{flow-control-intermediaries}}.
+
+# DATAGRAM Capsule {#DATAGRAM_CAPSULE}
 
 *[DATAGRAM_CAPSULE]: #
 

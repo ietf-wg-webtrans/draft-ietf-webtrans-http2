@@ -56,8 +56,10 @@ normative:
   OVERVIEW: I-D.ietf-webtrans-overview
   WEBTRANSPORT-H3: I-D.ietf-webtrans-http3
   HTTP: I-D.ietf-httpbis-semantics
+  HTTP-DATAGRAM: I-D.ietf-masque-h3-datagram
 
 informative:
+  DATAGRAM: RFC9221
 
 --- abstract
 
@@ -85,9 +87,8 @@ draft corresponding to this document can be found at
 WebTransport {{OVERVIEW}} is designed to provide generic communication
 capabilities to Web clients that use HTTP/3 {{?HTTP3=I-D.ietf-quic-http}}.  The
 HTTP/3 WebTransport protocol {{WEBTRANSPORT-H3}} allows Web clients to use QUIC
-{{?QUIC=RFC9000}} features such as streams or datagrams
-{{?DATAGRAM=I-D.ietf-quic-datagram}}.  However, there are some environments
-where QUIC cannot be deployed.
+{{?QUIC=RFC9000}} features such as streams or datagrams {{DATAGRAM}}.
+However, there are some environments where QUIC cannot be deployed.
 
 This document defines a protocol that provides all of the core functions of
 WebTransport using HTTP semantics. This includes unidirectional streams,
@@ -125,30 +126,36 @@ A client initiates a WebTransport session by sending an extended CONNECT request
 established. The stream that carries the CONNECT request is used to exchange
 bidirectional data for the session. This stream will be referred to as a
 *CONNECT stream*.  The stream ID of a CONNECT stream, which will be referrred to
-as a *Session ID*, is used to uniquely identify a given WebTransport session
-within the connection.
+ as a *Session ID*, is used to uniquely identify a given WebTransport session
+ within the connection.  WebTransport using HTTP/2 uses extended CONNECT with
+ the same `webtransport` HTTP Upgrade Token as {{WEBTRANSPORT-H3}}.  This
+ Upgrade Token uses the Capsule Protocol as defined in {{HTTP-DATAGRAM}}.
 
-After the session is established, endpoints exchange *WebTransport frames* using
-the bidirectional CONNECT stream. Within this stream, *WebTransport streams* and
-*WebTransport datagrams* are multiplexed.  In HTTP/2, WebTransport frames are
-carried in HTTP/2 DATA frames.  Multiple independent WebTransport sessions can
-share a connection if the HTTP version supports that, as HTTP/2 does.
+After the session is established, endpoints exchange WebTransport messages using
+the Capsule Protocol on the bidirectional CONNECT stream, the "data stream" as
+defined in {{Section 3.1 of HTTP-DATAGRAM}}.
 
-WebTransport frames closely mirror a subset of QUIC frames and provide the
+Within this stream, *WebTransport streams* and *WebTransport datagrams* are
+multiplexed.  In HTTP/2, WebTransport capsules are carried in HTTP/2 DATA
+frames. Multiple independent WebTransport sessions can share a connection if
+the HTTP version supports that, as HTTP/2 does.
+
+WebTransport capsules closely mirror a subset of QUIC frames and provide the
 essential WebTransport features.  Within a WebTransport session, endpoints can
 
 * create and use bidirectional or unidirectional streams with no additional
-  round trips using WT_STREAM frames
+  round trips using the WT_STREAM capsule
 
 Stream creation and data flow on streams uses flow control mechanisms modeled on
-those in QUIC. Flow control is managed using the WebTransport frames:
+those in QUIC. Flow control is managed using the WebTransport capsules:
 WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS, WT_DATA_BLOCKED,
 WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED. Flow control for the CONNECT
 stream as a whole, as provided by the HTTP version in use, applies in addition
 to any WebTransport-session-level flow control.
 
-WebTransport streams can be aborted using a WT_RESET_STREAM frame and a receiver
-can request that a sender stop sending with a WT_STOP_SENDING frame.
+WebTransport streams can be aborted using a WT_RESET_STREAM capsule and a
+receiver can request that a sender stop sending with a WT_STOP_SENDING
+capsule.
 
 A WebTransport session is terminated when the CONNECT stream that created it is
 closed. This implicitly closes all WebTransport streams that were
@@ -186,16 +193,17 @@ the site that requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server checks if the identified resource supports
-WebTransport sessions. If the resource does not, the server SHOULD reply with status
-code 404 ({{Section 6.5.4 of !RFC7231}}). To accept a WebTransport session the
-server replies with 2xx status code. Before accepting a session, a server MUST
-ensure that it authorizes use of the session by the site identified in the
-`Origin` header.
+WebTransport sessions. If the resource does not, the server SHOULD reply with
+status code 404 ({{Section 6.5.4 of !RFC7231}}). If it does, it MAY accept the
+session by replying with a 2xx series status code, as defined in Section 15.3
+of {{!SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST
+verify the `Origin` header to ensure that the specified origin is allowed to
+access the server in question.
 
 From the client's perspective, a WebTransport session is established when the
 client receives a 200 response. From the server's perspective, a session is
 established once it sends a 200 response. Both endpoints MUST NOT send any
-WebTransport frames on a given session before that session is established.
+WebTransport capsules on a given session before that session is established.
 
 ## Limiting the Number of Simultaneous Sessions
 
@@ -230,9 +238,9 @@ differences from the way in which QUIC handles application data.
 
 Endpoints MUST send stream data in order. As there is no ordering mechanism
 available for the receiver to reassemble incoming data, receivers assume that
-all data arriving in STREAM frames is contiguous and in order.
+all data arriving in WT_STREAM capsules is contiguous and in order.
 
-DATAGRAM frames are delivered to the remote WebTransport endpoint reliably,
+DATAGRAM capsules are delivered to the remote WebTransport endpoint reliably,
 however this does not require that the receiving implementation deliver that
 data to the application in a reliable manner.
 
@@ -251,367 +259,375 @@ unidirectional, indicated by the second least significant bit of the
 stream ID.
 
 Because WebTransport does not provide an acknowledgement mechanism for
-WebTransport frames, it relies on the underlying transport's in order delivery
+WebTransport capsules, it relies on the underlying transport's in order delivery
 to inform stream state transitions. Wherever QUIC relies on receiving an ack
 for a packet to transition between stream states, WebTransport performs that
 transition immediately.
 
-# WebTransport Frames
+# WebTransport Capsules
 
-WebTransport frames mirror their QUIC counterparts as closely as possible to
-enable maximal reuse of any applicable QUIC infrastructure by implementors.
+WebTransport capsules mirror their QUIC frame counterparts as closely as
+possible to enable maximal reuse of any applicable QUIC infrastructure by
+implementors.
 
-A WebTransport frame begins with a Frame Type and Frame Length which are
-followed by zero or more fields that are type-dependent.
+WebTransport capsules follow the Capsule Protocol format defined in {
+{Section 3.2 of HTTP-DATAGRAM}}, containing a Capsule Type and Capsule Length
+which are followed by zero or more bytes of Capsule Value that are
+type-dependent.
 
 ~~~
-Frame {
-  Frame Type (i),
-  Frame Length (i),
-  Type-Dependent Fields (..),
+Capsule {
+  Capsule Type (i),
+  Capsule Length (i),
+  Capsule Value (..),
 }
 ~~~
-{: #fig-wt_frame_header title="WebTransport Frame Format"}
+{: #fig-Capsule_Protocol_header title="Capsule Format"}
 
-The Frame Type field indicates the type of the frame, defining what
+The Capsule Type field indicates the type of the capsule, defining what
 type-dependent fields will be present.
 
-The Frame Length field indicates the length of the WebTransport frame, including
-all type-dependent fields and other information. It does not include the size
-of the Frame Type or Frame Length fields themselves.
+The Capsule Length field indicates the length of the WebTransport capsule,
+including all type-dependent fields and other information. It does not include
+the size of the Capsule Type or Capsule Length fields themselves.
 
-Both of these fields use a variable-length integer encoding (see {{Section 16 of
-!RFC9000}}), with one exception. To ensure simple and efficient
-implementations of frame parsing, the frame type and length MUST use the
-shortest possible encoding. For example, for the frame types defined in this
-document, this means a single-byte encoding, even though it is possible to
-encode these values as a two-, four-, or eight-byte variable-length integer.
+## PADDING Capsule {#PADDING}
 
-## WT_PADDING Frames {#WT_PADDING}
+*[PADDING]: #
 
-*[WT_PADDING]: #
-
-A WT_PADDING frame (type=0x00) has no semantic value. PADDING frames can be used
-to introduce additional data between other WebTransport frames and can also be
-used to provide protection against traffic analysis or for other reasons.
+A PADDING capsule is an HTTP capsule {{HTTP-DATAGRAM}} of type=0x00 and has no
+semantic value. PADDING capsules can be used to introduce additional data
+between other HTTP datagrams and can also be used to provide protection
+against traffic analysis or for other reasons.
 
 ~~~
-WT_PADDING Frame {
+PADDING Capsule {
   Type (i) = 0x00,
   Length (i),
   Padding (..),
 }
 ~~~
-{: #fig-wt_padding title="WT_PADDING Frame Format"}
+{: #fig-padding title="PADDING Capsule Format"}
 
 The Padding field MUST be set to an all-zero sequence of bytes of any length as
 specified by the Length field.
+
 <!-- TODO validation and error handling -->
 
-## WT_RESET_STREAM Frames {#WT_RESET_STREAM}
+## WT_RESET_STREAM Capsule {#WT_RESET_STREAM}
 
 *[WT_RESET_STREAM]: #
 
-A WebTransport frame called WT_RESET_STREAM is introduced for either endpoint to
-abruptly terminate the sending part of a WebTransport stream.
+A WT_RESET_STREAM capsule is an HTTP capsule {{HTTP-DATAGRAM}} of type=0x04 and
+allows either endpoint to abruptly terminate the sending part of a WebTransport
+stream.
 
-An endpoint uses a WT_RESET_STREAM frame (type=0x04) to abruptly terminate the
-sending part of a stream.
-
-After sending a WT_RESET_STREAM, an endpoint ceases transmission of WT_STREAM
-frames on the identified stream. A receiver of WT_RESET_STREAM can discard any
-data that it already received on that stream.
+After sending a WT_RESET_STREAM capsule, an endpoint ceases transmission of
+WT_STREAM capsules on the identified stream. A receiver of a WT_RESET_STREAM
+capsule can discard any data that it already received on that stream.
 
 ~~~
-WT_RESET_STREAM Frame {
+WT_RESET_STREAM Capsule {
   Type (i) = 0x04,
   Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
 }
 ~~~
-{: #fig-wt_reset_stream title="WT_RESET_STREAM Frame Format"}
+{: #fig-wt_reset_stream title="WT_RESET_STREAM Capsule Format"}
 
-The WT_RESET_STREAM frame defines the following fields:
+The WT_RESET_STREAM capsule defines the following fields:
 
    Stream ID:
-   : A variable-length integer encoding of the WebTransport stream ID
-   of the stream being terminated.
+   : A variable-length integer encoding of the WebTransport stream ID of the
+     stream being terminated.
 
    Application Protocol Error Code:
-   : A variable-length integer containing the
-   application protocol error code that indicates why the stream is being
-   closed.
+   : A variable-length integer containing the application protocol error code
+     that indicates why the stream is being closed.
 
-Unlike the equivalent QUIC frame, this frame does not include a Final Size
-field. In-order delivery of WT_STREAM frames ensures that the amount of
+Unlike the equivalent QUIC frame, this capsule does not include a Final Size
+field. In-order delivery of WT_STREAM capsules ensures that the amount of
 session-level flow control consumed by a stream is always known by both
 endpoints.
 
-## WT_STOP_SENDING Frames {#WT_STOP_SENDING}
+## WT_STOP_SENDING Capsule {#WT_STOP_SENDING}
 
 *[WT_STOP_SENDING]: #
 
-A WebTransport frame called WT_STOP_SENDING is introduced to communicate that
-incoming data is being discarded on receipt per application request.
-WT_STOP_SENDING requests that a peer cease transmission on a stream.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_STOP_SENDING (type=0x05) is
+introduced to communicate that incoming data is being discarded on receipt per
+application request. WT_STOP_SENDING requests that a peer cease transmission on
+a WebTransport stream.
 
 ~~~
-WT_STOP_SENDING Frame {
+WT_STOP_SENDING Capsule {
   Type (i) = 0x05,
   Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
 }
 ~~~
-{: #fig-wt_stop_sending title="WT_STOP_SENDING Frame Format"}
+{: #fig-wt_stop_sending title="WT_STOP_SENDING Capsule Format"}
 
-The WT_STOP_SENDING frame defines the following fields:
+The WT_STOP_SENDING capsule defines the following fields:
 
    Stream ID:
-   : A variable-length integer carrying the WebTransport stream ID of
-   the stream being ignored.
+   : A variable-length integer carrying the WebTransport stream ID of the stream
+     being ignored.
 
    Application Protocol Error Code:
-   : A variable-length integer containing the
-   application-specified reason the sender is ignoring the stream.
+   : A variable-length integer containing the application-specified reason the
+     sender is ignoring the stream.
 
 
-## WT_STREAM Frames {#WT_STREAM}
+## WT_STREAM Capsule {#WT_STREAM}
 
 *[WT_STREAM]: #
 
-WT_STREAM frames implicitly create a stream and carry stream data.
+WT_STREAM capsules implicitly create a WebTransport stream and carry stream
+data.
 
-The Type field in the WT_STREAM frame is either 0x0a or 0x0b.  This uses the
-same frame types as a QUIC STREAM frame with the OFF bit clear and the LEN bit
-set.  The FIN bit (0x01) in the frame type indicates that the frame marks the
-end of the stream in one direction.  Stream data consists of any number of 0x0a
-frames followed by a terminal 0x0b frame.
+The Type field in the WT_STREAM capsule is either 0x0a or 0x0b.  This uses the
+same capsule types as a QUIC STREAM frame with the OFF bit clear and the LEN
+bit set.  The FIN bit (0x01) in the capsule type indicates that the capsule
+marks the end of the stream in one direction.  Stream data consists of any
+number of 0x0a capsules followed by a terminal 0x0b capsule.
 
 ~~~
-WT_STREAM Frame {
+WT_STREAM Capsule {
   Type (i) = 0x0a..0x0b,
   Length (i),
   Stream ID (i),
   Stream Data (..),
 }
 ~~~
-{: #fig-wt_stream title="WT_STREAM Frame Format"}
+{: #fig-wt_stream title="WT_STREAM Capsule Format"}
 
-WT_STREAM frames contain the following fields:
+WT_STREAM capsules contain the following fields:
 
 Stream ID:
 : The stream ID for the stream.
 
 Stream Data:
-: Zero or more bytes of data for the stream.  Empty WT_STREAM frames MUST NOT be
-used unless they open or close a stream; an endpoint MAY treat an empty
-WT_STREAM frame that neither starts nor ends a stream as a session error.
+: Zero or more bytes of data for the stream.  Empty WT_STREAM capsules MUST NOT
+  be used unless they open or close a stream; an endpoint MAY treat an empty
+  WT_STREAM capsule that neither starts nor ends a stream as a session error.
 
-## WT_MAX_DATA Frames {#WT_MAX_DATA}
+## WT_MAX_DATA Capsule {#WT_MAX_DATA}
 
 *[WT_MAX_DATA]: #
 
-A WebTransport frame called WT_MAX_DATA is introduced to inform the peer of the
-maximum amount of data that can be sent on the WebTransport session as a
-whole.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_DATA (type=0x10) is introduced
+to inform the peer of the maximum amount of data that can be sent on the
+WebTransport session as a whole.
 
 ~~~
-WT_MAX_DATA Frame {
+WT_MAX_DATA Capsule {
   Type (i) = 0x10,
   Length (i),
   Maximum Data (i),
 }
 ~~~
-{: #fig-wt_max_data title="WT_MAX_DATA Frame Format"}
+{: #fig-wt_max_data title="WT_MAX_DATA Capsule Format"}
 
-WT_MAX_DATA frames contain the following field:
+WT_MAX_DATA capsules contain the following field:
 
    Maximum Data:
-   : A variable-length integer indicating the maximum amount of data
-   that can be sent on the entire connection, in units of bytes.
+   : A variable-length integer indicating the maximum amount of data that can be
+     sent on the entire connection, in units of bytes.
 
-All data sent in WT_STREAM frames counts toward this limit. The sum of the
-lengths of Stream Data fields in WT_STREAM frames MUST NOT exceed the value
+All data sent in WT_STREAM capsules counts toward this limit. The sum of the
+lengths of Stream Data fields in WT_STREAM capsules MUST NOT exceed the value
 advertised by a receiver.
 
-## WT_MAX_STREAM_DATA Frames {#WT_MAX_STREAM_DATA}
+## WT_MAX_STREAM_DATA Capsule {#WT_MAX_STREAM_DATA}
 
 *[WT_MAX_STREAM_DATA]: #
 
-A WebTransport frame called WT_MAX_STREAM_DATA is introduced to inform a peer of
-the maximum amount of data that can be sent on a stream.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAM_DATA (type=0x11) is
+introduced to inform a peer of the maximum amount of data that can be sent on a
+WebTransport stream.
 
 ~~~
-WT_MAX_STREAM_DATA Frame {
+WT_MAX_STREAM_DATA Capsule {
   Type (i) = 0x11,
   Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
 }
 ~~~
-{: #fig-wt_max_stream_data title="WT_MAX_STREAM_DATA Frame Format"}
+{: #fig-wt_max_stream_data title="WT_MAX_STREAM_DATA Capsule Format"}
 
-WT_MAX_STREAM_DATA frames contain the following fields:
+WT_MAX_STREAM_DATA capsules contain the following fields:
 
    Stream ID:
    : The stream ID of the affected WebTransport stream, encoded as a
-   variable-length integer.
+     variable-length integer.
 
    Maximum Stream Data:
-   : A variable-length integer indicating the maximum amount
-   of data that can be sent on the identified stream, in units of bytes.
+   : A variable-length integer indicating the maximum amount of data that can be
+     sent on the identified stream, in units of bytes.
 
-All data sent in WT_STREAM frames for the identified stream counts toward this
-limit. The sum of the lengths of Stream Data fields in WT_STREAM frames on the
-identified stream MUST NOT exceed the value advertised by a receiver.
+All data sent in WT_STREAM capsules for the identified stream counts toward this
+limit. The sum of the lengths of Stream Data fields in WT_STREAM capsules on
+the identified stream MUST NOT exceed the value advertised by a receiver.
 
-## WT_MAX_STREAMS Frames {#WT_MAX_STREAMS}
+## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 
 *[WT_MAX_STREAMS]: #
 
-A WebTransport frame called WT_MAX_STREAMS is introduced to inform the peer of
-the cumulative number of streams of a given type it is permitted to open. A
-WT_MAX_STREAMS frame with a type of 0x12 applies to bidirectional streams, and
-a WT_MAX_STREAMS frame with a type of 0x13 applies to unidirectional streams.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is introduced to inform
+the peer of the cumulative number of streams of a given type it is permitted to
+open.  A WT_MAX_STREAMS capsule with a type of 0x12 applies to bidirectional
+streams, and a WT_MAX_STREAMS capsule with a type of 0x13 applies to
+unidirectional streams.
 
 ~~~
-WT_MAX_STREAMS Frame {
+WT_MAX_STREAMS Capsule {
   Type (i) = 0x12..0x13,
   Length (i),
   Maximum Streams (i),
 }
 ~~~
-{: #fig-wt_max_streams title="WT_MAX_STREAMS Frame Format"}
+{: #fig-wt_max_streams title="WT_MAX_STREAMS Capsule Format"}
 
-WT_MAX_STREAMS frames contain the following field:
+WT_MAX_STREAMS capsules contain the following field:
 
    Maximum Streams:
-   : A count of the cumulative number of streams of the
-   corresponding type that can be opened over the lifetime of the connection.
-   This value cannot exceed 2<sup>60</sup>, as it is not possible to encode stream IDs
-   larger than 2<sup>62</sup>-1.
+   : A count of the cumulative number of streams of the corresponding type that
+     can be opened over the lifetime of the connection. This value cannot
+     exceed 2<sup>60</sup>, as it is not possible to encode stream IDs larger
+     than 2<sup>62</sup>-1.
 
 An endpoint MUST NOT open more streams than permitted by the current stream
-limit set by its peer. For instance, a server that receives a unidirectional
-stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream 15.
+limit set by its peer.  For instance, a server that receives a unidirectional
+stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream
+15.
 
 Note that this limit includes streams that have been closed as well as those
 that are open.
 
-## WT_DATA_BLOCKED Frames {#WT_DATA_BLOCKED}
+## WT_DATA_BLOCKED Capsule {#WT_DATA_BLOCKED}
 
 *[WT_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_DATA_BLOCKED frame (type=0x14) when it wishes to send
-data but is unable to do so due to WebTransport session-level flow control.
-WT_DATA_BLOCKED frames can be used as input to tuning of flow control
-algorithms.
+A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x14) when it wishes to
+send data but is unable to do so due to WebTransport session-level flow
+control. WT_DATA_BLOCKED capsules can be used as input to tuning of flow
+control algorithms.
 
 ~~~
-WT_DATA_BLOCKED Frame {
+WT_DATA_BLOCKED Capsule {
   Type (i) = 0x14,
   Length (i),
   Maximum Data (i),
 }
 ~~~
-{: #fig-wt_data_blocked title="WT_DATA_BLOCKED Frame Format"}
+{: #fig-wt_data_blocked title="WT_DATA_BLOCKED Capsule Format"}
 
-WT_DATA_BLOCKED frames contain the following field:
+WT_DATA_BLOCKED capsules contain the following field:
 
    Maximum Data:
-   : A variable-length integer indicating the session-level limit
-   at which blocking occurred.
+   : A variable-length integer indicating the session-level limit at which
+     blocking occurred.
 
-## WT_STREAM_DATA_BLOCKED Frames {#WT_STREAM_DATA_BLOCKED}
+## WT_STREAM_DATA_BLOCKED Capsule {#WT_STREAM_DATA_BLOCKED}
 
 *[WT_STREAM_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_STREAM_DATA_BLOCKED frame (type=0x15) when it wishes
-to send data but is unable to do so due to stream-level flow control. This
-frame is analogous to WT_DATA_BLOCKED.
+A sender SHOULD send a WT_STREAM_DATA_BLOCKED capsule (type=0x15) when it wishes
+to send data but is unable to do so due to stream-level flow control.  This
+capsule is analogous to WT_DATA_BLOCKED.
 
 ~~~
-WT_STREAM_DATA_BLOCKED Frame {
+WT_STREAM_DATA_BLOCKED Capsule {
   Type (i) = 0x15,
   Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
 }
 ~~~
-{: #fig-wt_stream_data_blocked title="WT_STREAM_DATA_BLOCKED Frame Format"}
+{: #fig-wt_stream_data_blocked title="WT_STREAM_DATA_BLOCKED Capsule Format"}
 
-WT_STREAM_DATA_BLOCKED frames contain the following fields:
+WT_STREAM_DATA_BLOCKED capsules contain the following fields:
 
    Stream ID:
-   : A variable-length integer indicating the WebTransport stream that
-   is blocked due to flow control.
+   : A variable-length integer indicating the WebTransport stream that is
+     blocked due to flow control.
 
    Maximum Stream Data:
-   : A variable-length integer indicating the offset of the
-   stream at which the blocking occurred.
+   : A variable-length integer indicating the offset of the stream at which the
+     blocking occurred.
 
-## WT_STREAMS_BLOCKED Frames {#WT_STREAMS_BLOCKED}
+## WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
 
 *[WT_STREAMS_BLOCKED]: #
 
-A sender SHOULD send a WT_STREAMS_BLOCKED frame (type=0x16 or 0x17) when it
+A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x16 or 0x17) when it
 wishes to open a stream but is unable to do so due to the maximum stream limit
-set by its peer. A WT_STREAMS_BLOCKED frame of type 0x16 is used to indicate
-reaching the bidirectional stream limit, and a STREAMS_BLOCKED frame of type
+set by its peer.  A WT_STREAMS_BLOCKED capsule of type 0x16 is used to indicate
+reaching the bidirectional stream limit, and a STREAMS_BLOCKED capsule of type
 0x17 is used to indicate reaching the unidirectional stream limit.
 
-A WT_STREAMS_BLOCKED frame does not open the stream, but informs the peer that a
+A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that a
 new stream was needed and the stream limit prevented the creation of the
 stream.
 
 ~~~
-WT_STREAMS_BLOCKED Frame {
+WT_STREAMS_BLOCKED Capsule {
   Type (i) = 0x16..0x17,
   Length (i),
   Maximum Streams (i),
 }
 ~~~
-{: #fig-wt_streams_blocked title="WT_STREAMS_BLOCKED Frame Format"}
+{: #fig-wt_streams_blocked title="WT_STREAMS_BLOCKED Capsule Format"}
 
-WT_STREAMS_BLOCKED frames contain the following field:
+WT_STREAMS_BLOCKED capsules contain the following field:
 
    Maximum Streams:
-   : A variable-length integer indicating the maximum number of
-   streams allowed at the time the frame was sent. This value cannot exceed
-   2<sup>60</sup>, as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
+   : A variable-length integer indicating the maximum number of streams allowed
+     at the time the capsule was sent. This value cannot exceed 2<sup>60</sup>,
+     as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
 
-## WT_DATAGRAM Frames {#WT_DATAGRAM}
+## DATAGRAM Capsule {#DATAGRAM_CAPSULE}
 
-*[WT_DATAGRAM]: #
+*[DATAGRAM_CAPSULE]: #
 
-The WT_DATAGRAM frame type (0x31) is used to carry datagram traffic. Frame type
-0x30 is also reserved to maintain parity with QUIC, but unused, as all
-WebTransport frames MUST contain a length field.
+WebTransport over HTTP/2 uses the DATAGRAM capsule defined in {{Section 3.5 of
+HTTP-DATAGRAM}} to carry datagram traffic.
 
 ~~~
-WT_DATAGRAM Frame {
-  Type (i) = 0x31,
+DATAGRAM Capsule {
+  Type (i) = 0x00,
   Length (i),
-  Datagram Data (..),
+  HTTP Datagram Payload (..),
 }
 ~~~
-{: #fig-wt_datagram title="WT_DATAGRAM Frame Format"}
+{: #fig-datagram title="DATAGRAM Capsule Format"}
 
-WT_DATAGRAM frames contain the following fields:
+When used in WebTransport over HTTP/2, DATAGRAM capsules contain the following
+fields:
 
-   Datagram Data:
+   HTTP Datagram Payload:
    : The content of the datagram to be delivered.
 
-The data in WT_DATAGRAM frames is not subject to flow control. The receiver MAY
+The data in DATAGRAM capsules is not subject to flow control. The receiver MAY
 discard this data if it does not have sufficient space to buffer it.
 
-An intermediary could forward the data in a WT_DATAGRAM frame over another
-protocol, such as WebTransport over HTTP/3. In QUIC, a datagram frame can span
+An intermediary could forward the data in a DATAGRAM capsule over another
+protocol, such as WebTransport over HTTP/3.  In QUIC, a datagram frame can span
 at most one packet. Because of that, the applications have to know the maximum
 size of the datagram they can send. However, when proxying the datagrams, the
 hop-by-hop MTUs can vary.
+
+{{Section 3.5 of HTTP-DATAGRAM}} indicates that intermediaries that forward
+DATAGRAM capsules where QUIC datagrams {{DATAGRAM}} are available forward the
+contents of the capsule as native QUIC datagrams, rather than as HTTP datagrams
+in a DATAGRAM capsule. Similarly, when forwarding DATAGRAM capsules used as
+part of a WebTransport over HTTP/2 session on a WebTransport session that
+natively supports QUIC datagrams, such as WebTransport over HTTP/3
+{{WEBTRANSPORT-H3}}, intermediaries SHOULD use native QUIC datagrams.
 
 # Examples
 
@@ -655,7 +671,7 @@ WebTransport Data
 ~~~
 
 An example of the server initiating a WebTransport Stream follows. The only
-difference here is the endpoint that sends the first WT_STREAM frame.
+difference here is the endpoint that sends the first WT_STREAM capsule.
 
 ~~~
 [[ From Client ]]                   [[ From Server ]]
@@ -701,7 +717,7 @@ sending new datagrams and reset all of the streams associated with the session.
 
 # Transport Properties
 
-The WebTransport framework [OVERVIEW] defines a set of optional transport
+The WebTransport capsulework [OVERVIEW] defines a set of optional transport
 properties that clients can use to determine the presence of features which
 might allow additional optimizations beyond the common set of properties
 available via all WebTransport protocols. Below are details about support in
@@ -781,6 +797,250 @@ Specification:
 
 : This document
 
+## Capsule Types
+
+The following entries are added to the "HTTP Capsule Types" registry established
+by {{HTTP-DATAGRAM}}:
+
+The `PADDING` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: PADDING
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_RESET_STREAM` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_RESET_STREAM
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_STOP_SENDING` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_STOP_SENDING
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_STREAM` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_STREAM
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_MAX_DATA` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_MAX_DATA
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_MAX_STREAM_DATA` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_MAX_STREAM_DATA
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_MAX_STREAMS` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_MAX_STREAMS
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_DATA_BLOCKED` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_DATA_BLOCKED
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_STREAM_DATA_BLOCKED` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_STREAM_DATA_BLOCKED
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_STREAMS_BLOCKED` capsule.
+
+Value:
+: 0x00
+
+Capsule Type:
+: WT_STREAMS_BLOCKED
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
 
 --- back
 

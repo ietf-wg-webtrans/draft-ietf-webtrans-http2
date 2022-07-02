@@ -130,10 +130,10 @@ A client initiates a WebTransport session by sending an extended CONNECT request
 established. The stream that carries the CONNECT request is used to exchange
 bidirectional data for the session. This stream will be referred to as a
 *CONNECT stream*.  The stream ID of a CONNECT stream, which will be referrred to
- as a *Session ID*, is used to uniquely identify a given WebTransport session
- within the connection.  WebTransport using HTTP/2 uses extended CONNECT with
- the same `webtransport` HTTP Upgrade Token as {{WEBTRANSPORT-H3}}.  This
- Upgrade Token uses the Capsule Protocol as defined in {{HTTP-DATAGRAM}}.
+as a *Session ID*, is used to uniquely identify a given WebTransport session
+within the connection.  WebTransport using HTTP/2 uses extended CONNECT with
+the same `webtransport` HTTP Upgrade Token as {{WEBTRANSPORT-H3}}.  This
+Upgrade Token uses the Capsule Protocol as defined in {{HTTP-DATAGRAM}}.
 
 After the session is established, endpoints exchange WebTransport messages using
 the Capsule Protocol on the bidirectional CONNECT stream, the "data stream" as
@@ -463,7 +463,7 @@ advertised by a receiver.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume WT_MAX_DATA
-capsules for flow control purposes and MUST generate and send approrpiate flow
+capsules for flow control purposes and MUST generate and send appropriate flow
 control signals for their limits; see {{flow-control-intermediaries}}.
 
 ## WT_MAX_STREAM_DATA Capsule {#WT_MAX_STREAM_DATA}
@@ -501,7 +501,7 @@ the identified stream MUST NOT exceed the value advertised by a receiver.
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
 WT_MAX_STREAM_DATA capsules for flow control purposes and MUST generate and
-send approrpiate flow control signals for their limits; see
+send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
 ## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
@@ -540,7 +540,7 @@ WT_DATA_BLOCKED capsules contain the following field:
 The WT_DATA_BLOCKED capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
 WT_DATA_BLOCKED capsules for flow control purposes and MUST generate and
-send approrpiate flow control signals for their limits; see
+send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
 ## WT_STREAM_DATA_BLOCKED Capsule {#WT_STREAM_DATA_BLOCKED}
@@ -574,7 +574,7 @@ WT_STREAM_DATA_BLOCKED capsules contain the following fields:
 The WT_STREAM_DATA_BLOCKED capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
 WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
-send approrpiate flow control signals for their limits; see
+send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
 ### WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}

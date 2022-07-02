@@ -118,8 +118,12 @@ WebTransport servers are identified by an HTTPS URI as defined in {{Section
 4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, both the client and server have to
-send a SETTINGS_ENABLE_WEBTRANSPORT setting in order to indicate that they
-both support WebTransport over HTTP/2.
+send a SETTINGS_ENABLE_WEBTRANSPORT setting to indicate that they both support
+WebTransport over HTTP/2.
+
+The server also needs to send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with
+a value greater than "0" to indicate the number of concurrent sessions it is
+willing to receive.
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -209,18 +213,15 @@ WebTransport capsules on a given session before that session is established.
 
 ### Limiting the Number of Simultaneous Sessions
 
-From a flow control perspective, WebTransport sessions count against HTTP/2
-session flow control limits just like regular HTTP requests, since they are
-established via an HTTP CONNECT request. This document does not make any effort
-to introduce a separate flow control mechanism for WebTransport sessions. If
-the server needs to limit the rate of incoming requests, it has alternative
-mechanisms at its disposal:
-
-* `HTTP_STREAM_REFUSED` error code defined in {{!RFC7540}} indicates to the
-  receiving HTTP/2 stack that the request was not processed in any way.
-* HTTP status code 429 indicates that the request was rejected due to rate
-  limiting {{!RFC6585}}. Unlike the previous method, this signal is directly
-  propagated to the application.
+This document defines a SETTINGS_MAX_WEBTRANSPORT_SESSIONS parameter that allows
+the server to limit the maximum number of concurrent WebTransport sessions on a
+single HTTP/3 connection.  The client MUST NOT open more sessions than
+indicated in the server SETTINGS parameters.  The server MUST NOT close the
+connection if the client opens sessions exceeding this limit, as the client and
+the server do not have a consistent view of how many sessions are open due to
+the asynchronous nature of the protocol; instead, it MUST reset all of the
+CONNECT streams it is not willing to process with the `REFUSED_STREAM`
+error code defined in {{HTTP2}}.
 
 ### Flow Control and Intermediaries {#flow-control-intermediaries}
 WebTransport over HTTP/2 uses several capsules for flow control, and all of
@@ -771,7 +772,7 @@ to sending data and to opening new streams.
 
 ## HTTP/2 SETTINGS Parameter Registration
 
-The following entry is added to the "HTTP/2 Settings" registry established by
+The following entries are added to the "HTTP/2 Settings" registry established by
 {{!RFC7540}}:
 
 The `SETTINGS_ENABLE_WEBTRANSPORT` parameter indicates that the specified
@@ -784,6 +785,28 @@ Setting Name:
 Value:
 
 : 0x2b603742
+
+Default:
+
+: 0
+
+Specification:
+
+: This document
+
+The `SETTINGS_WEBTRANSPORT_MAX_SESSIONS` parameter indicates that the specified
+HTTP/2 connection is WebTransport-capable and the number of concurrent sessions
+it is willing to receive. The default value for the
+SETTINGS_MAX_WEBTRANSPORT_SESSIONS parameter is "0", meaning that the server is
+not willing to receive any WebTransport sessions.
+
+Setting Name:
+
+: WEBTRANSPORT_MAX_SESSIONS
+
+Value:
+
+: 0x2b603743
 
 Default:
 

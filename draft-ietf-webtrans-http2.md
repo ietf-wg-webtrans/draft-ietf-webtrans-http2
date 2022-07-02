@@ -57,6 +57,7 @@ normative:
   WEBTRANSPORT-H3: I-D.ietf-webtrans-http3
   HTTP: I-D.ietf-httpbis-semantics
   HTTP-DATAGRAM: I-D.ietf-masque-h3-datagram
+  HTTP2: RFC9113
 
 informative:
   DATAGRAM: RFC9221
@@ -96,8 +97,7 @@ bidirectional streams, and datagrams.
 
 By relying only on generic HTTP semantics, this protocol might allow deployment
 using any HTTP version.  However, this document only defines negotiation for
-HTTP/2 {{!H2=I-D.ietf-httpbis-http2bis}} as the current most common TCP-based
-fallback to HTTP/3.
+HTTP/2 {{HTTP2}} as the current most common TCP-based fallback to HTTP/3.
 
 ## Terminology
 

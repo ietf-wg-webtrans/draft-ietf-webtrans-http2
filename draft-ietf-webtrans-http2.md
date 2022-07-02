@@ -223,7 +223,7 @@ mechanisms at its disposal:
   propagated to the application.
 
 ### Flow Control and Intermediaries {#flow-control-intermediaries}
-WebTransport over HTTP/2 defines several capsules for flow control, and all of
+WebTransport over HTTP/2 uses several capsules for flow control, and all of
 these capsules define special intermediary handling as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  These capsules, referred to as the "flow
 control capsules" are WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS,
@@ -507,42 +507,10 @@ send approrpiate flow control signals for their limits; see
 
 *[WT_MAX_STREAMS]: #
 
-An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is introduced to inform
-the peer of the cumulative number of streams of a given type it is permitted to
-open.  A WT_MAX_STREAMS capsule with a type of 0x12 applies to bidirectional
-streams, and a WT_MAX_STREAMS capsule with a type of 0x13 applies to
-unidirectional streams.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS informs the peer of the
+cumulative number of streams of a given type it is permitted to open.
 
-~~~
-WT_MAX_STREAMS Capsule {
-  Type (i) = 0x12..0x13,
-  Length (i),
-  Maximum Streams (i),
-}
-~~~
-{: #fig-wt_max_streams title="WT_MAX_STREAMS Capsule Format"}
-
-WT_MAX_STREAMS capsules contain the following field:
-
-   Maximum Streams:
-   : A count of the cumulative number of streams of the corresponding type that
-     can be opened over the lifetime of the connection. This value cannot
-     exceed 2<sup>60</sup>, as it is not possible to encode stream IDs larger
-     than 2<sup>62</sup>-1.
-
-An endpoint MUST NOT open more streams than permitted by the current stream
-limit set by its peer.  For instance, a server that receives a unidirectional
-stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream
-15.
-
-Note that this limit includes streams that have been closed as well as those
-that are open.
-
-The WT_MAX_STREAMS capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
-WT_MAX_STREAMS capsules for flow control purposes and MUST generate and
-send approrpiate flow control signals for their limits; see
-{{flow-control-intermediaries}}.
+The WT_MAX_STREAMS capsule is defined in {{Section 3.4.1 of WEBTRANSPORT-H3}}.
 
 ## WT_DATA_BLOCKED Capsule {#WT_DATA_BLOCKED}
 
@@ -608,41 +576,15 @@ WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
 send approrpiate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
-## WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
+### WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
 
 *[WT_STREAMS_BLOCKED]: #
 
 A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x16 or 0x17) when it
 wishes to open a stream but is unable to do so due to the maximum stream limit
-set by its peer.  A WT_STREAMS_BLOCKED capsule of type 0x16 is used to indicate
-reaching the bidirectional stream limit, and a STREAMS_BLOCKED capsule of type
-0x17 is used to indicate reaching the unidirectional stream limit.
+set by its peer.
 
-A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that a
-new stream was needed and the stream limit prevented the creation of the
-stream.
-
-~~~
-WT_STREAMS_BLOCKED Capsule {
-  Type (i) = 0x16..0x17,
-  Length (i),
-  Maximum Streams (i),
-}
-~~~
-{: #fig-wt_streams_blocked title="WT_STREAMS_BLOCKED Capsule Format"}
-
-WT_STREAMS_BLOCKED capsules contain the following field:
-
-   Maximum Streams:
-   : A variable-length integer indicating the maximum number of streams allowed
-     at the time the capsule was sent. This value cannot exceed 2<sup>60</sup>,
-     as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
-
-The WT_STREAMS_BLOCKED capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
-WT_STREAMS_BLOCKED capsules for flow control purposes and MUST generate and
-send approrpiate flow control signals for their limits; see
-{{flow-control-intermediaries}}.
+The WT_MAX_STREAMS capsule is defined in {{Section 3.4.2 of WEBTRANSPORT-H3}}.
 
 # DATAGRAM Capsule {#DATAGRAM_CAPSULE}
 
@@ -1000,30 +942,6 @@ Notes:
 : None
 {: spacing="compact"}
 
-The `WT_MAX_STREAMS` capsule.
-
-Value:
-: 0x00
-
-Capsule Type:
-: WT_MAX_STREAMS
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
 The `WT_DATA_BLOCKED` capsule.
 
 Value:
@@ -1055,30 +973,6 @@ Value:
 
 Capsule Type:
 : WT_STREAM_DATA_BLOCKED
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
-The `WT_STREAMS_BLOCKED` capsule.
-
-Value:
-: 0x00
-
-Capsule Type:
-: WT_STREAMS_BLOCKED
 
 Status:
 : permanent

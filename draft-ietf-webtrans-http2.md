@@ -239,7 +239,7 @@ messages, or as WebTransport flow control capsules, where appropriate.
 In practice, an intermediary that translates flow control signals between simlar
 WebTransport protocols, such as between two HTTP/2 connections, can often
 simply reexpress the same limits received on one connection directly on the
-other connection. 
+other connection.
 
 An intermediary that does not want to be responsible for storing data that
 cannot be immediately sent on its translated connection would ensure that it

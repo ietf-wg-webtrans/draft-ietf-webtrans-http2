@@ -231,14 +231,20 @@ control capsules" are WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS,
 WT_DATA_BLOCKED, WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED.
 
 Because flow control in WebTransport is hop-by-hop and does not provide an
-end-to-end signal, intermediaries MUST consume the flow control capsules and
-not translate or forward incoming flow control capsules on any other
-connections.  Similarly, other WebTransport over HTTP/2 or HTTP/3 connections
-will have their own flow control limits, and it is the responsibility of the
-intermediary to generate and send appropriate flow control signals to match its
-capabilities.  The intermediary can send these signals via HTTP/3 flow control
-messages, HTTP/2 flow control messages, or as WebTransport flow control
-capsules, where appropriate.
+end-to-end signal, intermediaries MUST consume the flow control signals and
+express their own flow control limits to the next hop. The intermediary can
+send these signals via HTTP/3 flow control messages, HTTP/2 flow control
+messages, or as WebTransport flow control capsules, where appropriate.
+
+In practice, an intermediary that translates flow control signals between simlar
+WebTransport protocols, such as between two HTTP/2 connections, can often
+simply reexpress the same limits received on one connection directly on the
+other connection.
+
+An intermediary that does not want to be responsible for storing data that
+cannot be immediately sent on its translated connection would ensure that it
+never advertises a higher flow control limit on one connection than the
+corresponding limit on the translated connection.
 
 # WebTransport Features {#features}
 

@@ -124,7 +124,7 @@ A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
 established. The stream that carries the CONNECT request is used to exchange
 bidirectional data for the session. This stream will be referred to as a
-*CONNECT stream*.  The stream ID of a CONNECT stream, which will be referrred to
+*CONNECT stream*.  The stream ID of a CONNECT stream, which will be referred to
 as a *Session ID*, is used to uniquely identify a given WebTransport session
 within the connection.
 

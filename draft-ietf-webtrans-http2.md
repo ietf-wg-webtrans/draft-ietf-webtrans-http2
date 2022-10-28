@@ -235,6 +235,9 @@ end-to-end signal, intermediaries MUST consume the flow control signals and
 express their own flow control limits to the next hop. The intermediary can
 send these signals via HTTP/3 flow control messages, HTTP/2 flow control
 messages, or as WebTransport flow control capsules, where appropriate.
+Intermediaries are responsible for storing any data for which they advertise
+flow control credit if that data cannot be immediately forwarded to the next
+hop.
 
 In practice, an intermediary that translates flow control signals between simlar
 WebTransport protocols, such as between two HTTP/2 connections, can often

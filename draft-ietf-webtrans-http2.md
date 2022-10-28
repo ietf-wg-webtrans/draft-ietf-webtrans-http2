@@ -299,26 +299,8 @@ WebTransport capsules mirror their QUIC frame counterparts as closely as
 possible to enable maximal reuse of any applicable QUIC infrastructure by
 implementors.
 
-WebTransport capsules follow the Capsule Protocol format defined in {
-{Section 3.2 of HTTP-DATAGRAM}}, containing a Capsule Type and Capsule Length
-which are followed by zero or more bytes of Capsule Value that are
-type-dependent.
-
-~~~
-Capsule {
-  Capsule Type (i),
-  Capsule Length (i),
-  Capsule Value (..),
-}
-~~~
-{: #fig-Capsule_Protocol_header title="Capsule Format"}
-
-The Capsule Type field indicates the type of the capsule, defining what
-type-dependent fields will be present.
-
-The Capsule Length field indicates the length of the WebTransport capsule,
-including all type-dependent fields and other information. It does not include
-the size of the Capsule Type or Capsule Length fields themselves.
+WebTransport capsules use the Capsule Protocol defined in {{Section 3.2 of
+HTTP-DATAGRAM}}.
 
 ## PADDING Capsule {#PADDING}
 
@@ -689,7 +671,8 @@ contents of the capsule as native QUIC datagrams, rather than as HTTP datagrams
 in a DATAGRAM capsule. Similarly, when forwarding DATAGRAM capsules used as
 part of a WebTransport over HTTP/2 session on a WebTransport session that
 natively supports QUIC datagrams, such as WebTransport over HTTP/3
-{{WEBTRANSPORT-H3}}, intermediaries SHOULD use native QUIC datagrams.
+{{WEBTRANSPORT-H3}}, intermediaries follow the requirements in
+{{WEBTRANSPORT-H3}} to use native QUIC datagrams.
 
 # Examples
 

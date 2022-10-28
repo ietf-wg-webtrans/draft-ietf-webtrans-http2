@@ -495,7 +495,7 @@ WT_MAX_STREAM_DATA capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
-### WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
+## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 
 *[WT_MAX_STREAMS]: #
 
@@ -599,7 +599,7 @@ WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
-### WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
+## WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
 
 *[WT_STREAMS_BLOCKED]: #
 

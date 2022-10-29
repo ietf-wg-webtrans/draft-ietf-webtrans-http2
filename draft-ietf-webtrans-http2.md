@@ -56,7 +56,7 @@ normative:
   OVERVIEW: I-D.ietf-webtrans-overview
   WEBTRANSPORT-H3: I-D.ietf-webtrans-http3
   HTTP: I-D.ietf-httpbis-semantics
-  HTTP-DATAGRAM: I-D.ietf-masque-h3-datagram
+  HTTP-DATAGRAM: RFC9297
   HTTP2: RFC9113
 
 informative:

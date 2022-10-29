@@ -306,14 +306,14 @@ HTTP-DATAGRAM}}.
 
 *[PADDING]: #
 
-A PADDING capsule is an HTTP capsule {{HTTP-DATAGRAM}} of type=0x00 and has no
-semantic value. PADDING capsules can be used to introduce additional data
-between other HTTP datagrams and can also be used to provide protection
+A PADDING capsule is an HTTP capsule {{HTTP-DATAGRAM}} of type=0x190B4D38 and
+has no semantic value. PADDING capsules can be used to introduce additional
+data between other HTTP datagrams and can also be used to provide protection
 against traffic analysis or for other reasons.
 
 ~~~
 PADDING Capsule {
-  Type (i) = 0x00,
+  Type (i) = 0x190B4D38,
   Length (i),
   Padding (..),
 }
@@ -329,9 +329,9 @@ specified by the Length field.
 
 *[WT_RESET_STREAM]: #
 
-A WT_RESET_STREAM capsule is an HTTP capsule {{HTTP-DATAGRAM}} of type=0x04 and
-allows either endpoint to abruptly terminate the sending part of a WebTransport
-stream.
+A WT_RESET_STREAM capsule is an HTTP capsule {{HTTP-DATAGRAM}} of
+type=0x190B4D39 and allows either endpoint to abruptly terminate the sending
+part of a WebTransport stream.
 
 After sending a WT_RESET_STREAM capsule, an endpoint ceases transmission of
 WT_STREAM capsules on the identified stream. A receiver of a WT_RESET_STREAM
@@ -339,7 +339,7 @@ capsule can discard any data that it already received on that stream.
 
 ~~~
 WT_RESET_STREAM Capsule {
-  Type (i) = 0x04,
+  Type (i) = 0x190B4D39,
   Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
@@ -366,14 +366,14 @@ endpoints.
 
 *[WT_STOP_SENDING]: #
 
-An HTTP capsule {{HTTP-DATAGRAM}} called WT_STOP_SENDING (type=0x05) is
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_STOP_SENDING (type=0x190B4D3A) is
 introduced to communicate that incoming data is being discarded on receipt per
 application request. WT_STOP_SENDING requests that a peer cease transmission on
 a WebTransport stream.
 
 ~~~
 WT_STOP_SENDING Capsule {
-  Type (i) = 0x05,
+  Type (i) = 0x190B4D3A,
   Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
@@ -399,15 +399,15 @@ The WT_STOP_SENDING capsule defines the following fields:
 WT_STREAM capsules implicitly create a WebTransport stream and carry stream
 data.
 
-The Type field in the WT_STREAM capsule is either 0x0a or 0x0b.  This uses the
-same capsule types as a QUIC STREAM frame with the OFF bit clear and the LEN
-bit set.  The FIN bit (0x01) in the capsule type indicates that the capsule
-marks the end of the stream in one direction.  Stream data consists of any
-number of 0x0a capsules followed by a terminal 0x0b capsule.
+The Type field in the WT_STREAM capsule is either 0x190B4D3B or 0x190B4D3C. This
+uses the same capsule types as a QUIC STREAM frame with the OFF bit clear and
+the LEN bit set.  The FIN bit (0x01) in the capsule type indicates that the
+capsule marks the end of the stream in one direction.  Stream data consists of
+any number of 0x190B4D3B capsules followed by a terminal 0x190B4D3C capsule.
 
 ~~~
 WT_STREAM Capsule {
-  Type (i) = 0x0a..0x0b,
+  Type (i) = 0x190B4D3B..0x190B4D3C,
   Length (i),
   Stream ID (i),
   Stream Data (..),
@@ -429,13 +429,13 @@ Stream Data:
 
 *[WT_MAX_DATA]: #
 
-An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_DATA (type=0x10) is introduced
-to inform the peer of the maximum amount of data that can be sent on the
-WebTransport session as a whole.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_DATA (type=0x190B4D3D) is
+introduced to inform the peer of the maximum amount of data that can be sent on
+the WebTransport session as a whole.
 
 ~~~
 WT_MAX_DATA Capsule {
-  Type (i) = 0x10,
+  Type (i) = 0x190B4D3D,
   Length (i),
   Maximum Data (i),
 }
@@ -461,13 +461,13 @@ control signals for their limits; see {{flow-control-intermediaries}}.
 
 *[WT_MAX_STREAM_DATA]: #
 
-An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAM_DATA (type=0x11) is
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAM_DATA (type=0x190B4D3E) is
 introduced to inform a peer of the maximum amount of data that can be sent on a
 WebTransport stream.
 
 ~~~
 WT_MAX_STREAM_DATA Capsule {
-  Type (i) = 0x11,
+  Type (i) = 0x190B4D3E,
   Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
@@ -501,13 +501,13 @@ send appropriate flow control signals for their limits; see
 
 An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is introduced to inform
 the peer of the cumulative number of streams of a given type it is permitted to
-open.  A WT_MAX_STREAMS capsule with a type of 0x12 applies to bidirectional
-streams, and a WT_MAX_STREAMS capsule with a type of 0x13 applies to
-unidirectional streams.
+open.  A WT_MAX_STREAMS capsule with a type of 0x190B4D3F applies to
+bidirectional streams, and a WT_MAX_STREAMS capsule with a type of 0x190B4D40
+applies to unidirectional streams.
 
 ~~~
 WT_MAX_STREAMS Capsule {
-  Type (i) = 0x12..0x13,
+  Type (i) = 0x190B4D3F..0x190B4D40,
   Length (i),
   Maximum Streams (i),
 }
@@ -539,14 +539,14 @@ send appropriate flow control signals for their limits.
 
 *[WT_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x14) when it wishes to
-send data but is unable to do so due to WebTransport session-level flow
+A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41) when it wishes
+to send data but is unable to do so due to WebTransport session-level flow
 control. WT_DATA_BLOCKED capsules can be used as input to tuning of flow
 control algorithms.
 
 ~~~
 WT_DATA_BLOCKED Capsule {
-  Type (i) = 0x14,
+  Type (i) = 0x190B4D41,
   Length (i),
   Maximum Data (i),
 }
@@ -569,13 +569,13 @@ send appropriate flow control signals for their limits; see
 
 *[WT_STREAM_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_STREAM_DATA_BLOCKED capsule (type=0x15) when it wishes
-to send data but is unable to do so due to stream-level flow control.  This
-capsule is analogous to WT_DATA_BLOCKED.
+A sender SHOULD send a WT_STREAM_DATA_BLOCKED capsule (type=0x190B4D42) when it
+wishes to send data but is unable to do so due to stream-level flow control.
+This capsule is analogous to WT_DATA_BLOCKED.
 
 ~~~
 WT_STREAM_DATA_BLOCKED Capsule {
-  Type (i) = 0x15,
+  Type (i) = 0x190B4D42,
   Length (i),
   Stream ID (i),
   Maximum Stream Data (i),
@@ -603,19 +603,20 @@ send appropriate flow control signals for their limits; see
 
 *[WT_STREAMS_BLOCKED]: #
 
-A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x16 or 0x17) when it
-wishes to open a stream but is unable to do so due to the maximum stream limit
-set by its peer.  A WT_STREAMS_BLOCKED capsule of type 0x16 is used to indicate
-reaching the bidirectional stream limit, and a STREAMS_BLOCKED capsule of type
-0x17 is used to indicate reaching the unidirectional stream limit.
+A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x190B4D43 or
+0x190B4D44) when it wishes to open a stream but is unable to do so due to the
+maximum stream limit set by its peer.  A WT_STREAMS_BLOCKED capsule of type
+0x190B4D43 is used to indicate reaching the bidirectional stream limit, and a
+STREAMS_BLOCKED capsule of type 0x190B4D44 is used to indicate reaching the
+unidirectional stream limit.
 
-A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that a
-new stream was needed and the stream limit prevented the creation of the
+A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that
+a new stream was needed and the stream limit prevented the creation of the
 stream.
 
 ~~~
 WT_STREAMS_BLOCKED Capsule {
-  Type (i) = 0x16..0x17,
+  Type (i) = 0x190B4D43..0x190B4D44,
   Length (i),
   Maximum Streams (i),
 }
@@ -872,7 +873,7 @@ by {{HTTP-DATAGRAM}}:
 The `PADDING` capsule.
 
 Value:
-: 0x00
+: 0x190B4D38
 
 Capsule Type:
 : PADDING
@@ -896,7 +897,7 @@ Notes:
 The `WT_RESET_STREAM` capsule.
 
 Value:
-: 0x00
+: 0x190B4D39
 
 Capsule Type:
 : WT_RESET_STREAM
@@ -920,7 +921,7 @@ Notes:
 The `WT_STOP_SENDING` capsule.
 
 Value:
-: 0x00
+: 0x190B4D3A
 
 Capsule Type:
 : WT_STOP_SENDING
@@ -944,7 +945,7 @@ Notes:
 The `WT_STREAM` capsule.
 
 Value:
-: 0x00
+: 0x190B4D3B..0x190B4D3C
 
 Capsule Type:
 : WT_STREAM
@@ -968,7 +969,7 @@ Notes:
 The `WT_MAX_DATA` capsule.
 
 Value:
-: 0x00
+: 0x190B4D3D
 
 Capsule Type:
 : WT_MAX_DATA
@@ -992,7 +993,7 @@ Notes:
 The `WT_MAX_STREAM_DATA` capsule.
 
 Value:
-: 0x00
+: 0x190B4D3E
 
 Capsule Type:
 : WT_MAX_STREAM_DATA
@@ -1016,7 +1017,7 @@ Notes:
 The `WT_MAX_STREAMS` capsule.
 
 Value:
-: 0x00
+: 0x190B4D3F..0x190B4D40
 
 Capsule Type:
 : WT_MAX_STREAMS
@@ -1040,7 +1041,7 @@ Notes:
 The `WT_DATA_BLOCKED` capsule.
 
 Value:
-: 0x00
+: 0x190B4D41
 
 Capsule Type:
 : WT_DATA_BLOCKED
@@ -1064,7 +1065,7 @@ Notes:
 The `WT_STREAM_DATA_BLOCKED` capsule.
 
 Value:
-: 0x00
+: 0x190B4D42
 
 Capsule Type:
 : WT_STREAM_DATA_BLOCKED
@@ -1088,7 +1089,7 @@ Notes:
 The `WT_STREAMS_BLOCKED` capsule.
 
 Value:
-: 0x00
+: 0x190B4D43..0x190B4D44
 
 Capsule Type:
 : WT_STREAMS_BLOCKED

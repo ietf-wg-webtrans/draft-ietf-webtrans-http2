@@ -1,5 +1,5 @@
 ---
-title: "WebTransport using HTTP/2"
+title: "WebTransport over HTTP/2"
 abbrev: "WebTransport-H2"
 docname: draft-ietf-webtrans-http2-latest
 

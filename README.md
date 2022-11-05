@@ -1,4 +1,4 @@
-# WebTransport using HTTP/2
+# WebTransport over HTTP/2
 
 This is the working area for the IETF [WEBTRANS Working Group](https://datatracker.ietf.org/wg/webtrans/documents/) Internet-Draft, "WebTransport using HTTP/2".
 

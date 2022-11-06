@@ -129,7 +129,7 @@ A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
 established. The stream that carries the CONNECT request is used to exchange
 bidirectional data for the session. This stream will be referred to as a
-*CONNECT stream*.  The stream ID of a CONNECT stream, which will be referrred to
+*CONNECT stream*.  The stream ID of a CONNECT stream, which will be referred to
 as a *Session ID*, is used to uniquely identify a given WebTransport session
 within the connection.  WebTransport using HTTP/2 uses extended CONNECT with
 the same `webtransport` HTTP Upgrade Token as {{WEBTRANSPORT-H3}}.  This
@@ -177,10 +177,9 @@ parameter has been negotiated.
 ## Extended CONNECT in HTTP/2
 
 {{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. An endpoint does not need to send
-both SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_ENABLE_WEBTRANSPORT; the
-SETTINGS_ENABLE_WEBTRANSPORT setting implies that an endpoint supports extended
-CONNECT.
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. An endpoint needs to send both
+SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_ENABLE_WEBTRANSPORT for
+WebTransport to be enabled.
 
 ## Creating a New Session
 
@@ -199,10 +198,10 @@ Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server checks if the identified resource supports
 WebTransport sessions. If the resource does not, the server SHOULD reply with
 status code 404 ({{Section 6.5.4 of !RFC7231}}). If it does, it MAY accept the
-session by replying with a 2xx series status code, as defined in Section 15.3
-of {{!SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST
-verify the `Origin` header to ensure that the specified origin is allowed to
-access the server in question.
+session by replying with a 2xx series status code, as defined in {{Section 15.3
+of !SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST verify
+the `Origin` header to ensure that the specified origin is allowed to access
+the server in question.
 
 From the client's perspective, a WebTransport session is established when the
 client receives a 200 response. From the server's perspective, a session is
@@ -211,7 +210,34 @@ WebTransport capsules on a given session before that session is established.
 
 ## Flow Control
 
-### Limiting the Number of Simultaneous Sessions
+Flow control governs the amount of resources that can be consumed or data that
+can be sent. WebTransport over HTTP/2 allows a server to limit the number of
+sessions that a client can create on a single connection; see
+{{flow-control-limit-sessions}}.
+
+For data, there are five applicable levels of flow control for data that is sent
+or received using WebTransport over HTTP/2:
+
+1. TCP flow control.
+
+2. HTTP/2 connection flow control, which governs the total amount of data in
+DATA frames for all HTTP/2 streams.
+
+3. HTTP/2 stream flow control, which limits the data on a single HTTP/2 stream.
+For a WebTransport session, this includes all capsules, including those that
+are exempt from session-level flow control.
+
+4. WebTransport session-level flow control, which limits the total amount of
+stream data that can be sent or received on streams within the WebTransport
+session.
+
+5. WebTransport stream flow control, which limits data on individual streams
+within a session.
+
+TCP and HTTP/2 define the first three levels of flow control. This document
+defines the final two.
+
+### Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
 
 This document defines a SETTINGS_MAX_WEBTRANSPORT_SESSIONS parameter that allows
 the server to limit the maximum number of concurrent WebTransport sessions on a
@@ -219,9 +245,9 @@ single HTTP/3 connection.  The client MUST NOT open more sessions than
 indicated in the server SETTINGS parameters.  The server MUST NOT close the
 connection if the client opens sessions exceeding this limit, as the client and
 the server do not have a consistent view of how many sessions are open due to
-the asynchronous nature of the protocol; instead, it MUST reset all of the
-CONNECT streams it is not willing to process with the `REFUSED_STREAM`
-error code defined in {{HTTP2}}.
+the asynchronous nature of the protocol; instead, it MUST reply to the CONNECT
+request with a status code 426, indicating that the client attempted to open
+too many sessions.
 
 ### Flow Control and Intermediaries {#flow-control-intermediaries}
 WebTransport over HTTP/2 uses several capsules for flow control, and all of
@@ -231,13 +257,12 @@ control capsules" are WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS,
 WT_DATA_BLOCKED, WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED.
 
 Because flow control in WebTransport is hop-by-hop and does not provide an
-end-to-end signal, intermediaries MUST consume the flow control signals and
-express their own flow control limits to the next hop. The intermediary can
-send these signals via HTTP/3 flow control messages, HTTP/2 flow control
-messages, or as WebTransport flow control capsules, where appropriate.
-Intermediaries are responsible for storing any data for which they advertise
-flow control credit if that data cannot be immediately forwarded to the next
-hop.
+end-to-end signal, intermediaries MUST consume flow control signals and express
+their own flow control limits to the next hop. The intermediary can send these
+signals via HTTP/3 flow control messages, HTTP/2 flow control messages, or as
+WebTransport flow control capsules, where appropriate. Intermediaries are
+responsible for storing any data for which they advertise flow control credit
+if that data cannot be immediately forwarded to the next hop.
 
 In practice, an intermediary that translates flow control signals between simlar
 WebTransport protocols, such as between two HTTP/2 connections, can often
@@ -246,7 +271,7 @@ other connection.
 
 An intermediary that does not want to be responsible for storing data that
 cannot be immediately sent on its translated connection would ensure that it
-never advertises a higher flow control limit on one connection than the
+does not advertise a higher flow control limit on one connection than the
 corresponding limit on the translated connection.
 
 # WebTransport Features {#features}
@@ -399,11 +424,11 @@ The WT_STOP_SENDING capsule defines the following fields:
 WT_STREAM capsules implicitly create a WebTransport stream and carry stream
 data.
 
-The Type field in the WT_STREAM capsule is either 0x190B4D3B or 0x190B4D3C. This
-uses the same capsule types as a QUIC STREAM frame with the OFF bit clear and
-the LEN bit set.  The FIN bit (0x01) in the capsule type indicates that the
-capsule marks the end of the stream in one direction.  Stream data consists of
-any number of 0x190B4D3B capsules followed by a terminal 0x190B4D3C capsule.
+The Type field in the WT_STREAM capsule is either 0x190B4D3B or 0x190B4D3C.  The
+least significant bit in the capsule type is the FIN bit (0x01), indicating
+when set that the capsule marks the end of the stream in one direction.  Stream
+data consists of any number of 0x190B4D3B capsules followed by a terminal
+0x190B4D3C capsule.
 
 ~~~
 WT_STREAM Capsule {
@@ -685,10 +710,13 @@ This example is intended to closely follow the example in {{Section 5.1 of
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
+SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
 SETTINGS_ENABLE_WEBTRANSPORT = 1
 
                                     SETTINGS
+                                    SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
                                     SETTINGS_ENABLE_WEBTRANSPORT = 1
+                                    SETTINGS_MAX_WEBTRANSPORT_SESSIONS = 100
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -723,10 +751,13 @@ difference here is the endpoint that sends the first WT_STREAM capsule.
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
+SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
 SETTINGS_ENABLE_WEBTRANSPORT = 1
 
                                     SETTINGS
+                                    SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
                                     SETTINGS_ENABLE_WEBTRANSPORT = 1
+                                    SETTINGS_MAX_WEBTRANSPORT_SESSIONS = 100
 
 HEADERS + END_HEADERS
 Stream ID = 3

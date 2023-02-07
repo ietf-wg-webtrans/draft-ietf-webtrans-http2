@@ -203,10 +203,11 @@ of !SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST verify
 the `Origin` header to ensure that the specified origin is allowed to access
 the server in question.
 
-From the client's perspective, a WebTransport session is established when the
-client receives a 200 response. From the server's perspective, a session is
-established once it sends a 200 response. Both endpoints MUST NOT send any
-WebTransport capsules on a given session before that session is established.
+The client MAY optimistically send any WebTransport capsules that are allowed by
+flow control, for example to send datagrams or flow control updates, for a
+session for which it has sent the CONNECT request, even if it has not yet
+received the server's response to the request. On the server side, this is
+possible as soon as the CONNECT request has been received.
 
 ## Flow Control
 

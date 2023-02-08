@@ -197,7 +197,7 @@ the site that requested the creation of the session.
 Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server checks if the identified resource supports
 WebTransport sessions. If the resource does not, the server SHOULD reply with
-status code 404 ({{Section 6.5.4 of !RFC7231}}). If it does, it MAY accept the
+status code 406 ({{Section 15.5.7 of !RFC9110}}). If it does, it MAY accept the
 session by replying with a 2xx series status code, as defined in {{Section 15.3
 of !SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST verify
 the `Origin` header to ensure that the specified origin is allowed to access

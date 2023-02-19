@@ -784,6 +784,29 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
+# WebTransport Header Fields
+
+WebTransport over HTTP/2 uses HTTP header fields to communicate the initial
+values of the flow control windows, similar to how QUIC uses transport
+parameters.  All of the fields defined in this section are Item Structured
+Fields (Section 3.3 of {{!RFC8941}}); all of the field values MUST be Integer.
+If any of the fields cannot be parsed correctly or does not have a correct
+type, the peer MUST reset the CONNECT stream.
+
+The following header fields are defined.
+
+WebTransport-Initial-Max-Stream-Data-Uni:
+: The initial flow control limit for unidirectional streams opened by the
+  recipient of this header field.
+
+WebTransport-Initial-Max-Stream-Data-Bidi-Local:
+: The initial flow control limit for the bidirectional streams opened by the
+  sender of this header field.
+
+WebTransport-Initial-Max-Stream-Data-Bidi-Remote:
+: The initial flow control limit for the bidirectional streams opened by the
+  recipient of this header field.
+
 
 # Session Termination
 

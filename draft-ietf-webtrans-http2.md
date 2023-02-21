@@ -203,7 +203,7 @@ of !SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST verify
 the `Origin` header to ensure that the specified origin is allowed to access
 the server in question.
 
-A WebTransport session is established when the server sends a 200 response. A
+A WebTransport session is established when the server sends a 2xx response. A
 server generates that response from the request header, not from the contents
 of the request. To enable clients to resend data when attempting to
 re-establish a session that was rejected by a server, a server MUST NOT process

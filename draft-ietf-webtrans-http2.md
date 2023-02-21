@@ -291,19 +291,52 @@ WebTransport streams and datagrams that belong to different WebTransport
 sessions are identified by the CONNECT stream on which they are transmitted,
 with one WebTransport session consuming one CONNECT stream.
 
-## Transport Considerations
+## Transport Properties
+
+The WebTransport framework {{OVERVIEW}} defines a set of optional transport
+properties that clients can use to determine the presence of features which
+might allow additional optimizations beyond the common set of properties
+available via all WebTransport protocols.
 
 Because WebTransport over TCP-based HTTP semantics relies on the underlying
 protocols to provide in order and reliable delivery, there are some notable
-differences from the way in which QUIC handles application data.
-
-Endpoints MUST send stream data in order. As there is no ordering mechanism
+differences from the way in which QUIC handles application data. For example,
+endpoints send stream data in order. As there is no ordering mechanism
 available for the receiver to reassemble incoming data, receivers assume that
 all data arriving in WT_STREAM capsules is contiguous and in order.
 
-DATAGRAM capsules are delivered to the remote WebTransport endpoint reliably,
-however this does not require that the receiving implementation deliver that
-data to the application in a reliable manner.
+Below are details about support in WebTransport over HTTP/2 for the properties
+defined by the WebTransport framework.
+
+Stream Independence:
+
+: WebTransport over HTTP/2 does not support stream independence, as HTTP/2
+  inherently has head-of-line blocking.
+
+Partial Reliability:
+
+: WebTransport over HTTP/2 does not support partial reliability, as HTTP/2
+  retransmits any lost data. This means that any datagrams sent via
+  WebTransport over HTTP/2 will be retransmitted regardless of the preference
+  of the application. The receiver is permitted to drop them, however, if it is
+  unable to buffer them.
+
+Pooling Support:
+
+: WebTransport over HTTP/2 supports pooling, as multiple transports using
+  WebTransport over HTTP/2 may share the same underlying HTTP/2 connection and
+  therefore share a congestion controller and other transport context. Note
+  that WebTransport streams over HTTP/2 are contained within a single HTTP/2
+  stream and do not compete with other pooled WebTransport sessions for
+  per-stream resources.
+
+Connection Mobility:
+
+: WebTransport over HTTP/2 does not support connection mobility, unless an
+  underlying transport protocol that supports multipath or migration, such as
+  MPTCP {{?MPTCP=RFC6824}}, is used underneath HTTP/2 and TLS. Without such
+  support, WebTransport over HTTP/2 connections cannot survive network
+  transitions.
 
 ## WebTransport Streams
 
@@ -673,7 +706,7 @@ described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
 WT_STREAMS_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits.
 
-# DATAGRAM Capsule {#DATAGRAM_CAPSULE}
+## DATAGRAM Capsule {#DATAGRAM_CAPSULE}
 
 *[DATAGRAM_CAPSULE]: #
 
@@ -804,39 +837,6 @@ An WebTransport session over HTTP/2 is terminated when either endpoint closes
 the stream associated with the CONNECT request that initiated the session.
 Upon learning about the session being terminated, the endpoint MUST stop
 sending new datagrams and reset all of the streams associated with the session.
-
-# Transport Properties
-
-The WebTransport capsulework [OVERVIEW] defines a set of optional transport
-properties that clients can use to determine the presence of features which
-might allow additional optimizations beyond the common set of properties
-available via all WebTransport protocols. Below are details about support in
-Http2Transport for those properties.
-
-Stream Independence:
-
-: Http2Transport does not support stream independence, as HTTP/2 inherently has
-    head of line blocking.
-
-Partial Reliability:
-
-: Http2Transport does not support partial reliability, as HTTP/2 retransmits any
-  lost data. This means that any datagrams sent via Http2Transport will be
-  retransmitted regardless of the preference of the application. The receiver
-  is permitted to drop them, however, if it is unable to buffer them.
-
-Pooling Support:
-
-: Http2Transport supports pooling, as multiple transports using Http2Transport
-    may share the same underlying HTTP/2 connection and therefore share a
-    congestion controller and other transport context.
-
-Connection Mobility:
-
-: Http2Transport does not support connection mobility, unless an underlying
-    transport protocol that supports multipath or migration, such as MPTCP
-    {{?MPTCP=RFC6824}}, is used underneath HTTP/2 and TLS. Without such support,
-    Http2Transport connections cannot survive network transitions.
 
 # Security Considerations
 

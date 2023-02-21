@@ -336,6 +336,12 @@ has no semantic value. PADDING capsules can be used to introduce additional
 data between other HTTP datagrams and can also be used to provide protection
 against traffic analysis or for other reasons.
 
+Note that, when used with WebTransport over HTTP/2, the PADDING capsule exists
+alongside the ability to pad HTTP/2 frames ({{Section 10.7 of !RFC9113}}).
+HTTP/2 padding is hop-by-hop and can be modified by intermediaries, while the
+PADDING capsule traverses intermedaries. The PADDING capsule is also
+constrained to be no smaller than the capsule overhead itself.
+
 ~~~
 PADDING Capsule {
   Type (i) = 0x190B4D38,

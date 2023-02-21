@@ -208,6 +208,7 @@ server generates that response from the request header, not from the contents
 of the request. To enable clients to resend data when attempting to
 re-establish a session that was rejected by a server, a server MUST NOT process
 any capsules on the request stream unless it accepts the WebTransport session.
+
 A client MAY optimistically send any WebTransport capsules associated with a
 CONNECT request, without waiting for a response, to the extent allowed by flow
 control. This can reduce latency for data sent by a client at the start of a

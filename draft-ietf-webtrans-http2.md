@@ -789,7 +789,7 @@ WebTransport Data
 WebTransport over HTTP/2 uses HTTP header fields to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
 parameters.  All of the fields defined in this section are Item Structured
-Fields (Section 3.3 of {{!RFC8941}}); all of the field values MUST be Integer.
+Fields ({{Section 3.3 of !RFC8941}}); all of the field values MUST be Integer.
 If any of the fields cannot be parsed correctly or does not have a correct
 type, the peer MUST reset the CONNECT stream.
 

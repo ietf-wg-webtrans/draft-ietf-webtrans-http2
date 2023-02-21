@@ -318,7 +318,10 @@ Pooling Support:
 
 : WebTransport over HTTP/2 supports pooling, as multiple transports using
   WebTransport over HTTP/2 may share the same underlying HTTP/2 connection and
-  therefore share a congestion controller and other transport context.
+  therefore share a congestion controller and other transport context. Note
+  that WebTransport streams over HTTP/2 are contained within a single HTTP/2
+  stream and do not compete with other pooled WebTransport sessions for
+  per-stream resources.
 
 Connection Mobility:
 

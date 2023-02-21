@@ -203,11 +203,16 @@ of !SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST verify
 the `Origin` header to ensure that the specified origin is allowed to access
 the server in question.
 
-The client MAY optimistically send any WebTransport capsules that are allowed by
-flow control, for example to send datagrams or flow control updates, for a
-session for which it has sent the CONNECT request, even if it has not yet
-received the server's response to the request. On the server side, this is
-possible as soon as the CONNECT request has been received.
+A WebTransport session is established when the server sends a 200 response. A
+server generates that response from the request header, not from the contents
+of the request. To enable clients to resend data when attempting to
+re-establish a session that was rejected by a server, a server MUST NOT process
+any capsules on the request stream unless it accepts the WebTransport session.
+A client MAY optimistically send any WebTransport capsules associated with a
+CONNECT request, without waiting for a response, to the extent allowed by flow
+control. This can reduce latency for data sent by a client at the start of a
+WebTransport session. For example, a client might choose to send datagrams or
+flow control updates before receiving any response from the server.
 
 ## Flow Control
 

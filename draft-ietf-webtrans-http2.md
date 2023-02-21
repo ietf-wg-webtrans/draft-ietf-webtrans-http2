@@ -286,7 +286,7 @@ with one WebTransport session consuming one CONNECT stream.
 
 ## Transport Properties
 
-The WebTransport framework [OVERVIEW] defines a set of optional transport
+The WebTransport framework {{OVERVIEW}} defines a set of optional transport
 properties that clients can use to determine the presence of features which
 might allow additional optimizations beyond the common set of properties
 available via all WebTransport protocols.

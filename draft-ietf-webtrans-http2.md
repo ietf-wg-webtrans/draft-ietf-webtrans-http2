@@ -1163,6 +1163,27 @@ Notes:
 : None
 {: spacing="compact"}
 
+## HTTP Header Field Name
+
+IANA will register the following entry in the "Hypertext Transfer Protocol
+(HTTP) Field Name Registry" maintained at
+<https://www.iana.org/assignments/http-fields>:
+
+Field Name:
+: WebTransport-Init
+
+Template:
+: None
+
+Status:
+: permanent
+
+Reference:
+: This document
+
+Comments:
+: None
+
 --- back
 
 # Acknowledgments

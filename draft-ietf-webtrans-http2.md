@@ -830,6 +830,28 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
+# WebTransport Header Fields
+
+WebTransport over HTTP/2 uses the `WebTransport-Init` HTTP header field to
+communicate the initial values of the flow control windows, similar to how QUIC
+uses transport parameters.  The `WebTransport-Init` is a Dictionary Structured
+Field ({{Section 3.2 of !RFC8941}}).  If any of the fields cannot be parsed
+correctly or do not have the correct type, the peer MUST reset the CONNECT
+stream.  The following keys are defined for the `WebTransport-Init` header
+field:
+
+`u`:
+: The initial flow control limit for unidirectional streams opened by the
+  recipient of this header field.  MUST be an Integer.
+
+`bl`:
+: The initial flow control limit for the bidirectional streams opened by the
+  sender of this header field.  MUST be an Integer.
+
+`br`:
+: The initial flow control limit for the bidirectional streams opened by the
+  recipient of this header field.  MUST be an Integer.
+
 
 # Session Termination
 
@@ -1153,6 +1175,27 @@ Contact:
 Notes:
 : None
 {: spacing="compact"}
+
+## HTTP Header Field Name
+
+IANA will register the following entry in the "Hypertext Transfer Protocol
+(HTTP) Field Name Registry" maintained at
+<https://www.iana.org/assignments/http-fields>:
+
+Field Name:
+: WebTransport-Init
+
+Template:
+: None
+
+Status:
+: permanent
+
+Reference:
+: This document
+
+Comments:
+: None
 
 --- back
 

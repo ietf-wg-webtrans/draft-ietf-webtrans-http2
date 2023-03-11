@@ -232,11 +232,12 @@ DATA frames for all HTTP/2 streams.
 
 3. HTTP/2 stream flow control, which limits the data on a single HTTP/2 stream.
 For a WebTransport session, this includes all capsules, including those that
-are exempt from session-level flow control.
+are exempt from WebTransport session-level flow control.
 
 4. WebTransport session-level flow control, which limits the total amount of
 stream data that can be sent or received on streams within the WebTransport
-session.
+session. Note that this does not limit other types of capsules within a
+WebTransport session, such as control messages or datagrams.
 
 5. WebTransport stream flow control, which limits data on individual streams
 within a session.
@@ -255,6 +256,17 @@ the server do not have a consistent view of how many sessions are open due to
 the asynchronous nature of the protocol; instead, it MUST reply to the CONNECT
 request with a status code 426, indicating that the client attempted to open
 too many sessions.
+
+### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
+
+This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
+each endpoint to limit the number of streams its peer is permitted to open as
+part of a WebTransport session. There is a separate limit for bidirectional
+streams and for unidirectional streams. Note that, unlike WebTransport over
+HTTP/3 {{WEBTRANSPORT-H3}}, because the entire WebTransport session is
+contained within HTTP/2 DATA frames on a single HTTP/2 stream, this limit is
+the only mechanism for an endpoint to limit the number of WebTransport streams
+that its peer can open on a session.
 
 ### Flow Control and Intermediaries {#flow-control-intermediaries}
 WebTransport over HTTP/2 uses several capsules for flow control, and all of

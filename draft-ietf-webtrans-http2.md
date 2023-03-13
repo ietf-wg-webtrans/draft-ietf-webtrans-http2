@@ -118,12 +118,12 @@ WebTransport servers are identified by an HTTPS URI as defined in {{Section
 4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, both the client and server have to
-send a SETTINGS_ENABLE_WEBTRANSPORT setting to indicate that they both support
-WebTransport over HTTP/2.
-
-The server also needs to send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with
-a value greater than "0" to indicate the number of concurrent sessions it is
-willing to receive.
+send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than "0"
+to indicate that they both support WebTransport over HTTP/2. For servers, the
+value of the setting is the number of concurrent sessions the server is willing
+to receive. Clients cannot receive incoming WebTransport sessions, so any value
+greater than "0" sent by a client simply indicates support for WebTransport
+over HTTP/2.
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -170,15 +170,15 @@ multiplexed over that CONNECT stream.
 ## Establishing a Transport-Capable HTTP/2 Connection
 
 In order to indicate support for WebTransport, both the client and the server
-MUST send a SETTINGS_ENABLE_WEBTRANSPORT value set to "1" in their SETTINGS
-frame. Endpoints MUST NOT use any WebTransport-related functionality unless the
-parameter has been negotiated.
+MUST send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in their
+SETTINGS frame. Endpoints MUST NOT use any WebTransport-related functionality
+unless the parameter has been negotiated.
 
 ## Extended CONNECT in HTTP/2
 
 {{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
 SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. An endpoint needs to send both
-SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_ENABLE_WEBTRANSPORT for
+SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_WEBTRANSPORT_MAX_SESSIONS for
 WebTransport to be enabled.
 
 ## Creating a New Session
@@ -769,11 +769,11 @@ This example is intended to closely follow the example in {{Section 5.1 of
 
 SETTINGS
 SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_ENABLE_WEBTRANSPORT = 1
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
+                                    SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 3
                                     SETTINGS_MAX_WEBTRANSPORT_SESSIONS = 100
 
 HEADERS + END_HEADERS
@@ -810,11 +810,11 @@ difference here is the endpoint that sends the first WT_STREAM capsule.
 
 SETTINGS
 SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_ENABLE_WEBTRANSPORT = 1
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_ENABLE_WEBTRANSPORT = 1
+                                    SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 3
                                     SETTINGS_MAX_WEBTRANSPORT_SESSIONS = 100
 
 HEADERS + END_HEADERS
@@ -899,33 +899,14 @@ to sending data and to opening new streams.
 
 ## HTTP/2 SETTINGS Parameter Registration
 
-The following entries are added to the "HTTP/2 Settings" registry established by
+The following entry is added to the "HTTP/2 Settings" registry established by
 {{!RFC7540}}:
-
-The `SETTINGS_ENABLE_WEBTRANSPORT` parameter indicates that the specified
-HTTP/2 connection is WebTransport-capable.
-
-Setting Name:
-
-: ENABLE_WEBTRANSPORT
-
-Value:
-
-: 0x2b603742
-
-Default:
-
-: 0
-
-Specification:
-
-: This document
 
 The `SETTINGS_WEBTRANSPORT_MAX_SESSIONS` parameter indicates that the specified
 HTTP/2 connection is WebTransport-capable and the number of concurrent sessions
-it is willing to receive. The default value for the
-SETTINGS_MAX_WEBTRANSPORT_SESSIONS parameter is "0", meaning that the server is
-not willing to receive any WebTransport sessions.
+an endpoint is willing to receive. The default value for the
+SETTINGS_MAX_WEBTRANSPORT_SESSIONS parameter is "0", meaning that the endpoint
+is not willing to receive any WebTransport sessions.
 
 Setting Name:
 

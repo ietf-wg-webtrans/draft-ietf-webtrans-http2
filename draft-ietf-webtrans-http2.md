@@ -584,7 +584,7 @@ send appropriate flow control signals for their limits; see
 Initial values for this limit for unidirectional and bidirectional streams MAY
 be communicated by sending non-zero values for
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI.
+SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
 
 ## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 

@@ -938,8 +938,8 @@ The SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter indicates the initial value
 for the session data limit, otherwise communicated by the WT_MAX_DATA capsule
 (see {{WT_MAX_DATA}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter is "0", indicating that the
-endpoint will send a WT_MAX_DATA capsule within each session before its peer is
-allowed to send any stream data within that session.
+endpoint needs to send a WT_MAX_DATA capsule within each session before its
+peer is allowed to send any stream data within that session.
 
 Note that this limit applies to all WebTransport sessions that use the HTTP/2
 connection on which this SETTING is sent.
@@ -961,13 +961,13 @@ Specification:
 : This document
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the
-initial value for the stream data limit for incoming unidirectional streams, 
+initial value for the stream data limit for incoming unidirectional streams,
 otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
 {{WT_MAX_STREAM_DATA}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0", indicating
-that the endpoint will send WT_MAX_STREAM_DATA capsules for each stream within
-each individual WebTransport session before its peer is allowed to send any
-stream data on those streams.
+that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
+within each individual WebTransport session before its peer is allowed to send
+any stream data on those streams.
 
 Note that this limit applies to all WebTransport streams on all sessions that
 use the HTTP/2 connection on which this SETTING is sent.
@@ -993,9 +993,9 @@ initial value for the stream data limit for incoming data on bidirectional
 streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
 {{WT_MAX_STREAM_DATA}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating
-that the endpoint will send WT_MAX_STREAM_DATA capsules for each stream within
-each individual WebTransport session before its peer is allowed to send any
-stream data on those streams.
+that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
+within each individual WebTransport session before its peer is allowed to send
+any stream data on those streams.
 
 Note that this limit applies to all WebTransport streams on all sessions that
 use the HTTP/2 connection on which this SETTING is sent.
@@ -1020,7 +1020,7 @@ The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter indicates the
 initial value for the unidirectional max stream limit, otherwise communicated
 by the WT_MAX_STREAMS capsule (see {{WT_MAX_STREAMS}}). The default value for
 the SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter is "0", indicating
-that the endpoint will send WT_MAX_STREAMS capsules on each individual
+that the endpoint needs to send WT_MAX_STREAMS capsules on each individual
 WebTransport session before its peer is allowed to create any unidirectional
 streams within that session.
 
@@ -1047,7 +1047,7 @@ The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter indicates the
 initial value for the bidirectional max stream limit, otherwise communicated by
 the WT_MAX_STREAMS capsule (see {{WT_MAX_STREAMS}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter is "0", indicating
-that the endpoint will send WT_MAX_STREAMS capsules on each individual
+that the endpoint needs to send WT_MAX_STREAMS capsules on each individual
 WebTransport session before its peer is allowed to create any bidirectional
 streams within that session.
 

@@ -581,8 +581,10 @@ WT_MAX_STREAM_DATA capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
-The initial value for this limit MAY be communicated by sending a non-zero value
-for SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA.
+Initial values for this limit for unidirectional and bidirectional streams MAY
+be communicated by sending non-zero values for
+SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
+SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI.
 
 ## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 
@@ -958,10 +960,11 @@ Specification:
 
 : This document
 
-The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA parameter indicates the
-initial value for the stream data limits, otherwise communicated by the
-WT_MAX_STREAM_DATA capsule (see {{WT_MAX_STREAM_DATA}}). The default value for
-the SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA parameter is "0", indicating
+The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the
+initial value for the stream data limit for incoming unidirectional streams, 
+otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
+{{WT_MAX_STREAM_DATA}}). The default value for the
+SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0", indicating
 that the endpoint will send WT_MAX_STREAM_DATA capsules for each stream within
 each individual WebTransport session before its peer is allowed to send any
 stream data on those streams.
@@ -971,11 +974,39 @@ use the HTTP/2 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA
+: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI
 
 Value:
 
 : 0x2b603745
+
+Default:
+
+: 0
+
+Specification:
+
+: This document
+
+The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the
+initial value for the stream data limit for incoming data on bidirectional
+streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
+{{WT_MAX_STREAM_DATA}}). The default value for the
+SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating
+that the endpoint will send WT_MAX_STREAM_DATA capsules for each stream within
+each individual WebTransport session before its peer is allowed to send any
+stream data on those streams.
+
+Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.
+
+Setting Name:
+
+: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI
+
+Value:
+
+: 0x2b603746
 
 Default:
 
@@ -1002,7 +1033,7 @@ Setting Name:
 
 Value:
 
-: 0x2b603746
+: 0x2b603747
 
 Default:
 
@@ -1029,7 +1060,7 @@ Setting Name:
 
 Value:
 
-: 0x2b603747
+: 0x2b603748
 
 Default:
 

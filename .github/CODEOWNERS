@@ -1,0 +1,3 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-ietf-webtrans-http2.md afrind@fb.com ekinnear@apple.com tpauly@apple.com mt@lowentropy.net vasilvv@google.com woo@fb.com

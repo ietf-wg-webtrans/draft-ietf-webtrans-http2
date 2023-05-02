@@ -290,6 +290,12 @@ are greater than or equal to the values provided in the SETTINGS.
 
 #### Flow Control SETTINGS {#flow-control-settings}
 
+*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA]: #
+*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI]: #
+*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI]: #
+*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI]: #
+*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI]: #
+
 Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 ({{h2-settings}}) by providing non-zero values for
 
@@ -943,6 +949,8 @@ to sending data and to opening new streams.
 The following entries are added to the "HTTP/2 Settings" registry established by
 {{!RFC7540}}:
 
+{: anchor="SETTINGS_WEBTRANSPORT_MAX_SESSIONS"}
+
 The SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter indicates that the specified
 HTTP/2 connection is WebTransport-capable and the number of concurrent sessions
 an endpoint is willing to receive. The default value for the
@@ -964,6 +972,8 @@ Default:
 Specification:
 
 : This document
+
+{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA"}
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter indicates the initial value
 for the session data limit, otherwise communicated by the WT_MAX_DATA capsule
@@ -990,6 +1000,8 @@ Default:
 Specification:
 
 : This document
+
+{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI"}
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the
 initial value for the stream data limit for incoming unidirectional streams,
@@ -1019,6 +1031,8 @@ Specification:
 
 : This document
 
+{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI"}
+
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
 streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
@@ -1047,6 +1061,8 @@ Specification:
 
 : This document
 
+{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI"}
+
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter indicates the
 initial value for the unidirectional max stream limit, otherwise communicated
 by the WT_MAX_STREAMS capsule (see {{WT_MAX_STREAMS}}). The default value for
@@ -1073,6 +1089,8 @@ Default:
 Specification:
 
 : This document
+
+{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI"}
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter indicates the
 initial value for the bidirectional max stream limit, otherwise communicated by

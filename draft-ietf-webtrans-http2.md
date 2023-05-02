@@ -261,12 +261,66 @@ too many sessions.
 
 This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
 each endpoint to limit the number of streams its peer is permitted to open as
-part of a WebTransport session. There is a separate limit for bidirectional
-streams and for unidirectional streams. Note that, unlike WebTransport over
+part of a WebTransport session.  There is a separate limit for bidirectional
+streams and for unidirectional streams.  Note that, unlike WebTransport over
 HTTP/3 {{WEBTRANSPORT-H3}}, because the entire WebTransport session is
 contained within HTTP/2 DATA frames on a single HTTP/2 stream, this limit is
 the only mechanism for an endpoint to limit the number of WebTransport streams
 that its peer can open on a session.
+
+### Initial Flow Control Limits {#flow-control-initial}
+
+To allow stream data to be exchanged in the same flight as the extended CONNECT
+request that establishes a WebTransport session, initial flow control limits
+can be exchanged via HTTP/2 SETTINGS ({{flow-control-settings}}).  Initial
+values for the flow control limits can also be exchanged via the
+`WebTransport-Init` header field on the extended CONNECT request
+({{flow-control-header}}).
+
+The limits communicated via HTTP/2 SETTINGS apply to all WebTransport sessions
+opened on that HTTP/2 connection.  Limits communicated via the
+`WebTransport-Init` header field apply only to the WebTransport session
+established by the extended CONNECT request carrying that field.
+
+If both the SETTINGS and the header field are present when a WebTransport
+session is established, the endpoint MUST use the greater of the two values for
+each corresponding initial flow control value.  Endpoints sending the SETTINGS
+and also including the header field SHOULD ensure that the header field values
+are greater than or equal to the values provided in the SETTINGS.
+
+#### Flow Control SETTINGS {#flow-control-settings}
+
+Initial flow control limits can be exchanged via HTTP/2 SETTINGS
+({{h2-settings}}) by providing non-zero values for
+
+* WT_MAX_DATA via SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA
+* WT_MAX_STREAM_DATA via SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
+  SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI
+* WT_MAX_STREAMS via SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI and
+  SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI
+
+
+#### Flow Control Header Field {#flow-control-header}
+
+The `WebTransport-Init` HTTP header field can be used to communicate the initial
+values of the flow control windows, similar to how QUIC uses transport
+parameters.  The `WebTransport-Init` is a Dictionary Structured Field
+({{Section 3.2 of !RFC8941}}).  If any of the fields cannot be parsed correctly
+or do not have the correct type, the peer MUST reset the CONNECT stream.  The
+following keys are defined for the `WebTransport-Init` header field:
+
+`u`:
+: The initial flow control limit for unidirectional streams opened by the
+  recipient of this header field.  MUST be an Integer.
+
+`bl`:
+: The initial flow control limit for the bidirectional streams opened by the
+  sender of this header field.  MUST be an Integer.
+
+`br`:
+: The initial flow control limit for the bidirectional streams opened by the
+  recipient of this header field.  MUST be an Integer.
+
 
 ### Flow Control and Intermediaries {#flow-control-intermediaries}
 WebTransport over HTTP/2 uses several capsules for flow control, and all of
@@ -283,10 +337,10 @@ WebTransport flow control capsules, where appropriate. Intermediaries are
 responsible for storing any data for which they advertise flow control credit
 if that data cannot be immediately forwarded to the next hop.
 
-In practice, an intermediary that translates flow control signals between simlar
-WebTransport protocols, such as between two HTTP/2 connections, can often
-simply reexpress the same limits received on one connection directly on the
-other connection.
+In practice, an intermediary that translates flow control signals between
+similar WebTransport protocols, such as between two HTTP/2 connections, can
+often simply reexpress the same limits received on one connection directly on
+the other connection.
 
 An intermediary that does not want to be responsible for storing data that
 cannot be immediately sent on its translated connection would ensure that it
@@ -852,29 +906,6 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
-# WebTransport Header Fields
-
-WebTransport over HTTP/2 uses the `WebTransport-Init` HTTP header field to
-communicate the initial values of the flow control windows, similar to how QUIC
-uses transport parameters.  The `WebTransport-Init` is a Dictionary Structured
-Field ({{Section 3.2 of !RFC8941}}).  If any of the fields cannot be parsed
-correctly or do not have the correct type, the peer MUST reset the CONNECT
-stream.  The following keys are defined for the `WebTransport-Init` header
-field:
-
-`u`:
-: The initial flow control limit for unidirectional streams opened by the
-  recipient of this header field.  MUST be an Integer.
-
-`bl`:
-: The initial flow control limit for the bidirectional streams opened by the
-  sender of this header field.  MUST be an Integer.
-
-`br`:
-: The initial flow control limit for the bidirectional streams opened by the
-  recipient of this header field.  MUST be an Integer.
-
-
 # Session Termination
 
 An WebTransport session over HTTP/2 is terminated when either endpoint closes
@@ -907,7 +938,7 @@ to sending data and to opening new streams.
 
 # IANA Considerations
 
-## HTTP/2 SETTINGS Parameter Registration
+## HTTP/2 SETTINGS Parameter Registration {#h2-settings}
 
 The following entries are added to the "HTTP/2 Settings" registry established by
 {{!RFC7540}}:

@@ -248,7 +248,7 @@ defines the final two.
 
 This document defines a SETTINGS_MAX_WEBTRANSPORT_SESSIONS parameter that allows
 the server to limit the maximum number of concurrent WebTransport sessions on a
-single HTTP/3 connection.  The client MUST NOT open more sessions than
+single HTTP/2 connection.  The client MUST NOT open more sessions than
 indicated in the server SETTINGS parameters.  The server MUST NOT close the
 connection if the client opens sessions exceeding this limit, as the client and
 the server do not have a consistent view of how many sessions are open due to

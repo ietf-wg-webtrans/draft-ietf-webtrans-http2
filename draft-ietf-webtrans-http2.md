@@ -254,7 +254,7 @@ indicated in the server SETTINGS parameters.  The server MUST NOT close the
 connection if the client opens sessions exceeding this limit, as the client and
 the server do not have a consistent view of how many sessions are open due to
 the asynchronous nature of the protocol; instead, it MUST reply to the CONNECT
-request with a status code 426, indicating that the client attempted to open
+request with a status code 429, indicating that the client attempted to open
 too many sessions.
 
 ### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}

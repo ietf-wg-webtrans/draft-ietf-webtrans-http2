@@ -861,15 +861,15 @@ origin: server.example.com
                                     :status = 200
 
 WT_STREAM
-Stream ID = 5
+Stream ID = 0
 WebTransport Data
 
                                     WT_STREAM + FIN
-                                    Stream ID = 5
+                                    Stream ID = 0
                                     WebTransport Data
 
 WT_STREAM + FIN
-Stream ID = 5
+Stream ID = 0
 WebTransport Data
 ~~~
 
@@ -900,15 +900,15 @@ origin: server.example.com
                                     :status = 200
 
                                     WT_STREAM
-                                    Stream ID = 2
+                                    Stream ID = 1
                                     WebTransport Data
 
 WT_STREAM + FIN
-Stream ID = 2
+Stream ID = 1
 WebTransport Data
 
                                     WT_STREAM + FIN
-                                    Stream ID = 2
+                                    Stream ID = 1
                                     WebTransport Data
 ~~~
 

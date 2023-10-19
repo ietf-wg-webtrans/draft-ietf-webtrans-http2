@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-09-21T00:43:55.770859+00:00",
+  "timestamp": "2023-10-19T00:44:57.662027+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -77,6 +77,11 @@
       "name": "ietf-117",
       "description": "Issues discussed at IETF 117",
       "color": "8775BA"
+    },
+    {
+      "name": "out of scope",
+      "description": "Issues that are out of scope for the current specification",
+      "color": "4C4C09"
     }
   ],
   "issues": [
@@ -1627,11 +1632,12 @@
         "ekinnear"
       ],
       "labels": [
-        "editorial"
+        "editorial",
+        "ready for PR"
       ],
       "body": "We should clarify: \r\n\r\n- You cannot lower the max number of sessions after the fact\r\n- Stream limits are cumulative, perhaps with an example, saying that you need to keep updating with a higher value if you want more streams (i.e. they are not about the concurrent number of streams)",
       "createdAt": "2023-07-20T23:03:56Z",
-      "updatedAt": "2023-09-19T22:43:23Z",
+      "updatedAt": "2023-10-17T22:14:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -1654,10 +1660,12 @@
       "assignees": [
         "ekinnear"
       ],
-      "labels": [],
+      "labels": [
+        "ready for PR"
+      ],
       "body": "Are setting values 32 bits or 16 bits? ",
       "createdAt": "2023-07-20T23:34:54Z",
-      "updatedAt": "2023-09-19T22:44:12Z",
+      "updatedAt": "2023-10-17T22:14:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -1673,23 +1681,32 @@
           "body": "Which leads me to realize that all the settings in the draft are impossible: 0x2b603743 is not something that fits in a 16 bit field.",
           "createdAt": "2023-09-19T22:09:51Z",
           "updatedAt": "2023-09-19T22:09:51Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sorry, yes, that was the gist of the issue -- typed on a phone during a face-to-face conversation.\r\n\r\nWe can just renumber items so that they fit.",
+          "createdAt": "2023-10-17T22:08:53Z",
+          "updatedAt": "2023-10-17T22:08:53Z"
         }
       ]
     },
     {
       "number": 90,
       "id": "I_kwDODnOl885ua_Ut",
-      "title": "WebTransport http2 idea's suggestions",
+      "title": "Define capsule protocol over WebSocket to enable use where HTTP/2 is not supported",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/90",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "out of scope"
+      ],
       "body": "That is kind of a cross posting of the issue from the other webtransport working group (ekinnear suggested posting it here):\r\nhttps://github.com/w3c/webtransport/issues/518\r\nMain idea is to add to the capsule protocol a specification for capsule over websocket, in order to support it in browser, that not yet support the http/2 protocol.\r\n\r\nThe benefits are as follows:\r\n\r\nThe protocol's way of working would be very similar to the actual http/2, so one could easily test ideas without waiting for the browser implementation.\r\n\r\n1. It will not be hard to implement it in a shim/polyfill (or I think it comes naturally out from my node webtransport plugins work)\r\n2. Having it specified ensures, that one shim/polyfill is enough for all future servers deployed that comply to the spec.\r\n3. And it will automatically address points older browsers, that do not support http2 over webtransport (or even webtransport) and one can even with the newer browser work in environments, where UDP is blocked.\r\n\r\nMy proposal would be as follows, the normal capsule protoco isl:\r\n\r\n```\r\nCapsule {\r\n     Capsule Type (i),\r\n     Capsule Length (i),\r\n     Capsule Value (..),\r\n   }\r\n```\r\nThe idea would be to transport it as binary frame/payload of length `Length + 4 `, and the payload will start with capsule type and continue with capsule value. Maybe an initial text frame indicates, that it is a capsule over websocket connection.\r\nThe rest of the http/2 capsule protocol will remain unchanged. So besides a little bit extra overload, the mechanics of most of the protocol will remain unchanged.\r\n",
       "createdAt": "2023-08-16T06:03:13Z",
-      "updatedAt": "2023-09-19T22:53:16Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-18T16:50:38Z",
+      "closedAt": "2023-10-17T22:35:15Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -1711,6 +1728,34 @@
           "body": "Chair: discussed in editor's meeting. We might provide guidance on this in the PR that resolves #80, but we're not going to take on this additional scope unless there's demonstrated interest in this new feature.",
           "createdAt": "2023-09-19T22:53:16Z",
           "updatedAt": "2023-09-19T22:53:16Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That would fit, thanks @martenrichter. I think when this came up previously, we were much in the same place as we are now: this seems reasonably additive, to the point that if we had clear interest and use cases, it would be possible to write up a spec that would enable some of these uses. Until that happens, we can mention it editorially in the PR mentioned above.",
+          "createdAt": "2023-10-17T22:12:25Z",
+          "updatedAt": "2023-10-17T22:12:25Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: as discussed in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/90#issuecomment-1726646433 , this sounds like a good topic for a separate spec. We'll mention that it's possible in the PR that closes #80. If the proponents write up a draft that describes this, we'll happily discuss it in the WebTransport WG - though this might only happen after we're done with the h2 and h3 versions. Closing.",
+          "createdAt": "2023-10-17T22:35:15Z",
+          "updatedAt": "2023-10-17T22:35:15Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Thanks, for the feedback. The interest in the feature will really depend, on how fast webtransport over http/2 (and webtransport in general) is implemented in major browsers, and interest in webtransport in general.\r\nI have now implemented a working base http2 implementation of the capsule protocol and webtransport. (Not all of the spec as settings are missing in node)\r\nNext would be to try to do the WebSocket wrapper, after this one can see if it makes sense to write it down.",
+          "createdAt": "2023-10-18T09:00:52Z",
+          "updatedAt": "2023-10-18T09:00:52Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "That's a solid plan, thanks Marten!",
+          "createdAt": "2023-10-18T16:50:37Z",
+          "updatedAt": "2023-10-18T16:50:37Z"
         }
       ]
     }

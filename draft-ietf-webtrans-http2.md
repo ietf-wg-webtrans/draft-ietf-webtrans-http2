@@ -257,10 +257,12 @@ the asynchronous nature of the protocol; instead, it MUST reply to the CONNECT
 request with a status code 429, indicating that the client attempted to open
 too many sessions.
 
-Any values in subsequent SETTINGS frames sent by either endpoint MUST NOT be
-lower than a previously sent value; an endpoint that receives a SETTINGS frame
-with a lowered value MUST close the connection with a connection error of type
-PROTOCOL_ERROR ({{Section 5.4.1 of HTTP2}}).
+An endpoint that wishes to reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
+of open sessions can either close sessions that exceed the new value or allow
+those sessions to complete. Endpoints MUST NOT reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
+non-zero value.
 
 ### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
@@ -272,6 +274,10 @@ HTTP/3 {{WEBTRANSPORT-H3}}, because the entire WebTransport session is
 contained within HTTP/2 DATA frames on a single HTTP/2 stream, this limit is
 the only mechanism for an endpoint to limit the number of WebTransport streams
 that its peer can open on a session.
+
+An endpoint that wishes to reduce the value of WT_MAX_STREAMS to a value that is
+below the current number of open streams can either close streams that exceed
+the new value or allow those streams to complete.
 
 ### Initial Flow Control Limits {#flow-control-initial}
 

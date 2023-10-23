@@ -1486,9 +1486,25 @@ single HTTP/2 connection.  The client MUST NOT open more sessions than
 indicated in the server SETTINGS parameters.  The server MUST NOT close the
 connection if the client opens sessions exceeding this limit, as the client and
 the server do not have a consistent view of how many sessions are open due to
-the asynchronous nature of the protocol; instead, it MUST reply to the CONNECT
-request with a status code 429, indicating that the client attempted to open
-too many sessions.<a href="#section-3.4.1-1" class="pilcrow">¶</a></p>
+the asynchronous nature of the protocol; instead, it MUST reset all of the
+CONNECT streams it is not willing to process with the <code>REFUSED_STREAM</code>
+error code (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.7" class="relref">Section 8.7</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>).<a href="#section-3.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.1-2">Just like other HTTP requests, WebTransport sessions, and data sent on those
+sessions, are counted against flow control limits.  Servers that wish to limit
+the rate of incoming requests on any particular session have multiple
+mechanisms:<a href="#section-3.4.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.4.1-3.1">
+              <p id="section-3.4.1-3.1.1">The <code>REFUSED_STREAM</code> error code defined in <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.7" class="relref">Section 8.7</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>
+indicates to the receiving HTTP/2 stack that the request was not processed in
+any way.<a href="#section-3.4.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.4.1-3.2">
+              <p id="section-3.4.1-3.2.1">HTTP status code 429 indicates that the request was rejected due to rate
+limiting <span>[<a href="#RFC6585" class="cite xref">RFC6585</a>]</span>.  Unlike the previous method, this signal is directly
+propagated to the application.<a href="#section-3.4.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
 </section>
 </div>
 <div id="flow-control-limit-streams">
@@ -3003,6 +3019,10 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6585">[RFC6585]</dt>
+        <dd>
+<span class="refAuthor">Nottingham, M.</span> and <span class="refAuthor">R. Fielding</span>, <span class="refTitle">"Additional HTTP Status Codes"</span>, <span class="seriesInfo">RFC 6585</span>, <span class="seriesInfo">DOI 10.17487/RFC6585</span>, <time datetime="2012-04" class="refDate">April 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6585">https://www.rfc-editor.org/rfc/rfc6585</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7230">[RFC7230]</dt>
         <dd>

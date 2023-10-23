@@ -300,9 +300,22 @@ Table of Contents
    parameters.  The server MUST NOT close the connection if the client
    opens sessions exceeding this limit, as the client and the server do
    not have a consistent view of how many sessions are open due to the
-   asynchronous nature of the protocol; instead, it MUST reply to the
-   CONNECT request with a status code 429, indicating that the client
-   attempted to open too many sessions.
+   asynchronous nature of the protocol; instead, it MUST reset all of
+   the CONNECT streams it is not willing to process with the
+   REFUSED_STREAM error code (Section 8.7 of [HTTP2]).
+
+   Just like other HTTP requests, WebTransport sessions, and data sent
+   on those sessions, are counted against flow control limits.  Servers
+   that wish to limit the rate of incoming requests on any particular
+   session have multiple mechanisms:
+
+   *  The REFUSED_STREAM error code defined in Section 8.7 of [HTTP2]
+      indicates to the receiving HTTP/2 stack that the request was not
+      processed in any way.
+
+   *  HTTP status code 429 indicates that the request was rejected due
+      to rate limiting [RFC6585].  Unlike the previous method, this
+      signal is directly propagated to the application.
 
 3.4.2.  Limiting the Number of Streams Within a Session
 
@@ -1242,6 +1255,10 @@ WebTransport Data
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC6585]  Nottingham, M. and R. Fielding, "Additional HTTP Status
+              Codes", RFC 6585, DOI 10.17487/RFC6585, April 2012,
+              <https://www.rfc-editor.org/rfc/rfc6585>.
 
    [RFC7230]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Message Syntax and Routing",

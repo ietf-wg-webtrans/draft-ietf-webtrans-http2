@@ -269,6 +269,13 @@ mechanisms:
   limiting {{!RFC6585}}.  Unlike the previous method, this signal is directly
   propagated to the application.
 
+An endpoint that wishes to reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
+of open sessions can either close sessions that exceed the new value or allow
+those sessions to complete. Endpoints MUST NOT reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
+non-zero value.
+
 ### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
 This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
@@ -667,6 +674,11 @@ the peer of the cumulative number of streams of a given type it is permitted to
 open.  A WT_MAX_STREAMS capsule with a type of 0x190B4D3F applies to
 bidirectional streams, and a WT_MAX_STREAMS capsule with a type of 0x190B4D40
 applies to unidirectional streams.
+
+Note that, because Maximum Streams is a cumulative value representing the total
+allowed number of streams, including previously closed streams, endpoints
+repeatedly send new WT_MAX_STREAMS capsules with increasing Maximum Streams
+values as streams are opened.
 
 ~~~
 WT_MAX_STREAMS Capsule {

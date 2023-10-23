@@ -275,10 +275,6 @@ contained within HTTP/2 DATA frames on a single HTTP/2 stream, this limit is
 the only mechanism for an endpoint to limit the number of WebTransport streams
 that its peer can open on a session.
 
-An endpoint that wishes to reduce the value of WT_MAX_STREAMS to a value that is
-below the current number of open streams can either close streams that exceed
-the new value or allow those streams to complete.
-
 ### Initial Flow Control Limits {#flow-control-initial}
 
 To allow stream data to be exchanged in the same flight as the extended CONNECT

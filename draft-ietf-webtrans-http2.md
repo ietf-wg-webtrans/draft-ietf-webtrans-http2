@@ -255,14 +255,14 @@ connection if the client opens sessions exceeding this limit, as the client and
 the server do not have a consistent view of how many sessions are open due to
 the asynchronous nature of the protocol; instead, it MUST reset all of the
 CONNECT streams it is not willing to process with the `REFUSED_STREAM`
-error code ({{Section 8.1.4 of HTTP2}}).
+error code ({{Section 8.7 of HTTP2}}).
 
 Just like other HTTP requests, WebTransport sessions, and data sent on those
 sessions, are counted against flow control limits.  Servers that wish to limit
 the rate of incoming requests on any particular session have multiple
 mechanisms:
 
-* The `REFUSED_STREAM` error code defined in {{Section 8.1.4 of HTTP2}}
+* The `REFUSED_STREAM` error code defined in {{Section 8.7 of HTTP2}}
   indicates to the receiving HTTP/2 stack that the request was not processed in
   any way.
 * HTTP status code 429 indicates that the request was rejected due to rate

@@ -317,6 +317,13 @@ Table of Contents
       to rate limiting [RFC6585].  Unlike the previous method, this
       signal is directly propagated to the application.
 
+   An endpoint that wishes to reduce the value of
+   SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the
+   current number of open sessions can either close sessions that exceed
+   the new value or allow those sessions to complete.  Endpoints MUST
+   NOT reduce the value of SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0"
+   after previously advertising a non-zero value.
+
 3.4.2.  Limiting the Number of Streams Within a Session
 
    This document defines a WT_MAX_STREAMS capsule (Section 5.7) that
@@ -690,6 +697,11 @@ Table of Contents
    type it is permitted to open.  A WT_MAX_STREAMS capsule with a type
    of 0x190B4D3F applies to bidirectional streams, and a WT_MAX_STREAMS
    capsule with a type of 0x190B4D40 applies to unidirectional streams.
+
+   Note that, because Maximum Streams is a cumulative value representing
+   the total allowed number of streams, including previously closed
+   streams, endpoints repeatedly send new WT_MAX_STREAMS capsules with
+   increasing Maximum Streams values as streams are opened.
 
    WT_MAX_STREAMS Capsule {
      Type (i) = 0x190B4D3F..0x190B4D40,
@@ -1306,9 +1318,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-07, 13 June 2023,
+              ietf-webtrans-http3-08, 23 October 2023,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-07>.
+              webtrans-http3-08>.
 
 10.2.  Informative References
 
@@ -1362,11 +1374,11 @@ Index
             Paragraph 7; Section 9.1, Paragraph 7; Section 9.1,
             Paragraph 9.2.1
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI  Section 3.4.3.1
-            , Paragraph 2.3.1; Section 5.7, Paragraph 8; Section 9.1,
+            , Paragraph 2.3.1; Section 5.7, Paragraph 9; Section 9.1,
             Paragraph 16; Section 9.1, Paragraph 16; Section 9.1,
             Paragraph 18.2.1
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI  Section 3.4.3.1,
-            Paragraph 2.3.1; Section 5.7, Paragraph 8; Section 9.1,
+            Paragraph 2.3.1; Section 5.7, Paragraph 9; Section 9.1,
             Paragraph 13; Section 9.1, Paragraph 13; Section 9.1,
             Paragraph 15.2.1
 
@@ -1393,10 +1405,11 @@ Index
             Paragraph 1; Section 3.4.3.1, Paragraph 2.3.1;
             Section 3.4.4, Paragraph 1; Section 5.7, Paragraph 1;
             Section 5.7, Paragraph 1; Section 5.7, Paragraph 1;
-            Section 5.7, Paragraph 3; Section 5.7, Paragraph 7;
-            Section 5.7, Paragraph 7; Section 9.1, Paragraph 13;
-            Section 9.1, Paragraph 13; Section 9.1, Paragraph 16;
-            Section 9.1, Paragraph 16; Section 9.2, Paragraph 15.4.1
+            Section 5.7, Paragraph 2; Section 5.7, Paragraph 4;
+            Section 5.7, Paragraph 8; Section 5.7, Paragraph 8;
+            Section 9.1, Paragraph 13; Section 9.1, Paragraph 13;
+            Section 9.1, Paragraph 16; Section 9.1, Paragraph 16;
+            Section 9.2, Paragraph 15.4.1
          WT_RESET_STREAM  Section 2, Paragraph 9; Section 5.2, Paragraph
             1; Section 5.2, Paragraph 2; Section 5.2, Paragraph 2;
             Section 5.2, Paragraph 4; Section 9.2, Paragraph 5.4.1

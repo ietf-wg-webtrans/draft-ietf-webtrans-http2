@@ -1414,7 +1414,7 @@ WebTransport to be enabled.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 using the <code>https</code> URI scheme <span>[<a href="#RFC7230" class="cite xref">RFC7230</a>]</span>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The <code>:protocol</code> pseudo-header field (<span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>) MUST be set to
-<code>webtransport</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-07#section-7.1" class="relref">Section 7.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>). The <code>:scheme</code> field MUST be
+<code>webtransport</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-08#section-7.1" class="relref">Section 7.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>). The <code>:scheme</code> field MUST be
 <code>https</code>. Both the <code>:authority</code> and the <code>:path</code> value MUST be set; those fields
 indicate the desired WebTransport server. In a Web context, the request MUST
 include an <code>Origin</code> header field <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> that includes the origin of
@@ -1505,6 +1505,12 @@ limiting <span>[<a href="#RFC6585" class="cite xref">RFC6585</a>]</span>.  Unlik
 propagated to the application.<a href="#section-3.4.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-3.4.1-4">An endpoint that wishes to reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
+of open sessions can either close sessions that exceed the new value or allow
+those sessions to complete. Endpoints MUST NOT reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
+non-zero value.<a href="#section-3.4.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="flow-control-limit-streams">
@@ -2006,9 +2012,13 @@ the peer of the cumulative number of streams of a given type it is permitted to
 open.  A <span id="iref-wt_max_streams-61" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule with a type of 0x190B4D3F applies to
 bidirectional streams, and a <span id="iref-wt_max_streams-62" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule with a type of 0x190B4D40
 applies to unidirectional streams.<a href="#section-5.7-1" class="pilcrow">¶</a></p>
+<p id="section-5.7-2">Note that, because Maximum Streams is a cumulative value representing the total
+allowed number of streams, including previously closed streams, endpoints
+repeatedly send new <span id="iref-wt_max_streams-63" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules with increasing Maximum Streams
+values as streams are opened.<a href="#section-5.7-2" class="pilcrow">¶</a></p>
 <span id="name-wt_max_streams-capsule-form"></span><div id="fig-wt_max_streams">
 <figure id="figure-7">
-          <div class="alignLeft art-text artwork" id="section-5.7-2.1">
+          <div class="alignLeft art-text artwork" id="section-5.7-3.1">
 <pre>
 WT_MAX_STREAMS Capsule {
   Type (i) = 0x190B4D3F..0x190B4D40,
@@ -2021,30 +2031,30 @@ WT_MAX_STREAMS Capsule {
 <a href="#name-wt_max_streams-capsule-form" class="selfRef">WT_MAX_STREAMS Capsule Format</a>
           </figcaption></figure>
 </div>
-<p id="section-5.7-3"><span id="iref-wt_max_streams-63" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules contain the following field:<a href="#section-5.7-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-5.7-4">
-          <dt id="section-5.7-4.1">Maximum Streams:</dt>
-          <dd style="margin-left: 1.5em" id="section-5.7-4.2">
-            <p id="section-5.7-4.2.1">A count of the cumulative number of streams of the corresponding type that
+<p id="section-5.7-4"><span id="iref-wt_max_streams-64" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules contain the following field:<a href="#section-5.7-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-5.7-5">
+          <dt id="section-5.7-5.1">Maximum Streams:</dt>
+          <dd style="margin-left: 1.5em" id="section-5.7-5.2">
+            <p id="section-5.7-5.2.1">A count of the cumulative number of streams of the corresponding type that
 can be opened over the lifetime of the connection. This value cannot
 exceed 2<sup>60</sup>, as it is not possible to encode stream IDs larger
-than 2<sup>62</sup>-1.<a href="#section-5.7-4.2.1" class="pilcrow">¶</a></p>
+than 2<sup>62</sup>-1.<a href="#section-5.7-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-5.7-5">An endpoint MUST NOT open more streams than permitted by the current stream
+<p id="section-5.7-6">An endpoint MUST NOT open more streams than permitted by the current stream
 limit set by its peer.  For instance, a server that receives a unidirectional
 stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream
-15.<a href="#section-5.7-5" class="pilcrow">¶</a></p>
-<p id="section-5.7-6">Note that this limit includes streams that have been closed as well as those
-that are open.<a href="#section-5.7-6" class="pilcrow">¶</a></p>
-<p id="section-5.7-7">The <span id="iref-wt_max_streams-64" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule defines special intermediary handling, as
+15.<a href="#section-5.7-6" class="pilcrow">¶</a></p>
+<p id="section-5.7-7">Note that this limit includes streams that have been closed as well as those
+that are open.<a href="#section-5.7-7" class="pilcrow">¶</a></p>
+<p id="section-5.7-8">The <span id="iref-wt_max_streams-65" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule defines special intermediary handling, as
 described in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermedaries MUST consume
-<span id="iref-wt_max_streams-65" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules for flow control purposes and MUST generate and
-send appropriate flow control signals for their limits.<a href="#section-5.7-7" class="pilcrow">¶</a></p>
-<p id="section-5.7-8">Initial values for these limits MAY be communicated by sending non-zero values
+<span id="iref-wt_max_streams-66" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules for flow control purposes and MUST generate and
+send appropriate flow control signals for their limits.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
+<p id="section-5.7-9">Initial values for these limits MAY be communicated by sending non-zero values
 for <span id="iref-settings_webtransport_initial_max_s" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> and
-<span id="iref-settings_webtransport_initial_max_s-2" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a>.<a href="#section-5.7-8" class="pilcrow">¶</a></p>
+<span id="iref-settings_webtransport_initial_max_s-2" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a>.<a href="#section-5.7-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="WT_DATA_BLOCKED">
@@ -2052,9 +2062,9 @@ for <span id="iref-settings_webtransport_initial_max_s" class="iref"></span><a h
         <h3 id="name-wt_data_blocked-capsule">
 <a href="#section-5.8" class="section-number selfRef">5.8. </a><a href="#name-wt_data_blocked-capsule" class="section-name selfRef">WT_DATA_BLOCKED Capsule</a>
         </h3>
-<p id="section-5.8-1">A sender SHOULD send a <span id="iref-wt_data_blocked-68" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsule (type=0x190B4D41) when it wishes
+<p id="section-5.8-1">A sender SHOULD send a <span id="iref-wt_data_blocked-69" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsule (type=0x190B4D41) when it wishes
 to send data but is unable to do so due to WebTransport session-level flow
-control. <span id="iref-wt_data_blocked-69" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules can be used as input to tuning of flow
+control. <span id="iref-wt_data_blocked-70" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules can be used as input to tuning of flow
 control algorithms.<a href="#section-5.8-1" class="pilcrow">¶</a></p>
 <span id="name-wt_data_blocked-capsule-for"></span><div id="fig-wt_data_blocked">
 <figure id="figure-8">
@@ -2071,7 +2081,7 @@ WT_DATA_BLOCKED Capsule {
 <a href="#name-wt_data_blocked-capsule-for" class="selfRef">WT_DATA_BLOCKED Capsule Format</a>
           </figcaption></figure>
 </div>
-<p id="section-5.8-3"><span id="iref-wt_data_blocked-70" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules contain the following field:<a href="#section-5.8-3" class="pilcrow">¶</a></p>
+<p id="section-5.8-3"><span id="iref-wt_data_blocked-71" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules contain the following field:<a href="#section-5.8-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.8-4">
           <dt id="section-5.8-4.1">Maximum Data:</dt>
           <dd style="margin-left: 1.5em" id="section-5.8-4.2">
@@ -2080,9 +2090,9 @@ blocking occurred.<a href="#section-5.8-4.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-5.8-5">The <span id="iref-wt_data_blocked-71" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsule defines special intermediary handling, as
+<p id="section-5.8-5">The <span id="iref-wt_data_blocked-72" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsule defines special intermediary handling, as
 described in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermedaries MUST consume
-<span id="iref-wt_data_blocked-72" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules for flow control purposes and MUST generate and
+<span id="iref-wt_data_blocked-73" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 <a href="#flow-control-intermediaries" class="auto internal xref">Section 3.4.4</a>.<a href="#section-5.8-5" class="pilcrow">¶</a></p>
 </section>
@@ -2092,9 +2102,9 @@ send appropriate flow control signals for their limits; see
         <h3 id="name-wt_stream_data_blocked-caps">
 <a href="#section-5.9" class="section-number selfRef">5.9. </a><a href="#name-wt_stream_data_blocked-caps" class="section-name selfRef">WT_STREAM_DATA_BLOCKED Capsule</a>
         </h3>
-<p id="section-5.9-1">A sender SHOULD send a <span id="iref-wt_stream_data_blocked-73" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule (type=0x190B4D42) when it
+<p id="section-5.9-1">A sender SHOULD send a <span id="iref-wt_stream_data_blocked-74" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule (type=0x190B4D42) when it
 wishes to send data but is unable to do so due to stream-level flow control.
-This capsule is analogous to <span id="iref-wt_data_blocked-74" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a>.<a href="#section-5.9-1" class="pilcrow">¶</a></p>
+This capsule is analogous to <span id="iref-wt_data_blocked-75" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a>.<a href="#section-5.9-1" class="pilcrow">¶</a></p>
 <span id="name-wt_stream_data_blocked-capsu"></span><div id="fig-wt_stream_data_blocked">
 <figure id="figure-9">
           <div class="alignLeft art-text artwork" id="section-5.9-2.1">
@@ -2111,7 +2121,7 @@ WT_STREAM_DATA_BLOCKED Capsule {
 <a href="#name-wt_stream_data_blocked-capsu" class="selfRef">WT_STREAM_DATA_BLOCKED Capsule Format</a>
           </figcaption></figure>
 </div>
-<p id="section-5.9-3"><span id="iref-wt_stream_data_blocked-75" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsules contain the following fields:<a href="#section-5.9-3" class="pilcrow">¶</a></p>
+<p id="section-5.9-3"><span id="iref-wt_stream_data_blocked-76" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsules contain the following fields:<a href="#section-5.9-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.9-4">
           <dt id="section-5.9-4.1">Stream ID:</dt>
           <dd style="margin-left: 1.5em" id="section-5.9-4.2">
@@ -2126,9 +2136,9 @@ blocking occurred.<a href="#section-5.9-4.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-5.9-5">The <span id="iref-wt_stream_data_blocked-76" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule defines special intermediary handling, as
+<p id="section-5.9-5">The <span id="iref-wt_stream_data_blocked-77" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule defines special intermediary handling, as
 described in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermedaries MUST consume
-<span id="iref-wt_stream_data_blocked-77" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsules for flow control purposes and MUST generate and
+<span id="iref-wt_stream_data_blocked-78" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 <a href="#flow-control-intermediaries" class="auto internal xref">Section 3.4.4</a>.<a href="#section-5.9-5" class="pilcrow">¶</a></p>
 </section>
@@ -2138,13 +2148,13 @@ send appropriate flow control signals for their limits; see
         <h3 id="name-wt_streams_blocked-capsule">
 <a href="#section-5.10" class="section-number selfRef">5.10. </a><a href="#name-wt_streams_blocked-capsule" class="section-name selfRef">WT_STREAMS_BLOCKED Capsule</a>
         </h3>
-<p id="section-5.10-1">A sender SHOULD send a <span id="iref-wt_streams_blocked-78" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule (type=0x190B4D43 or
+<p id="section-5.10-1">A sender SHOULD send a <span id="iref-wt_streams_blocked-79" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule (type=0x190B4D43 or
 0x190B4D44) when it wishes to open a stream but is unable to do so due to the
-maximum stream limit set by its peer.  A <span id="iref-wt_streams_blocked-79" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule of type
+maximum stream limit set by its peer.  A <span id="iref-wt_streams_blocked-80" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule of type
 0x190B4D43 is used to indicate reaching the bidirectional stream limit, and a
 STREAMS_BLOCKED capsule of type 0x190B4D44 is used to indicate reaching the
 unidirectional stream limit.<a href="#section-5.10-1" class="pilcrow">¶</a></p>
-<p id="section-5.10-2">A <span id="iref-wt_streams_blocked-80" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule does not open the stream, but informs the peer that
+<p id="section-5.10-2">A <span id="iref-wt_streams_blocked-81" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule does not open the stream, but informs the peer that
 a new stream was needed and the stream limit prevented the creation of the
 stream.<a href="#section-5.10-2" class="pilcrow">¶</a></p>
 <span id="name-wt_streams_blocked-capsule-"></span><div id="fig-wt_streams_blocked">
@@ -2162,7 +2172,7 @@ WT_STREAMS_BLOCKED Capsule {
 <a href="#name-wt_streams_blocked-capsule-" class="selfRef">WT_STREAMS_BLOCKED Capsule Format</a>
           </figcaption></figure>
 </div>
-<p id="section-5.10-4"><span id="iref-wt_streams_blocked-81" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsules contain the following field:<a href="#section-5.10-4" class="pilcrow">¶</a></p>
+<p id="section-5.10-4"><span id="iref-wt_streams_blocked-82" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsules contain the following field:<a href="#section-5.10-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.10-5">
           <dt id="section-5.10-5.1">Maximum Streams:</dt>
           <dd style="margin-left: 1.5em" id="section-5.10-5.2">
@@ -2172,9 +2182,9 @@ as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.<a href=
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-5.10-6">The <span id="iref-wt_streams_blocked-82" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule defines special intermediary handling, as
+<p id="section-5.10-6">The <span id="iref-wt_streams_blocked-83" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule defines special intermediary handling, as
 described in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermedaries MUST consume
-<span id="iref-wt_streams_blocked-83" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsules for flow control purposes and MUST generate and
+<span id="iref-wt_streams_blocked-84" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits.<a href="#section-5.10-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2273,7 +2283,7 @@ WebTransport Data
 </pre><a href="#section-6-2" class="pilcrow">¶</a>
 </div>
 <p id="section-6-3">An example of the server initiating a WebTransport Stream follows. The only
-difference here is the endpoint that sends the first <span id="iref-wt_stream-84" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule.<a href="#section-6-3" class="pilcrow">¶</a></p>
+difference here is the endpoint that sends the first <span id="iref-wt_stream-85" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule.<a href="#section-6-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6-4">
 <pre>
 [[ From Client ]]                   [[ From Server ]]
@@ -2392,10 +2402,10 @@ is not willing to receive any WebTransport sessions.<a href="#section-9.1-2" cla
 </dl>
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA">
 <p id="section-9.1-4">The <span id="iref-settings_webtransport_initial_max_d" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter indicates the initial value
-for the session data limit, otherwise communicated by the <span id="iref-wt_max_data-86" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule
+for the session data limit, otherwise communicated by the <span id="iref-wt_max_data-87" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule
 (see <a href="#WT_MAX_DATA" class="auto internal xref">Section 5.5</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_d-2" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter is "0", indicating that the
-endpoint needs to send a <span id="iref-wt_max_data-88" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule within each session before its
+endpoint needs to send a <span id="iref-wt_max_data-89" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule within each session before its
 peer is allowed to send any stream data within that session.<a href="#section-9.1-4" class="pilcrow">¶</a></p>
 </div>
 <p id="section-9.1-5">Note that this limit applies to all WebTransport sessions that use the HTTP/2
@@ -2425,10 +2435,10 @@ connection on which this SETTING is sent.<a href="#section-9.1-5" class="pilcrow
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI">
 <p id="section-9.1-7">The <span id="iref-settings_webtransport_initial_max_s-3" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter indicates the
 initial value for the stream data limit for incoming unidirectional streams,
-otherwise communicated by the <span id="iref-wt_max_stream_data-91" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
+otherwise communicated by the <span id="iref-wt_max_stream_data-92" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
 <a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 5.6</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-4" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter is "0", indicating
-that the endpoint needs to send <span id="iref-wt_max_stream_data-93" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
+that the endpoint needs to send <span id="iref-wt_max_stream_data-94" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
 any stream data on those streams.<a href="#section-9.1-7" class="pilcrow">¶</a></p>
 </div>
@@ -2459,10 +2469,10 @@ use the HTTP/2 connection on which this SETTING is sent.<a href="#section-9.1-8"
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI">
 <p id="section-9.1-10">The <span id="iref-settings_webtransport_initial_max_s-6" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
-streams, otherwise communicated by the <span id="iref-wt_max_stream_data-96" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
+streams, otherwise communicated by the <span id="iref-wt_max_stream_data-97" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
 <a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 5.6</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-7" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter is "0", indicating
-that the endpoint needs to send <span id="iref-wt_max_stream_data-98" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
+that the endpoint needs to send <span id="iref-wt_max_stream_data-99" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
 any stream data on those streams.<a href="#section-9.1-10" class="pilcrow">¶</a></p>
 </div>
@@ -2493,9 +2503,9 @@ use the HTTP/2 connection on which this SETTING is sent.<a href="#section-9.1-11
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI">
 <p id="section-9.1-13">The <span id="iref-settings_webtransport_initial_max_s-9" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter indicates the
 initial value for the unidirectional max stream limit, otherwise communicated
-by the <span id="iref-wt_max_streams-101" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 5.7</a>). The default value for
+by the <span id="iref-wt_max_streams-102" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 5.7</a>). The default value for
 the <span id="iref-settings_webtransport_initial_max_s-10" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter is "0", indicating
-that the endpoint needs to send <span id="iref-wt_max_streams-103" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
+that the endpoint needs to send <span id="iref-wt_max_streams-104" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
 WebTransport session before its peer is allowed to create any unidirectional
 streams within that session.<a href="#section-9.1-13" class="pilcrow">¶</a></p>
 </div>
@@ -2526,9 +2536,9 @@ connection on which this SETTING is sent.<a href="#section-9.1-14" class="pilcro
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI">
 <p id="section-9.1-16">The <span id="iref-settings_webtransport_initial_max_s-12" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter indicates the
 initial value for the bidirectional max stream limit, otherwise communicated by
-the <span id="iref-wt_max_streams-106" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 5.7</a>). The default value for the
+the <span id="iref-wt_max_streams-107" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 5.7</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-13" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter is "0", indicating
-that the endpoint needs to send <span id="iref-wt_max_streams-108" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
+that the endpoint needs to send <span id="iref-wt_max_streams-109" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
 WebTransport session before its peer is allowed to create any bidirectional
 streams within that session.<a href="#section-9.1-16" class="pilcrow">¶</a></p>
 </div>
@@ -2574,7 +2584,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-3.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-3.4">
-            <p id="section-9.2-3.4.1"><span id="iref-padding-110" class="iref"></span><a href="#PADDING" class="internal xref">PADDING</a><a href="#section-9.2-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-3.4.1"><span id="iref-padding-111" class="iref"></span><a href="#PADDING" class="internal xref">PADDING</a><a href="#section-9.2-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-3.5">Status:</dt>
@@ -2612,7 +2622,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-5.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-5.4">
-            <p id="section-9.2-5.4.1"><span id="iref-wt_reset_stream-111" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a><a href="#section-9.2-5.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-5.4.1"><span id="iref-wt_reset_stream-112" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a><a href="#section-9.2-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-5.5">Status:</dt>
@@ -2650,7 +2660,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-7.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-7.4">
-            <p id="section-9.2-7.4.1"><span id="iref-wt_stop_sending-112" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a><a href="#section-9.2-7.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-7.4.1"><span id="iref-wt_stop_sending-113" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a><a href="#section-9.2-7.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-7.5">Status:</dt>
@@ -2688,7 +2698,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-9.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-9.4">
-            <p id="section-9.2-9.4.1"><span id="iref-wt_stream-113" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a><a href="#section-9.2-9.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-9.4.1"><span id="iref-wt_stream-114" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a><a href="#section-9.2-9.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-9.5">Status:</dt>
@@ -2726,7 +2736,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-11.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-11.4">
-            <p id="section-9.2-11.4.1"><span id="iref-wt_max_data-114" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a><a href="#section-9.2-11.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-11.4.1"><span id="iref-wt_max_data-115" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a><a href="#section-9.2-11.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-11.5">Status:</dt>
@@ -2764,7 +2774,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-13.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-13.4">
-            <p id="section-9.2-13.4.1"><span id="iref-wt_max_stream_data-115" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a><a href="#section-9.2-13.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-13.4.1"><span id="iref-wt_max_stream_data-116" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a><a href="#section-9.2-13.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-13.5">Status:</dt>
@@ -2802,7 +2812,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-15.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-15.4">
-            <p id="section-9.2-15.4.1"><span id="iref-wt_max_streams-116" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a><a href="#section-9.2-15.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-15.4.1"><span id="iref-wt_max_streams-117" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a><a href="#section-9.2-15.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-15.5">Status:</dt>
@@ -2840,7 +2850,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-17.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-17.4">
-            <p id="section-9.2-17.4.1"><span id="iref-wt_data_blocked-117" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a><a href="#section-9.2-17.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-17.4.1"><span id="iref-wt_data_blocked-118" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a><a href="#section-9.2-17.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-17.5">Status:</dt>
@@ -2878,7 +2888,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-19.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-19.4">
-            <p id="section-9.2-19.4.1"><span id="iref-wt_stream_data_blocked-118" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a><a href="#section-9.2-19.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-19.4.1"><span id="iref-wt_stream_data_blocked-119" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a><a href="#section-9.2-19.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-19.5">Status:</dt>
@@ -2916,7 +2926,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
           <dd class="break"></dd>
 <dt id="section-9.2-21.3">Capsule Type:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-21.4">
-            <p id="section-9.2-21.4.1"><span id="iref-wt_streams_blocked-119" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a><a href="#section-9.2-21.4.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-21.4.1"><span id="iref-wt_streams_blocked-120" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a><a href="#section-9.2-21.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-9.2-21.5">Status:</dt>
@@ -3062,7 +3072,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dd class="break"></dd>
 <dt id="WEBTRANSPORT-H3">[WEBTRANSPORT-H3]</dt>
       <dd>
-<span class="refAuthor">Frindell, A.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"WebTransport over HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-http3-07</span>, <time datetime="2023-06-13" class="refDate">13 June 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-07">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Frindell, A.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"WebTransport over HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-http3-08</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-08">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -3178,7 +3188,7 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                 <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.8">
                   <p id="appendix-B-2.2.2.1.1.8.1">
                     <a href="#section-3.4.3.1-2.3.1" class="auto internal xref">Section 3.4.3.1, Paragraph 2.3.1</a>; 
-<a href="#section-5.7-8" class="auto internal xref">Section 5.7, Paragraph 8</a>; 
+<a href="#section-5.7-9" class="auto internal xref">Section 5.7, Paragraph 9</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 9.1, Paragraph 16</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 9.1, Paragraph 16</a>; 
 <a href="#section-9.1-18.2.1" class="auto internal xref">Section 9.1, Paragraph 18.2.1</a><a href="#appendix-B-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
@@ -3188,7 +3198,7 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                 <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.10">
                   <p id="appendix-B-2.2.2.1.1.10.1">
                     <a href="#section-3.4.3.1-2.3.1" class="auto internal xref">Section 3.4.3.1, Paragraph 2.3.1</a>; 
-<a href="#section-5.7-8" class="auto internal xref">Section 5.7, Paragraph 8</a>; 
+<a href="#section-5.7-9" class="auto internal xref">Section 5.7, Paragraph 9</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 9.1, Paragraph 13</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 9.1, Paragraph 13</a>; 
 <a href="#section-9.1-15.2.1" class="auto internal xref">Section 9.1, Paragraph 15.2.1</a><a href="#appendix-B-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
@@ -3262,9 +3272,10 @@ contributions in the design and implementation of this work.<a href="#appendix-A
 <a href="#section-5.7-1" class="auto internal xref">Section 5.7, Paragraph 1</a>; 
 <a href="#section-5.7-1" class="auto internal xref">Section 5.7, Paragraph 1</a>; 
 <a href="#section-5.7-1" class="auto internal xref">Section 5.7, Paragraph 1</a>; 
-<a href="#section-5.7-3" class="auto internal xref">Section 5.7, Paragraph 3</a>; 
-<a href="#section-5.7-7" class="auto internal xref">Section 5.7, Paragraph 7</a>; 
-<a href="#section-5.7-7" class="auto internal xref">Section 5.7, Paragraph 7</a>; 
+<a href="#section-5.7-2" class="auto internal xref">Section 5.7, Paragraph 2</a>; 
+<a href="#section-5.7-4" class="auto internal xref">Section 5.7, Paragraph 4</a>; 
+<a href="#section-5.7-8" class="auto internal xref">Section 5.7, Paragraph 8</a>; 
+<a href="#section-5.7-8" class="auto internal xref">Section 5.7, Paragraph 8</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 9.1, Paragraph 13</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 9.1, Paragraph 13</a>; 
 <a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 9.1, Paragraph 16</a>; 

@@ -257,6 +257,11 @@ the asynchronous nature of the protocol; instead, it MUST reply to the CONNECT
 request with a status code 429, indicating that the client attempted to open
 too many sessions.
 
+Any values in subsequent SETTINGS frames sent by either endpoint MUST NOT be
+lower than a previously sent value; an endpoint that receives a SETTINGS frame
+with a lowered value MUST close the connection with a connection error of type
+PROTOCOL_ERROR ({{Section 5.4.1 of HTTP2}}).
+
 ### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
 This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
@@ -655,6 +660,11 @@ the peer of the cumulative number of streams of a given type it is permitted to
 open.  A WT_MAX_STREAMS capsule with a type of 0x190B4D3F applies to
 bidirectional streams, and a WT_MAX_STREAMS capsule with a type of 0x190B4D40
 applies to unidirectional streams.
+
+Note that, because Maximum Streams is a cumulative value representing the total
+allowed number of streams, including previously closed streams, endpoints
+repeatedly send new WT_MAX_STREAMS capsules with increasing Maximum Streams
+values as streams are opened.
 
 ~~~
 WT_MAX_STREAMS Capsule {

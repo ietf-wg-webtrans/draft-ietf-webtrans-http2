@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-19T00:44:57.662027+00:00",
+  "timestamp": "2023-10-24T00:44:49.070662+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1547,7 +1547,7 @@
       "id": "I_kwDODnOl885msuJS",
       "title": "\"MUST reply to the CONNECT request with a status code 426\" is inconsistent with HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/83",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1558,8 +1558,8 @@
       ],
       "body": "I don't think the answer matters much but the inconsistency sticks out. Or perhaps its intentional?\r\n\r\nIn H3 we say \"MUST reset all of the CONNECT streams it is not willing to process with the HTTP_REQUEST_REJECTED status \" and later on that actually a server could use \"HTTP status code 429\".\r\n\r\nIn H2 we say only \"MUST reply to the CONNECT request with a status code 426, indicating that the client attempted to open too many sessions.\". HTTP/2's REFUSED_STREAM is pretty close to H3's HTTP_REQUEST_REJECTED if we wanted to recommend that.",
       "createdAt": "2023-05-24T00:59:19Z",
-      "updatedAt": "2023-07-10T22:07:05Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-23T22:15:52Z",
+      "closedAt": "2023-10-23T22:15:52Z",
       "comments": [
         {
           "author": "LPardue",
@@ -1625,7 +1625,7 @@
       "id": "I_kwDODnOl885sLWhu",
       "title": "Flow control terminology updates",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/88",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1637,8 +1637,8 @@
       ],
       "body": "We should clarify: \r\n\r\n- You cannot lower the max number of sessions after the fact\r\n- Stream limits are cumulative, perhaps with an example, saying that you need to keep updating with a higher value if you want more streams (i.e. they are not about the concurrent number of streams)",
       "createdAt": "2023-07-20T23:03:56Z",
-      "updatedAt": "2023-10-17T22:14:33Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-23T23:32:49Z",
+      "closedAt": "2023-10-23T23:32:49Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -1654,7 +1654,7 @@
       "id": "I_kwDODnOl885sLdR7",
       "title": "Renumber setting identifiers",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/89",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1665,8 +1665,8 @@
       ],
       "body": "Are setting values 32 bits or 16 bits? ",
       "createdAt": "2023-07-20T23:34:54Z",
-      "updatedAt": "2023-10-17T22:14:23Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-23T21:03:03Z",
+      "closedAt": "2023-10-23T21:03:03Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -1758,6 +1758,22 @@
           "updatedAt": "2023-10-18T16:50:37Z"
         }
       ]
+    },
+    {
+      "number": 94,
+      "id": "I_kwDODnOl8850tSbm",
+      "title": "Should H2 be permissive about flow control violations",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/94",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "H2 matches H3 in being permissive about flow control violations around the stream limit.\r\n\r\n> the asynchronous nature of the protocol\r\n\r\n> A server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.\r\n\r\n> _Originally posted by @martinthomson in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91#discussion_r1368470323_\r\n            ",
+      "createdAt": "2023-10-23T21:10:08Z",
+      "updatedAt": "2023-10-23T21:10:28Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -6376,6 +6392,328 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 91,
+      "id": "PR_kwDODnOl885dgX61",
+      "title": "Bring over text from HTTP/3 about refused stream",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [],
+      "body": "Bring over text from HTTP/3 about refused stream\r\n\r\nThis aligns the two documents. We can probably further tweak this wording, but if we do, we should update it everywhere.\r\n\r\nCloses #83",
+      "createdAt": "2023-10-23T09:08:05Z",
+      "updatedAt": "2023-10-23T22:15:54Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "cc942d6fa5a4d67375d9be54c2741db7ea990f9a",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/refused_stream",
+      "headRefOid": "c3b88606687270c73affc16c44a4334337421e39",
+      "closedAt": "2023-10-23T22:15:51Z",
+      "mergedAt": "2023-10-23T22:15:51Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "4636698c0da7a4ea2544e28326ef22ceaedc6f2b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl885k3Wgl",
+          "commit": {
+            "abbreviatedOid": "c3b8860"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T10:42:45Z",
+          "updatedAt": "2023-10-23T10:42:53Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I'm no longer sure about this entire paragraph...\r\n\r\nA server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.",
+              "createdAt": "2023-10-23T10:42:45Z",
+              "updatedAt": "2023-10-23T10:42:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8h-y",
+          "commit": {
+            "abbreviatedOid": "c3b8860"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:04:53Z",
+          "updatedAt": "2023-10-23T22:04:53Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Yeah, I think in H2 it's much more clear cut and deterministic. Let's spin out an issue -- we've aligned the error response when we need to say \"no, stop\", but we may not want to exactly match where the underlying protocol _really_ doesn't match.\r\n\r\nFiled #94 ",
+              "createdAt": "2023-10-23T22:04:53Z",
+              "updatedAt": "2023-10-23T22:04:53Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 92,
+      "id": "PR_kwDODnOl885dgdKP",
+      "title": "Renumber settings to fit in 16 bits",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/92",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Renumber settings to fit in 16 bits\r\n\r\nCloses #89 ",
+      "createdAt": "2023-10-23T09:21:43Z",
+      "updatedAt": "2023-10-23T21:03:06Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "cc942d6fa5a4d67375d9be54c2741db7ea990f9a",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/renumber_settings",
+      "headRefOid": "35d0096b9e659aee0e57933d451183f366f05bd4",
+      "closedAt": "2023-10-23T21:03:02Z",
+      "mergedAt": "2023-10-23T21:03:02Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "a4c381578a56e32eb9f762036cf62b11fd8ebc84"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl885k3W1b",
+          "commit": {
+            "abbreviatedOid": "35d0096"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "These look as good as any other and I don't believe we ever got around to greasing these.",
+          "createdAt": "2023-10-23T10:43:37Z",
+          "updatedAt": "2023-10-23T10:43:37Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl885k74cL",
+          "commit": {
+            "abbreviatedOid": "35d0096"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T19:54:03Z",
+          "updatedAt": "2023-10-23T19:54:03Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 93,
+      "id": "PR_kwDODnOl885dgnrf",
+      "title": "Clarify flow control interactions",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/93",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Clarify flow control interactions\r\n\r\nCloses #88",
+      "createdAt": "2023-10-23T09:48:29Z",
+      "updatedAt": "2023-10-23T23:33:05Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "cc942d6fa5a4d67375d9be54c2741db7ea990f9a",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/flow_control_clarifications",
+      "headRefOid": "09df5c59a1ea251698ca1b072d7b976305a9aed0",
+      "closedAt": "2023-10-23T23:32:48Z",
+      "mergedAt": "2023-10-23T23:32:48Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "4a36902e59995ec4193eb45c0da9e8daf0bbfa28"
+      },
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(Merged, but happy to update with additional changes)",
+          "createdAt": "2023-10-23T23:33:02Z",
+          "updatedAt": "2023-10-23T23:33:02Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl885k3XTr",
+          "commit": {
+            "abbreviatedOid": "5a12587"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2023-10-23T10:44:54Z",
+          "updatedAt": "2023-10-23T10:46:04Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "HTTP/2 doesn't really have a problem with limits being reduced, so I'm not sure that we need this one.",
+              "createdAt": "2023-10-23T10:44:54Z",
+              "updatedAt": "2023-10-23T10:46:04Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "THIS one cannot reduce and can have a \"MUST treat as a connection error\" clause.",
+              "createdAt": "2023-10-23T10:46:01Z",
+              "updatedAt": "2023-10-23T10:46:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8lkd",
+          "commit": {
+            "abbreviatedOid": "5a12587"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:18:22Z",
+          "updatedAt": "2023-10-23T22:18:22Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "I guess instead of prohibiting this, we can pull the same text from H2: \r\n\r\n> An endpoint that wishes to reduce the value of <SETTING_NAME> to a value that is below the current number of open streams can either close streams that exceed the new value or allow streams to complete.\r\n\r\nAnd just talk about sessions (streams, below).\r\n\r\nNot quite as specific or as strict, but we can adjust if needed.",
+              "createdAt": "2023-10-23T22:18:22Z",
+              "updatedAt": "2023-10-23T22:19:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8uAZ",
+          "commit": {
+            "abbreviatedOid": "5a12587"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:48:48Z",
+          "updatedAt": "2023-10-23T22:48:48Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Updated with this for both",
+              "createdAt": "2023-10-23T22:48:48Z",
+              "updatedAt": "2023-10-23T22:48:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8u7x",
+          "commit": {
+            "abbreviatedOid": "5a12587"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:49:43Z",
+          "updatedAt": "2023-10-23T22:49:43Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Whoops, no, Victor correctly points out that this can't go down by definition -- that's the paragraph here that I'm struggling to explain as clearly as possible, but we can iterate on wording.",
+              "createdAt": "2023-10-23T22:49:43Z",
+              "updatedAt": "2023-10-23T23:01:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8xzG",
+          "commit": {
+            "abbreviatedOid": "f099afa"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:58:49Z",
+          "updatedAt": "2023-10-23T22:58:50Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "I am really confused by this paragraph. I thought WT_MAX_STREAMS only goes up?",
+              "createdAt": "2023-10-23T22:58:50Z",
+              "updatedAt": "2023-10-23T22:58:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8yGb",
+          "commit": {
+            "abbreviatedOid": "f099afa"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T23:00:07Z",
+          "updatedAt": "2023-10-23T23:00:07Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Ah, sorry, the whole reason we added that clarification :) ",
+              "createdAt": "2023-10-23T23:00:07Z",
+              "updatedAt": "2023-10-23T23:00:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8yOv",
+          "commit": {
+            "abbreviatedOid": "f099afa"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T23:00:44Z",
+          "updatedAt": "2023-10-23T23:00:44Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Removed in [09df5c5](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/93/commits/09df5c59a1ea251698ca1b072d7b976305a9aed0)",
+              "createdAt": "2023-10-23T23:00:44Z",
+              "updatedAt": "2023-10-23T23:00:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885k8yeq",
+          "commit": {
+            "abbreviatedOid": "09df5c5"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T23:01:39Z",
+          "updatedAt": "2023-10-23T23:01:39Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }

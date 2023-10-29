@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-24T00:44:49.070662+00:00",
+  "timestamp": "2023-10-29T00:48:30.261170+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1774,6 +1774,41 @@
       "updatedAt": "2023-10-23T21:10:28Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 95,
+      "id": "I_kwDODnOl8850_wLe",
+      "title": "Draining a WebTransport session in H2",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/95",
+      "state": "OPEN",
+      "author": "nidhijaju",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "ready for PR"
+      ],
+      "body": "For WebTransport over HTTP/3, there's a [DRAIN_WEBTRANSPORT_SESSION](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3#section-4.6-3) capsule for draining the session.\r\n\r\nHowever, for HTTP/2, there is only a WT_STOP_SENDING capsule that would request the recipient to stop sending data, but does not require the sender of the capsule to stop sending data themselves. It would be good to have a similar concept to DRAIN_WEBTRANSPORT_SESSION for HTTP/2 to allow WebTransport to be more transport-agnostic.",
+      "createdAt": "2023-10-26T07:17:08Z",
+      "updatedAt": "2023-10-27T00:48:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Since we're trying to have WebTransport provide a common interface, regardless of underlying transport, it seems like we should be able to map each of these to a function in the overview. \n\nWebTransport over H2 is designed to look very similar to H3/QUIC, rather than follow H2 patterns, which should help in this area. \n\nThings like GOAWAY are still provided by H2 itself and are similar enough that that's probably fine. \n\nIt should be straightforward to pull over the same DRAIN_WEBTRANSPORT_SESSION capsule from WebTransport over H3 and maintain consistency with H3.",
+          "createdAt": "2023-10-26T22:20:04Z",
+          "updatedAt": "2023-10-26T22:20:04Z"
+        },
+        {
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I thought we already had similar text for using CLOSE_WEBTRANSPORT_SESSION, but I can't find it in the draft.",
+          "createdAt": "2023-10-27T00:48:19Z",
+          "updatedAt": "2023-10-27T00:48:19Z"
+        }
+      ]
     }
   ],
   "pulls": [

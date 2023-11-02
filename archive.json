@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-29T00:48:30.261170+00:00",
+  "timestamp": "2023-11-02T00:45:06.879813+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -82,6 +82,11 @@
       "name": "out of scope",
       "description": "Issues that are out of scope for the current specification",
       "color": "4C4C09"
+    },
+    {
+      "name": "ietf-118",
+      "description": "Issues discussed at IETF 118",
+      "color": "5319E7"
     }
   ],
   "issues": [
@@ -876,7 +881,7 @@
       ],
       "body": "There is no error handling capability in the protocol at all.\r\n\r\nWe need a framework for describing how errors are handled.  That might reuse HTTP/2 signaling (which might not be the best idea if we are serious about this being mostly generic) or they might use a new frame type for signaling session-level errors.\r\n\r\nThe HTTP/3 draft has a termination signal; that might be the best option.",
       "createdAt": "2021-10-29T01:17:03Z",
-      "updatedAt": "2023-07-27T20:44:32Z",
+      "updatedAt": "2023-10-31T22:30:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -913,6 +918,13 @@
           "body": "Chair: discussed at IETF 117. Consensus in room was that the receiver that detects a violation or other fatal error needs to reset the h2 stream.\r\n\r\n(Yes, this is copy-pasted from the last one... we just need a PR)",
           "createdAt": "2023-07-27T20:44:31Z",
           "updatedAt": "2023-07-27T20:44:31Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: discussed in editor's meeting. This does not need discussion time at IETF 118, see previous comments for planned resolution.",
+          "createdAt": "2023-10-31T22:30:26Z",
+          "updatedAt": "2023-10-31T22:30:26Z"
         }
       ]
     },
@@ -1445,11 +1457,12 @@
         "vasilvv"
       ],
       "labels": [
+        "editorial",
         "ready for PR"
       ],
       "body": "WebTransport over HTTP/2, as it's currently defined, is, at its core, a protocol that is semantically compatible with QUIC, but works over capsules (i.e. TLV over TCP).  This means that it might be useful outside of HTTP/2 context.\r\n\r\nThe main gotcha is, of course, that we do use settings and headers.  The way we use settings is an optimization that only makes sense for pooling; on the other hand, I don't think we can function without the headers.\r\n\r\nSome possible applications we may to consider / discuss:\r\n\r\n1. HTTP/1.1 should just work, since capsules were designed with H/1 support in mind.\r\n2. Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.",
       "createdAt": "2023-04-18T19:20:28Z",
-      "updatedAt": "2023-06-27T23:00:23Z",
+      "updatedAt": "2023-10-31T22:30:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -1767,13 +1780,26 @@
       "state": "OPEN",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "ready for PR",
+        "ietf-118"
+      ],
       "body": "H2 matches H3 in being permissive about flow control violations around the stream limit.\r\n\r\n> the asynchronous nature of the protocol\r\n\r\n> A server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.\r\n\r\n> _Originally posted by @martinthomson in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91#discussion_r1368470323_\r\n            ",
       "createdAt": "2023-10-23T21:10:08Z",
-      "updatedAt": "2023-10-23T21:10:28Z",
+      "updatedAt": "2023-10-31T22:33:31Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in editor's meeting: \r\n\r\nIf you're above the limit, you lower that limit, and the peer ACKs that lowering, you only enforce the \"don't go above the limit\" when a new session is opened, so it doesn't matter how long the peer takes to close everything down, they have to get below the limit if they want a new session.",
+          "createdAt": "2023-10-31T22:32:46Z",
+          "updatedAt": "2023-10-31T22:32:46Z"
+        }
+      ]
     },
     {
       "number": 95,
@@ -1787,11 +1813,12 @@
         "ekinnear"
       ],
       "labels": [
-        "ready for PR"
+        "ready for PR",
+        "ietf-118"
       ],
       "body": "For WebTransport over HTTP/3, there's a [DRAIN_WEBTRANSPORT_SESSION](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3#section-4.6-3) capsule for draining the session.\r\n\r\nHowever, for HTTP/2, there is only a WT_STOP_SENDING capsule that would request the recipient to stop sending data, but does not require the sender of the capsule to stop sending data themselves. It would be good to have a similar concept to DRAIN_WEBTRANSPORT_SESSION for HTTP/2 to allow WebTransport to be more transport-agnostic.",
       "createdAt": "2023-10-26T07:17:08Z",
-      "updatedAt": "2023-10-27T00:48:19Z",
+      "updatedAt": "2023-10-31T22:35:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -1809,6 +1836,22 @@
           "updatedAt": "2023-10-27T00:48:19Z"
         }
       ]
+    },
+    {
+      "number": 96,
+      "id": "I_kwDODnOl8851lt2M",
+      "title": "Feedback from IANA",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/96",
+      "state": "OPEN",
+      "author": "DavidSchinazi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "IANA has sent in the following feedback:\r\n\r\n> Any values that have yet to be allocated (either permanently or via the RFC 7120 early allocation policy), like the values named in sections 9.1 and 9.2, should be described as \u201c1 (suggested)\u201d and \u201c2 (suggested)\u201d (or similar).\r\n>\r\n> If you have any questions, just let us know. If you'd like to talk in person, you can find us next to the RFC Editor's table from Monday through Thursday. You can also request another review at any time by contacting us at [iana@iana.org](mailto:iana@iana.org).\r\n>\r\n> For more information about IANA Considerations section requirements, please see https://www.iana.org/help/protocol-registration",
+      "createdAt": "2023-11-01T17:45:55Z",
+      "updatedAt": "2023-11-01T17:45:55Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [

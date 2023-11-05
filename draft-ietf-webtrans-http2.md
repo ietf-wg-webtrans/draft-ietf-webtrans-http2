@@ -987,7 +987,7 @@ Setting Name:
 
 Value:
 
-: 0x2b60
+: 0x2b60 (suggested)
 
 Default:
 
@@ -1015,7 +1015,7 @@ Setting Name:
 
 Value:
 
-: 0x2b61
+: 0x2b61 (suggested)
 
 Default:
 
@@ -1045,7 +1045,7 @@ Setting Name:
 
 Value:
 
-: 0x2b62
+: 0x2b62 (suggested)
 
 Default:
 
@@ -1075,7 +1075,7 @@ Setting Name:
 
 Value:
 
-: 0x2b63
+: 0x2b63 (suggested)
 
 Default:
 
@@ -1104,7 +1104,7 @@ Setting Name:
 
 Value:
 
-: 0x2b64
+: 0x2b64 (suggested)
 
 Default:
 
@@ -1133,7 +1133,7 @@ Setting Name:
 
 Value:
 
-: 0x2b65
+: 0x2b65 (suggested)
 
 Default:
 
@@ -1151,7 +1151,7 @@ by {{HTTP-DATAGRAM}}:
 The `PADDING` capsule.
 
 Value:
-: 0x190B4D38
+: 0x190B4D38 (suggested)
 
 Capsule Type:
 : PADDING
@@ -1175,7 +1175,7 @@ Notes:
 The `WT_RESET_STREAM` capsule.
 
 Value:
-: 0x190B4D39
+: 0x190B4D39 (suggested)
 
 Capsule Type:
 : WT_RESET_STREAM
@@ -1199,7 +1199,7 @@ Notes:
 The `WT_STOP_SENDING` capsule.
 
 Value:
-: 0x190B4D3A
+: 0x190B4D3A (suggested)
 
 Capsule Type:
 : WT_STOP_SENDING
@@ -1223,7 +1223,7 @@ Notes:
 The `WT_STREAM` capsule.
 
 Value:
-: 0x190B4D3B..0x190B4D3C
+: 0x190B4D3B..0x190B4D3C (suggested)
 
 Capsule Type:
 : WT_STREAM
@@ -1247,7 +1247,7 @@ Notes:
 The `WT_MAX_DATA` capsule.
 
 Value:
-: 0x190B4D3D
+: 0x190B4D3D (suggested)
 
 Capsule Type:
 : WT_MAX_DATA
@@ -1271,7 +1271,7 @@ Notes:
 The `WT_MAX_STREAM_DATA` capsule.
 
 Value:
-: 0x190B4D3E
+: 0x190B4D3E (suggested)
 
 Capsule Type:
 : WT_MAX_STREAM_DATA
@@ -1295,7 +1295,7 @@ Notes:
 The `WT_MAX_STREAMS` capsule.
 
 Value:
-: 0x190B4D3F..0x190B4D40
+: 0x190B4D3F..0x190B4D40 (suggested)
 
 Capsule Type:
 : WT_MAX_STREAMS
@@ -1319,7 +1319,7 @@ Notes:
 The `WT_DATA_BLOCKED` capsule.
 
 Value:
-: 0x190B4D41
+: 0x190B4D41 (suggested)
 
 Capsule Type:
 : WT_DATA_BLOCKED
@@ -1343,7 +1343,7 @@ Notes:
 The `WT_STREAM_DATA_BLOCKED` capsule.
 
 Value:
-: 0x190B4D42
+: 0x190B4D42 (suggested)
 
 Capsule Type:
 : WT_STREAM_DATA_BLOCKED
@@ -1367,7 +1367,7 @@ Notes:
 The `WT_STREAMS_BLOCKED` capsule.
 
 Value:
-: 0x190B4D43..0x190B4D44
+: 0x190B4D43..0x190B4D44 (suggested)
 
 Capsule Type:
 : WT_STREAMS_BLOCKED

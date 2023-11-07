@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-02T00:45:06.879813+00:00",
+  "timestamp": "2023-11-07T00:46:46.756575+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1789,7 +1789,7 @@
       ],
       "body": "H2 matches H3 in being permissive about flow control violations around the stream limit.\r\n\r\n> the asynchronous nature of the protocol\r\n\r\n> A server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.\r\n\r\n> _Originally posted by @martinthomson in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91#discussion_r1368470323_\r\n            ",
       "createdAt": "2023-10-23T21:10:08Z",
-      "updatedAt": "2023-10-31T22:33:31Z",
+      "updatedAt": "2023-11-06T15:24:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -1798,6 +1798,13 @@
           "body": "Discussed in editor's meeting: \r\n\r\nIf you're above the limit, you lower that limit, and the peer ACKs that lowering, you only enforce the \"don't go above the limit\" when a new session is opened, so it doesn't matter how long the peer takes to close everything down, they have to get below the limit if they want a new session.",
           "createdAt": "2023-10-31T22:32:46Z",
           "updatedAt": "2023-10-31T22:32:46Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: discussed in the WG session at IETF 118. No objections raised.\r\n\r\n@achernya also pointed out that there might be some interesting interactions between SETTINGS_WEBTRANSPORT_MAX_SESSIONS and DRAIN_WEBTRANSPORT_SESSION that could lead to suboptimal incentives around keeping draining sessions around for longer than needed. @ekinnear took an action item to look into this.",
+          "createdAt": "2023-11-06T15:24:25Z",
+          "updatedAt": "2023-11-06T15:24:25Z"
         }
       ]
     },
@@ -1818,7 +1825,7 @@
       ],
       "body": "For WebTransport over HTTP/3, there's a [DRAIN_WEBTRANSPORT_SESSION](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3#section-4.6-3) capsule for draining the session.\r\n\r\nHowever, for HTTP/2, there is only a WT_STOP_SENDING capsule that would request the recipient to stop sending data, but does not require the sender of the capsule to stop sending data themselves. It would be good to have a similar concept to DRAIN_WEBTRANSPORT_SESSION for HTTP/2 to allow WebTransport to be more transport-agnostic.",
       "createdAt": "2023-10-26T07:17:08Z",
-      "updatedAt": "2023-10-31T22:35:40Z",
+      "updatedAt": "2023-11-06T15:16:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -1834,6 +1841,13 @@
           "body": "I thought we already had similar text for using CLOSE_WEBTRANSPORT_SESSION, but I can't find it in the draft.",
           "createdAt": "2023-10-27T00:48:19Z",
           "updatedAt": "2023-10-27T00:48:19Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: discussed in the WG session at IETF 118. Some thumbs up seen in the room, no objections raised.",
+          "createdAt": "2023-11-06T15:16:57Z",
+          "updatedAt": "2023-11-06T15:16:57Z"
         }
       ]
     },
@@ -1845,11 +1859,13 @@
       "state": "OPEN",
       "author": "DavidSchinazi",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "ekinnear"
+      ],
       "labels": [],
       "body": "IANA has sent in the following feedback:\r\n\r\n> Any values that have yet to be allocated (either permanently or via the RFC 7120 early allocation policy), like the values named in sections 9.1 and 9.2, should be described as \u201c1 (suggested)\u201d and \u201c2 (suggested)\u201d (or similar).\r\n>\r\n> If you have any questions, just let us know. If you'd like to talk in person, you can find us next to the RFC Editor's table from Monday through Thursday. You can also request another review at any time by contacting us at [iana@iana.org](mailto:iana@iana.org).\r\n>\r\n> For more information about IANA Considerations section requirements, please see https://www.iana.org/help/protocol-registration",
       "createdAt": "2023-11-01T17:45:55Z",
-      "updatedAt": "2023-11-01T17:45:55Z",
+      "updatedAt": "2023-11-05T21:26:48Z",
       "closedAt": null,
       "comments": []
     }
@@ -1873,7 +1889,7 @@
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "master",
       "baseRefOid": "02b5b7408316e955cf0e3f9c7bc3e5485375d6fa",
-      "headRepository": "afrind/draft-webtransport-http2",
+      "headRepository": "afrind/draft-ietf-webtransport-http2",
       "headRefName": "editorial",
       "headRefOid": "d6988dc2bb25b47355d3adc34f79a2a724c26242",
       "closedAt": "2020-03-09T23:19:06Z",
@@ -2461,7 +2477,7 @@
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "master",
       "baseRefOid": "3242a06f1fdab9a6cf183947b94a849b3106b232",
-      "headRepository": "afrind/draft-webtransport-http2",
+      "headRepository": "afrind/draft-ietf-webtransport-http2",
       "headRefName": "unidirectional-stream",
       "headRefOid": "cd47d2d945ec0e64fabdc599b30608f80402b9c1",
       "closedAt": "2020-11-15T21:29:13Z",
@@ -2522,7 +2538,7 @@
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "master",
       "baseRefOid": "3242a06f1fdab9a6cf183947b94a849b3106b232",
-      "headRepository": "afrind/draft-webtransport-http2",
+      "headRepository": "afrind/draft-ietf-webtransport-http2",
       "headRefName": "wt-req",
       "headRefOid": "9127a05a989f6333e1dc5d8ba259c4dde23f452d",
       "closedAt": "2021-02-22T23:04:42Z",
@@ -2610,7 +2626,7 @@
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "master",
       "baseRefOid": "3242a06f1fdab9a6cf183947b94a849b3106b232",
-      "headRepository": "afrind/draft-webtransport-http2",
+      "headRepository": "afrind/draft-ietf-webtransport-http2",
       "headRefName": "headers-optional",
       "headRefOid": "41733720c6c23608b4f5a34fa91af585aef860ab",
       "closedAt": "2021-02-22T23:04:42Z",
@@ -2691,7 +2707,7 @@
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "master",
       "baseRefOid": "f3749705a5be9502e781f12fd5155b6af14d683b",
-      "headRepository": "afrind/draft-webtransport-http2",
+      "headRepository": "afrind/draft-ietf-webtransport-http2",
       "headRefName": "rewrite",
       "headRefOid": "eacaed156408e3036a1951c0cb9bb2b1559ad5c1",
       "closedAt": "2021-02-22T22:07:50Z",
@@ -6789,6 +6805,46 @@
           "body": "",
           "createdAt": "2023-10-23T23:01:39Z",
           "updatedAt": "2023-10-23T23:01:39Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 97,
+      "id": "PR_kwDODnOl885eoHsF",
+      "title": "Mark IANA values as suggested",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/97",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Mark IANA values as suggested\r\n\r\nFixes #96",
+      "createdAt": "2023-11-05T21:32:15Z",
+      "updatedAt": "2023-11-06T06:51:32Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "4a36902e59995ec4193eb45c0da9e8daf0bbfa28",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/iana_updates",
+      "headRefOid": "4cb9d5a9ebb8ea2cfa326c13faad5830e0e043ce",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl885mLyLY",
+          "commit": {
+            "abbreviatedOid": "4cb9d5a"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I don't care.  The annotation isn't really necessary in my mind.",
+          "createdAt": "2023-11-06T06:51:32Z",
+          "updatedAt": "2023-11-06T06:51:32Z",
           "comments": []
         }
       ]

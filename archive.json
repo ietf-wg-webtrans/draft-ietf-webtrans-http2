@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-12T00:50:21.950616+00:00",
+  "timestamp": "2023-11-14T00:46:21.803327+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1866,6 +1866,22 @@
       "body": "IANA has sent in the following feedback:\r\n\r\n> Any values that have yet to be allocated (either permanently or via the RFC 7120 early allocation policy), like the values named in sections 9.1 and 9.2, should be described as \u201c1 (suggested)\u201d and \u201c2 (suggested)\u201d (or similar).\r\n>\r\n> If you have any questions, just let us know. If you'd like to talk in person, you can find us next to the RFC Editor's table from Monday through Thursday. You can also request another review at any time by contacting us at [iana@iana.org](mailto:iana@iana.org).\r\n>\r\n> For more information about IANA Considerations section requirements, please see https://www.iana.org/help/protocol-registration",
       "createdAt": "2023-11-01T17:45:55Z",
       "updatedAt": "2023-11-05T21:26:48Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 98,
+      "id": "I_kwDODnOl8852nZsu",
+      "title": "Missing CLOSE_WEBTRANSPORT_SESSION equivalent",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/98",
+      "state": "OPEN",
+      "author": "martenrichter",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "While implementing the protocol, I ran into the issue, that it misses and equivalent of  CLOSE_WEBTRANSPORT_SESSION.\r\nAnd therefore it is not possible to pass `code` and `reason` in the case the stream is closed. \r\n`code` is possible using goaway frames, even though this probably has a different counterpart.\r\n\r\nAlso, I may be missing something, as I am restricted to the http2 api exposed by node.js. But currently, the http/2 implementation behaves differently.",
+      "createdAt": "2023-11-13T07:31:52Z",
+      "updatedAt": "2023-11-13T07:31:52Z",
       "closedAt": null,
       "comments": []
     }

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-28T00:49:13.134137+00:00",
+  "timestamp": "2023-11-30T00:48:27.727717+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -87,6 +87,11 @@
       "name": "ietf-118",
       "description": "Issues discussed at IETF 118",
       "color": "5319E7"
+    },
+    {
+      "name": "held for wglc",
+      "description": "Issues held for Working Group Last Call",
+      "color": "9D6338"
     }
   ],
   "issues": [
@@ -1856,7 +1861,7 @@
       "id": "I_kwDODnOl8851lt2M",
       "title": "Feedback from IANA",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "DavidSchinazi",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1865,9 +1870,17 @@
       "labels": [],
       "body": "IANA has sent in the following feedback:\r\n\r\n> Any values that have yet to be allocated (either permanently or via the RFC 7120 early allocation policy), like the values named in sections 9.1 and 9.2, should be described as \u201c1 (suggested)\u201d and \u201c2 (suggested)\u201d (or similar).\r\n>\r\n> If you have any questions, just let us know. If you'd like to talk in person, you can find us next to the RFC Editor's table from Monday through Thursday. You can also request another review at any time by contacting us at [iana@iana.org](mailto:iana@iana.org).\r\n>\r\n> For more information about IANA Considerations section requirements, please see https://www.iana.org/help/protocol-registration",
       "createdAt": "2023-11-01T17:45:55Z",
-      "updatedAt": "2023-11-05T21:26:48Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2023-11-28T23:21:25Z",
+      "closedAt": "2023-11-28T23:21:25Z",
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in editor's meeting: Tracked by #99. ",
+          "createdAt": "2023-11-28T23:21:25Z",
+          "updatedAt": "2023-11-28T23:21:25Z"
+        }
+      ]
     },
     {
       "number": 98,
@@ -1882,6 +1895,26 @@
       "body": "While implementing the protocol, I ran into the issue, that it misses and equivalent of  CLOSE_WEBTRANSPORT_SESSION.\r\nAnd therefore it is not possible to pass `code` and `reason` in the case the stream is closed. \r\n`code` is possible using goaway frames, even though this probably has a different counterpart.\r\n\r\nAlso, I may be missing something, as I am restricted to the http2 api exposed by node.js. But currently, the http/2 implementation behaves differently.",
       "createdAt": "2023-11-13T07:31:52Z",
       "updatedAt": "2023-11-13T07:31:52Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 99,
+      "id": "I_kwDODnOl8854IdlI",
+      "title": "[hold for WGLC] Renumber codepoints",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/99",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "held for wglc"
+      ],
+      "body": "Our current codepoints are often two-bytes or four-bytes where they could be smaller. This matters, especially for prefixes we use for user data. We should renumber them after WGLC, this is a bug to not forget this.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/136.",
+      "createdAt": "2023-11-28T23:20:42Z",
+      "updatedAt": "2023-11-29T00:02:17Z",
       "closedAt": null,
       "comments": []
     }
@@ -6830,25 +6863,33 @@
       "id": "PR_kwDODnOl885eoHsF",
       "title": "Mark IANA values as suggested",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/97",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Mark IANA values as suggested\r\n\r\nFixes #96",
       "createdAt": "2023-11-05T21:32:15Z",
-      "updatedAt": "2023-11-06T06:51:32Z",
+      "updatedAt": "2023-11-28T23:21:42Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "4a36902e59995ec4193eb45c0da9e8daf0bbfa28",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/iana_updates",
       "headRefOid": "4cb9d5a9ebb8ea2cfa326c13faad5830e0e043ce",
-      "closedAt": null,
+      "closedAt": "2023-11-28T23:21:42Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in editor's meeting: Instead, tracking with #99.",
+          "createdAt": "2023-11-28T23:21:42Z",
+          "updatedAt": "2023-11-28T23:21:42Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDODnOl885mLyLY",

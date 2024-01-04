@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-02T00:46:54.650652+00:00",
+  "timestamp": "2024-01-04T00:48:31.176136+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1723,7 +1723,7 @@
       ],
       "body": "That is kind of a cross posting of the issue from the other webtransport working group (ekinnear suggested posting it here):\r\nhttps://github.com/w3c/webtransport/issues/518\r\nMain idea is to add to the capsule protocol a specification for capsule over websocket, in order to support it in browser, that not yet support the http/2 protocol.\r\n\r\nThe benefits are as follows:\r\n\r\nThe protocol's way of working would be very similar to the actual http/2, so one could easily test ideas without waiting for the browser implementation.\r\n\r\n1. It will not be hard to implement it in a shim/polyfill (or I think it comes naturally out from my node webtransport plugins work)\r\n2. Having it specified ensures, that one shim/polyfill is enough for all future servers deployed that comply to the spec.\r\n3. And it will automatically address points older browsers, that do not support http2 over webtransport (or even webtransport) and one can even with the newer browser work in environments, where UDP is blocked.\r\n\r\nMy proposal would be as follows, the normal capsule protoco isl:\r\n\r\n```\r\nCapsule {\r\n     Capsule Type (i),\r\n     Capsule Length (i),\r\n     Capsule Value (..),\r\n   }\r\n```\r\nThe idea would be to transport it as binary frame/payload of length `Length + 4 `, and the payload will start with capsule type and continue with capsule value. Maybe an initial text frame indicates, that it is a capsule over websocket connection.\r\nThe rest of the http/2 capsule protocol will remain unchanged. So besides a little bit extra overload, the mechanics of most of the protocol will remain unchanged.\r\n",
       "createdAt": "2023-08-16T06:03:13Z",
-      "updatedAt": "2023-10-18T16:50:38Z",
+      "updatedAt": "2024-01-03T08:46:23Z",
       "closedAt": "2023-10-17T22:35:15Z",
       "comments": [
         {
@@ -1774,6 +1774,27 @@
           "body": "That's a solid plan, thanks Marten!",
           "createdAt": "2023-10-18T16:50:37Z",
           "updatedAt": "2023-10-18T16:50:37Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Ok, my implementation is ready:\r\nhttps://github.com/fails-components/webtransport\r\nand tested using the unit tests  against also three major engines (and my app for the two major engines available in Windows) \r\nand I spent a couple hours of writing it down:\r\n\r\nhttps://martenrichter.github.io/draft-ietf-webtransport-websocket/draft-richter-webtransport-websocket.html\r\nhttps://github.com/martenrichter/draft-ietf-webtransport-websocket\r\n\r\nI hope I hit the tone and style correctly, especially as it is different from the publications in latex I usually write.\r\n\r\nI have also submitted a patch to node, to get full support of http settings, which is crucial for the http/2 implementation.\r\n",
+          "createdAt": "2024-01-02T14:37:50Z",
+          "updatedAt": "2024-01-02T14:37:50Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@martenrichter, I'd encourage you to [submit that draft](https://github.com/martinthomson/i-d-template/blob/main/doc/SUBMITTING.md), even though it might not be ready for discussion.  Sometimes, publishing a draft is a good way to start some discussion.",
+          "createdAt": "2024-01-03T05:12:39Z",
+          "updatedAt": "2024-01-03T05:12:39Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Thanks for the feedback, I just followed your suggestion:\r\nhttps://datatracker.ietf.org/doc/draft-richter-webtransport-websocket/\r\n.",
+          "createdAt": "2024-01-03T08:46:22Z",
+          "updatedAt": "2024-01-03T08:46:22Z"
         }
       ]
     },
@@ -1917,6 +1938,54 @@
       "updatedAt": "2023-11-29T00:02:17Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 100,
+      "id": "I_kwDODnOl88566kjF",
+      "title": "Masking required?",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/100",
+      "state": "OPEN",
+      "author": "martenrichter",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I have read recently a lot about the WebSocket protocol intrinsics.\r\nIt includes a MASKING mechanism to prevent malicious webpages from smuggling HTTP syntax into the WebSocket frames, which can exploit suboptimal proxies.\r\nI am wondering if such an attack is also possible with the capsule protocol.\r\nIs it safe since it runs over http/2 (enforced with the SETTINGS)?\r\nBut on the other hand, RFC 8441Section 10 leaves RFC 6455 Section 10.3 untouched.\r\nMaybe this was discussed before, and I did not find it in the issues.",
+      "createdAt": "2024-01-02T09:50:43Z",
+      "updatedAt": "2024-01-02T10:06:53Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Ok I found \r\n```\r\nWebTransport over HTTP/2 requires explicit opt-in through the use of\r\n   HTTP SETTINGS; this avoids potential protocol confusion attacks by\r\n   ensuring the HTTP/2 server explicitly supports it.  It also requires\r\n   the use of the Origin header, providing the server with the ability\r\n   to deny access to Web-based clients that do not originate from a\r\n   trusted origin.\r\n```\r\nthat means, a HTTP/1 variant would be vulnerabale. However than I wonder why it was left in force in RFC 8841.",
+          "createdAt": "2024-01-02T10:06:52Z",
+          "updatedAt": "2024-01-02T10:06:52Z"
+        }
+      ]
+    },
+    {
+      "number": 101,
+      "id": "I_kwDODnOl8857CZsY",
+      "title": "Stream operations after RESET has been sent",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/101",
+      "state": "OPEN",
+      "author": "vasilvv",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Is it valid to send WT_STREAM for streams that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_RESET_STREAM for a stream that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_STOP_SENDING for a stream that already had a WT_STOP_SENDING sent?\r\n- Is it valid to send WT_MAX_STREAM_DATA for a stream that already had a WT_STOP_SENDING sent?\r\n\r\nIn QUIC, I believe we answered \"yes\" to all of the above since the protocol is inherently unordered. As far as I can tell, this does not apply to WT over HTTP/2, since it's strictly ordered, at least for an individual peer.",
+      "createdAt": "2024-01-03T15:30:22Z",
+      "updatedAt": "2024-01-03T15:30:52Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, forgot to add: we should decide the same for FIN, too.",
+          "createdAt": "2024-01-03T15:30:51Z",
+          "updatedAt": "2024-01-03T15:30:51Z"
+        }
+      ]
     }
   ],
   "pulls": [

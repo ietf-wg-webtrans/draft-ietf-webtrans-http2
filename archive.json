@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-04T00:48:31.176136+00:00",
+  "timestamp": "2024-01-07T00:53:15.310814+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1975,7 +1975,7 @@
       "labels": [],
       "body": "- Is it valid to send WT_STREAM for streams that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_RESET_STREAM for a stream that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_STOP_SENDING for a stream that already had a WT_STOP_SENDING sent?\r\n- Is it valid to send WT_MAX_STREAM_DATA for a stream that already had a WT_STOP_SENDING sent?\r\n\r\nIn QUIC, I believe we answered \"yes\" to all of the above since the protocol is inherently unordered. As far as I can tell, this does not apply to WT over HTTP/2, since it's strictly ordered, at least for an individual peer.",
       "createdAt": "2024-01-03T15:30:22Z",
-      "updatedAt": "2024-01-03T15:30:52Z",
+      "updatedAt": "2024-01-04T01:13:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -1984,8 +1984,31 @@
           "body": "Oh, forgot to add: we should decide the same for FIN, too.",
           "createdAt": "2024-01-03T15:30:51Z",
           "updatedAt": "2024-01-03T15:30:51Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It should be possible to do this, if you consider HTTP/2 uses in isolation, but are there cases where there could be a hop that is HTTP/3 and it would be easier to intermediate if the ordering could be loose?",
+          "createdAt": "2024-01-04T01:13:17Z",
+          "updatedAt": "2024-01-04T01:13:17Z"
         }
       ]
+    },
+    {
+      "number": 102,
+      "id": "I_kwDODnOl8857IrGa",
+      "title": "Ambigioutity of WT_MAX_STREAMS (http/2 versus http/3)",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/102",
+      "state": "OPEN",
+      "author": "martenrichter",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
+      "createdAt": "2024-01-04T15:34:36Z",
+      "updatedAt": "2024-01-04T15:34:36Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [

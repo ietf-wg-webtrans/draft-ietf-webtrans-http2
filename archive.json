@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-09T00:49:44.128443+00:00",
+  "timestamp": "2024-01-11T00:50:06.669982+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1851,7 +1851,7 @@
       ],
       "body": "For WebTransport over HTTP/3, there's a [DRAIN_WEBTRANSPORT_SESSION](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3#section-4.6-3) capsule for draining the session.\r\n\r\nHowever, for HTTP/2, there is only a WT_STOP_SENDING capsule that would request the recipient to stop sending data, but does not require the sender of the capsule to stop sending data themselves. It would be good to have a similar concept to DRAIN_WEBTRANSPORT_SESSION for HTTP/2 to allow WebTransport to be more transport-agnostic.",
       "createdAt": "2023-10-26T07:17:08Z",
-      "updatedAt": "2023-11-06T15:16:58Z",
+      "updatedAt": "2024-01-10T16:23:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -1874,6 +1874,13 @@
           "body": "Chair: discussed in the WG session at IETF 118. Some thumbs up seen in the room, no objections raised.",
           "createdAt": "2023-11-06T15:16:57Z",
           "updatedAt": "2023-11-06T15:16:57Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In #98, @martenrichter rightfully points out that we need CLOSE_WEBTRANSPORT_SESSION in h2 to communicate the Application Error Code and Application Error Message.",
+          "createdAt": "2024-01-10T16:23:24Z",
+          "updatedAt": "2024-01-10T16:23:38Z"
         }
       ]
     },
@@ -1908,16 +1915,38 @@
       "id": "I_kwDODnOl8852nZsu",
       "title": "Missing CLOSE_WEBTRANSPORT_SESSION equivalent",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/98",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "While implementing the protocol, I ran into the issue, that it misses and equivalent of  CLOSE_WEBTRANSPORT_SESSION.\r\nAnd therefore it is not possible to pass `code` and `reason` in the case the stream is closed. \r\n`code` is possible using goaway frames, even though this probably has a different counterpart.\r\n\r\nAlso, I may be missing something, as I am restricted to the http2 api exposed by node.js. But currently, the http/2 implementation behaves differently.",
       "createdAt": "2023-11-13T07:31:52Z",
-      "updatedAt": "2023-11-13T07:31:52Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-01-10T16:24:14Z",
+      "closedAt": "2024-01-09T23:20:26Z",
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Looks like this is covered by #95.",
+          "createdAt": "2024-01-09T23:20:27Z",
+          "updatedAt": "2024-01-09T23:20:27Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "But I was more referring, that I can not transport the reason string over http/2. That is, what I realized while implementing and seeing my unit tests fail, that I looked for the reason.",
+          "createdAt": "2024-01-10T06:29:00Z",
+          "updatedAt": "2024-01-10T06:29:00Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Good point, I've added this in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/95#issuecomment-1885177641",
+          "createdAt": "2024-01-10T16:24:13Z",
+          "updatedAt": "2024-01-10T16:24:13Z"
+        }
+      ]
     },
     {
       "number": 99,
@@ -1944,15 +1973,17 @@
       "id": "I_kwDODnOl88566kjF",
       "title": "Masking required?",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/100",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "out of scope"
+      ],
       "body": "I have read recently a lot about the WebSocket protocol intrinsics.\r\nIt includes a MASKING mechanism to prevent malicious webpages from smuggling HTTP syntax into the WebSocket frames, which can exploit suboptimal proxies.\r\nI am wondering if such an attack is also possible with the capsule protocol.\r\nIs it safe since it runs over http/2 (enforced with the SETTINGS)?\r\nBut on the other hand, RFC 8441Section 10 leaves RFC 6455 Section 10.3 untouched.\r\nMaybe this was discussed before, and I did not find it in the issues.",
       "createdAt": "2024-01-02T09:50:43Z",
-      "updatedAt": "2024-01-02T10:06:53Z",
-      "closedAt": null,
+      "updatedAt": "2024-01-10T16:04:17Z",
+      "closedAt": "2024-01-09T23:26:53Z",
       "comments": [
         {
           "author": "martenrichter",
@@ -1960,6 +1991,27 @@
           "body": "Ok I found \r\n```\r\nWebTransport over HTTP/2 requires explicit opt-in through the use of\r\n   HTTP SETTINGS; this avoids potential protocol confusion attacks by\r\n   ensuring the HTTP/2 server explicitly supports it.  It also requires\r\n   the use of the Origin header, providing the server with the ability\r\n   to deny access to Web-based clients that do not originate from a\r\n   trusted origin.\r\n```\r\nthat means, a HTTP/1 variant would be vulnerabale. However than I wonder why it was left in force in RFC 8841.",
           "createdAt": "2024-01-02T10:06:52Z",
           "updatedAt": "2024-01-02T10:06:52Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Editor's meeting: We're not currently defining WebTransport over HTTP/1, although when we do so, we could require HTTPS for use with WebTransport.\r\n\r\nHTTP/2 and HTTP/3 are only able to run via encrypted transports, which is sufficient for POST requests, and we think that means it's also sufficient for the Extended CONNECT request here.\r\n\r\nThat said, this is certainly something that, if we advance the effort for H1, we'll want to keep in mind.",
+          "createdAt": "2024-01-09T23:26:53Z",
+          "updatedAt": "2024-01-09T23:26:53Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Thanks, that is what I expected. I was just puzzled that RFC 8441 did not remove the masking requirement for http/2.",
+          "createdAt": "2024-01-10T06:33:18Z",
+          "updatedAt": "2024-01-10T06:33:18Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think the history there is that RFC 8441 was intended to be the smallest possible change to make WebSocket work over h2. Removing masking would have been a good feature, but they decided it wasn't critical.",
+          "createdAt": "2024-01-10T16:04:17Z",
+          "updatedAt": "2024-01-10T16:04:17Z"
         }
       ]
     },
@@ -1975,7 +2027,7 @@
       "labels": [],
       "body": "- Is it valid to send WT_STREAM for streams that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_RESET_STREAM for a stream that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_STOP_SENDING for a stream that already had a WT_STOP_SENDING sent?\r\n- Is it valid to send WT_MAX_STREAM_DATA for a stream that already had a WT_STOP_SENDING sent?\r\n\r\nIn QUIC, I believe we answered \"yes\" to all of the above since the protocol is inherently unordered. As far as I can tell, this does not apply to WT over HTTP/2, since it's strictly ordered, at least for an individual peer.",
       "createdAt": "2024-01-03T15:30:22Z",
-      "updatedAt": "2024-01-04T01:13:18Z",
+      "updatedAt": "2024-01-09T23:32:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -1991,13 +2043,20 @@
           "body": "It should be possible to do this, if you consider HTTP/2 uses in isolation, but are there cases where there could be a hop that is HTTP/3 and it would be easier to intermediate if the ordering could be loose?",
           "createdAt": "2024-01-04T01:13:17Z",
           "updatedAt": "2024-01-04T01:13:17Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Seems like we have two options: \r\n\r\n- Most of these operations are inherently observable, for example if you go to forward a WT_STREAM frame and you think that the stream is already closed because you already had a WT_RESET_STREAM come through, you could see an error and drop that WT_STREAM frame.\r\n\r\n- Allow being a direct passthrough, so HTTP/2 is just preserving the inherent reordering that happened on the HTTP/3 side.\r\n\r\nIt's a little bit annoying that we'd need someone running pure HTTP/2 to accept obviously wrong things, just in case somewhere someone had HTTP/3 in existence. \r\n\r\nHowever, it also seems nice to not make the intermediary keep track of the state of streams if possible -- but you have to have a mapping already because the stream IDs don't match across HTTP/2 and HTTP/3.",
+          "createdAt": "2024-01-09T23:32:33Z",
+          "updatedAt": "2024-01-09T23:32:33Z"
         }
       ]
     },
     {
       "number": 102,
       "id": "I_kwDODnOl8857IrGa",
-      "title": "Ambigioutity of WT_MAX_STREAMS (http/2 versus http/3)",
+      "title": "Ambiguity of WT_MAX_STREAMS (http/2 versus http/3)",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/102",
       "state": "OPEN",
       "author": "martenrichter",
@@ -2006,9 +2065,24 @@
       "labels": [],
       "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
       "createdAt": "2024-01-04T15:34:36Z",
-      "updatedAt": "2024-01-04T15:34:36Z",
+      "updatedAt": "2024-01-09T23:40:05Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "HTTP/3 also has control streams as well that are included in the HTTP/3 level limit.\r\n\r\nThat said, because of the way that WT over HTTP/3 explodes streams out to native H3 streams, the flow control at the HTTP/3 layer cannot directly be translated to MAX_STREAMS in HTTP/2 (or the WT_MAX_STREAMS happening in either H3 or H2).\r\n\r\nThe current proposal to bring WT_MAX_STREAMS to H3 would have identical semantics, unless I'm missing something. :) \r\n\r\nOtherwise, there is no way to have an equivalent amount of per-session control over streams across HTTP/3 and HTTP/2.",
+          "createdAt": "2024-01-09T23:39:40Z",
+          "updatedAt": "2024-01-09T23:39:40Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Let's discuss this in the context of the flow control for HTTP/3 discussion, as well.",
+          "createdAt": "2024-01-09T23:40:04Z",
+          "updatedAt": "2024-01-09T23:40:04Z"
+        }
+      ]
     }
   ],
   "pulls": [

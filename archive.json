@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-21T00:53:57.883199+00:00",
+  "timestamp": "2024-01-23T00:50:55.880637+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2065,7 +2065,7 @@
       "labels": [],
       "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
       "createdAt": "2024-01-04T15:34:36Z",
-      "updatedAt": "2024-01-09T23:40:05Z",
+      "updatedAt": "2024-01-21T11:15:04Z",
       "closedAt": null,
       "comments": [
         {
@@ -2081,6 +2081,51 @@
           "body": "Let's discuss this in the context of the flow control for HTTP/3 discussion, as well.",
           "createdAt": "2024-01-09T23:40:04Z",
           "updatedAt": "2024-01-09T23:40:04Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "The point arose because I am giving the server and client-side user the ability to adjust the maximum stream limit.\r\nFor http/3 I can in fact open 99 streams for a limit of 100, and for http/2 I can open 100 streams for the same limit. \r\nNow, the question is if I should set the internal offset to 101 for http/3 to be consistent or something else. Of course, the question remains whether this is accessible via the js API in the browser.",
+          "createdAt": "2024-01-21T11:15:03Z",
+          "updatedAt": "2024-01-21T11:15:03Z"
+        }
+      ]
+    },
+    {
+      "number": 103,
+      "id": "I_kwDODnOl8858uhwD",
+      "title": "Missing acknowledgement mechanism leads to problems in the case of stream closure",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/103",
+      "state": "OPEN",
+      "author": "martenrichter",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I am currently writing unit tests for my node lib for the stream number control.\r\nNow, I ran into an issue, which is not a bug on my side, but a problem in the http/2, and it's missing an acknowledgment mechanism.\r\n\r\nI have the following unit test:\r\n```\r\n    client = new WebTransport(\r\n      `${process.env.SERVER_URL}/streamlimits_getunidis`,\r\n      { ...wtOptions }\r\n    )\r\n    await client.ready\r\n    const unidistreams = []\r\n    let numunidi = 0\r\n    let numfailed = 0\r\n    for (let i = 0; i < 150; i++) {\r\n      const curstream = client.createUnidirectionalStream()\r\n      unidistreams.push(curstream)\r\n      curstream\r\n        .then(() => {\r\n          numunidi++\r\n        })\r\n        .catch(() => {\r\n          numfailed++\r\n        })\r\n    }\r\n    await Promise.allSettled(unidistreams)\r\n    expect(numunidi).to.equal(100)\r\n    expect(numfailed).to.equal(50)\r\n    numfailed = 0\r\n    for (let i = 0; i < 50 + adjustlimit; i++) {\r\n      const curstream = await unidistreams.shift()\r\n      await curstream.close()  <=== crucial point\r\n    }\r\n    for (let i = 0; i < 50; i++) {\r\n      const curstream = client.createUnidirectionalStream()\r\n      unidistreams.push(curstream)\r\n      curstream\r\n        .then(() => {\r\n          numunidi++\r\n        })\r\n        .catch(() => {\r\n          numfailed++\r\n        })\r\n    }\r\n    await Promise.allSettled(unidistreams)\r\n    expect(numunidi).to.equal(150)\r\n    expect(numfailed).to.equal(0)\r\n\r\n    const result = await client.closed\r\n    expect(result).to.have.property('closeCode', 0)\r\n    expect(result).to.have.property('reason', '')\r\n```\r\nThe server side is as follows:\r\n```\r\n      async () => {\r\n            for await (const session of getReaderStream(\r\n              server.sessionStream('/streamlimits_getunidis')\r\n            )) {\r\n              try {\r\n                await session.ready\r\n                const unidistreams = []\r\n                while (unidistreams.length < 150) {\r\n                  unidistreams.push(\r\n                    await getReaderValue(session.incomingUnidirectionalStreams)\r\n                  )\r\n                }\r\n                await session.close()\r\n              } catch (error) {\r\n                // do not crash server, if a problem occurs...\r\n              }\r\n            }\r\n          },\r\n```\r\nBasically, what the test does is try to open 150 streams and get only 50 streams as it hits the limit of 100 streams.\r\nThen it closes 50 streams and can open again 50 streams.\r\n\r\nWith http/3, it works perfectly, as my implementation waits for all pending writes and quiche lib from Google signals me a `Data Recvd` (see also the web transport W3C \u00a7 6.4 close 5.2. `Wait for stream.[[[InternalStream]]](https://www.w3.org/TR/webtransport/#dom-webtransportsendstream-internalstream-slot) to enter the \"Data Recvd\" state`, see line with crucial point) that the data has been received so that I can close the stream safely and use it as a trigger for the next 50 streams.\r\nFor my http/2, I do not have an acknowledge mechanism on the capsule level, so I resolve the promise immediately, and the 50 remaining streams fail as it is too quick. Of course, I can delay it, but this would be unreliable.\r\nTherefore, I think that for this particular scenario, an acknowledgment mechanism is necessary if one can not map something from the underlying http/2. But this should be specified.\r\n\r\nAny advice on how to proceed with the implementation is appreciated, and sorry for spamming your issues.\r\n\r\n",
+      "createdAt": "2024-01-21T12:48:48Z",
+      "updatedAt": "2024-01-22T21:30:57Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is an example of using acknowledgments to drive application state.  In this case, the acknowledgments are being used to drive the close state.\r\n\r\nIn my view, we should not have specified that close awaits the \"Data Recvd\" state.  Because while you are doing something completely reasonable here, this does not work in the presence of intermediaries.  Or rather, this might, but similar patterns do not.  Closing instead should resolve when the stack accepts the request to close, not when the peer acknowledges it.\r\n\r\nThe effect of that change would be that a request close would probably just bounce across threads or processes, but it would resolve virtually immediately.  There are potentially cases where there is local buffering of writes beyond what flow control would allow (a bad idea in my view, but I keep hearing of it), in which case the close would be answered (almost) immediately by whatever manages that additional buffer, but it would not reach the stack until flow control opened up[^1].\r\n\r\n[^1]: That extra buffering is likely to result in further weirdness in that the provision of more credit for streams could be delayed.  It's the very definition of deadlock really.  If the sending end can't send a close because it doesn't have enough flow control credit and the other side is waiting on a close on a stream before it can release more flow control credit, things get stuck.\r\n\r\nOur JavaScript brethren have a rule that says that garbage collection must not be observable.  We might reasonably use a similar rule for acknowledgments.",
+          "createdAt": "2024-01-22T03:02:11Z",
+          "updatedAt": "2024-01-22T03:02:11Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "> In my view, we should not have specified that close awaits the \"Data Recvd\" state. Because while you are doing something completely reasonable here, this does not work in the presence of intermediaries. Or rather, this might, but similar patterns do not. Closing instead should resolve when the stack accepts the request to close, not when the peer acknowledges it.\r\n\r\nOk, then I should not make a test that uses this pattern. Rather, should I use something else to signal that enough streams are available (maybe I should just use the variant that waits until more streams are available)? And, of course, then a change of the W3C spec may be a good idea. \r\n> It's the very definition of deadlock really. \r\nWell, all my tests so far have been very good in pointing out race conditions or problems in my code or the browser side (at least two bugs in Chromium and potentially one bug in Firefox, but this is under investigation).",
+          "createdAt": "2024-01-22T07:06:53Z",
+          "updatedAt": "2024-01-22T07:06:53Z"
+        },
+        {
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't think that the example in question is guaranteed to work all of the time, since receiving an ACK for the FIN and receiving a new MAX_STREAMS are two independent operations (and besides, the specification does not require the server to send MAX_STREAMS at any specific point); the fact that it works consistently with Chromium library is mostly an implementation detail.",
+          "createdAt": "2024-01-22T21:30:56Z",
+          "updatedAt": "2024-01-22T21:30:56Z"
         }
       ]
     }

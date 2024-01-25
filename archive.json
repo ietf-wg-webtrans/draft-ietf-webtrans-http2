@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-01-23T00:50:55.880637+00:00",
+  "timestamp": "2024-01-25T00:50:56.968910+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -92,6 +92,11 @@
       "name": "held for wglc",
       "description": "Issues held for Working Group Last Call",
       "color": "9D6338"
+    },
+    {
+      "name": "flow-control",
+      "description": "Issues blocked on flow control discussions",
+      "color": "B60205"
     }
   ],
   "issues": [
@@ -886,7 +891,7 @@
       ],
       "body": "There is no error handling capability in the protocol at all.\r\n\r\nWe need a framework for describing how errors are handled.  That might reuse HTTP/2 signaling (which might not be the best idea if we are serious about this being mostly generic) or they might use a new frame type for signaling session-level errors.\r\n\r\nThe HTTP/3 draft has a termination signal; that might be the best option.",
       "createdAt": "2021-10-29T01:17:03Z",
-      "updatedAt": "2023-10-31T22:30:26Z",
+      "updatedAt": "2024-01-23T23:19:41Z",
       "closedAt": null,
       "comments": [
         {
@@ -930,6 +935,13 @@
           "body": "Chair: discussed in editor's meeting. This does not need discussion time at IETF 118, see previous comments for planned resolution.",
           "createdAt": "2023-10-31T22:30:26Z",
           "updatedAt": "2023-10-31T22:30:26Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: as part of resolving this, recommend resolving #101 in the same PR",
+          "createdAt": "2024-01-23T23:19:40Z",
+          "updatedAt": "2024-01-23T23:19:40Z"
         }
       ]
     },
@@ -2023,11 +2035,15 @@
       "state": "OPEN",
       "author": "vasilvv",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "vasilvv"
+      ],
+      "labels": [
+        "ready for PR"
+      ],
       "body": "- Is it valid to send WT_STREAM for streams that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_RESET_STREAM for a stream that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_STOP_SENDING for a stream that already had a WT_STOP_SENDING sent?\r\n- Is it valid to send WT_MAX_STREAM_DATA for a stream that already had a WT_STOP_SENDING sent?\r\n\r\nIn QUIC, I believe we answered \"yes\" to all of the above since the protocol is inherently unordered. As far as I can tell, this does not apply to WT over HTTP/2, since it's strictly ordered, at least for an individual peer.",
       "createdAt": "2024-01-03T15:30:22Z",
-      "updatedAt": "2024-01-09T23:32:34Z",
+      "updatedAt": "2024-01-23T23:19:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -2050,6 +2066,13 @@
           "body": "Seems like we have two options: \r\n\r\n- Most of these operations are inherently observable, for example if you go to forward a WT_STREAM frame and you think that the stream is already closed because you already had a WT_RESET_STREAM come through, you could see an error and drop that WT_STREAM frame.\r\n\r\n- Allow being a direct passthrough, so HTTP/2 is just preserving the inherent reordering that happened on the HTTP/3 side.\r\n\r\nIt's a little bit annoying that we'd need someone running pure HTTP/2 to accept obviously wrong things, just in case somewhere someone had HTTP/3 in existence. \r\n\r\nHowever, it also seems nice to not make the intermediary keep track of the state of streams if possible -- but you have to have a mapping already because the stream IDs don't match across HTTP/2 and HTTP/3.",
           "createdAt": "2024-01-09T23:32:33Z",
           "updatedAt": "2024-01-09T23:32:33Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in editor's meeting: \r\n\r\n- Prohibit and error because you already have to write code that handles this case where you cannot find the mapping in your table. Preference towards it being cleaner.",
+          "createdAt": "2024-01-23T23:17:49Z",
+          "updatedAt": "2024-01-23T23:17:49Z"
         }
       ]
     },
@@ -2062,10 +2085,12 @@
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "flow-control"
+      ],
       "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
       "createdAt": "2024-01-04T15:34:36Z",
-      "updatedAt": "2024-01-21T11:15:04Z",
+      "updatedAt": "2024-01-24T05:54:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -2088,6 +2113,20 @@
           "body": "The point arose because I am giving the server and client-side user the ability to adjust the maximum stream limit.\r\nFor http/3 I can in fact open 99 streams for a limit of 100, and for http/2 I can open 100 streams for the same limit. \r\nNow, the question is if I should set the internal offset to 101 for http/3 to be consistent or something else. Of course, the question remains whether this is accessible via the js API in the browser.",
           "createdAt": "2024-01-21T11:15:03Z",
           "updatedAt": "2024-01-21T11:15:03Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in editor's meeting: \r\n\r\nIf we bring flow control to H3 as well, the limit is separate and it's easy to ensure that they're not off-by-one and instead match. \r\n\r\nIf we don't bring flow control to H3, then we're somewhat stuck, since there's no good way to have them be the same because they refer to fundamentally different things.",
+          "createdAt": "2024-01-23T23:22:32Z",
+          "updatedAt": "2024-01-23T23:22:48Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Interesting, but I am a bit confused as Quiche from Google has the limits from the underlying quic stream count available. So these would then be put into relation? (And, of course, pooled connections are another issue...)",
+          "createdAt": "2024-01-24T05:54:20Z",
+          "updatedAt": "2024-01-24T05:54:20Z"
         }
       ]
     },
@@ -2096,15 +2135,15 @@
       "id": "I_kwDODnOl8858uhwD",
       "title": "Missing acknowledgement mechanism leads to problems in the case of stream closure",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/103",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "I am currently writing unit tests for my node lib for the stream number control.\r\nNow, I ran into an issue, which is not a bug on my side, but a problem in the http/2, and it's missing an acknowledgment mechanism.\r\n\r\nI have the following unit test:\r\n```\r\n    client = new WebTransport(\r\n      `${process.env.SERVER_URL}/streamlimits_getunidis`,\r\n      { ...wtOptions }\r\n    )\r\n    await client.ready\r\n    const unidistreams = []\r\n    let numunidi = 0\r\n    let numfailed = 0\r\n    for (let i = 0; i < 150; i++) {\r\n      const curstream = client.createUnidirectionalStream()\r\n      unidistreams.push(curstream)\r\n      curstream\r\n        .then(() => {\r\n          numunidi++\r\n        })\r\n        .catch(() => {\r\n          numfailed++\r\n        })\r\n    }\r\n    await Promise.allSettled(unidistreams)\r\n    expect(numunidi).to.equal(100)\r\n    expect(numfailed).to.equal(50)\r\n    numfailed = 0\r\n    for (let i = 0; i < 50 + adjustlimit; i++) {\r\n      const curstream = await unidistreams.shift()\r\n      await curstream.close()  <=== crucial point\r\n    }\r\n    for (let i = 0; i < 50; i++) {\r\n      const curstream = client.createUnidirectionalStream()\r\n      unidistreams.push(curstream)\r\n      curstream\r\n        .then(() => {\r\n          numunidi++\r\n        })\r\n        .catch(() => {\r\n          numfailed++\r\n        })\r\n    }\r\n    await Promise.allSettled(unidistreams)\r\n    expect(numunidi).to.equal(150)\r\n    expect(numfailed).to.equal(0)\r\n\r\n    const result = await client.closed\r\n    expect(result).to.have.property('closeCode', 0)\r\n    expect(result).to.have.property('reason', '')\r\n```\r\nThe server side is as follows:\r\n```\r\n      async () => {\r\n            for await (const session of getReaderStream(\r\n              server.sessionStream('/streamlimits_getunidis')\r\n            )) {\r\n              try {\r\n                await session.ready\r\n                const unidistreams = []\r\n                while (unidistreams.length < 150) {\r\n                  unidistreams.push(\r\n                    await getReaderValue(session.incomingUnidirectionalStreams)\r\n                  )\r\n                }\r\n                await session.close()\r\n              } catch (error) {\r\n                // do not crash server, if a problem occurs...\r\n              }\r\n            }\r\n          },\r\n```\r\nBasically, what the test does is try to open 150 streams and get only 50 streams as it hits the limit of 100 streams.\r\nThen it closes 50 streams and can open again 50 streams.\r\n\r\nWith http/3, it works perfectly, as my implementation waits for all pending writes and quiche lib from Google signals me a `Data Recvd` (see also the web transport W3C \u00a7 6.4 close 5.2. `Wait for stream.[[[InternalStream]]](https://www.w3.org/TR/webtransport/#dom-webtransportsendstream-internalstream-slot) to enter the \"Data Recvd\" state`, see line with crucial point) that the data has been received so that I can close the stream safely and use it as a trigger for the next 50 streams.\r\nFor my http/2, I do not have an acknowledge mechanism on the capsule level, so I resolve the promise immediately, and the 50 remaining streams fail as it is too quick. Of course, I can delay it, but this would be unreliable.\r\nTherefore, I think that for this particular scenario, an acknowledgment mechanism is necessary if one can not map something from the underlying http/2. But this should be specified.\r\n\r\nAny advice on how to proceed with the implementation is appreciated, and sorry for spamming your issues.\r\n\r\n",
       "createdAt": "2024-01-21T12:48:48Z",
-      "updatedAt": "2024-01-22T21:30:57Z",
-      "closedAt": null,
+      "updatedAt": "2024-01-23T23:38:02Z",
+      "closedAt": "2024-01-23T23:38:02Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -2126,6 +2165,27 @@
           "body": "I don't think that the example in question is guaranteed to work all of the time, since receiving an ACK for the FIN and receiving a new MAX_STREAMS are two independent operations (and besides, the specification does not require the server to send MAX_STREAMS at any specific point); the fact that it works consistently with Chromium library is mostly an implementation detail.",
           "createdAt": "2024-01-22T21:30:56Z",
           "updatedAt": "2024-01-22T21:30:56Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "> I don't think that the example in question is guaranteed to work all of the time since receiving an ACK for the FIN and receiving a new MAX_STREAMS are two independent operations (and besides, the specification does not require the server to send MAX_STREAMS at any specific point); the fact that it works consistently with Chromium library is mostly an implementation detail.\r\n\r\nWell, it is guaranteed, as I close 50 streams, which triggers sending the MAX_STREAMS capsule in libquiche with the set limits. However, it is true that these are tests that need to know the trigger points of the implementation. But I see using close was not a good idea. But of course, if it takes longer to receive the MAX_STREAMS, it will fail; anyway, I will rework the test.\r\nThe question that remains for me is, what does a `close ' on the stream actually tell the javascript side about the state of the connection? From the conversation until now,, I would say an immediate return would serve the same purpose an d no developer would come to such a stupid idea, as I came up for the unit test. ",
+          "createdAt": "2024-01-23T06:23:32Z",
+          "updatedAt": "2024-01-23T06:23:32Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Discussed in editor's meeting: \r\n\r\n- The presence of intermediaries complicates things here and also helps explain why we cannot rely on signaling about what's been received, etc.\r\n- For flow control/stream limit purposes, an intermediary is signing up to either pass through or choose to buffer more than what the next hop is willing to offer.\r\n\r\n- A consumer of the JS API should be able to await more room being available to open more streams. There is no expectation that one can close a stream and then immediately have flow credits to open a new one.\r\n- This also helps defend against rapid-reset-style attacks\r\n\r\nWe think the on-wire bits are working as expected, but this is a great thing to identify, as we need to clean up the W3C spec a bit to stop relying on any of this signaling.",
+          "createdAt": "2024-01-23T23:36:48Z",
+          "updatedAt": "2024-01-23T23:36:48Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: based on this, let's continue the conversation in [W3C issue 581](https://github.com/w3c/webtransport/issues/581) since that's where we'll need to write the fix. Closing this issue in favor of that one.",
+          "createdAt": "2024-01-23T23:38:02Z",
+          "updatedAt": "2024-01-23T23:38:02Z"
         }
       ]
     }

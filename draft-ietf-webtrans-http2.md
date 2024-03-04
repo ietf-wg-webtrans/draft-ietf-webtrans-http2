@@ -854,6 +854,77 @@ natively supports QUIC datagrams, such as WebTransport over HTTP/3
 {{WEBTRANSPORT-H3}}, intermediaries follow the requirements in
 {{WEBTRANSPORT-H3}} to use native QUIC datagrams.
 
+## CLOSE_WEBTRANSPORT_SESSION Capsule {#CLOSE_WEBTRANSPORT_SESSION_CAPSULE}
+
+*[CLOSE_WEBTRANSPORT_SESSION_CAPSULE]: #
+
+WebTransport over HTTP/2 uses the CLOSE_WEBTRANSPORT_SESSION capsule defined in
+{{Section 5 of WEBTRANSPORT-H3}} to terminate a WebTransport session with an
+application error code and message.
+
+WebTransport sessions can be terminated by optionally sending a
+CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
+associated with the session (see {{session-termination}}).
+
+~~~
+CLOSE_WEBTRANSPORT_SESSION Capsule {
+  Type (i) = CLOSE_WEBTRANSPORT_SESSION,
+  Length (i),
+  Application Error Code (32),
+  Application Error Message (..8192),
+}
+~~~
+{: #fig-close_webtransport-session title="CLOSE_WEBTRANSPORT_SESSION Capsule Format"}
+
+When used in WebTransport over HTTP/2, CLOSE_WEBTRANSPORT_SESSION capsules
+contain the following fields:
+
+  Application Error Code:
+
+  : A 32-bit error code provided by the application closing the connection.
+
+  Application Error Message:
+
+  : A UTF-8 encoded error message string provided by the application closing the
+    connection.  The message takes up the remainder of the capsule, and its
+    length MUST NOT exceed 1024 bytes.
+
+An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST set the FIN bit
+on the frame carrying the capsule. The recipient MUST close the stream upon
+receipt of the capsule.
+
+Cleanly terminating a WebTransport session without a CLOSE_WEBTRANSPORT_SESSION
+capsule is semantically equivalent to terminating it with a
+CLOSE_WEBTRANSPORT_SESSION capsule that has an error code of 0 and an empty
+error string.
+
+## DRAIN_WEBTRANSPORT_SESSION Capsule {#DRAIN_WEBTRANSPORT_SESSION_CAPSULE}
+
+*[DRAIN_WEBTRANSPORT_SESSION_CAPSULE]: #
+
+HTTP/2 uses GOAWAY frames ({{Section 6.8 of HTTP2}}) to allow an endpoint to
+gracefully stop accepting new streams while still finishing processing of
+previously established streams.
+
+WebTransport over HTTP/2 uses the DRAIN_WEBTRANSPORT_SESSION capsule defined in
+{{Section 4.6 of WEBTRANSPORT-H3}} to gracefully shut down a WebTransport
+session.
+
+~~~
+DRAIN_WEBTRANSPORT_SESSION Capsule {
+  Type (i) = DRAIN_WEBTRANSPORT_SESSION,
+  Length (i) = 0
+}
+~~~
+{: #fig-drain_webtransport_session title="DRAIN_WEBTRANSPORT_SESSION Capsule Format"}
+
+After sending or receiving either a DRAIN_WEBTRANSPORT_SESSION capsule or HTTP/2
+GOAWAY frame, an endpoint MAY continue using the session and MAY open new
+WebTransport streams. The signal is intended for the application using
+WebTransport, which is expected to attempt to gracefully terminate the session
+as soon as possible.
+
+
 # Examples
 
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
@@ -942,6 +1013,11 @@ An WebTransport session over HTTP/2 is terminated when either endpoint closes
 the stream associated with the CONNECT request that initiated the session.
 Upon learning about the session being terminated, the endpoint MUST stop
 sending new datagrams and reset all of the streams associated with the session.
+
+Prior to closing the stream associated with the CONNECT request, either endpoint
+can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
+and message to convey additional information about the reasons for the closure
+of the session.
 
 # Security Considerations
 

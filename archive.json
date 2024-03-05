@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-03T00:48:07.293268+00:00",
+  "timestamp": "2024-03-05T00:44:44.489644+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1851,7 +1851,7 @@
       "id": "I_kwDODnOl8850_wLe",
       "title": "Draining a WebTransport session in H2",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/95",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nidhijaju",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1863,8 +1863,8 @@
       ],
       "body": "For WebTransport over HTTP/3, there's a [DRAIN_WEBTRANSPORT_SESSION](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3#section-4.6-3) capsule for draining the session.\r\n\r\nHowever, for HTTP/2, there is only a WT_STOP_SENDING capsule that would request the recipient to stop sending data, but does not require the sender of the capsule to stop sending data themselves. It would be good to have a similar concept to DRAIN_WEBTRANSPORT_SESSION for HTTP/2 to allow WebTransport to be more transport-agnostic.",
       "createdAt": "2023-10-26T07:17:08Z",
-      "updatedAt": "2024-01-10T16:23:38Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-04T23:54:17Z",
+      "closedAt": "2024-03-04T23:54:16Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -2188,6 +2188,26 @@
           "updatedAt": "2024-01-23T23:38:02Z"
         }
       ]
+    },
+    {
+      "number": 105,
+      "id": "I_kwDODnOl886BORvO",
+      "title": "Adjust SETTINGS and establishment to match HTTP/3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/105",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "ready for PR"
+      ],
+      "body": "Now that HTTP/3 is being updated per https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/143, https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/141, https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/140, and https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/135, we should update HTTP/2 to match.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/135#issuecomment-1907120035",
+      "createdAt": "2024-03-04T23:47:17Z",
+      "updatedAt": "2024-03-04T23:47:18Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -7174,6 +7194,77 @@
           "createdAt": "2023-11-06T06:51:32Z",
           "updatedAt": "2023-11-06T06:51:32Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 104,
+      "id": "PR_kwDODnOl885opgfy",
+      "title": "Add close and drain WebTransport session capsules",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/104",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [],
+      "body": "Add close and drain WebTransport session capsules\r\n\r\nFixes #95",
+      "createdAt": "2024-03-04T22:50:42Z",
+      "updatedAt": "2024-03-04T23:54:22Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "4a36902e59995ec4193eb45c0da9e8daf0bbfa28",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/drain-and-close",
+      "headRefOid": "1a2f85b10922525a7d87a0b116a01164a8327cbb",
+      "closedAt": "2024-03-04T23:54:16Z",
+      "mergedAt": "2024-03-04T23:54:16Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "cd3fc244609094f5b74097c4edb48a4e419648c6"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl885yLLko",
+          "commit": {
+            "abbreviatedOid": "1a2f85b"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-04T23:13:03Z",
+          "updatedAt": "2024-03-04T23:15:35Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Not sure if it's okay to have this reference the H3 spec, instead of the Overview doc, but IIRC that doesn't have capsule definitions, so maybe it's okay for now? (Same for the DRAIN capsule)",
+              "createdAt": "2024-03-04T23:13:03Z",
+              "updatedAt": "2024-03-04T23:15:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl885yLZUr",
+          "commit": {
+            "abbreviatedOid": "1a2f85b"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-03-04T23:54:02Z",
+          "updatedAt": "2024-03-04T23:54:02Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "Yeah, I don't think we want to duplicate the capsule definitions, but I'm not sure the overview doc is necessarily the place for them. Right now, we've kind of picked HTTP/3 to be the document that holds the capsules that overlap, but we could adjust that (or extract them out) as necessary. \r\n\r\nTo fully address the needs of the W3C spec, though, we may want to introduce these as concepts more explicitly in the overview, if they're not there already. Added a note about that in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-overview/issues/12.",
+              "createdAt": "2024-03-04T23:54:02Z",
+              "updatedAt": "2024-03-04T23:54:02Z"
+            }
+          ]
         }
       ]
     }

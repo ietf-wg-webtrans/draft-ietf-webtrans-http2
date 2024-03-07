@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-05T00:44:44.489644+00:00",
+  "timestamp": "2024-03-07T00:36:40.280771+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2084,13 +2084,16 @@
       "state": "OPEN",
       "author": "martenrichter",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "ekinnear"
+      ],
       "labels": [
+        "ready for PR",
         "flow-control"
       ],
       "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
       "createdAt": "2024-01-04T15:34:36Z",
-      "updatedAt": "2024-01-24T05:54:21Z",
+      "updatedAt": "2024-03-05T23:24:28Z",
       "closedAt": null,
       "comments": [
         {

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-07T00:36:40.280771+00:00",
+  "timestamp": "2024-03-10T00:49:18.548224+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2211,6 +2211,37 @@
       "updatedAt": "2024-03-04T23:47:18Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 106,
+      "id": "I_kwDODnOl886Bre5c",
+      "title": "CLOSE_WEBTRANSPORT_SESSION capsule clarification",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/106",
+      "state": "OPEN",
+      "author": "martenrichter",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Thanks for adding the CLOSE_WEBTRANSPORT_SESSION capsule,\r\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/104 .\r\nI have read \r\n`An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST set the FIN bit\r\non the frame carrying the capsule. The recipient MUST close the stream upon\r\nreceipt of the capsule.`\r\nNow I wonder if a capsule must always be inside one Http2 frame.\r\n\r\nI use node.js as a base and their streams.\r\nUp to now, I have sent a capsule using multiple writes to the http/2 stream, which may lead to multiple Http/2 frames or not (sorry, I have not read the HTTP/2 in much detail so far). The reason is that I can avoid one memcopy.\r\n\r\nDo you know if this is legal per spec?\r\n\r\nOr is it sufficient that a capsule may come through multiple frames? and that only the last part of the CLOSE_WEBTRANSPORT_SESSION  is in a frame with the fin bit (I hope node.js sets this when using end).\r\n",
+      "createdAt": "2024-03-08T09:43:48Z",
+      "updatedAt": "2024-03-09T07:28:34Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The HTTP/2 framing layer is allowed to split data streams at any point. The boundaries of HTTP/2 DATA frames don't carry any semantics, only the reassembled stream. So a capsule can definitely end up split into multiple HTTP/2 DATA frames.\r\n\r\nI'm not familiar with the Node.js implementation, it could create one HTTP/2 DATA frame for each write, or it could keep an internal buffer, or something else entirely.\r\n\r\nSo you're right that this text could be improved. I'll also note that HTTP/2 uses an END_STREAM flag, not a FIN bit (FIN bit is used by HTTP/3) so this sentence is definitely wrong.\r\n\r\nI would perhaps replace it with `An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST then close the stream. The recipient MUST close the stream upon receipt of the capsule.`",
+          "createdAt": "2024-03-08T22:34:27Z",
+          "updatedAt": "2024-03-08T22:34:27Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Thanks, so I can leave it as it is. If node.js split the frames or not, I actually do not know, I tried to trace it down in their source code, but from just reading it is not so clear. I believe it joins some writes, but I do not know for sure.",
+          "createdAt": "2024-03-09T07:28:33Z",
+          "updatedAt": "2024-03-09T07:28:33Z"
+        }
+      ]
     }
   ],
   "pulls": [

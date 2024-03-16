@@ -889,9 +889,8 @@ contain the following fields:
     connection.  The message takes up the remainder of the capsule, and its
     length MUST NOT exceed 1024 bytes.
 
-An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST set the FIN bit
-on the frame carrying the capsule. The recipient MUST close the stream upon
-receipt of the capsule.
+An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST then close the
+stream. The recipient MUST close the stream upon receipt of the capsule.
 
 Cleanly terminating a WebTransport session without a CLOSE_WEBTRANSPORT_SESSION
 capsule is semantically equivalent to terminating it with a

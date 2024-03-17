@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-14T00:44:49.346596+00:00",
+  "timestamp": "2024-03-17T00:49:17.605601+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2221,10 +2221,12 @@
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "has pull request"
+      ],
       "body": "Thanks for adding the CLOSE_WEBTRANSPORT_SESSION capsule,\r\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/104 .\r\nI have read \r\n`An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST set the FIN bit\r\non the frame carrying the capsule. The recipient MUST close the stream upon\r\nreceipt of the capsule.`\r\nNow I wonder if a capsule must always be inside one Http2 frame.\r\n\r\nI use node.js as a base and their streams.\r\nUp to now, I have sent a capsule using multiple writes to the http/2 stream, which may lead to multiple Http/2 frames or not (sorry, I have not read the HTTP/2 in much detail so far). The reason is that I can avoid one memcopy.\r\n\r\nDo you know if this is legal per spec?\r\n\r\nOr is it sufficient that a capsule may come through multiple frames? and that only the last part of the CLOSE_WEBTRANSPORT_SESSION  is in a frame with the fin bit (I hope node.js sets this when using end).\r\n",
       "createdAt": "2024-03-08T09:43:48Z",
-      "updatedAt": "2024-03-09T07:28:34Z",
+      "updatedAt": "2024-03-16T06:30:20Z",
       "closedAt": null,
       "comments": [
         {
@@ -2240,6 +2242,20 @@
           "body": "Thanks, so I can leave it as it is. If node.js split the frames or not, I actually do not know, I tried to trace it down in their source code, but from just reading it is not so clear. I believe it joins some writes, but I do not know for sure.",
           "createdAt": "2024-03-09T07:28:33Z",
           "updatedAt": "2024-03-09T07:28:33Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That new text looks good to me, thanks David! I do think you can leave the current implementation as-is, as long as the last bit of the data goes out on the wire with END_STREAM set, it doesn't really matter what the framing boundaries end up being.\r\n(Indeed, this was imported from H3 and would need to be updated to use END_STREAM.)\r\n\r\nI'm not sure it's worth having a lot of discussion to say \"needs to set END_STREAM on the final frame that gets generated\" vs. just saying \"needs to close\", since that's in practice what people using H2 libraries will be doing.",
+          "createdAt": "2024-03-16T06:11:50Z",
+          "updatedAt": "2024-03-16T06:11:50Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Thanks. I think \"need to close\" is enough. I was confused about whether I had gotten something conceptually wrong about the capsule protocol and H2 webtransport, as it sounded more like H3. So far, I am (or my lib) only talking to myself, so I am not sure if I got everything right.",
+          "createdAt": "2024-03-16T06:30:19Z",
+          "updatedAt": "2024-03-16T06:30:19Z"
         }
       ]
     }
@@ -7299,6 +7315,46 @@
               "updatedAt": "2024-03-04T23:54:02Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "id": "PR_kwDODnOl885p0RCP",
+      "title": "Clarify END_STREAM and be less specific about individual framing boundaries",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/107",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Clarify END_STREAM and be less specific about individual framing boundaries\r\n\r\nCloses #106",
+      "createdAt": "2024-03-16T06:15:27Z",
+      "updatedAt": "2024-03-16T07:13:54Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "cd3fc244609094f5b74097c4edb48a4e419648c6",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/end_stream",
+      "headRefOid": "bafc7f41efed71274f09d1058391231e567aadb2",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl885zsRgn",
+          "commit": {
+            "abbreviatedOid": "bafc7f4"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-03-16T07:13:54Z",
+          "updatedAt": "2024-03-16T07:13:54Z",
+          "comments": []
         }
       ]
     }

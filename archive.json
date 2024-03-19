@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-17T00:49:17.605601+00:00",
+  "timestamp": "2024-03-19T00:44:55.223662+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2093,7 +2093,7 @@
       ],
       "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
       "createdAt": "2024-01-04T15:34:36Z",
-      "updatedAt": "2024-03-05T23:24:28Z",
+      "updatedAt": "2024-03-17T12:19:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -2130,6 +2130,13 @@
           "body": "Interesting, but I am a bit confused as Quiche from Google has the limits from the underlying quic stream count available. So these would then be put into relation? (And, of course, pooled connections are another issue...)",
           "createdAt": "2024-01-24T05:54:20Z",
           "updatedAt": "2024-01-24T05:54:20Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> the limits from the underlying quic stream count available. So these would then be put into relation? (And, of course, pooled connections are another issue...)\r\n\r\nI think that's the issue -- for non-pooled (with other WT sessions, or HTTP requests) connections, we can kinda-sorta use the H3 limits, but even in those cases you've got the control streams and other H3 machinery that isn't really part of the WT stream \"count\" but would count for H3 flow control purposes. For anything with pooling, then we really need the flow control that we discussed during the interim. \r\n\r\nEither way, making things as consistent as possible still seems more than worthwhile.",
+          "createdAt": "2024-03-17T12:19:49Z",
+          "updatedAt": "2024-03-17T12:19:49Z"
         }
       ]
     },
@@ -2217,7 +2224,7 @@
       "id": "I_kwDODnOl886Bre5c",
       "title": "CLOSE_WEBTRANSPORT_SESSION capsule clarification",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/106",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martenrichter",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -2226,8 +2233,8 @@
       ],
       "body": "Thanks for adding the CLOSE_WEBTRANSPORT_SESSION capsule,\r\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/104 .\r\nI have read \r\n`An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST set the FIN bit\r\non the frame carrying the capsule. The recipient MUST close the stream upon\r\nreceipt of the capsule.`\r\nNow I wonder if a capsule must always be inside one Http2 frame.\r\n\r\nI use node.js as a base and their streams.\r\nUp to now, I have sent a capsule using multiple writes to the http/2 stream, which may lead to multiple Http/2 frames or not (sorry, I have not read the HTTP/2 in much detail so far). The reason is that I can avoid one memcopy.\r\n\r\nDo you know if this is legal per spec?\r\n\r\nOr is it sufficient that a capsule may come through multiple frames? and that only the last part of the CLOSE_WEBTRANSPORT_SESSION  is in a frame with the fin bit (I hope node.js sets this when using end).\r\n",
       "createdAt": "2024-03-08T09:43:48Z",
-      "updatedAt": "2024-03-16T06:30:20Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-17T01:09:27Z",
+      "closedAt": "2024-03-17T01:09:27Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -7323,24 +7330,26 @@
       "id": "PR_kwDODnOl885p0RCP",
       "title": "Clarify END_STREAM and be less specific about individual framing boundaries",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/107",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Clarify END_STREAM and be less specific about individual framing boundaries\r\n\r\nCloses #106",
       "createdAt": "2024-03-16T06:15:27Z",
-      "updatedAt": "2024-03-16T07:13:54Z",
+      "updatedAt": "2024-03-17T01:09:29Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "cd3fc244609094f5b74097c4edb48a4e419648c6",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/end_stream",
       "headRefOid": "bafc7f41efed71274f09d1058391231e567aadb2",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-03-17T01:09:26Z",
+      "mergedAt": "2024-03-17T01:09:26Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "5747182d0aa25e62868a5ee6c44d64a09a22f484"
+      },
       "comments": [],
       "reviews": [
         {

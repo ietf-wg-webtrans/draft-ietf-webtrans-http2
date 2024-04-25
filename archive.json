@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-04-23T00:47:31.920995+00:00",
+  "timestamp": "2024-04-25T00:50:25.421234+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2265,6 +2265,24 @@
           "updatedAt": "2024-03-16T06:30:19Z"
         }
       ]
+    },
+    {
+      "number": 108,
+      "id": "I_kwDODnOl886Gs_R-",
+      "title": "Subprotocol negotiation",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/108",
+      "state": "OPEN",
+      "author": "nidhijaju",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [],
+      "body": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/pull/144 added subprotocol negotiation to the HTTP/3 document, so it would be nice to have the same mechanism in HTTP/2 as well to match.",
+      "createdAt": "2024-04-23T23:25:21Z",
+      "updatedAt": "2024-04-24T00:52:47Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [

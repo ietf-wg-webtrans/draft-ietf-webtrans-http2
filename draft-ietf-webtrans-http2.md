@@ -501,7 +501,7 @@ capsule can discard any data in excess of the Reliable Size indicated, even if
 that data was already received.
 
 The WT_RESET_STREAM capsule follows the design of the QUIC RESET_STREAM_AT frame
-{{PARTIAL-RESET=I-D.ietf-quic-reliable-stream-reset}}.  Consequently, it
+{{!PARTIAL-RESET=I-D.ietf-quic-reliable-stream-reset}}.  Consequently, it
 includes a Reliable Size field.  A WT_RESET_STREAM capsule MUST be sent after
 WT_STREAM capsules that include an amount of data equal to or in excess of the
 value in the Reliable Size field.  A receiver MUST treat the receipt of a

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-04-30T00:47:26.378545+00:00",
+  "timestamp": "2024-05-02T00:47:20.373297+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2283,6 +2283,37 @@
       "updatedAt": "2024-04-24T00:52:47Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 109,
+      "id": "I_kwDODnOl886HdKWl",
+      "title": "RESET_STREAM_AT",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/109",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "If this is a possible extension to the WT API, we might need this in the HTTP/2 version.  Not because streams might be dropped, but because a sender might want to indicate the point in the stream that needs to be retained to a receiver, or maybe just to the lower layers of the stack (for those cases where buffering > sending).",
+      "createdAt": "2024-04-30T22:13:16Z",
+      "updatedAt": "2024-04-30T22:20:07Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@afrind points out that we will need a frame to let an intermediary know where to reset.  Otherwise, the intermediary might abort its transmission of the entire stream, rather than keep the \"reliable\" portion.",
+          "createdAt": "2024-04-30T22:18:47Z",
+          "updatedAt": "2024-04-30T22:18:47Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@vasilvv points out that maybe we could just modify WT_RESET_STREAM to include an offset, so that we don't have two frames.",
+          "createdAt": "2024-04-30T22:20:06Z",
+          "updatedAt": "2024-04-30T22:20:06Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -7382,6 +7413,93 @@
           "createdAt": "2024-03-16T07:13:54Z",
           "updatedAt": "2024-03-16T07:13:54Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 110,
+      "id": "PR_kwDODnOl885uNF-4",
+      "title": "Add a reliable size to WT_RESET_STREAM",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/110",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As noted in #109, we need to signal to the receiver when a sender opts to use a reliable reset.  Rather than add a second frame type, we can just build a single reset that has the additional feature.  As @vasilvv pointed out, if we were going to do QUIC over again, we'd build this into RESET_STREAM.\r\n\r\nThis is not a backward-compatible change, so we'll need to change version numbers (I have not done that here).\r\n\r\nCloses #109.",
+      "createdAt": "2024-04-30T23:11:47Z",
+      "updatedAt": "2024-05-01T16:25:54Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "reset-at",
+      "headRefOid": "7879bbc6440c0690c489fbaf1cdc8a7c1bac330b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl8855KvLl",
+          "commit": {
+            "abbreviatedOid": "7879bbc"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-05-01T00:34:35Z",
+          "updatedAt": "2024-05-01T00:35:16Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "nit: should we rename `WT_RESET_STREAM` to `WT_RESET_STREAM_AT` to avoid any confusion?",
+              "createdAt": "2024-05-01T00:34:35Z",
+              "updatedAt": "2024-05-01T00:35:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8855KwYb",
+          "commit": {
+            "abbreviatedOid": "7879bbc"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-01T00:43:22Z",
+          "updatedAt": "2024-05-01T00:43:23Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "I considered that and concluded that the _AT is a quirk we don't need to retain, but I'm happy to do that if someone wants to make an argument in favor of the longer name.",
+              "createdAt": "2024-05-01T00:43:23Z",
+              "updatedAt": "2024-05-01T00:43:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8855Oyll",
+          "commit": {
+            "abbreviatedOid": "7879bbc"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-01T16:25:54Z",
+          "updatedAt": "2024-05-01T16:25:54Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "FWIW I don't feel very strongly, happy to have you decide",
+              "createdAt": "2024-05-01T16:25:54Z",
+              "updatedAt": "2024-05-01T16:25:54Z"
+            }
+          ]
         }
       ]
     }

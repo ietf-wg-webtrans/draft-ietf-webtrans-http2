@@ -165,7 +165,10 @@ A WebTransport session is terminated when the CONNECT stream that created it is
 closed. This implicitly closes all WebTransport streams that were
 multiplexed over that CONNECT stream.
 
-# Session Establishment
+# Session Establishment and Termination
+
+A WebTransport session is a communication context between a client and server
+{{OVERVIEW}}. This section describes how sessions are created and destroyed.
 
 ## Establishing a Transport-Capable HTTP/2 Connection
 
@@ -215,7 +218,7 @@ control. This can reduce latency for data sent by a client at the start of a
 WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.
 
-## Flow Control
+# Flow Control
 
 Flow control governs the amount of resources that can be consumed or data that
 can be sent. WebTransport over HTTP/2 allows a server to limit the number of
@@ -245,7 +248,7 @@ within a session.
 TCP and HTTP/2 define the first three levels of flow control. This document
 defines the final two.
 
-### Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
+## Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
 
 This document defines a SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter that allows
 the server to limit the maximum number of concurrent WebTransport sessions on a
@@ -276,7 +279,7 @@ those sessions to complete. Endpoints MUST NOT reduce the value of
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
 non-zero value.
 
-### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
+## Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
 This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
 each endpoint to limit the number of streams its peer is permitted to open as
@@ -287,7 +290,7 @@ contained within HTTP/2 DATA frames on a single HTTP/2 stream, this limit is
 the only mechanism for an endpoint to limit the number of WebTransport streams
 that its peer can open on a session.
 
-### Initial Flow Control Limits {#flow-control-initial}
+## Initial Flow Control Limits {#flow-control-initial}
 
 To allow stream data to be exchanged in the same flight as the extended CONNECT
 request that establishes a WebTransport session, initial flow control limits
@@ -307,7 +310,7 @@ each corresponding initial flow control value.  Endpoints sending the SETTINGS
 and also including the header field SHOULD ensure that the header field values
 are greater than or equal to the values provided in the SETTINGS.
 
-#### Flow Control SETTINGS {#flow-control-settings}
+### Flow Control SETTINGS {#flow-control-settings}
 
 *[SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA]: #
 *[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI]: #
@@ -325,7 +328,7 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
   SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI
 
 
-#### Flow Control Header Field {#flow-control-header}
+### Flow Control Header Field {#flow-control-header}
 
 The `WebTransport-Init` HTTP header field can be used to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
@@ -347,7 +350,8 @@ following keys are defined for the `WebTransport-Init` header field:
   recipient of this header field.  MUST be an Integer.
 
 
-### Flow Control and Intermediaries {#flow-control-intermediaries}
+## Flow Control and Intermediaries {#flow-control-intermediaries}
+
 WebTransport over HTTP/2 uses several capsules for flow control, and all of
 these capsules define special intermediary handling as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  These capsules, referred to as the "flow

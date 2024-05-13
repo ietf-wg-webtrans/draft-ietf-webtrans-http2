@@ -1102,10 +1102,14 @@ to sending data and to opening new streams.
 
 # IANA Considerations
 
+This document registers new HTTP/2 settings ({{h2-settings}}), HTTP/2 error
+codes ({{iana-h2-error}}), new capsules ({{iana-capsules}}), and the
+`WebTransport-Init` header field ({{iana-header}}).
+
 ## HTTP/2 SETTINGS Parameter Registration {#h2-settings}
 
 The following entries are added to the "HTTP/2 Settings" registry established by
-{{!RFC7540}}:
+{{HTTP2}}:
 
 {: anchor="SETTINGS_WEBTRANSPORT_MAX_SESSIONS"}
 
@@ -1277,7 +1281,42 @@ Specification:
 
 : This document
 
-## Capsule Types
+## HTTP/2 SETTINGS Parameter Registration {#h2-settings}
+
+The following entries are added to the "HTTP/2 Error Code" registry established by
+{{HTTP2}}:
+
+For WEBTRANSPORT_ERROR:
+
+Code:
+: 0xTBD
+
+Name:
+: WEBTRANSPORT_ERROR
+
+Description:
+: General WebTransport error detected
+
+Reference:
+: {{errors}}
+
+
+For WEBTRANSPORT_STREAM:
+
+Code:
+: 0xTBD
+
+Name:
+: WEBTRANSPORT_STREAM
+
+Description:
+: Unexpected WebTransport stream-related capsule received
+
+Reference:
+: {{errors}}
+
+
+## Capsule Types {#iana-capsules}
 
 The following entries are added to the "HTTP Capsule Types" registry established
 by {{HTTP-DATAGRAM}}:
@@ -1522,7 +1561,7 @@ Notes:
 : None
 {: spacing="compact"}
 
-## HTTP Header Field Name
+## HTTP Header Field Name {#iana-header}
 
 IANA will register the following entry in the "Hypertext Transfer Protocol
 (HTTP) Field Name Registry" maintained at

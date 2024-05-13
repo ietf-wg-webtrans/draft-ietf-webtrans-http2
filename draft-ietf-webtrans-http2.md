@@ -220,9 +220,17 @@ flow control updates before receiving any response from the server.
 
 ## Session Termination and Error Handling {#errors}
 
+An WebTransport session over HTTP/2 is terminated when either endpoint closes
+the stream associated with the CONNECT request that initiated the session.
+
+Prior to closing the stream associated with the CONNECT request, either endpoint
+can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
+and message to convey additional information about the reasons for the closure
+of the session.
+
 Session errors result in the termination of a session.  Errors can be reported
 using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes an error code and
-optional explanatory message.
+an optional explanatory message.
 
 An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
 capsule by closing the HTTP/2 stream.
@@ -926,7 +934,7 @@ application error code and message.
 
 WebTransport sessions can be terminated by optionally sending a
 CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
-associated with the session (see {{session-termination}}).
+associated with the session (see {{errors}}).
 
 ~~~
 CLOSE_WEBTRANSPORT_SESSION Capsule {
@@ -1068,17 +1076,6 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
-# Session Termination
-
-An WebTransport session over HTTP/2 is terminated when either endpoint closes
-the stream associated with the CONNECT request that initiated the session.
-Upon learning about the session being terminated, the endpoint MUST stop
-sending new datagrams and reset all of the streams associated with the session.
-
-Prior to closing the stream associated with the CONNECT request, either endpoint
-can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
-and message to convey additional information about the reasons for the closure
-of the session.
 
 # Security Considerations
 

@@ -1281,7 +1281,7 @@ Specification:
 
 : This document
 
-## HTTP/2 SETTINGS Parameter Registration {#h2-settings}
+## HTTP/2 Error Code Registration {#iana-h2-error}
 
 The following entries are added to the "HTTP/2 Error Code" registry established by
 {{HTTP2}}:

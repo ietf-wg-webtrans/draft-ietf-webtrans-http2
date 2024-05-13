@@ -225,9 +225,23 @@ using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes an error code and
 optional explanatory message.
 
 An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
-capsule by closing the HTTP/2 stream.  A stream that is reset terminates the
-session without providing an application-level signal, though there will be an
-HTTP/2 error code.
+capsule by closing the HTTP/2 stream.
+
+A stream that is reset terminates the session without providing an
+application-level signal, though there will be an HTTP/2 error code.
+
+This document reserves the following HTTP/2 error codes for use with reporting
+WebTransport errors:
+
+WEBTRANSPORT_ERROR (0xTBD):
+: This generic error can be used for errors that do not have more specific error
+  codes.
+
+WEBTRANSPORT_STREAM (0xTBD):
+: A stream-related capsule identified a stream that was in an invalid state.
+
+Prior terminating a stream with an error, a CLOSE_WEBTRANSPORT_SESSION capsule
+with an application-specified error code MAY be sent.
 
 Session errors do not necessarily result in any change of HTTP/2 connection
 state, except that an endpoint might choose to terminate a connection in
@@ -502,9 +516,8 @@ PADDING Capsule {
 {: #fig-padding title="PADDING Capsule Format"}
 
 The Padding field MUST be set to an all-zero sequence of bytes of any length as
-specified by the Length field.
-
-<!-- TODO validation and error handling -->
+specified by the Length field.  A receiver is not obligated to verify padding
+but MAY treat non-zero padding as a [stream error](#errors).
 
 ## WT_RESET_STREAM Capsule {#WT_RESET_STREAM}
 
@@ -543,6 +556,12 @@ field. In-order delivery of WT_STREAM capsules ensures that the amount of
 session-level flow control consumed by a stream is always known by both
 endpoints.
 
+A WT_RESET_STREAM capsule MUST NOT be sent after a stream is closed or reset.
+While QUIC permits redundant RESET_STREAM frames, the ordering guarantee in
+HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM MUST be sent if a WT_RESET_STREAM capsule is received for a
+stream that is not in a valid state.
+
 ## WT_STOP_SENDING Capsule {#WT_STOP_SENDING}
 
 *[WT_STOP_SENDING]: #
@@ -572,6 +591,11 @@ The WT_STOP_SENDING capsule defines the following fields:
    : A variable-length integer containing the application-specified reason the
      sender is ignoring the stream.
 
+A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
+While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
+HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM MUST be sent if a second WT_STOP_SENDING capsule is
+received.
 
 ## WT_STREAM Capsule {#WT_STREAM}
 
@@ -605,6 +629,12 @@ Stream Data:
 : Zero or more bytes of data for the stream.  Empty WT_STREAM capsules MUST NOT
   be used unless they open or close a stream; an endpoint MAY treat an empty
   WT_STREAM capsule that neither starts nor ends a stream as a session error.
+
+A WT_STREAM capsule MUST NOT be sent after a stream is closed or reset.  While
+QUIC permits redundant STREAM frames, the ordering guarantee in HTTP/2 makes
+this unnecessary.  A [stream error](#errors) of type WEBTRANSPORT_STREAM MUST be
+sent if a WT_STREAM capsule is received for a stream that is not in a valid
+state.
 
 ## WT_MAX_DATA Capsule {#WT_MAX_DATA}
 
@@ -683,6 +713,13 @@ Initial values for this limit for unidirectional and bidirectional streams MAY
 be communicated by sending non-zero values for
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
+
+A WT_MAX_STREAM_DATA capsule MUST NOT be sent after a sender requests that a
+stream be closed with WT_STOP_SENDING.  While QUIC permits redundant
+MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2 makes this unnecessary.
+A [stream error](#errors) of type WEBTRANSPORT_STREAM MUST be sent if a
+WT_MAX_STREAM_DATA capsule is received after a WT_STOP_SENDING capsule for the
+same stream.
 
 ## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 
@@ -796,6 +833,12 @@ described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
 WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
+
+A WT_STREAM_DATA_BLOCKED capsule MUST NOT be sent after a stream is closed or
+reset.  While QUIC permits redundant STREAM_DATA_BLOCKED frames, the ordering
+guarantee in HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM MUST be sent if a WT_STREAM_DATA_BLOCKED capsule is received
+for a stream that is not in a valid state.
 
 ## WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
 

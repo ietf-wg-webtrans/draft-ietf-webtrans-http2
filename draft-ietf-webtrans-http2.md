@@ -168,7 +168,7 @@ multiplexed over that CONNECT stream.
 # Session Establishment and Termination
 
 A WebTransport session is a communication context between a client and server
-{{OVERVIEW}}. This section describes how sessions are created and destroyed.
+{{OVERVIEW}}. This section describes how sessions begin and end.
 
 ## Establishing a Transport-Capable HTTP/2 Connection
 
@@ -217,6 +217,21 @@ CONNECT request, without waiting for a response, to the extent allowed by flow
 control. This can reduce latency for data sent by a client at the start of a
 WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.
+
+## Session Termination and Error Handling {#errors}
+
+Session errors result in the termination of a session.  Errors can be reported
+using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes an error code and
+optional explanatory message.
+
+An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
+capsule by closing the HTTP/2 stream.  A stream that is reset terminates the
+session without providing an application-level signal, though there will be an
+HTTP/2 error code.
+
+Session errors do not necessarily result in any change of HTTP/2 connection
+state, except that an endpoint might choose to terminate a connection in
+response to stream errors; see {{Section 5.4 of HTTP2}}.
 
 # Flow Control
 

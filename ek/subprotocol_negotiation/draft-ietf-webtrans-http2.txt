@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 5 September 2024                                       T. Pauly
+Expires: 15 November 2024                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 5 September 2024                                       T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                            4 March 2024
+                                                             14 May 2024
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 September 2024.
+   This Internet-Draft will expire on 15 November 2024.
 
 Copyright Notice
 
@@ -79,11 +79,12 @@ Table of Contents
      3.1.  Establishing a Transport-Capable HTTP/2 Connection
      3.2.  Extended CONNECT in HTTP/2
      3.3.  Creating a New Session
-     3.4.  Flow Control
-       3.4.1.  Limiting the Number of Simultaneous Sessions
-       3.4.2.  Limiting the Number of Streams Within a Session
-       3.4.3.  Initial Flow Control Limits
-       3.4.4.  Flow Control and Intermediaries
+     3.4.  Subprotocol Negotiation
+     3.5.  Flow Control
+       3.5.1.  Limiting the Number of Simultaneous Sessions
+       3.5.2.  Limiting the Number of Streams Within a Session
+       3.5.3.  Initial Flow Control Limits
+       3.5.4.  Flow Control and Intermediaries
    4.  WebTransport Features
      4.1.  Transport Properties
      4.2.  WebTransport Streams
@@ -261,12 +262,36 @@ Table of Contents
    might choose to send datagrams or flow control updates before
    receiving any response from the server.
 
-3.4.  Flow Control
+3.4.  Subprotocol Negotiation
+
+   WebTransport over HTTP/2 offers a subprotocol negotiation mechanism,
+   similar to TLS Application-Layer Protocol Negotiation Extension
+   (ALPN) [RFC7301]; the intent is to simplify porting pre-existing
+   protocols that rely on this functionality.
+
+   The user agent MAY include a WebTransport-Subprotocols-Available
+   header field in the CONNECT request, enumerating the possible
+   subprotocols.  If the server receives such a header, it MAY include a
+   WebTransport-Subprotocol field in a successful (2xx) response.  If it
+   does, the server MUST include a single subprotocol from the client's
+   list in that field.  Servers MAY reject the request if the client did
+   not include a suitable subprotocol.
+
+   Both WebTransport-Subprotocols-Available and WebTransport-Subprotocol
+   are Structured Fields [RFC8941].  WebTransport-Subprotocols-Available
+   is a List of Tokens, and WebTransport-Subprotocol is a Token.  The
+   token in the WebTransport-Subprotocol response header field MUST be
+   one of the tokens listed in WebTransport-Subprotocols-Available of
+   the request.  The semantics of individual token values is determined
+   by the WebTransport resource in question and are not registered in
+   IANA's "ALPN Protocol IDs" registry.
+
+3.5.  Flow Control
 
    Flow control governs the amount of resources that can be consumed or
    data that can be sent.  WebTransport over HTTP/2 allows a server to
    limit the number of sessions that a client can create on a single
-   connection; see Section 3.4.1.
+   connection; see Section 3.5.1.
 
    For data, there are five applicable levels of flow control for data
    that is sent or received using WebTransport over HTTP/2:
@@ -293,7 +318,7 @@ Table of Contents
    TCP and HTTP/2 define the first three levels of flow control.  This
    document defines the final two.
 
-3.4.1.  Limiting the Number of Simultaneous Sessions
+3.5.1.  Limiting the Number of Simultaneous Sessions
 
    This document defines a SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter
    that allows the server to limit the maximum number of concurrent
@@ -326,7 +351,7 @@ Table of Contents
    NOT reduce the value of SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0"
    after previously advertising a non-zero value.
 
-3.4.2.  Limiting the Number of Streams Within a Session
+3.5.2.  Limiting the Number of Streams Within a Session
 
    This document defines a WT_MAX_STREAMS capsule (Section 5.7) that
    allows each endpoint to limit the number of streams its peer is
@@ -338,14 +363,14 @@ Table of Contents
    limit is the only mechanism for an endpoint to limit the number of
    WebTransport streams that its peer can open on a session.
 
-3.4.3.  Initial Flow Control Limits
+3.5.3.  Initial Flow Control Limits
 
    To allow stream data to be exchanged in the same flight as the
    extended CONNECT request that establishes a WebTransport session,
    initial flow control limits can be exchanged via HTTP/2 SETTINGS
-   (Section 3.4.3.1).  Initial values for the flow control limits can
+   (Section 3.5.3.1).  Initial values for the flow control limits can
    also be exchanged via the WebTransport-Init header field on the
-   extended CONNECT request (Section 3.4.3.2).
+   extended CONNECT request (Section 3.5.3.2).
 
    The limits communicated via HTTP/2 SETTINGS apply to all WebTransport
    sessions opened on that HTTP/2 connection.  Limits communicated via
@@ -360,7 +385,7 @@ Table of Contents
    field SHOULD ensure that the header field values are greater than or
    equal to the values provided in the SETTINGS.
 
-3.4.3.1.  Flow Control SETTINGS
+3.5.3.1.  Flow Control SETTINGS
 
    Initial flow control limits can be exchanged via HTTP/2 SETTINGS
    (Section 9.1) by providing non-zero values for
@@ -374,7 +399,7 @@ Table of Contents
    *  WT_MAX_STREAMS via SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI
       and SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI
 
-3.4.3.2.  Flow Control Header Field
+3.5.3.2.  Flow Control Header Field
 
    The WebTransport-Init HTTP header field can be used to communicate
    the initial values of the flow control windows, similar to how QUIC
@@ -393,7 +418,7 @@ Table of Contents
    br:  The initial flow control limit for the bidirectional streams
       opened by the recipient of this header field.  MUST be an Integer.
 
-3.4.4.  Flow Control and Intermediaries
+3.5.4.  Flow Control and Intermediaries
 
    WebTransport over HTTP/2 uses several capsules for flow control, and
    all of these capsules define special intermediary handling as
@@ -647,7 +672,7 @@ Table of Contents
    described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
    consume WT_MAX_DATA capsules for flow control purposes and MUST
    generate and send appropriate flow control signals for their limits;
-   see Section 3.4.4.
+   see Section 3.5.4.
 
    The initial value for this limit MAY be communicated by sending a
    non-zero value for SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA.
@@ -685,7 +710,7 @@ Table of Contents
    as described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
    consume WT_MAX_STREAM_DATA capsules for flow control purposes and
    MUST generate and send appropriate flow control signals for their
-   limits; see Section 3.4.4.
+   limits; see Section 3.5.4.
 
    Initial values for this limit for unidirectional and bidirectional
    streams MAY be communicated by sending non-zero values for
@@ -761,7 +786,7 @@ Table of Contents
    described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
    consume WT_DATA_BLOCKED capsules for flow control purposes and MUST
    generate and send appropriate flow control signals for their limits;
-   see Section 3.4.4.
+   see Section 3.5.4.
 
 5.9.  WT_STREAM_DATA_BLOCKED Capsule
 
@@ -791,7 +816,7 @@ Table of Contents
    handling, as described in Section 3.2 of [HTTP-DATAGRAM].
    Intermedaries MUST consume WT_STREAM_DATA_BLOCKED capsules for flow
    control purposes and MUST generate and send appropriate flow control
-   signals for their limits; see Section 3.4.4.
+   signals for their limits; see Section 3.5.4.
 
 5.10.  WT_STREAMS_BLOCKED Capsule
 
@@ -897,9 +922,9 @@ Table of Contents
       takes up the remainder of the capsule, and its length MUST NOT
       exceed 1024 bytes.
 
-   An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST set
-   the FIN bit on the frame carrying the capsule.  The recipient MUST
-   close the stream upon receipt of the capsule.
+   An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST then
+   close the stream.  The recipient MUST close the stream upon receipt
+   of the capsule.
 
    Cleanly terminating a WebTransport session without a
    CLOSE_WEBTRANSPORT_SESSION capsule is semantically equivalent to
@@ -1386,9 +1411,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-08, 23 October 2023,
+              ietf-webtrans-http3-09, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-08>.
+              webtrans-http3-09>.
 
 10.2.  Informative References
 
@@ -1412,6 +1437,11 @@ WebTransport Data
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9000>.
 
+   [RFC7301]  Friedl, S., Popov, A., Langley, A., and E. Stephan,
+              "Transport Layer Security (TLS) Application-Layer Protocol
+              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
+              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
+
 Acknowledgments
 
    Thanks to Anthony Chivetta, Joshua Otto, and Valentin Pistol for
@@ -1428,40 +1458,40 @@ Index
 
       S
 
-         SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA  Section 3.4.3.1,
+         SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA  Section 3.5.3.1,
             Paragraph 2.1.1; Section 5.5, Paragraph 7; Section 9.1,
             Paragraph 4; Section 9.1, Paragraph 6.2.1
-         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI  Section 3.4
+         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI  Section 3.5
             .3.1, Paragraph 2.2.1; Section 5.6, Paragraph 7;
             Section 9.1, Paragraph 10; Section 9.1, Paragraph 12.2.1
-         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI  Section 3.4.
+         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI  Section 3.5.
             3.1, Paragraph 2.2.1; Section 5.6, Paragraph 7; Section 9.1,
             Paragraph 7; Section 9.1, Paragraph 9.2.1
-         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI  Section 3.4.3.1
+         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI  Section 3.5.3.1
             , Paragraph 2.3.1; Section 5.7, Paragraph 9; Section 9.1,
             Paragraph 16; Section 9.1, Paragraph 18.2.1
-         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI  Section 3.4.3.1,
+         SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI  Section 3.5.3.1,
             Paragraph 2.3.1; Section 5.7, Paragraph 9; Section 9.1,
             Paragraph 13; Section 9.1, Paragraph 15.2.1
 
       W
 
-         WT_DATA_BLOCKED  Section 2, Paragraph 8; Section 3.4.4,
+         WT_DATA_BLOCKED  Section 2, Paragraph 8; Section 3.5.4,
             Paragraph 1; Section 5.8, Paragraph 1; Section 5.8,
             Paragraph 3; Section 5.8, Paragraph 5; Section 5.9,
             Paragraph 1; Section 9.2, Paragraph 17.4.1
-         WT_MAX_DATA  Section 2, Paragraph 8; Section 3.4.3.1, Paragraph
-            2.1.1; Section 3.4.4, Paragraph 1; Section 5.5, Paragraph 1;
+         WT_MAX_DATA  Section 2, Paragraph 8; Section 3.5.3.1, Paragraph
+            2.1.1; Section 3.5.4, Paragraph 1; Section 5.5, Paragraph 1;
             Section 5.5, Paragraph 3; Section 5.5, Paragraph 6;
             Section 9.1, Paragraph 4; Section 9.2, Paragraph 11.4.1
-         WT_MAX_STREAM_DATA  Section 2, Paragraph 8; Section 3.4.3.1,
-            Paragraph 2.2.1; Section 3.4.4, Paragraph 1; Section 5.6,
+         WT_MAX_STREAM_DATA  Section 2, Paragraph 8; Section 3.5.3.1,
+            Paragraph 2.2.1; Section 3.5.4, Paragraph 1; Section 5.6,
             Paragraph 1; Section 5.6, Paragraph 3; Section 5.6,
             Paragraph 6; Section 9.1, Paragraph 7; Section 9.1,
             Paragraph 10; Section 9.2, Paragraph 13.4.1
-         WT_MAX_STREAMS  Section 2, Paragraph 8; Section 3.4.2,
-            Paragraph 1; Section 3.4.3.1, Paragraph 2.3.1;
-            Section 3.4.4, Paragraph 1; Section 5.7, Paragraph 1;
+         WT_MAX_STREAMS  Section 2, Paragraph 8; Section 3.5.2,
+            Paragraph 1; Section 3.5.3.1, Paragraph 2.3.1;
+            Section 3.5.4, Paragraph 1; Section 5.7, Paragraph 1;
             Section 5.7, Paragraph 2; Section 5.7, Paragraph 4;
             Section 5.7, Paragraph 8; Section 9.1, Paragraph 13;
             Section 9.1, Paragraph 16; Section 9.2, Paragraph 15.4.1
@@ -1476,11 +1506,11 @@ Index
             Section 5.4, Paragraph 4; Section 5.4, Paragraph 5.4.1;
             Section 5.5, Paragraph 5; Section 5.6, Paragraph 5;
             Section 6, Paragraph 3; Section 9.2, Paragraph 9.4.1
-         WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 8; Section 3.4.4,
+         WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 8; Section 3.5.4,
             Paragraph 1; Section 5.9, Paragraph 1; Section 5.9,
             Paragraph 3; Section 5.9, Paragraph 5; Section 9.2,
             Paragraph 19.4.1
-         WT_STREAMS_BLOCKED  Section 2, Paragraph 8; Section 3.4.4,
+         WT_STREAMS_BLOCKED  Section 2, Paragraph 8; Section 3.5.4,
             Paragraph 1; Section 5.10, Paragraph 1; Section 5.10,
             Paragraph 2; Section 5.10, Paragraph 4; Section 5.10,
             Paragraph 6; Section 9.2, Paragraph 21.4.1

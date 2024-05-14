@@ -215,6 +215,28 @@ control. This can reduce latency for data sent by a client at the start of a
 WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.
 
+## Subprotocol Negotiation
+
+WebTransport over HTTP/2 offers a subprotocol negotiation mechanism, similar to
+TLS Application-Layer Protocol Negotiation Extension (ALPN) {{?RFC7301}}; the
+intent is to simplify porting pre-existing protocols that rely on this
+functionality.
+
+The user agent MAY include a `WebTransport-Subprotocols-Available` header field
+in the CONNECT request, enumerating the possible subprotocols. If the server
+receives such a header, it MAY include a `WebTransport-Subprotocol` field in a
+successful (2xx) response. If it does, the server MUST include a single
+subprotocol from the client's list in that field. Servers MAY reject the
+request if the client did not include a suitable subprotocol.
+
+Both `WebTransport-Subprotocols-Available` and `WebTransport-Subprotocol` are
+Structured Fields {{!RFC8941}}. `WebTransport-Subprotocols-Available` is a List
+of Tokens, and `WebTransport-Subprotocol` is a Token. The token in the
+`WebTransport-Subprotocol` response header field MUST be one of the tokens
+listed in `WebTransport-Subprotocols-Available` of the request.  The semantics
+of individual token values is determined by the WebTransport resource in
+question and are not registered in IANA's "ALPN Protocol IDs" registry.
+
 ## Flow Control
 
 Flow control governs the amount of resources that can be consumed or data that

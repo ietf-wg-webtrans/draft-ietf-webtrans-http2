@@ -1000,7 +1000,7 @@ to tolerate capsules that arrive out of order. This differs from QUIC in that a
 receiver is required to treat the arrival of out of order frames rather than
 being tolerant.
 
-For an intermediary that forwards from an unreliable transport (like
+For an intermediary that forwards from an strongly-ordered transport (like
 {{WEBTRANSPORT-H3}}) to a reliable transport (like this protocol), it is
 necessary to maintain state for streams. A simple forwarding intermediary that
 directly translates one type of protocol unit into another without understanding

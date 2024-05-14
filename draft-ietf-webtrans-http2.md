@@ -497,7 +497,16 @@ part of a WebTransport stream.
 
 After sending a WT_RESET_STREAM capsule, an endpoint ceases transmission of
 WT_STREAM capsules on the identified stream. A receiver of a WT_RESET_STREAM
-capsule can discard any data that it already received on that stream.
+capsule can discard any data in excess of the Reliable Size indicated, even if
+that data was already received.
+
+The WT_RESET_STREAM capsule follows the design of the QUIC RESET_STREAM_AT frame
+{{!PARTIAL-RESET=I-D.ietf-quic-reliable-stream-reset}}.  Consequently, it
+includes a Reliable Size field.  A WT_RESET_STREAM capsule MUST be sent after
+WT_STREAM capsules that include an amount of data equal to or in excess of the
+value in the Reliable Size field.  A receiver MUST treat the receipt of a
+WT_RESET_STREAM with a Reliable Size smaller than the number of bytes it has
+received on the stream as a session error.
 
 ~~~
 WT_RESET_STREAM Capsule {
@@ -505,6 +514,7 @@ WT_RESET_STREAM Capsule {
   Length (i),
   Stream ID (i),
   Application Protocol Error Code (i),
+  Reliable Size (i),
 }
 ~~~
 {: #fig-wt_reset_stream title="WT_RESET_STREAM Capsule Format"}
@@ -518,6 +528,10 @@ The WT_RESET_STREAM capsule defines the following fields:
    Application Protocol Error Code:
    : A variable-length integer containing the application protocol error code
      that indicates why the stream is being closed.
+
+   Reliable Size:
+   : A variable-length integer indicating the amount of data that needs to be
+     delivered to the application even though the stream is reset.
 
 Unlike the equivalent QUIC frame, this capsule does not include a Final Size
 field. In-order delivery of WT_STREAM capsules ensures that the amount of

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-12T00:53:17.944668+00:00",
+  "timestamp": "2024-05-14T00:49:56.070047+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -7498,6 +7498,53 @@
               "body": "FWIW I don't feel very strongly, happy to have you decide",
               "createdAt": "2024-05-01T16:25:54Z",
               "updatedAt": "2024-05-01T16:25:54Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 111,
+      "id": "PR_kwDODnOl885vMsxD",
+      "title": "Error handling",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/111",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I found myself with some time, so I thought that I'd do a bad job and see what happened.",
+      "createdAt": "2024-05-13T02:48:58Z",
+      "updatedAt": "2024-05-13T19:08:55Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "error-handling",
+      "headRefOid": "fc97b68a21822010d195e47aafe6933dc1b2eba9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl8856ZqHI",
+          "commit": {
+            "abbreviatedOid": "fc97b68"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-05-13T19:08:50Z",
+          "updatedAt": "2024-05-13T19:08:55Z",
+          "comments": [
+            {
+              "originalPosition": 129,
+              "body": "Should we add a note about intermediaries? A naive intermediary that converts QUIC RESET_STREAM to WT_RESET_STREAM is going to have a bad day, so maybe we need a \"don't do that\" sign",
+              "createdAt": "2024-05-13T19:08:51Z",
+              "updatedAt": "2024-05-13T19:08:55Z"
             }
           ]
         }

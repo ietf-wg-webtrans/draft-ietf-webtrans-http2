@@ -997,7 +997,7 @@ as soon as possible.
 
 The use of an ordered and reliable transport means that a receiver does not need
 to tolerate capsules that arrive out of order. This differs from QUIC in that a
-receiver is required to treat the arrival of out of order capsules rather than
+receiver is required to treat the arrival of out of order frames rather than
 being tolerant.
 
 For an intermediary that forwards from an unreliable transport (like

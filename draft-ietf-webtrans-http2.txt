@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 18 September 2024                                      T. Pauly
+Expires: 15 November 2024                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 18 September 2024                                      T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                           17 March 2024
+                                                             14 May 2024
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 September 2024.
+   This Internet-Draft will expire on 15 November 2024.
 
 Copyright Notice
 
@@ -539,14 +539,25 @@ Table of Contents
 
    After sending a WT_RESET_STREAM capsule, an endpoint ceases
    transmission of WT_STREAM capsules on the identified stream.  A
-   receiver of a WT_RESET_STREAM capsule can discard any data that it
-   already received on that stream.
+   receiver of a WT_RESET_STREAM capsule can discard any data in excess
+   of the Reliable Size indicated, even if that data was already
+   received.
+
+   The WT_RESET_STREAM capsule follows the design of the QUIC
+   RESET_STREAM_AT frame [PARTIAL-RESET].  Consequently, it includes a
+   Reliable Size field.  A WT_RESET_STREAM capsule MUST be sent after
+   WT_STREAM capsules that include an amount of data equal to or in
+   excess of the value in the Reliable Size field.  A receiver MUST
+   treat the receipt of a WT_RESET_STREAM with a Reliable Size smaller
+   than the number of bytes it has received on the stream as a session
+   error.
 
    WT_RESET_STREAM Capsule {
      Type (i) = 0x190B4D39,
      Length (i),
      Stream ID (i),
      Application Protocol Error Code (i),
+     Reliable Size (i),
    }
 
                   Figure 2: WT_RESET_STREAM Capsule Format
@@ -559,6 +570,10 @@ Table of Contents
    Application Protocol Error Code:  A variable-length integer
       containing the application protocol error code that indicates why
       the stream is being closed.
+
+   Reliable Size:  A variable-length integer indicating the amount of
+      data that needs to be delivered to the application even though the
+      stream is reset.
 
    Unlike the equivalent QUIC frame, this capsule does not include a
    Final Size field.  In-order delivery of WT_STREAM capsules ensures
@@ -1331,6 +1346,13 @@ WebTransport Data
               07, 4 March 2024, <https://datatracker.ietf.org/doc/html/
               draft-ietf-webtrans-overview-07>.
 
+   [PARTIAL-RESET]
+              Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
+              Delivery", Work in Progress, Internet-Draft, draft-ietf-
+              quic-reliable-stream-reset-06, 28 February 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
+              reliable-stream-reset-06>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -1466,16 +1488,17 @@ Index
             Section 5.7, Paragraph 8; Section 9.1, Paragraph 13;
             Section 9.1, Paragraph 16; Section 9.2, Paragraph 15.4.1
          WT_RESET_STREAM  Section 2, Paragraph 9; Section 5.2, Paragraph
-            1; Section 5.2, Paragraph 2; Section 5.2, Paragraph 4;
-            Section 9.2, Paragraph 5.4.1
+            1; Section 5.2, Paragraph 2; Section 5.2, Paragraph 3;
+            Section 5.2, Paragraph 5; Section 9.2, Paragraph 5.4.1
          WT_STOP_SENDING  Section 2, Paragraph 9; Section 5.3, Paragraph
             1; Section 5.3, Paragraph 3; Section 9.2, Paragraph 7.4.1
          WT_STREAM  Section 2, Paragraph 7.1.1; Section 4.1, Paragraph
-            2; Section 5.2, Paragraph 2; Section 5.2, Paragraph 6;
-            Section 5.4, Paragraph 1; Section 5.4, Paragraph 2;
-            Section 5.4, Paragraph 4; Section 5.4, Paragraph 5.4.1;
-            Section 5.5, Paragraph 5; Section 5.6, Paragraph 5;
-            Section 6, Paragraph 3; Section 9.2, Paragraph 9.4.1
+            2; Section 5.2, Paragraph 2; Section 5.2, Paragraph 3;
+            Section 5.2, Paragraph 7; Section 5.4, Paragraph 1;
+            Section 5.4, Paragraph 2; Section 5.4, Paragraph 4;
+            Section 5.4, Paragraph 5.4.1; Section 5.5, Paragraph 5;
+            Section 5.6, Paragraph 5; Section 6, Paragraph 3;
+            Section 9.2, Paragraph 9.4.1
          WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 8; Section 3.4.4,
             Paragraph 1; Section 5.9, Paragraph 1; Section 5.9,
             Paragraph 3; Section 5.9, Paragraph 5; Section 9.2,

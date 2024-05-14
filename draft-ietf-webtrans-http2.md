@@ -165,7 +165,10 @@ A WebTransport session is terminated when the CONNECT stream that created it is
 closed. This implicitly closes all WebTransport streams that were
 multiplexed over that CONNECT stream.
 
-# Session Establishment
+# Session Establishment and Termination
+
+A WebTransport session is a communication context between a client and server
+{{OVERVIEW}}. This section describes how sessions begin and end.
 
 ## Establishing a Transport-Capable HTTP/2 Connection
 
@@ -215,7 +218,44 @@ control. This can reduce latency for data sent by a client at the start of a
 WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.
 
-## Flow Control
+## Session Termination and Error Handling {#errors}
+
+An WebTransport session over HTTP/2 is terminated when either endpoint closes
+the stream associated with the CONNECT request that initiated the session.
+
+Prior to closing the stream associated with the CONNECT request, either endpoint
+can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
+and message to convey additional information about the reasons for the closure
+of the session.
+
+Session errors result in the termination of a session.  Errors can be reported
+using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes an error code and
+an optional explanatory message.
+
+An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
+capsule by closing the HTTP/2 stream.
+
+A stream that is reset terminates the session without providing an
+application-level signal, though there will be an HTTP/2 error code.
+
+This document reserves the following HTTP/2 error codes for use with reporting
+WebTransport errors:
+
+WEBTRANSPORT_ERROR (0xTBD):
+: This generic error can be used for errors that do not have more specific error
+  codes.
+
+WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):
+: A stream-related capsule identified a stream that was in an invalid state.
+
+Prior terminating a stream with an error, a CLOSE_WEBTRANSPORT_SESSION capsule
+with an application-specified error code MAY be sent.
+
+Session errors do not necessarily result in any change of HTTP/2 connection
+state, except that an endpoint might choose to terminate a connection in
+response to stream errors; see {{Section 5.4 of HTTP2}}.
+
+# Flow Control
 
 Flow control governs the amount of resources that can be consumed or data that
 can be sent. WebTransport over HTTP/2 allows a server to limit the number of
@@ -245,7 +285,7 @@ within a session.
 TCP and HTTP/2 define the first three levels of flow control. This document
 defines the final two.
 
-### Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
+## Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
 
 This document defines a SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter that allows
 the server to limit the maximum number of concurrent WebTransport sessions on a
@@ -276,7 +316,7 @@ those sessions to complete. Endpoints MUST NOT reduce the value of
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
 non-zero value.
 
-### Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
+## Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
 This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
 each endpoint to limit the number of streams its peer is permitted to open as
@@ -287,7 +327,7 @@ contained within HTTP/2 DATA frames on a single HTTP/2 stream, this limit is
 the only mechanism for an endpoint to limit the number of WebTransport streams
 that its peer can open on a session.
 
-### Initial Flow Control Limits {#flow-control-initial}
+## Initial Flow Control Limits {#flow-control-initial}
 
 To allow stream data to be exchanged in the same flight as the extended CONNECT
 request that establishes a WebTransport session, initial flow control limits
@@ -307,7 +347,7 @@ each corresponding initial flow control value.  Endpoints sending the SETTINGS
 and also including the header field SHOULD ensure that the header field values
 are greater than or equal to the values provided in the SETTINGS.
 
-#### Flow Control SETTINGS {#flow-control-settings}
+### Flow Control SETTINGS {#flow-control-settings}
 
 *[SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA]: #
 *[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI]: #
@@ -325,7 +365,7 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
   SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI
 
 
-#### Flow Control Header Field {#flow-control-header}
+### Flow Control Header Field {#flow-control-header}
 
 The `WebTransport-Init` HTTP header field can be used to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
@@ -347,7 +387,8 @@ following keys are defined for the `WebTransport-Init` header field:
   recipient of this header field.  MUST be an Integer.
 
 
-### Flow Control and Intermediaries {#flow-control-intermediaries}
+## Flow Control and Intermediaries {#flow-control-intermediaries}
+
 WebTransport over HTTP/2 uses several capsules for flow control, and all of
 these capsules define special intermediary handling as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  These capsules, referred to as the "flow
@@ -483,9 +524,8 @@ PADDING Capsule {
 {: #fig-padding title="PADDING Capsule Format"}
 
 The Padding field MUST be set to an all-zero sequence of bytes of any length as
-specified by the Length field.
-
-<!-- TODO validation and error handling -->
+specified by the Length field.  A receiver is not obligated to verify padding
+but MAY treat non-zero padding as a [stream error](#errors).
 
 ## WT_RESET_STREAM Capsule {#WT_RESET_STREAM}
 
@@ -538,6 +578,12 @@ field. In-order delivery of WT_STREAM capsules ensures that the amount of
 session-level flow control consumed by a stream is always known by both
 endpoints.
 
+A WT_RESET_STREAM capsule MUST NOT be sent after a stream is closed or reset.
+While QUIC permits redundant RESET_STREAM frames, the ordering guarantee in
+HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a WT_RESET_STREAM capsule is
+received for a stream that is not in a valid state.
+
 ## WT_STOP_SENDING Capsule {#WT_STOP_SENDING}
 
 *[WT_STOP_SENDING]: #
@@ -567,6 +613,11 @@ The WT_STOP_SENDING capsule defines the following fields:
    : A variable-length integer containing the application-specified reason the
      sender is ignoring the stream.
 
+A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
+While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
+HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a second WT_STOP_SENDING capsule
+is received.
 
 ## WT_STREAM Capsule {#WT_STREAM}
 
@@ -600,6 +651,12 @@ Stream Data:
 : Zero or more bytes of data for the stream.  Empty WT_STREAM capsules MUST NOT
   be used unless they open or close a stream; an endpoint MAY treat an empty
   WT_STREAM capsule that neither starts nor ends a stream as a session error.
+
+A WT_STREAM capsule MUST NOT be sent after a stream is closed or reset.  While
+QUIC permits redundant STREAM frames, the ordering guarantee in HTTP/2 makes
+this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a WT_STREAM capsule is received
+for a stream that is not in a valid state.
 
 ## WT_MAX_DATA Capsule {#WT_MAX_DATA}
 
@@ -678,6 +735,13 @@ Initial values for this limit for unidirectional and bidirectional streams MAY
 be communicated by sending non-zero values for
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
+
+A WT_MAX_STREAM_DATA capsule MUST NOT be sent after a sender requests that a
+stream be closed with WT_STOP_SENDING.  While QUIC permits redundant
+MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2 makes this unnecessary.
+A [stream error](#errors) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent
+if a WT_MAX_STREAM_DATA capsule is received after a WT_STOP_SENDING capsule for
+the same stream.
 
 ## WT_MAX_STREAMS Capsule {#WT_MAX_STREAMS}
 
@@ -792,6 +856,12 @@ WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
 
+A WT_STREAM_DATA_BLOCKED capsule MUST NOT be sent after a stream is closed or
+reset.  While QUIC permits redundant STREAM_DATA_BLOCKED frames, the ordering
+guarantee in HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
+WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a WT_STREAM_DATA_BLOCKED capsule
+is received for a stream that is not in a valid state.
+
 ## WT_STREAMS_BLOCKED Capsule {#WT_STREAMS_BLOCKED}
 
 *[WT_STREAMS_BLOCKED]: #
@@ -878,7 +948,7 @@ application error code and message.
 
 WebTransport sessions can be terminated by optionally sending a
 CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
-associated with the session (see {{session-termination}}).
+associated with the session (see {{errors}}).
 
 ~~~
 CLOSE_WEBTRANSPORT_SESSION Capsule {
@@ -937,6 +1007,22 @@ WebTransport streams. The signal is intended for the application using
 WebTransport, which is expected to attempt to gracefully terminate the session
 as soon as possible.
 
+## Capsule Ordering and Reliability
+
+The use of an ordered and reliable transport means that a receiver does not need
+to tolerate capsules that arrive out of order. This differs from QUIC in that a
+receiver is required to treat the arrival of out of order frames rather than
+being tolerant.
+
+For an intermediary that forwards from an strongly-ordered transport (like
+{{WEBTRANSPORT-H3}}) to a reliable transport (like this protocol), it is
+necessary to maintain state for streams. A simple forwarding intermediary that
+directly translates one type of protocol unit into another without understanding
+the underlying state might cause a receiver to abort the session.
+
+For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
+forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
+WT_STREAM capsule without error.
 
 # Examples
 
@@ -1020,17 +1106,6 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
-# Session Termination
-
-An WebTransport session over HTTP/2 is terminated when either endpoint closes
-the stream associated with the CONNECT request that initiated the session.
-Upon learning about the session being terminated, the endpoint MUST stop
-sending new datagrams and reset all of the streams associated with the session.
-
-Prior to closing the stream associated with the CONNECT request, either endpoint
-can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
-and message to convey additional information about the reasons for the closure
-of the session.
 
 # Security Considerations
 
@@ -1057,10 +1132,14 @@ to sending data and to opening new streams.
 
 # IANA Considerations
 
+This document registers new HTTP/2 settings ({{h2-settings}}), HTTP/2 error
+codes ({{iana-h2-error}}), new capsules ({{iana-capsules}}), and the
+`WebTransport-Init` header field ({{iana-header}}).
+
 ## HTTP/2 SETTINGS Parameter Registration {#h2-settings}
 
 The following entries are added to the "HTTP/2 Settings" registry established by
-{{!RFC7540}}:
+{{HTTP2}}:
 
 {: anchor="SETTINGS_WEBTRANSPORT_MAX_SESSIONS"}
 
@@ -1232,7 +1311,42 @@ Specification:
 
 : This document
 
-## Capsule Types
+## HTTP/2 Error Code Registration {#iana-h2-error}
+
+The following entries are added to the "HTTP/2 Error Code" registry established by
+{{HTTP2}}:
+
+For WEBTRANSPORT_ERROR:
+
+Code:
+: 0xTBD
+
+Name:
+: WEBTRANSPORT_ERROR
+
+Description:
+: General WebTransport error detected
+
+Reference:
+: {{errors}}
+
+
+For WEBTRANSPORT_STREAM_STATE_ERROR:
+
+Code:
+: 0xTBD
+
+Name:
+: WEBTRANSPORT_STREAM_STATE_ERROR
+
+Description:
+: Unexpected WebTransport stream-related capsule received
+
+Reference:
+: {{errors}}
+
+
+## Capsule Types {#iana-capsules}
 
 The following entries are added to the "HTTP Capsule Types" registry established
 by {{HTTP-DATAGRAM}}:
@@ -1477,7 +1591,7 @@ Notes:
 : None
 {: spacing="compact"}
 
-## HTTP Header Field Name
+## HTTP Header Field Name {#iana-header}
 
 IANA will register the following entry in the "Hypertext Transfer Protocol
 (HTTP) Field Name Registry" maintained at

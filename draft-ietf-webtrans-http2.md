@@ -993,6 +993,22 @@ WebTransport streams. The signal is intended for the application using
 WebTransport, which is expected to attempt to gracefully terminate the session
 as soon as possible.
 
+## Capsule Ordering and Reliability
+
+The use of an ordered and reliable transport means that a receiver does not need
+to tolerate capsules that arrive out of order. This differs from QUIC in that a
+receiver is required to treat the arrival of out of order capsules rather than
+being tolerant.
+
+For an intermediary that forwards from an unreliable transport (like
+{{WEBTRANSPORT-H3}}) to a reliable transport (like this protocol), it is
+necessary to maintain state for streams. A simple forwarding intermediary that
+directly translates one type of protocol unit into another without understanding
+the underlying state might cause a receiver to abort the session.
+
+For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
+forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
+WT_STREAM capsule without error.
 
 # Examples
 

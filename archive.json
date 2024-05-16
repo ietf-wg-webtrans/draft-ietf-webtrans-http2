@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-14T00:49:56.070047+00:00",
+  "timestamp": "2024-05-16T00:49:57.950674+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -876,7 +876,7 @@
       "id": "I_kwDODnOl88497wpu",
       "title": "Error handling",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/44",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -891,8 +891,8 @@
       ],
       "body": "There is no error handling capability in the protocol at all.\r\n\r\nWe need a framework for describing how errors are handled.  That might reuse HTTP/2 signaling (which might not be the best idea if we are serious about this being mostly generic) or they might use a new frame type for signaling session-level errors.\r\n\r\nThe HTTP/3 draft has a termination signal; that might be the best option.",
       "createdAt": "2021-10-29T01:17:03Z",
-      "updatedAt": "2024-01-23T23:19:41Z",
-      "closedAt": null,
+      "updatedAt": "2024-05-14T22:44:22Z",
+      "closedAt": "2024-05-14T22:44:21Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -2032,7 +2032,7 @@
       "id": "I_kwDODnOl8857CZsY",
       "title": "Stream operations after RESET has been sent",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/101",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "vasilvv",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -2043,8 +2043,8 @@
       ],
       "body": "- Is it valid to send WT_STREAM for streams that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_RESET_STREAM for a stream that already had a WT_RESET_STREAM sent?\r\n- Is it valid to send WT_STOP_SENDING for a stream that already had a WT_STOP_SENDING sent?\r\n- Is it valid to send WT_MAX_STREAM_DATA for a stream that already had a WT_STOP_SENDING sent?\r\n\r\nIn QUIC, I believe we answered \"yes\" to all of the above since the protocol is inherently unordered. As far as I can tell, this does not apply to WT over HTTP/2, since it's strictly ordered, at least for an individual peer.",
       "createdAt": "2024-01-03T15:30:22Z",
-      "updatedAt": "2024-01-23T23:19:15Z",
-      "closedAt": null,
+      "updatedAt": "2024-05-14T22:44:22Z",
+      "closedAt": "2024-05-14T22:44:22Z",
       "comments": [
         {
           "author": "vasilvv",
@@ -2277,10 +2277,12 @@
       "assignees": [
         "ekinnear"
       ],
-      "labels": [],
+      "labels": [
+        "ready for PR"
+      ],
       "body": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/pull/144 added subprotocol negotiation to the HTTP/3 document, so it would be nice to have the same mechanism in HTTP/2 as well to match.",
       "createdAt": "2024-04-23T23:25:21Z",
-      "updatedAt": "2024-04-24T00:52:47Z",
+      "updatedAt": "2024-05-14T23:16:21Z",
       "closedAt": null,
       "comments": []
     },
@@ -2289,15 +2291,15 @@
       "id": "I_kwDODnOl886HdKWl",
       "title": "RESET_STREAM_AT",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/109",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "If this is a possible extension to the WT API, we might need this in the HTTP/2 version.  Not because streams might be dropped, but because a sender might want to indicate the point in the stream that needs to be retained to a receiver, or maybe just to the lower layers of the stack (for those cases where buffering > sending).",
       "createdAt": "2024-04-30T22:13:16Z",
-      "updatedAt": "2024-04-30T22:20:07Z",
-      "closedAt": null,
+      "updatedAt": "2024-05-14T22:26:25Z",
+      "closedAt": "2024-05-14T22:26:25Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -7421,24 +7423,26 @@
       "id": "PR_kwDODnOl885uNF-4",
       "title": "Add a reliable size to WT_RESET_STREAM",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/110",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "As noted in #109, we need to signal to the receiver when a sender opts to use a reliable reset.  Rather than add a second frame type, we can just build a single reset that has the additional feature.  As @vasilvv pointed out, if we were going to do QUIC over again, we'd build this into RESET_STREAM.\r\n\r\nThis is not a backward-compatible change, so we'll need to change version numbers (I have not done that here).\r\n\r\nCloses #109.",
       "createdAt": "2024-04-30T23:11:47Z",
-      "updatedAt": "2024-05-01T16:25:54Z",
+      "updatedAt": "2024-05-14T22:26:24Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
       "headRepository": "martinthomson/draft-webtransport-http2",
       "headRefName": "reset-at",
       "headRefOid": "7879bbc6440c0690c489fbaf1cdc8a7c1bac330b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-05-14T22:26:24Z",
+      "mergedAt": "2024-05-14T22:26:24Z",
+      "mergedBy": "martinthomson",
+      "mergeCommit": {
+        "oid": "ea68d2be252e49f30ce222c21b450623272078b4"
+      },
       "comments": [],
       "reviews": [
         {
@@ -7500,6 +7504,19 @@
               "updatedAt": "2024-05-01T16:25:54Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDODnOl8856lJlI",
+          "commit": {
+            "abbreviatedOid": "7879bbc"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-05-14T22:25:06Z",
+          "updatedAt": "2024-05-14T22:25:06Z",
+          "comments": []
         }
       ]
     },
@@ -7508,24 +7525,26 @@
       "id": "PR_kwDODnOl885vMsxD",
       "title": "Error handling",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/111",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "I found myself with some time, so I thought that I'd do a bad job and see what happened.",
       "createdAt": "2024-05-13T02:48:58Z",
-      "updatedAt": "2024-05-13T19:08:55Z",
+      "updatedAt": "2024-05-14T22:44:21Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
       "headRepository": "martinthomson/draft-webtransport-http2",
       "headRefName": "error-handling",
-      "headRefOid": "fc97b68a21822010d195e47aafe6933dc1b2eba9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "521859990af14c1f2f39b7a73796ab428c5978c1",
+      "closedAt": "2024-05-14T22:44:21Z",
+      "mergedAt": "2024-05-14T22:44:21Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "78bc87932de7abf5effd080d2eaca637592c749f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -7547,6 +7566,165 @@
               "updatedAt": "2024-05-13T19:08:55Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDODnOl8856cOmT",
+          "commit": {
+            "abbreviatedOid": "fc97b68"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-14T03:54:33Z",
+          "updatedAt": "2024-05-14T03:54:33Z",
+          "comments": [
+            {
+              "originalPosition": 129,
+              "body": "Good call.  I added a general note as this relates to multiple frame/capsule types.",
+              "createdAt": "2024-05-14T03:54:33Z",
+              "updatedAt": "2024-05-14T03:54:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8856izAm",
+          "commit": {
+            "abbreviatedOid": "654c73e"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-14T16:51:38Z",
+          "updatedAt": "2024-05-14T16:53:17Z",
+          "comments": [
+            {
+              "originalPosition": 207,
+              "body": "Capsules are strongly ordered in QUIC, they're delivered on the request stream\r\n\r\n```suggestion\r\nreceiver is required to treat the arrival of out of order frames rather than\r\n```",
+              "createdAt": "2024-05-14T16:51:38Z",
+              "updatedAt": "2024-05-14T16:53:17Z"
+            },
+            {
+              "originalPosition": 210,
+              "body": "I would replace \"reliable\" with \"strongly ordered\". This makes it sound like you can't rely on QUIC to do its job",
+              "createdAt": "2024-05-14T16:52:51Z",
+              "updatedAt": "2024-05-14T16:53:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8856lOMN",
+          "commit": {
+            "abbreviatedOid": "46fc51e"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-14T22:31:07Z",
+          "updatedAt": "2024-05-14T22:31:08Z",
+          "comments": [
+            {
+              "originalPosition": 210,
+              "body": "```suggestion\r\nFor an intermediary that forwards from an strongly-ordered transport (like\r\n```",
+              "createdAt": "2024-05-14T22:31:08Z",
+              "updatedAt": "2024-05-14T22:31:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8856lOlv",
+          "commit": {
+            "abbreviatedOid": "654c73e"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-05-14T22:33:10Z",
+          "updatedAt": "2024-05-14T22:33:10Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl8856lPI2",
+          "commit": {
+            "abbreviatedOid": "89504da"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-14T22:35:35Z",
+          "updatedAt": "2024-05-14T22:35:35Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nWEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):\r\n```",
+              "createdAt": "2024-05-14T22:35:35Z",
+              "updatedAt": "2024-05-14T22:35:35Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 112,
+      "id": "PR_kwDODnOl885vccy4",
+      "title": "Use the same subprotocol negotiation mechanism as HTTP/3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/112",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Use the same subprotocol negotiation mechanism as HTTP/3\r\n\r\nFixes #108",
+      "createdAt": "2024-05-14T19:35:52Z",
+      "updatedAt": "2024-05-14T22:44:38Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/subprotocol_negotiation",
+      "headRefOid": "6788a81ef7fa2a901130766732d015e350e8ef99",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl8856kpU2",
+          "commit": {
+            "abbreviatedOid": "6788a81"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-05-14T20:43:38Z",
+          "updatedAt": "2024-05-14T20:43:38Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Should we instead point to the h3 draft for the definition of the fields? It feels weird to redefine them here",
+              "createdAt": "2024-05-14T20:43:38Z",
+              "updatedAt": "2024-05-14T20:43:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8856lRdg",
+          "commit": {
+            "abbreviatedOid": "6788a81"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Let's refer to h3 for the definitions.",
+          "createdAt": "2024-05-14T22:44:38Z",
+          "updatedAt": "2024-05-14T22:44:38Z",
+          "comments": []
         }
       ]
     }

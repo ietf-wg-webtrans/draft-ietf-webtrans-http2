@@ -230,12 +230,7 @@ subprotocol from the client's list in that field. Servers MAY reject the
 request if the client did not include a suitable subprotocol.
 
 Both `WebTransport-Subprotocols-Available` and `WebTransport-Subprotocol` are
-Structured Fields {{!RFC8941}}. `WebTransport-Subprotocols-Available` is a List
-of Tokens, and `WebTransport-Subprotocol` is a Token. The token in the
-`WebTransport-Subprotocol` response header field MUST be one of the tokens
-listed in `WebTransport-Subprotocols-Available` of the request.  The semantics
-of individual token values is determined by the WebTransport resource in
-question and are not registered in IANA's "ALPN Protocol IDs" registry.
+defined in {{Section 3.4 of !HTTP3}}.
 
 ## Flow Control
 

@@ -1038,7 +1038,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 15 November 2024</td>
+<td class="center">Expires 23 November 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1051,12 +1051,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-05-14" class="published">14 May 2024</time>
+<time datetime="2024-05-22" class="published">22 May 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-11-15">15 November 2024</time></dd>
+<dd class="expires"><time datetime="2024-11-23">23 November 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1126,7 +1126,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 November 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 November 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1463,12 +1463,7 @@ successful (2xx) response. If it does, the server MUST include a single
 subprotocol from the client's list in that field. Servers MAY reject the
 request if the client did not include a suitable subprotocol.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <p id="section-3.4-3">Both <code>WebTransport-Subprotocols-Available</code> and <code>WebTransport-Subprotocol</code> are
-Structured Fields <span>[<a href="#RFC8941" class="cite xref">RFC8941</a>]</span>. <code>WebTransport-Subprotocols-Available</code> is a List
-of Tokens, and <code>WebTransport-Subprotocol</code> is a Token. The token in the
-<code>WebTransport-Subprotocol</code> response header field MUST be one of the tokens
-listed in <code>WebTransport-Subprotocols-Available</code> of the request.  The semantics
-of individual token values is determined by the WebTransport resource in
-question and are not registered in IANA's "ALPN Protocol IDs" registry.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34#section-3.4" class="relref">Section 3.4</a> of [<a href="#HTTP3" class="cite xref">HTTP3</a>]</span>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="flow-control">
@@ -3138,6 +3133,10 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="HTTP3">[HTTP3]</dt>
+        <dd>
+<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="ORIGIN">[ORIGIN]</dt>
         <dd>
 <span class="refAuthor">Barth, A.</span>, <span class="refTitle">"The Web Origin Concept"</span>, <span class="seriesInfo">RFC 6454</span>, <span class="seriesInfo">DOI 10.17487/RFC6454</span>, <time datetime="2011-12" class="refDate">December 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6454">https://www.rfc-editor.org/rfc/rfc6454</a>&gt;</span>. </dd>
@@ -3206,10 +3205,6 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dt id="DATAGRAM">[DATAGRAM]</dt>
         <dd>
 <span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"An Unreliable Datagram Extension to QUIC"</span>, <span class="seriesInfo">RFC 9221</span>, <span class="seriesInfo">DOI 10.17487/RFC9221</span>, <time datetime="2022-03" class="refDate">March 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9221">https://www.rfc-editor.org/rfc/rfc9221</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="HTTP3">[HTTP3]</dt>
-        <dd>
-<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="MPTCP">[MPTCP]</dt>
         <dd>

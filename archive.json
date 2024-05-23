@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-21T00:50:02.960588+00:00",
+  "timestamp": "2024-05-23T00:49:53.437233+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -7680,13 +7680,13 @@
       "labels": [],
       "body": "Use the same subprotocol negotiation mechanism as HTTP/3\r\n\r\nFixes #108",
       "createdAt": "2024-05-14T19:35:52Z",
-      "updatedAt": "2024-05-14T22:44:38Z",
+      "updatedAt": "2024-05-22T03:22:43Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "ek/subprotocol_negotiation",
-      "headRefOid": "6788a81ef7fa2a901130766732d015e350e8ef99",
+      "headRefOid": "718bb59dbeec880c3ab7b5ae07ab7e9e08918057",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,

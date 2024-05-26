@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-23T00:49:53.437233+00:00",
+  "timestamp": "2024-05-26T00:54:08.002833+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -7680,7 +7680,7 @@
       "labels": [],
       "body": "Use the same subprotocol negotiation mechanism as HTTP/3\r\n\r\nFixes #108",
       "createdAt": "2024-05-14T19:35:52Z",
-      "updatedAt": "2024-05-22T03:22:43Z",
+      "updatedAt": "2024-05-23T19:39:58Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
@@ -7724,6 +7724,19 @@
           "body": "Let's refer to h3 for the definitions.",
           "createdAt": "2024-05-14T22:44:38Z",
           "updatedAt": "2024-05-14T22:44:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl8857q8lV",
+          "commit": {
+            "abbreviatedOid": "718bb59"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-05-23T19:39:58Z",
+          "updatedAt": "2024-05-23T19:39:58Z",
           "comments": []
         }
       ]

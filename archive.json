@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-25T00:52:09.523023+00:00",
+  "timestamp": "2024-06-27T00:52:27.967263+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2316,6 +2316,22 @@
           "updatedAt": "2024-04-30T22:20:06Z"
         }
       ]
+    },
+    {
+      "number": 113,
+      "id": "I_kwDODnOl886NYFMy",
+      "title": "Keying Material Exporters",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/113",
+      "state": "OPEN",
+      "author": "lqf96",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "WebTransport over HTTP/2 should support keying material exporters, originally proposed in ietf-wg-webtrans/draft-ietf-webtrans-http3#116, since it's also based on TLS 1.3. Perhaps this can be done by simply copying [Section 4.7 of WebTransport over HTTP/3 Spec](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html#name-use-of-keying-material-expo) and making minimal adaptations.",
+      "createdAt": "2024-06-25T07:22:31Z",
+      "updatedAt": "2024-06-25T07:22:31Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [

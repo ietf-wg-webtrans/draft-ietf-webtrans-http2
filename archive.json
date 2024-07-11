@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-09T00:53:25.204355+00:00",
+  "timestamp": "2024-07-11T00:53:49.412418+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -7696,7 +7696,7 @@
       "labels": [],
       "body": "Use the same subprotocol negotiation mechanism as HTTP/3\r\n\r\nFixes #108",
       "createdAt": "2024-05-14T19:35:52Z",
-      "updatedAt": "2024-05-23T19:39:58Z",
+      "updatedAt": "2024-07-09T22:12:07Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
@@ -7753,6 +7753,19 @@
           "body": "",
           "createdAt": "2024-05-23T19:39:58Z",
           "updatedAt": "2024-05-23T19:39:58Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl886BMt37",
+          "commit": {
+            "abbreviatedOid": "718bb59"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-09T22:12:07Z",
+          "updatedAt": "2024-07-09T22:12:07Z",
           "comments": []
         }
       ]

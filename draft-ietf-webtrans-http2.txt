@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 15 November 2024                                       T. Pauly
+Expires: 22 January 2025                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 15 November 2024                                       T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                             14 May 2024
+                                                            21 July 2024
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 November 2024.
+   This Internet-Draft will expire on 22 January 2025.
 
 Copyright Notice
 
@@ -79,7 +79,8 @@ Table of Contents
      3.1.  Establishing a Transport-Capable HTTP/2 Connection
      3.2.  Extended CONNECT in HTTP/2
      3.3.  Creating a New Session
-     3.4.  Session Termination and Error Handling
+     3.4.  Subprotocol Negotiation
+     3.5.  Session Termination and Error Handling
    4.  Flow Control
      4.1.  Limiting the Number of Simultaneous Sessions
      4.2.  Limiting the Number of Streams Within a Session
@@ -269,7 +270,25 @@ Table of Contents
    might choose to send datagrams or flow control updates before
    receiving any response from the server.
 
-3.4.  Session Termination and Error Handling
+3.4.  Subprotocol Negotiation
+
+   WebTransport over HTTP/2 offers a subprotocol negotiation mechanism,
+   similar to TLS Application-Layer Protocol Negotiation Extension
+   (ALPN) [RFC7301]; the intent is to simplify porting pre-existing
+   protocols that rely on this functionality.
+
+   The user agent MAY include a WebTransport-Subprotocols-Available
+   header field in the CONNECT request, enumerating the possible
+   subprotocols.  If the server receives such a header, it MAY include a
+   WebTransport-Subprotocol field in a successful (2xx) response.  If it
+   does, the server MUST include a single subprotocol from the client's
+   list in that field.  Servers MAY reject the request if the client did
+   not include a suitable subprotocol.
+
+   Both WebTransport-Subprotocols-Available and WebTransport-Subprotocol
+   are defined in Section 3.4 of [HTTP3].
+
+3.5.  Session Termination and Error Handling
 
    An WebTransport session over HTTP/2 is terminated when either
    endpoint closes the stream associated with the CONNECT request that
@@ -577,7 +596,7 @@ Table of Contents
    The Padding field MUST be set to an all-zero sequence of bytes of any
    length as specified by the Length field.  A receiver is not obligated
    to verify padding but MAY treat non-zero padding as a stream error
-   (Section 3.4).
+   (Section 3.5).
 
 6.2.  WT_RESET_STREAM Capsule
 
@@ -631,7 +650,7 @@ Table of Contents
    A WT_RESET_STREAM capsule MUST NOT be sent after a stream is closed
    or reset.  While QUIC permits redundant RESET_STREAM frames, the
    ordering guarantee in HTTP/2 makes this unnecessary.  A stream error
-   (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
+   (Section 3.5) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
    a WT_RESET_STREAM capsule is received for a stream that is not in a
    valid state.
 
@@ -663,7 +682,7 @@ Table of Contents
    A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the
    same stream.  While QUIC permits redundant STOP_SENDING frames, the
    ordering guarantee in HTTP/2 makes this unnecessary.  A stream error
-   (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
+   (Section 3.5) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
    a second WT_STOP_SENDING capsule is received.
 
 6.4.  WT_STREAM Capsule
@@ -698,7 +717,7 @@ Table of Contents
    A WT_STREAM capsule MUST NOT be sent after a stream is closed or
    reset.  While QUIC permits redundant STREAM frames, the ordering
    guarantee in HTTP/2 makes this unnecessary.  A stream error
-   (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
+   (Section 3.5) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
    a WT_STREAM capsule is received for a stream that is not in a valid
    state.
 
@@ -778,7 +797,7 @@ Table of Contents
    A WT_MAX_STREAM_DATA capsule MUST NOT be sent after a sender requests
    that a stream be closed with WT_STOP_SENDING.  While QUIC permits
    redundant MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2
-   makes this unnecessary.  A stream error (Section 3.4) of type
+   makes this unnecessary.  A stream error (Section 3.5) of type
    WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a WT_MAX_STREAM_DATA
    capsule is received after a WT_STOP_SENDING capsule for the same
    stream.
@@ -887,7 +906,7 @@ Table of Contents
    A WT_STREAM_DATA_BLOCKED capsule MUST NOT be sent after a stream is
    closed or reset.  While QUIC permits redundant STREAM_DATA_BLOCKED
    frames, the ordering guarantee in HTTP/2 makes this unnecessary.  A
-   stream error (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR
+   stream error (Section 3.5) of type WEBTRANSPORT_STREAM_STATE_ERROR
    MUST be sent if a WT_STREAM_DATA_BLOCKED capsule is received for a
    stream that is not in a valid state.
 
@@ -973,7 +992,7 @@ Table of Contents
 
    WebTransport sessions can be terminated by optionally sending a
    CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2
-   stream associated with the session (see Section 3.4).
+   stream associated with the session (see Section 3.5).
 
    CLOSE_WEBTRANSPORT_SESSION Capsule {
      Type (i) = CLOSE_WEBTRANSPORT_SESSION,
@@ -1291,7 +1310,7 @@ WebTransport Data
 
    Description:  General WebTransport error detected
 
-   Reference:  Section 3.4
+   Reference:  Section 3.5
 
    For WEBTRANSPORT_STREAM_STATE_ERROR:
 
@@ -1301,7 +1320,7 @@ WebTransport Data
 
    Description:  Unexpected WebTransport stream-related capsule received
 
-   Reference:  Section 3.4
+   Reference:  Section 3.5
 
 9.3.  Capsule Types
 
@@ -1454,6 +1473,11 @@ WebTransport Data
               DOI 10.17487/RFC9113, June 2022,
               <https://www.rfc-editor.org/rfc/rfc9113>.
 
+   [HTTP3]    Bishop, M., "HTTP/3", Work in Progress, Internet-Draft,
+              draft-ietf-quic-http-34, 2 February 2021,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
+              http-34>.
+
    [ORIGIN]   Barth, A., "The Web Origin Concept", RFC 6454,
               DOI 10.17487/RFC6454, December 2011,
               <https://www.rfc-editor.org/rfc/rfc6454>.
@@ -1531,11 +1555,6 @@ WebTransport Data
               DOI 10.17487/RFC9221, March 2022,
               <https://www.rfc-editor.org/rfc/rfc9221>.
 
-   [HTTP3]    Bishop, M., "HTTP/3", Work in Progress, Internet-Draft,
-              draft-ietf-quic-http-34, 2 February 2021,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
-              http-34>.
-
    [MPTCP]    Ford, A., Raiciu, C., Handley, M., and O. Bonaventure,
               "TCP Extensions for Multipath Operation with Multiple
               Addresses", RFC 6824, DOI 10.17487/RFC6824, January 2013,
@@ -1545,6 +1564,11 @@ WebTransport Data
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9000>.
+
+   [RFC7301]  Friedl, S., Popov, A., Langley, A., and E. Stephan,
+              "Transport Layer Security (TLS) Application-Layer Protocol
+              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
+              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
 
 Acknowledgments
 

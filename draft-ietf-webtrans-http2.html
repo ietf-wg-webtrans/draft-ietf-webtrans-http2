@@ -18,23 +18,22 @@ describes a protocol that can provide many of the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available. 
     " name="description">
-<meta content="xml2rfc 3.21.0" name="generator">
+<meta content="xml2rfc 3.22.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-webtrans-http2-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.21.0
-    Python 3.11.9
+  xml2rfc 3.22.0
+    Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
-    Jinja2 3.1.2
-    lxml 4.9.3
-    platformdirs 4.2.1
+    Jinja2 3.1.4
+    lxml 4.9.4
+    platformdirs 4.2.2
     pycountry 22.3.5
     PyYAML 6.0.1
-    requests 2.31.0
-    setuptools 68.2.2
-    six 1.16.0
+    requests 2.32.3
+    setuptools 69.5.1
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-webtrans-http2.xml" rel="alternate" type="application/rfc+xml">
@@ -1034,11 +1033,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">May 2024</td>
+<td class="right">July 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 15 November 2024</td>
+<td class="center">Expires 22 January 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1051,12 +1050,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-05-14" class="published">14 May 2024</time>
+<time datetime="2024-07-21" class="published">21 July 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-11-15">15 November 2024</time></dd>
+<dd class="expires"><time datetime="2025-01-22">22 January 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1126,7 +1125,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 November 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1179,7 +1178,10 @@ draft corresponding to this document can be found at
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-creating-a-new-session" class="internal xref">Creating a New Session</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-session-termination-and-err" class="internal xref">Session Termination and Error Handling</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-subprotocol-negotiation" class="internal xref">Subprotocol Negotiation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-session-termination-and-err" class="internal xref">Session Termination and Error Handling</a></p>
 </li>
             </ul>
 </li>
@@ -1460,44 +1462,63 @@ WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="errors">
+<div id="subprotocol-negotiation">
 <section id="section-3.4">
-        <h3 id="name-session-termination-and-err">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-session-termination-and-err" class="section-name selfRef">Session Termination and Error Handling</a>
+        <h3 id="name-subprotocol-negotiation">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-subprotocol-negotiation" class="section-name selfRef">Subprotocol Negotiation</a>
         </h3>
-<p id="section-3.4-1">An WebTransport session over HTTP/2 is terminated when either endpoint closes
-the stream associated with the CONNECT request that initiated the session.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Prior to closing the stream associated with the CONNECT request, either endpoint
+<p id="section-3.4-1">WebTransport over HTTP/2 offers a subprotocol negotiation mechanism, similar to
+TLS Application-Layer Protocol Negotiation Extension (ALPN) <span>[<a href="#RFC7301" class="cite xref">RFC7301</a>]</span>; the
+intent is to simplify porting pre-existing protocols that rely on this
+functionality.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">The user agent MAY include a <code>WebTransport-Subprotocols-Available</code> header field
+in the CONNECT request, enumerating the possible subprotocols. If the server
+receives such a header, it MAY include a <code>WebTransport-Subprotocol</code> field in a
+successful (2xx) response. If it does, the server MUST include a single
+subprotocol from the client's list in that field. Servers MAY reject the
+request if the client did not include a suitable subprotocol.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Both <code>WebTransport-Subprotocols-Available</code> and <code>WebTransport-Subprotocol</code> are
+defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34#section-3.4" class="relref">Section 3.4</a> of [<a href="#HTTP3" class="cite xref">HTTP3</a>]</span>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="errors">
+<section id="section-3.5">
+        <h3 id="name-session-termination-and-err">
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-session-termination-and-err" class="section-name selfRef">Session Termination and Error Handling</a>
+        </h3>
+<p id="section-3.5-1">An WebTransport session over HTTP/2 is terminated when either endpoint closes
+the stream associated with the CONNECT request that initiated the session.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">Prior to closing the stream associated with the CONNECT request, either endpoint
 can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
 and message to convey additional information about the reasons for the closure
-of the session.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Session errors result in the termination of a session.  Errors can be reported
+of the session.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-3">Session errors result in the termination of a session.  Errors can be reported
 using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes an error code and
-an optional explanatory message.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
-capsule by closing the HTTP/2 stream.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5">A stream that is reset terminates the session without providing an
-application-level signal, though there will be an HTTP/2 error code.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">This document reserves the following HTTP/2 error codes for use with reporting
-WebTransport errors:<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-3.4-7">
-          <dt id="section-3.4-7.1">WEBTRANSPORT_ERROR (0xTBD):</dt>
-          <dd style="margin-left: 1.5em" id="section-3.4-7.2">
-            <p id="section-3.4-7.2.1">This generic error can be used for errors that do not have more specific error
-codes.<a href="#section-3.4-7.2.1" class="pilcrow">¶</a></p>
+an optional explanatory message.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+<p id="section-3.5-4">An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
+capsule by closing the HTTP/2 stream.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+<p id="section-3.5-5">A stream that is reset terminates the session without providing an
+application-level signal, though there will be an HTTP/2 error code.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
+<p id="section-3.5-6">This document reserves the following HTTP/2 error codes for use with reporting
+WebTransport errors:<a href="#section-3.5-6" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.5-7">
+          <dt id="section-3.5-7.1">WEBTRANSPORT_ERROR (0xTBD):</dt>
+          <dd style="margin-left: 1.5em" id="section-3.5-7.2">
+            <p id="section-3.5-7.2.1">This generic error can be used for errors that do not have more specific error
+codes.<a href="#section-3.5-7.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.4-7.3">WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):</dt>
-          <dd style="margin-left: 1.5em" id="section-3.4-7.4">
-            <p id="section-3.4-7.4.1">A stream-related capsule identified a stream that was in an invalid state.<a href="#section-3.4-7.4.1" class="pilcrow">¶</a></p>
+<dt id="section-3.5-7.3">WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):</dt>
+          <dd style="margin-left: 1.5em" id="section-3.5-7.4">
+            <p id="section-3.5-7.4.1">A stream-related capsule identified a stream that was in an invalid state.<a href="#section-3.5-7.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.4-8">Prior terminating a stream with an error, a CLOSE_WEBTRANSPORT_SESSION capsule
-with an application-specified error code MAY be sent.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">Session errors do not necessarily result in any change of HTTP/2 connection
+<p id="section-3.5-8">Prior terminating a stream with an error, a CLOSE_WEBTRANSPORT_SESSION capsule
+with an application-specified error code MAY be sent.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
+<p id="section-3.5-9">Session errors do not necessarily result in any change of HTTP/2 connection
 state, except that an endpoint might choose to terminate a connection in
-response to stream errors; see <span><a href="https://rfc-editor.org/rfc/rfc9113#section-5.4" class="relref">Section 5.4</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+response to stream errors; see <span><a href="https://rfc-editor.org/rfc/rfc9113#section-5.4" class="relref">Section 5.4</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1831,7 +1852,7 @@ PADDING Capsule {
 </div>
 <p id="section-6.1-4">The Padding field MUST be set to an all-zero sequence of bytes of any length as
 specified by the Length field.  A receiver is not obligated to verify padding
-but MAY treat non-zero padding as a <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span>.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+but MAY treat non-zero padding as a <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.5</a>)</span>.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="WT_RESET_STREAM">
@@ -1897,7 +1918,7 @@ session-level flow control consumed by a stream is always known by both
 endpoints.<a href="#section-6.2-7" class="pilcrow">¶</a></p>
 <p id="section-6.2-8">A <span id="iref-wt_reset_stream-41" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule MUST NOT be sent after a stream is closed or reset.
 While QUIC permits redundant RESET_STREAM frames, the ordering guarantee in
-HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.5</a>)</span> of type
 WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_reset_stream-42" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule is
 received for a stream that is not in a valid state.<a href="#section-6.2-8" class="pilcrow">¶</a></p>
 </section>
@@ -1944,7 +1965,7 @@ sender is ignoring the stream.<a href="#section-6.3-4.4.1" class="pilcrow">¶</a
 </dl>
 <p id="section-6.3-5">A <span id="iref-wt_stop_sending-46" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
-HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.5</a>)</span> of type
 WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a second <span id="iref-wt_stop_sending-47" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule
 is received.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
 </section>
@@ -1994,7 +2015,7 @@ be used unless they open or close a stream; an endpoint MAY treat an empty
 </dl>
 <p id="section-6.4-6">A <span id="iref-wt_stream-53" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule MUST NOT be sent after a stream is closed or reset.  While
 QUIC permits redundant STREAM frames, the ordering guarantee in HTTP/2 makes
-this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.5</a>)</span> of type
 WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream-54" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule is received
 for a stream that is not in a valid state.<a href="#section-6.4-6" class="pilcrow">¶</a></p>
 </section>
@@ -2096,7 +2117,7 @@ be communicated by sending non-zero values for
 <p id="section-6.6-8">A <span id="iref-wt_max_stream_data-70" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule MUST NOT be sent after a sender requests that a
 stream be closed with <span id="iref-wt_stop_sending-71" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a>.  While QUIC permits redundant
 MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2 makes this unnecessary.
-A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent
+A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.5</a>)</span> of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent
 if a <span id="iref-wt_max_stream_data-72" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule is received after a <span id="iref-wt_stop_sending-73" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule for
 the same stream.<a href="#section-6.6-8" class="pilcrow">¶</a></p>
 </section>
@@ -2242,7 +2263,7 @@ send appropriate flow control signals for their limits; see
 <a href="#flow-control-intermediaries" class="auto internal xref">Section 4.4</a>.<a href="#section-6.9-5" class="pilcrow">¶</a></p>
 <p id="section-6.9-6">A <span id="iref-wt_stream_data_blocked-93" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule MUST NOT be sent after a stream is closed or
 reset.  While QUIC permits redundant STREAM_DATA_BLOCKED frames, the ordering
-guarantee in HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+guarantee in HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.5</a>)</span> of type
 WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream_data_blocked-94" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule
 is received for a stream that is not in a valid state.<a href="#section-6.9-6" class="pilcrow">¶</a></p>
 </section>
@@ -2349,7 +2370,7 @@ natively supports QUIC datagrams, such as WebTransport over HTTP/3
 application error code and message.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
 <p id="section-6.12-2">WebTransport sessions can be terminated by optionally sending a
 CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
-associated with the session (see <a href="#errors" class="auto internal xref">Section 3.4</a>).<a href="#section-6.12-2" class="pilcrow">¶</a></p>
+associated with the session (see <a href="#errors" class="auto internal xref">Section 3.5</a>).<a href="#section-6.12-2" class="pilcrow">¶</a></p>
 <span id="name-close_webtransport_session-c"></span><div id="fig-close_webtransport-session">
 <figure id="figure-12">
           <div class="alignLeft art-text artwork" id="section-6.12-3.1">
@@ -2792,7 +2813,7 @@ connection on which this SETTING is sent.<a href="#section-9.1-17" class="pilcro
           <dd class="break"></dd>
 <dt id="section-9.2-3.7">Reference:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-3.8">
-            <p id="section-9.2-3.8.1"><a href="#errors" class="auto internal xref">Section 3.4</a><a href="#section-9.2-3.8.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-3.8.1"><a href="#errors" class="auto internal xref">Section 3.5</a><a href="#section-9.2-3.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2815,7 +2836,7 @@ connection on which this SETTING is sent.<a href="#section-9.1-17" class="pilcro
           <dd class="break"></dd>
 <dt id="section-9.2-5.7">Reference:</dt>
           <dd style="margin-left: 1.5em" id="section-9.2-5.8">
-            <p id="section-9.2-5.8.1"><a href="#errors" class="auto internal xref">Section 3.4</a><a href="#section-9.2-5.8.1" class="pilcrow">¶</a></p>
+            <p id="section-9.2-5.8.1"><a href="#errors" class="auto internal xref">Section 3.5</a><a href="#section-9.2-5.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -3249,6 +3270,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 </div>
 </section>
 </div>
+<div id="sec-combined-references">
 <section id="section-10">
       <h2 id="name-references">
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-references" class="section-name selfRef">References</a>
@@ -3270,6 +3292,10 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dt id="HTTP2">[HTTP2]</dt>
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HTTP3">[HTTP3]</dt>
+        <dd>
+<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="ORIGIN">[ORIGIN]</dt>
         <dd>
@@ -3340,22 +3366,23 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
         <dd>
 <span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"An Unreliable Datagram Extension to QUIC"</span>, <span class="seriesInfo">RFC 9221</span>, <span class="seriesInfo">DOI 10.17487/RFC9221</span>, <time datetime="2022-03" class="refDate">March 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9221">https://www.rfc-editor.org/rfc/rfc9221</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="HTTP3">[HTTP3]</dt>
-        <dd>
-<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="MPTCP">[MPTCP]</dt>
         <dd>
 <span class="refAuthor">Ford, A.</span>, <span class="refAuthor">Raiciu, C.</span>, <span class="refAuthor">Handley, M.</span>, and <span class="refAuthor">O. Bonaventure</span>, <span class="refTitle">"TCP Extensions for Multipath Operation with Multiple Addresses"</span>, <span class="seriesInfo">RFC 6824</span>, <span class="seriesInfo">DOI 10.17487/RFC6824</span>, <time datetime="2013-01" class="refDate">January 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6824">https://www.rfc-editor.org/rfc/rfc6824</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="QUIC">[QUIC]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7301">[RFC7301]</dt>
+      <dd>
+<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </div>
 </section>
+</div>
 <div id="acknowledgments">
 <section id="appendix-A">
       <h2 id="name-acknowledgments">

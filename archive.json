@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-21T00:57:48.814622+00:00",
+  "timestamp": "2024-07-23T00:54:16.316856+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2271,7 +2271,7 @@
       "id": "I_kwDODnOl886Gs_R-",
       "title": "Subprotocol negotiation",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/108",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nidhijaju",
       "authorAssociation": "NONE",
       "assignees": [
@@ -2282,8 +2282,8 @@
       ],
       "body": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/pull/144 added subprotocol negotiation to the HTTP/3 document, so it would be nice to have the same mechanism in HTTP/2 as well to match.",
       "createdAt": "2024-04-23T23:25:21Z",
-      "updatedAt": "2024-05-14T23:16:21Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-21T22:02:17Z",
+      "closedAt": "2024-07-21T22:02:17Z",
       "comments": []
     },
     {
@@ -7689,24 +7689,26 @@
       "id": "PR_kwDODnOl885vccy4",
       "title": "Use the same subprotocol negotiation mechanism as HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/112",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Use the same subprotocol negotiation mechanism as HTTP/3\r\n\r\nFixes #108",
       "createdAt": "2024-05-14T19:35:52Z",
-      "updatedAt": "2024-07-09T22:12:07Z",
+      "updatedAt": "2024-07-21T22:02:18Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
-      "baseRefOid": "5747182d0aa25e62868a5ee6c44d64a09a22f484",
+      "baseRefOid": "78bc87932de7abf5effd080d2eaca637592c749f",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "ek/subprotocol_negotiation",
-      "headRefOid": "718bb59dbeec880c3ab7b5ae07ab7e9e08918057",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3d3657eed82ccab19187fcec6f12593b0cbc96f9",
+      "closedAt": "2024-07-21T22:02:16Z",
+      "mergedAt": "2024-07-21T22:02:16Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "62efa40a885515d44b8316108fbc4c06d735a5e8"
+      },
       "comments": [],
       "reviews": [
         {

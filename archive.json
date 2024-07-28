@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-25T00:54:11.154022+00:00",
+  "timestamp": "2024-07-28T00:58:17.172911+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1827,7 +1827,7 @@
       ],
       "body": "H2 matches H3 in being permissive about flow control violations around the stream limit.\r\n\r\n> the asynchronous nature of the protocol\r\n\r\n> A server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.\r\n\r\n> _Originally posted by @martinthomson in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91#discussion_r1368470323_\r\n            ",
       "createdAt": "2023-10-23T21:10:08Z",
-      "updatedAt": "2023-11-06T15:24:25Z",
+      "updatedAt": "2024-07-25T01:56:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -1843,6 +1843,13 @@
           "body": "Chair: discussed in the WG session at IETF 118. No objections raised.\r\n\r\n@achernya also pointed out that there might be some interesting interactions between SETTINGS_WEBTRANSPORT_MAX_SESSIONS and DRAIN_WEBTRANSPORT_SESSION that could lead to suboptimal incentives around keeping draining sessions around for longer than needed. @ekinnear took an action item to look into this.",
           "createdAt": "2023-11-06T15:24:25Z",
           "updatedAt": "2023-11-06T15:24:25Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(Pinged to discuss in more detail)",
+          "createdAt": "2024-07-25T01:56:41Z",
+          "updatedAt": "2024-07-25T01:56:41Z"
         }
       ]
     },
@@ -2215,9 +2222,17 @@
       ],
       "body": "Now that HTTP/3 is being updated per https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/143, https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/141, https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/140, and https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/135, we should update HTTP/2 to match.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/135#issuecomment-1907120035",
       "createdAt": "2024-03-04T23:47:17Z",
-      "updatedAt": "2024-03-04T23:47:18Z",
+      "updatedAt": "2024-07-25T22:59:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: discussed at IETF 120. Eric presented some slides. We got a few thumbs up from the room and no concerns, so this is ready for a PR.",
+          "createdAt": "2024-07-25T22:59:25Z",
+          "updatedAt": "2024-07-25T22:59:25Z"
+        }
+      ]
     },
     {
       "number": 106,
@@ -2329,9 +2344,17 @@
       "labels": [],
       "body": "WebTransport over HTTP/2 should support keying material exporters, originally proposed in ietf-wg-webtrans/draft-ietf-webtrans-http3#116, since it's also based on TLS 1.3. Perhaps this can be done by simply copying [Section 4.7 of WebTransport over HTTP/3 Spec](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html#name-use-of-keying-material-expo) and making minimal adaptations.",
       "createdAt": "2024-06-25T07:22:31Z",
-      "updatedAt": "2024-06-25T07:22:31Z",
+      "updatedAt": "2024-07-25T22:50:52Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: Discussed at IETF 120. In general this should mimic what we did in h3. There is however one wrinkle: HTTP/2 can run over TLS 1.2, and TLS key exporters are unsafe when using TLS 1.2 without the extended master secret extension. Our options are to either\r\n* allow the W3C API to fail\r\n* forbid the use of WebTransport over h2 unless TLS >= 1.3 or TLS == 1.2 &&  extended master secret extension enabled",
+          "createdAt": "2024-07-25T22:50:51Z",
+          "updatedAt": "2024-07-25T22:50:51Z"
+        }
+      ]
     }
   ],
   "pulls": [

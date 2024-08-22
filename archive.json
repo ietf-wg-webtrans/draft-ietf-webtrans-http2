@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-20T00:54:52.382176+00:00",
+  "timestamp": "2024-08-22T00:56:05.169650+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2344,7 +2344,7 @@
       "labels": [],
       "body": "WebTransport over HTTP/2 should support keying material exporters, originally proposed in ietf-wg-webtrans/draft-ietf-webtrans-http3#116, since it's also based on TLS 1.3. Perhaps this can be done by simply copying [Section 4.7 of WebTransport over HTTP/3 Spec](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html#name-use-of-keying-material-expo) and making minimal adaptations.",
       "createdAt": "2024-06-25T07:22:31Z",
-      "updatedAt": "2024-07-25T22:50:52Z",
+      "updatedAt": "2024-08-21T02:47:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -2353,6 +2353,20 @@
           "body": "Chair: Discussed at IETF 120. In general this should mimic what we did in h3. There is however one wrinkle: HTTP/2 can run over TLS 1.2, and TLS key exporters are unsafe when using TLS 1.2 without the extended master secret extension. Our options are to either\r\n* allow the W3C API to fail\r\n* forbid the use of WebTransport over h2 unless TLS >= 1.3 or TLS == 1.2 &&  extended master secret extension enabled",
           "createdAt": "2024-07-25T22:50:51Z",
           "updatedAt": "2024-07-25T22:50:51Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Discussed in editor's call. Sense of the room was to forbid the use of WebTransport over h2 unless TLS >= 1.3 or TLS == 1.2 && extended master secret extension enabled. We also noted that the overview document says `SHOULD use TLS version 1.3 or later`. Please comment on this issue if you have an opinion, otherwise we'll ask someone to write a PR.",
+          "createdAt": "2024-08-20T22:33:39Z",
+          "updatedAt": "2024-08-20T22:33:39Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Damn, I thought we'd already required the use of session hash in HTTP/2.  I guess we didn't.  This is the only reasonable thing to do if you use exporters, so \ud83d\udc4d from me.",
+          "createdAt": "2024-08-21T02:47:20Z",
+          "updatedAt": "2024-08-21T02:47:20Z"
         }
       ]
     }

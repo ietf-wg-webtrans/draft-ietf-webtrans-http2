@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 22 January 2025                                        T. Pauly
+Expires: 26 February 2025                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 22 January 2025                                        T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                            21 July 2024
+                                                          25 August 2024
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 January 2025.
+   This Internet-Draft will expire on 26 February 2025.
 
 Copyright Notice
 
@@ -1484,8 +1484,9 @@ WebTransport Data
 
    [OVERVIEW] Vasiliev, V., "The WebTransport Protocol Framework", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-overview-
-              07, 4 March 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-webtrans-overview-07>.
+              08, 25 August 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-
+              webtrans-overview-08>.
 
    [PARTIAL-RESET]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
@@ -1544,9 +1545,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-09, 4 March 2024,
+              ietf-webtrans-http3-10, 25 August 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-09>.
+              webtrans-http3-10>.
 
 10.2.  Informative References
 

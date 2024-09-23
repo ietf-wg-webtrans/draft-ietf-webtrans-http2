@@ -233,7 +233,7 @@ MUST include a single choice from the client's list in that field. Servers MAY
 reject the request if the client did not include a suitable protocol.
 
 Both `WT-Available-Protocols` and `WT-Protocol` are defined in {{Section 3.4
-of !HTTP3}}.
+of !WEBTRANSPORT-H3}}.
 
 ## Session Termination and Error Handling {#errors}
 

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-24T01:01:12.616847+00:00",
+  "timestamp": "2024-09-26T01:00:20.428121+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -7845,7 +7845,7 @@
       "labels": [],
       "body": "Update and rename subprotocol negotiation to match HTTP/3.\r\n\r\nAlso fix reference.\r\n\r\nCloses #114.",
       "createdAt": "2024-09-23T06:13:18Z",
-      "updatedAt": "2024-09-23T06:13:29Z",
+      "updatedAt": "2024-09-24T01:50:48Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "62efa40a885515d44b8316108fbc4c06d735a5e8",
@@ -7857,7 +7857,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl886KguBf",
+          "commit": {
+            "abbreviatedOid": "a478667"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-24T01:50:48Z",
+          "updatedAt": "2024-09-24T01:50:48Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }

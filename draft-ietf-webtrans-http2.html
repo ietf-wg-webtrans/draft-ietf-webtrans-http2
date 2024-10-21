@@ -18,22 +18,22 @@ describes a protocol that can provide many of the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available. 
     " name="description">
-<meta content="xml2rfc 3.22.0" name="generator">
+<meta content="xml2rfc 3.23.2" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-webtrans-http2-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.22.0
-    Python 3.12.3
+  xml2rfc 3.23.2
+    Python 3.12.7
     ConfigArgParse 1.7
-    google-i18n-address 3.1.0
+    google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 4.9.4
-    platformdirs 4.2.2
+    platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.32.3
-    setuptools 69.5.1
+    setuptools 70.3.0
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-webtrans-http2.xml" rel="alternate" type="application/rfc+xml">
@@ -1033,11 +1033,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">July 2024</td>
+<td class="right">October 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 22 January 2025</td>
+<td class="center">Expires 24 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1050,12 +1050,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-07-21" class="published">21 July 2024</time>
+<time datetime="2024-10-21" class="published">21 October 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-01-22">22 January 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-24">24 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1125,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1178,7 +1178,7 @@ draft corresponding to this document can be found at
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-creating-a-new-session" class="internal xref">Creating a New Session</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-subprotocol-negotiation" class="internal xref">Subprotocol Negotiation</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-application-protocol-negoti" class="internal xref">Application Protocol Negotiation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
                 <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-session-termination-and-err" class="internal xref">Session Termination and Error Handling</a></p>
@@ -1340,7 +1340,7 @@ HTTP/2 <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span> as the curren
 "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span>
 when, and only when, they appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">This document follows terminology defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-07#section-1.2" class="relref">Section 1.2</a> of [<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span>. Note
+<p id="section-1.1-2">This document follows terminology defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-08#section-1.2" class="relref">Section 1.2</a> of [<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span>. Note
 that this document distinguishes between a WebTransport server and an HTTP/2
 server. An HTTP/2 server is the server that terminates HTTP/2 connections; a
 WebTransport server is an application that accepts WebTransport sessions, which
@@ -1438,7 +1438,7 @@ WebTransport to be enabled.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 using the <code>https</code> URI scheme <span>[<a href="#RFC7230" class="cite xref">RFC7230</a>]</span>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The <code>:protocol</code> pseudo-header field (<span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>) MUST be set to
-<code>webtransport</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-09#section-7.1" class="relref">Section 7.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>). The <code>:scheme</code> field MUST be
+<code>webtransport</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10#section-7.1" class="relref">Section 7.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>). The <code>:scheme</code> field MUST be
 <code>https</code>. Both the <code>:authority</code> and the <code>:path</code> value MUST be set; those fields
 indicate the desired WebTransport server. In a Web context, the request MUST
 include an <code>Origin</code> header field <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> that includes the origin of
@@ -1462,23 +1462,22 @@ WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="subprotocol-negotiation">
+<div id="application-protocol-negotiation">
 <section id="section-3.4">
-        <h3 id="name-subprotocol-negotiation">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-subprotocol-negotiation" class="section-name selfRef">Subprotocol Negotiation</a>
+        <h3 id="name-application-protocol-negoti">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-application-protocol-negoti" class="section-name selfRef">Application Protocol Negotiation</a>
         </h3>
 <p id="section-3.4-1">WebTransport over HTTP/2 offers a subprotocol negotiation mechanism, similar to
 TLS Application-Layer Protocol Negotiation Extension (ALPN) <span>[<a href="#RFC7301" class="cite xref">RFC7301</a>]</span>; the
-intent is to simplify porting pre-existing protocols that rely on this
+intent is to simplify porting pre-existing protocols that rely on this type of
 functionality.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">The user agent MAY include a <code>WebTransport-Subprotocols-Available</code> header field
-in the CONNECT request, enumerating the possible subprotocols. If the server
-receives such a header, it MAY include a <code>WebTransport-Subprotocol</code> field in a
-successful (2xx) response. If it does, the server MUST include a single
-subprotocol from the client's list in that field. Servers MAY reject the
-request if the client did not include a suitable subprotocol.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Both <code>WebTransport-Subprotocols-Available</code> and <code>WebTransport-Subprotocol</code> are
-defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34#section-3.4" class="relref">Section 3.4</a> of [<a href="#HTTP3" class="cite xref">HTTP3</a>]</span>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">The user agent MAY include a <code>WT-Available-Protocols</code> header field in the
+CONNECT request. The <code>WT-Available-Protocols</code> enumerates the possible protocols
+in preference order. If the server receives such a header, it MAY include a
+<code>WT-Protocol</code> field in a successful (2xx) response. If it does, the server
+MUST include a single choice from the client's list in that field. Servers MAY
+reject the request if the client did not include a suitable protocol.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Both <code>WT-Available-Protocols</code> and <code>WT-Protocol</code> are defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10#section-3.4" class="relref">Section 3.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="errors">
@@ -2366,7 +2365,7 @@ natively supports QUIC datagrams, such as WebTransport over HTTP/3
 <a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-close_webtransport_session-" class="section-name selfRef">CLOSE_WEBTRANSPORT_SESSION Capsule</a>
         </h3>
 <p id="section-6.12-1">WebTransport over HTTP/2 uses the CLOSE_WEBTRANSPORT_SESSION capsule defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-09#section-5" class="relref">Section 5</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to terminate a WebTransport session with an
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10#section-5" class="relref">Section 5</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to terminate a WebTransport session with an
 application error code and message.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
 <p id="section-6.12-2">WebTransport sessions can be terminated by optionally sending a
 CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
@@ -2420,7 +2419,7 @@ error string.<a href="#section-6.12-7" class="pilcrow">¶</a></p>
 gracefully stop accepting new streams while still finishing processing of
 previously established streams.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
 <p id="section-6.13-2">WebTransport over HTTP/2 uses the DRAIN_WEBTRANSPORT_SESSION capsule defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-09#section-4.6" class="relref">Section 4.6</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to gracefully shut down a WebTransport
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10#section-4.6" class="relref">Section 4.6</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to gracefully shut down a WebTransport
 session.<a href="#section-6.13-2" class="pilcrow">¶</a></p>
 <span id="name-drain_webtransport_session-c"></span><div id="fig-drain_webtransport_session">
 <figure id="figure-13">
@@ -3293,17 +3292,13 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="HTTP3">[HTTP3]</dt>
-        <dd>
-<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="ORIGIN">[ORIGIN]</dt>
         <dd>
 <span class="refAuthor">Barth, A.</span>, <span class="refTitle">"The Web Origin Concept"</span>, <span class="seriesInfo">RFC 6454</span>, <span class="seriesInfo">DOI 10.17487/RFC6454</span>, <time datetime="2011-12" class="refDate">December 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6454">https://www.rfc-editor.org/rfc/rfc6454</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="OVERVIEW">[OVERVIEW]</dt>
         <dd>
-<span class="refAuthor">Vasiliev, V.</span>, <span class="refTitle">"The WebTransport Protocol Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-overview-07</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-07">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Vasiliev, V.</span>, <span class="refTitle">"The WebTransport Protocol Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-overview-08</span>, <time datetime="2024-08-25" class="refDate">25 August 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-08">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="PARTIAL-RESET">[PARTIAL-RESET]</dt>
         <dd>
@@ -3351,7 +3346,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dd class="break"></dd>
 <dt id="WEBTRANSPORT-H3">[WEBTRANSPORT-H3]</dt>
       <dd>
-<span class="refAuthor">Frindell, A.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"WebTransport over HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-http3-09</span>, <time datetime="2024-03-04" class="refDate">4 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-09">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Frindell, A.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"WebTransport over HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-http3-10</span>, <time datetime="2024-08-25" class="refDate">25 August 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -3365,6 +3360,10 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dt id="DATAGRAM">[DATAGRAM]</dt>
         <dd>
 <span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"An Unreliable Datagram Extension to QUIC"</span>, <span class="seriesInfo">RFC 9221</span>, <span class="seriesInfo">DOI 10.17487/RFC9221</span>, <time datetime="2022-03" class="refDate">March 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9221">https://www.rfc-editor.org/rfc/rfc9221</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HTTP3">[HTTP3]</dt>
+        <dd>
+<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="MPTCP">[MPTCP]</dt>
         <dd>

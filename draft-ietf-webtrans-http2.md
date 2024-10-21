@@ -218,22 +218,22 @@ control. This can reduce latency for data sent by a client at the start of a
 WebTransport session. For example, a client might choose to send datagrams or
 flow control updates before receiving any response from the server.
 
-## Subprotocol Negotiation
+## Application Protocol Negotiation
 
 WebTransport over HTTP/2 offers a subprotocol negotiation mechanism, similar to
 TLS Application-Layer Protocol Negotiation Extension (ALPN) {{?RFC7301}}; the
-intent is to simplify porting pre-existing protocols that rely on this
+intent is to simplify porting pre-existing protocols that rely on this type of
 functionality.
 
-The user agent MAY include a `WebTransport-Subprotocols-Available` header field
-in the CONNECT request, enumerating the possible subprotocols. If the server
-receives such a header, it MAY include a `WebTransport-Subprotocol` field in a
-successful (2xx) response. If it does, the server MUST include a single
-subprotocol from the client's list in that field. Servers MAY reject the
-request if the client did not include a suitable subprotocol.
+The user agent MAY include a `WT-Available-Protocols` header field in the
+CONNECT request. The `WT-Available-Protocols` enumerates the possible protocols
+in preference order. If the server receives such a header, it MAY include a
+`WT-Protocol` field in a successful (2xx) response. If it does, the server
+MUST include a single choice from the client's list in that field. Servers MAY
+reject the request if the client did not include a suitable protocol.
 
-Both `WebTransport-Subprotocols-Available` and `WebTransport-Subprotocol` are
-defined in {{Section 3.4 of !HTTP3}}.
+Both `WT-Available-Protocols` and `WT-Protocol` are defined in {{Section 3.4
+of !WEBTRANSPORT-H3}}.
 
 ## Session Termination and Error Handling {#errors}
 

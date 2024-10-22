@@ -5,9 +5,7 @@
 *.txt
 *.upload
 *~
-.refcache
 .tags
-.targets.mk
 /*-[0-9][0-9].xml
 /.gems/
 /.refcache
@@ -20,8 +18,6 @@
 Gemfile.lock
 archive.json
 draft-ietf-webtrans-http2.xml
-lib
 package-lock.json
 report.xml
-venv/
 !requirements.txt

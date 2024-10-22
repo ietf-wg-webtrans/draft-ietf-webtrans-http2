@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-20T01:06:32.762619+00:00",
+  "timestamp": "2024-10-22T01:02:02.485376+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2375,15 +2375,15 @@
       "id": "I_kwDODnOl886VZAJQ",
       "title": "Minor changes required for Subprotocol Negotiation headers",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/114",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "[Subprotocol Negotiation headers](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/draft-ietf-webtrans-http2.html#section-3.4-3) references [HTTP3](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/draft-ietf-webtrans-http2.html#HTTP3) in Section 3.4-3. This should be [WEBTRANSPORT-H3](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/draft-ietf-webtrans-http2.html#WEBTRANSPORT-H3). \r\n\r\nAdditionally, the listed headers, `WebTransport-Subprotocols-Available` and `WebTransport-Subprotocol`, are out of date with the headers in the [WEBTRANSPORT-H3 draft 10](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-10#name-subprotocol-negotiation), which are `WT-Available-Protocols` and `WT-Protocol`.",
       "createdAt": "2024-09-04T21:43:49Z",
-      "updatedAt": "2024-09-23T06:12:11Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-21T21:17:34Z",
+      "closedAt": "2024-10-21T21:17:34Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -7838,24 +7838,26 @@
       "id": "PR_kwDODnOl8858UT1y",
       "title": "Update and rename subprotocol negotiation to match HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/115",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Update and rename subprotocol negotiation to match HTTP/3.\r\n\r\nAlso fix reference.\r\n\r\nCloses #114.",
       "createdAt": "2024-09-23T06:13:18Z",
-      "updatedAt": "2024-09-24T01:50:48Z",
+      "updatedAt": "2024-10-21T21:17:33Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "62efa40a885515d44b8316108fbc4c06d735a5e8",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/subprotocols",
       "headRefOid": "a478667df6285816f4b4b96ac86359d962d819e9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-10-21T21:17:33Z",
+      "mergedAt": "2024-10-21T21:17:33Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "34a1fb69a59ad3bbe00ae6bda596fe2b6aabbeda"
+      },
       "comments": [],
       "reviews": [
         {

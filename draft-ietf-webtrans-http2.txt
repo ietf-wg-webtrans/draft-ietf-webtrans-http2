@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 25 April 2025                                          T. Pauly
+Expires: 4 September 2025                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 25 April 2025                                          T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                         22 October 2024
+                                                            3 March 2025
 
 
                         WebTransport over HTTP/2
@@ -54,11 +54,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 April 2025.
+   This Internet-Draft will expire on 4 September 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -76,7 +76,7 @@ Table of Contents
      1.1.  Terminology
    2.  Protocol Overview
    3.  Session Establishment and Termination
-     3.1.  Establishing a Transport-Capable HTTP/2 Connection
+     3.1.  Establishing a WebTransport-Capable HTTP/2 Connection
      3.2.  Extended CONNECT in HTTP/2
      3.3.  Creating a New Session
      3.4.  Application Protocol Negotiation
@@ -107,15 +107,16 @@ Table of Contents
      6.13. DRAIN_WEBTRANSPORT_SESSION Capsule
      6.14. Capsule Ordering and Reliability
    7.  Examples
-   8.  Security Considerations
-   9.  IANA Considerations
-     9.1.  HTTP/2 SETTINGS Parameter Registration
-     9.2.  HTTP/2 Error Code Registration
-     9.3.  Capsule Types
-     9.4.  HTTP Header Field Name
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   8.  Considerations for Future Versions
+   9.  Security Considerations
+   10. IANA Considerations
+     10.1.  HTTP/2 SETTINGS Parameter Registration
+     10.2.  HTTP/2 Error Code Registration
+     10.3.  Capsule Types
+     10.4.  HTTP Header Field Name
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Acknowledgments
    Index
    Authors' Addresses
@@ -157,14 +158,15 @@ Table of Contents
    WebTransport servers are identified by an HTTPS URI as defined in
    Section 4.2.2 of [HTTP].
 
-   When an HTTP/2 connection is established, both the client and server
-   have to send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a
-   value greater than "0" to indicate that they both support
-   WebTransport over HTTP/2.  For servers, the value of the setting is
-   the number of concurrent sessions the server is willing to receive.
-   Clients cannot receive incoming WebTransport sessions, so any value
-   greater than "0" sent by a client simply indicates support for
-   WebTransport over HTTP/2.
+   When an HTTP/2 connection is established, the server sends a
+   SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than
+   "0" to indicate that it supports WebTransport over HTTP/2.  The value
+   of the setting is the number of concurrent sessions the server is
+   willing to receive.  Note that the client does not need to send any
+   value to indicate support for WebTransport; clients indicate support
+   for WebTransport by using the "webtransport" upgrade token in CONNECT
+   requests establishing WebTransport sessions (see Section 9.1 of
+   [WEBTRANSPORT-H3]).
 
    A client initiates a WebTransport session by sending an extended
    CONNECT request [RFC8441].  If the server accepts the request, a
@@ -191,10 +193,8 @@ Table of Contents
 
    WebTransport capsules closely mirror a subset of QUIC frames and
    provide the essential WebTransport features.  Within a WebTransport
-   session, endpoints can
-
-   *  create and use bidirectional or unidirectional streams with no
-      additional round trips using the WT_STREAM capsule
+   session, endpoints can create and use bidirectional or unidirectional
+   streams with no additional round trips using the WT_STREAM capsule.
 
    Stream creation and data flow on streams uses flow control mechanisms
    modeled on those in QUIC.  Flow control is managed using the
@@ -218,20 +218,22 @@ Table of Contents
    and server [OVERVIEW].  This section describes how sessions begin and
    end.
 
-3.1.  Establishing a Transport-Capable HTTP/2 Connection
+3.1.  Establishing a WebTransport-Capable HTTP/2 Connection
 
-   In order to indicate support for WebTransport, both the client and
-   the server MUST send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS value
-   greater than "0" in their SETTINGS frame.  Endpoints MUST NOT use any
-   WebTransport-related functionality unless the parameter has been
-   negotiated.
+   In order to indicate support for WebTransport, the server MUST send a
+   SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in its
+   SETTINGS frame.  The client MUST NOT send a WebTransport request
+   until it has received the setting indicating WebTransport support
+   from the server.
 
 3.2.  Extended CONNECT in HTTP/2
 
    [RFC8441] defines an extended CONNECT method in Section 5, enabled by
-   the SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint needs to
-   send both SETTINGS_ENABLE_CONNECT_PROTOCOL and
-   SETTINGS_WEBTRANSPORT_MAX_SESSIONS for WebTransport to be enabled.
+   the SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  A server supporting
+   WebTransport needs to send both the
+   SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than
+   "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of
+   "1" for WebTransport to be enabled.
 
 3.3.  Creating a New Session
 
@@ -428,7 +430,7 @@ Table of Contents
 4.3.1.  Flow Control SETTINGS
 
    Initial flow control limits can be exchanged via HTTP/2 SETTINGS
-   (Section 9.1) by providing non-zero values for
+   (Section 10.1) by providing non-zero values for
 
    *  WT_MAX_DATA via SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA
 
@@ -1074,8 +1076,6 @@ Table of Contents
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
-SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
@@ -1113,8 +1113,6 @@ WebTransport Data
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
-SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
@@ -1144,7 +1142,22 @@ WebTransport Data
                                     Stream ID = 1
                                     WebTransport Data
 
-8.  Security Considerations
+8.  Considerations for Future Versions
+
+   Future versions of WebTransport that change the syntax of the CONNECT
+   requests used to establish WebTransport sessions will need to modify
+   the upgrade token used to identify WebTransport, allowing servers to
+   offer multiple versions simultaneously (see Section 9.1 of
+   [WEBTRANSPORT-H3]).
+
+   Servers that support future incompatible versions of WebTransport
+   signal that support by changing the codepoint used for the
+   SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter (see Section 10.1).
+   Clients can select the associated upgrade token, if applicable, to
+   use when establishing a new session, ensuring that servers will
+   always know the syntax in use for every incoming request.
+
+9.  Security Considerations
 
    WebTransport over HTTP/2 satisfies all of the security requirements
    imposed by [OVERVIEW] on WebTransport protocols, thus providing a
@@ -1170,13 +1183,13 @@ WebTransport Data
    within connection gets a reasonable share of controlled resources;
    this applies both to sending data and to opening new streams.
 
-9.  IANA Considerations
+10.  IANA Considerations
 
-   This document registers new HTTP/2 settings (Section 9.1), HTTP/2
-   error codes (Section 9.2), new capsules (Section 9.3), and the
-   WebTransport-Init header field (Section 9.4).
+   This document registers new HTTP/2 settings (Section 10.1), HTTP/2
+   error codes (Section 10.2), new capsules (Section 10.3), and the
+   WebTransport-Init header field (Section 10.4).
 
-9.1.  HTTP/2 SETTINGS Parameter Registration
+10.1.  HTTP/2 SETTINGS Parameter Registration
 
    The following entries are added to the "HTTP/2 Settings" registry
    established by [HTTP2]:
@@ -1297,7 +1310,7 @@ WebTransport Data
 
    Specification:  This document
 
-9.2.  HTTP/2 Error Code Registration
+10.2.  HTTP/2 Error Code Registration
 
    The following entries are added to the "HTTP/2 Error Code" registry
    established by [HTTP2]:
@@ -1322,7 +1335,7 @@ WebTransport Data
 
    Reference:  Section 3.5
 
-9.3.  Capsule Types
+10.3.  Capsule Types
 
    The following entries are added to the "HTTP Capsule Types" registry
    established by [HTTP-DATAGRAM]:
@@ -1437,7 +1450,7 @@ WebTransport Data
       (mailto:webtransport@ietf.org)
    Notes:  None
 
-9.4.  HTTP Header Field Name
+10.4.  HTTP Header Field Name
 
    IANA will register the following entry in the "Hypertext Transfer
    Protocol (HTTP) Field Name Registry" maintained at
@@ -1454,9 +1467,9 @@ WebTransport Data
 
    Comments:  None
 
-10.  References
+11.  References
 
-10.1.  Normative References
+11.1.  Normative References
 
    [HTTP]     Fielding, R. T., Nottingham, M., and J. Reschke, "HTTP
               Semantics", Work in Progress, Internet-Draft, draft-ietf-
@@ -1479,9 +1492,9 @@ WebTransport Data
 
    [OVERVIEW] Vasiliev, V., "The WebTransport Protocol Framework", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-overview-
-              08, 25 August 2024,
+              09, 25 February 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-overview-08>.
+              webtrans-overview-09>.
 
    [PARTIAL-RESET]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
@@ -1544,7 +1557,7 @@ WebTransport Data
               <https://datatracker.ietf.org/doc/html/draft-ietf-
               webtrans-http3-11>.
 
-10.2.  Informative References
+11.2.  Informative References
 
    [DATAGRAM] Pauly, T., Kinnear, E., and D. Schinazi, "An Unreliable
               Datagram Extension to QUIC", RFC 9221,
@@ -1583,71 +1596,71 @@ Index
       P
 
          PADDING  Section 6.1, Paragraph 1; Section 6.1, Paragraph 2;
-            Section 9.3, Paragraph 3.4.1
+            Section 10.3, Paragraph 3.4.1
 
       S
 
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA  Section 4.3.1,
-            Paragraph 2.1.1; Section 6.5, Paragraph 7; Section 9.1,
-            Paragraph 4; Section 9.1, Paragraph 6.2.1
+            Paragraph 2.1.1; Section 6.5, Paragraph 7; Section 10.1,
+            Paragraph 4; Section 10.1, Paragraph 6.2.1
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI  Section 4.3
-            .1, Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 9.1,
-            Paragraph 10; Section 9.1, Paragraph 12.2.1
+            .1, Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 10.1,
+            Paragraph 10; Section 10.1, Paragraph 12.2.1
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI  Section 4.3.
-            1, Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 9.1,
-            Paragraph 7; Section 9.1, Paragraph 9.2.1
+            1, Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 10.1,
+            Paragraph 7; Section 10.1, Paragraph 9.2.1
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI  Section 4.3.1,
-            Paragraph 2.3.1; Section 6.7, Paragraph 9; Section 9.1,
-            Paragraph 16; Section 9.1, Paragraph 18.2.1
+            Paragraph 2.3.1; Section 6.7, Paragraph 9; Section 10.1,
+            Paragraph 16; Section 10.1, Paragraph 18.2.1
          SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI  Section 4.3.1,
-            Paragraph 2.3.1; Section 6.7, Paragraph 9; Section 9.1,
-            Paragraph 13; Section 9.1, Paragraph 15.2.1
+            Paragraph 2.3.1; Section 6.7, Paragraph 9; Section 10.1,
+            Paragraph 13; Section 10.1, Paragraph 15.2.1
 
       W
 
-         WT_DATA_BLOCKED  Section 2, Paragraph 8; Section 4.4, Paragraph
+         WT_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4, Paragraph
             1; Section 6.8, Paragraph 1; Section 6.8, Paragraph 3;
             Section 6.8, Paragraph 5; Section 6.9, Paragraph 1;
-            Section 9.3, Paragraph 17.4.1
-         WT_MAX_DATA  Section 2, Paragraph 8; Section 4.3.1, Paragraph
+            Section 10.3, Paragraph 17.4.1
+         WT_MAX_DATA  Section 2, Paragraph 7; Section 4.3.1, Paragraph
             2.1.1; Section 4.4, Paragraph 1; Section 6.5, Paragraph 1;
             Section 6.5, Paragraph 3; Section 6.5, Paragraph 6;
-            Section 9.1, Paragraph 4; Section 9.3, Paragraph 11.4.1
-         WT_MAX_STREAM_DATA  Section 2, Paragraph 8; Section 4.3.1,
+            Section 10.1, Paragraph 4; Section 10.3, Paragraph 11.4.1
+         WT_MAX_STREAM_DATA  Section 2, Paragraph 7; Section 4.3.1,
             Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 6.6,
             Paragraph 1; Section 6.6, Paragraph 3; Section 6.6,
-            Paragraph 6; Section 6.6, Paragraph 8; Section 9.1,
-            Paragraph 7; Section 9.1, Paragraph 10; Section 9.3,
+            Paragraph 6; Section 6.6, Paragraph 8; Section 10.1,
+            Paragraph 7; Section 10.1, Paragraph 10; Section 10.3,
             Paragraph 13.4.1
-         WT_MAX_STREAMS  Section 2, Paragraph 8; Section 4.2, Paragraph
+         WT_MAX_STREAMS  Section 2, Paragraph 7; Section 4.2, Paragraph
             1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
             Section 6.7, Paragraph 1; Section 6.7, Paragraph 2;
             Section 6.7, Paragraph 4; Section 6.7, Paragraph 8;
-            Section 9.1, Paragraph 13; Section 9.1, Paragraph 16;
-            Section 9.3, Paragraph 15.4.1
-         WT_RESET_STREAM  Section 2, Paragraph 9; Section 6.2, Paragraph
+            Section 10.1, Paragraph 13; Section 10.1, Paragraph 16;
+            Section 10.3, Paragraph 15.4.1
+         WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;
-            Section 6.14, Paragraph 3; Section 9.3, Paragraph 5.4.1
-         WT_STOP_SENDING  Section 2, Paragraph 9; Section 6.3, Paragraph
+            Section 6.14, Paragraph 3; Section 10.3, Paragraph 5.4.1
+         WT_STOP_SENDING  Section 2, Paragraph 8; Section 6.3, Paragraph
             1; Section 6.3, Paragraph 3; Section 6.3, Paragraph 5;
-            Section 6.6, Paragraph 8; Section 9.3, Paragraph 7.4.1
-         WT_STREAM  Section 2, Paragraph 7.1.1; Section 5.1, Paragraph
-            2; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
+            Section 6.6, Paragraph 8; Section 10.3, Paragraph 7.4.1
+         WT_STREAM  Section 2, Paragraph 6; Section 5.1, Paragraph 2;
+            Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 7; Section 6.4, Paragraph 1;
             Section 6.4, Paragraph 2; Section 6.4, Paragraph 4;
             Section 6.4, Paragraph 5.4.1; Section 6.4, Paragraph 6;
             Section 6.5, Paragraph 5; Section 6.6, Paragraph 5;
             Section 6.14, Paragraph 3; Section 7, Paragraph 3;
-            Section 9.3, Paragraph 9.4.1
-         WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 8; Section 4.4,
+            Section 10.3, Paragraph 9.4.1
+         WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4,
             Paragraph 1; Section 6.9, Paragraph 1; Section 6.9,
             Paragraph 3; Section 6.9, Paragraph 5; Section 6.9,
-            Paragraph 6; Section 9.3, Paragraph 19.4.1
-         WT_STREAMS_BLOCKED  Section 2, Paragraph 8; Section 4.4,
+            Paragraph 6; Section 10.3, Paragraph 19.4.1
+         WT_STREAMS_BLOCKED  Section 2, Paragraph 7; Section 4.4,
             Paragraph 1; Section 6.10, Paragraph 1; Section 6.10,
             Paragraph 2; Section 6.10, Paragraph 4; Section 6.10,
-            Paragraph 6; Section 9.3, Paragraph 21.4.1
+            Paragraph 6; Section 10.3, Paragraph 21.4.1
 
 Authors' Addresses
 

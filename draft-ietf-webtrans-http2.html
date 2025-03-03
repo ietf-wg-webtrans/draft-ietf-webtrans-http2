@@ -18,20 +18,20 @@ describes a protocol that can provide many of the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available. 
     " name="description">
-<meta content="xml2rfc 3.23.2" name="generator">
+<meta content="xml2rfc 3.28.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-webtrans-http2-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.23.2
-    Python 3.12.7
+  xml2rfc 3.28.0
+    Python 3.12.9
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.4
-    lxml 4.9.4
+    Jinja2 3.1.5
+    lxml 5.3.0
     platformdirs 4.3.6
-    pycountry 22.3.5
-    PyYAML 6.0.1
+    pycountry 24.6.1
+    PyYAML 6.0.2
     requests 2.32.3
     setuptools 70.3.0
     wcwidth 0.2.13
@@ -170,31 +170,6 @@ protocol is not available.
 }
 
 @font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
-}
-@font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Cabin Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
   font-family: 'Oxygen Mono';
   font-style: normal;
   font-weight: 400;
@@ -211,6 +186,77 @@ protocol is not available.
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light dark;
   --background-color: #fff;
@@ -223,6 +269,7 @@ protocol is not available.
   --pilcrow-strong: #bbb;
   --small-font-size: 14.5px;
   --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
   scrollbar-color: #bbb #eee;
 }
 body {
@@ -240,9 +287,15 @@ body {
 }
 
 /* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Cabin Condensed", sans-serif;
-  font-weight: 600;
+  font-family: var(--font-title);
+  font-weight: 680;
   margin: 0.8em 0 0.3em;
   font-size-adjust: 0.5;
   color: var(--title-color);
@@ -271,6 +324,7 @@ h4, h5, h6 {
 /* general structure */
 .author {
   padding-bottom: 0.3em;
+  vertical-align: top;
 }
 #abstract+p {
   font-size: 18px;
@@ -348,25 +402,26 @@ svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
 ol, ul {
   padding: 0;
   margin: 0 0 0.5em 2em;
-}
-:is(ol, ul) :is(ol, ul) {
-  margin-left: 1em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
 }
 li {
   margin: 0 0 0.25em 0;
 }
-.ulCompact li {
-  margin: 0;
-}
 ul.empty, .ulEmpty {
   list-style-type: none;
-}
-ul.empty li, .ulEmpty li {
-  margin-top: 0.5em;
+  & li {
+    margin-top: 0.5em;
+  }
 }
 :is(ul, ol).compact, .ulCompact, .olCompact {
-  line-height: 1;
   margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
 }
 
 /* definition lists */
@@ -374,38 +429,39 @@ dl {
   clear: left;
   --indent: 3ch;
   /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
 }
-dl.olPercent {
-  --indent: 5ch;
-}
-dl > dt {
+dl:not(.dlNewline) > dt {
   float: left;
   margin-right: 2ch;
   min-width: 8ch;
-}
-dl.dlNewline > dt {
-  float: none;
 }
 dl > dd {
   margin-bottom: .8em;
   margin-left: var(--indent) !important; /* stupid element overrides */
   min-height: 2ex;
 }
-dl.olPercent > dt {
-  min-width: calc(var(--indent) - 2ch);
-}
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
-  margin-top: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
-  margin-bottom: 0;
-}
-dl > dd > dl {
-  margin-top: 0.5em;
-  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
 }
 :is(dd, span).break {
   display: none;
@@ -469,6 +525,7 @@ figcaption, caption {
   font-style: italic;
   margin: 0.5em 1.5em;
   text-align: left;
+  caption-side: bottom;
 }
 @media screen {
   /* Auto-collapse boilerplate. */
@@ -486,7 +543,11 @@ figcaption, caption {
   }
   pre, svg {
     display: inline-block;
-    overflow-x: auto;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
   }
   pre {
     max-width: 100%;
@@ -523,6 +584,7 @@ cite {
 
 /* tables */
 table {
+  width: auto;
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
@@ -537,6 +599,16 @@ table.center {
 table.left {
   margin-right: auto;
 }
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
 thead, tbody {
   border: 1px solid var(--line-color);
 }
@@ -567,9 +639,11 @@ a.pilcrow {
   margin-left: 3px;
   opacity: 0.2;
   user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
 }
-a.pilcrow[href] { color: var(--pilcrow-weak); }
-a.pilcrow[href]:hover { text-decoration: none; }
 @media not print {
   :hover > a.pilcrow {
     opacity: 1;
@@ -609,26 +683,28 @@ sub, sup {
   font-size: var(--small-font-size);
   line-height: 18px;
   --identifier-width: 15ch;
-}
-#identifiers dt {
-  width: var(--identifier-width);
-  min-width: var(--identifier-width);
-  clear: left;
-  float: left;
-  text-align: right;
-  margin-right: 1ch;
-}
-#identifiers dd {
-  margin: 0;
-  margin-left: calc(1em + var(--identifier-width)) !important;
-  min-width: 5em;
-}
-#identifiers .authors .author {
-  display: inline-block;
-  margin-right: 1.5em;
-}
-#identifiers .authors .org {
-  font-style: italic;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
 }
 
 /* The prepared/rendered info at the very bottom of the page */
@@ -639,9 +715,6 @@ sub, sup {
   margin-top: 2em;
 }
 .docInfo .prepared {
-  float: left;
-}
-.docInfo .prepared {
   float: right;
 }
 
@@ -649,47 +722,48 @@ sub, sup {
 #toc {
   padding: 0.75em 0 2em 0;
   margin-bottom: 1em;
-}
-#toc nav ul {
-  margin: 0 0.5em 0 0;
-  padding: 0;
-  list-style: none;
-}
-#toc nav li {
-  line-height: 1.3em;
-  margin: 2px 0;
-  padding-left: 1.2em;
-  text-indent: -1.2em;
-}
-#toc a.xref {
-  white-space: normal;
-}
-/* references */
-.references dt {
-  text-align: right;
-  font-weight: bold;
-  min-width: 10ch;
-  margin-right: 1.5ch;
-}
-.references dt:target::before {
-  content: "⇒";
-  width: 15px;
-  margin: 0 10px 0 -25px;
-}
-.references dd {
-  margin-left: 12ch !important;
-  overflow: auto;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
 }
 
-.refInstance {
-  margin-bottom: 1.25em;
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
 }
 
-.references .ascii {
-  margin-bottom: 0.25em;
-}
-
-/* index */
 #rfc\.index\.index + ul {
   margin-left: 0;
 }
@@ -697,21 +771,33 @@ sub, sup {
 /* authors */
 address.vcard {
   font-style: normal;
-  margin: 1em 0;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
 }
-address.vcard .nameRole {
-  font-weight: 700;
-  margin-left: 0;
-}
-address.vcard .label {
-  margin: 0.5em 0;
-}
-address.vcard .type {
-  display: none;
-}
-.alternative-contact {
-  margin: 1.5em 0 1em;
-}
+
 hr.addr {
   border-top: 1px dashed;
   margin: 0;
@@ -733,6 +819,7 @@ hr.addr {
   }
 }
 
+/* Comments */
 .rfcEditorRemove p:first-of-type {
   font-style: italic;
 }
@@ -743,7 +830,31 @@ hr.addr {
 .crefSource {
   font-style: italic;
 }
-/* alternative layout for smaller screens */
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
 @media screen and (max-width: 929px) {
   #toc {
     position: fixed;
@@ -754,9 +865,6 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc.active {
-      opacity: 1;
   }
   #toc h2 {
     margin: 0;
@@ -769,17 +877,17 @@ hr.addr {
     background-color: #444;
     color: white;
     cursor: pointer;
-  }
-  #toc h2::before { /* css hamburger */
-    float: right;
-    position: relative;
-    width: 1em;
-    height: 1px;
-    left: -164px;
-    margin: 8px 0 0 0;
-    background: white none repeat scroll 0 0;
-    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-    content: "";
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
   }
   #toc nav {
     display: none;
@@ -790,14 +898,13 @@ hr.addr {
     height: calc(100vh - 48px);
     border-left: 1px solid #ddd;
   }
-  #toc.active nav {
-    display: block;
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
   }
   /* Make the collapsed ToC header render white on gray also when it's a link */
   #toc h2 a,
-  #toc h2 a:link,
-  #toc h2 a:focus,
-  #toc h2 a:hover,
+  #toc h2 a:is(:link, :focus, :hover),
   #toc a.toplink,
   #toc a.toplink:hover {
     color: white;
@@ -805,11 +912,11 @@ hr.addr {
     text-decoration: none;
   }
   #toc a.toplink {
-    margin-top: 2px;
+    margin: 2px 0.5em 0;
   }
 }
 
-/* alternative layout for wide screens */
+/* TOC layout for wide screens */
 @media screen and (min-width: 930px) {
   body {
     padding-right: 360px;
@@ -838,20 +945,12 @@ hr.addr {
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
-  #toc nav > ul  {
-    margin-bottom: 2em;
-  }
-  #toc ul {
-    margin: 0 0 0 4px;
-    font-size: var(--small-font-size);
-  }
-  #toc ul :is(p, li) {
-    margin: 2px 0;
-    line-height: 22px;
-  }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
   }
 }
 
@@ -894,9 +993,6 @@ hr.addr {
   td {
     border-top: 1px solid #ddd;
   }
-  .toplink {
-    display: none;
-  }
 }
 
 @page :first {
@@ -919,82 +1015,6 @@ hr.addr {
   size: A4;
   margin-bottom: 45mm;
   padding-top: 20px;
-}
-
-/* Changes introduced to fix issues found during implementation */
-
-/* Separate body from document info even without intervening H1 */
-section {
-  clear: both;
-}
-
-/* Top align author divs, to avoid names without organization dropping level with org names */
-.author {
-  vertical-align: top;
-}
-
-/* Style section numbers with more space between number and title */
-.section-number {
-  padding-right: 0.5em;
-}
-
-/* Add styling for a link in the ToC that points to the top of the document */
-a.toplink {
-  float: right;
-  margin: 8px 0.5em 0;
-}
-
-/* Provide styling for table cell text alignment */
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
-}
-
-/* Make the alternative author contact information look less like just another
-   author, and group it closer with the primary author contact information */
-.alternative-contact {
-  margin: 0.5em 0 0.25em 0;
-}
-address .non-ascii {
-  margin: 0 0 0 2em;
-}
-
-/* With it being possible to set tables with alignment
-  left, center, and right, { width: 100%; } does not make sense */
-table {
-  width: auto;
-}
-
-/* Avoid reference text that sits in a block with very wide left margin,
-   because of a long floating dt label.*/
-.references dd {
-  overflow: visible;
-}
-
-/* Control caption placement */
-caption {
-  caption-side: bottom;
-}
-
-/* Limit the width of the author address vcard, so names in right-to-left
-   script don't end up on the other side of the page. */
-
-address.vcard {
-  max-width: 20em;
-  margin-right: auto;
-}
-
-/* For address alignment dependent on LTR or RTL scripts */
-address div.left {
-  text-align: left;
-}
-address div.right {
-  text-align: right;
 }
 
 /* Dark mode. */
@@ -1033,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">October 2024</td>
+<td class="right">March 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 25 April 2025</td>
+<td class="center">Expires 4 September 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1050,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-22" class="published">22 October 2024</time>
+<time datetime="2025-03-03" class="published">3 March 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-04-25">25 April 2025</time></dd>
+<dd class="expires"><time datetime="2025-09-04">4 September 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1145,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 25 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1134,7 +1154,7 @@ draft corresponding to this document can be found at
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2024 IETF Trust and the persons identified as the
+            Copyright (c) 2025 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1169,7 +1189,7 @@ draft corresponding to this document can be found at
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-session-establishment-and-t" class="internal xref">Session Establishment and Termination</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-establishing-a-transport-ca" class="internal xref">Establishing a Transport-Capable HTTP/2 Connection</a></p>
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-establishing-a-webtransport" class="internal xref">Establishing a WebTransport-Capable HTTP/2 Connection</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-extended-connect-in-http-2" class="internal xref">Extended CONNECT in HTTP/2</a></p>
@@ -1272,44 +1292,47 @@ draft corresponding to this document can be found at
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-considerations-for-future-v" class="internal xref">Considerations for Future Versions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-http-2-settings-parameter-r" class="internal xref">HTTP/2 SETTINGS Parameter Registration</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-http-2-error-code-registrat" class="internal xref">HTTP/2 Error Code Registration</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
-                <p id="section-toc.1-1.9.2.3.1"><a href="#section-9.3" class="auto internal xref">9.3</a>.  <a href="#name-capsule-types" class="internal xref">Capsule Types</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
-                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-http-header-field-name" class="internal xref">HTTP Header Field Name</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
-                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-http-2-settings-parameter-r" class="internal xref">HTTP/2 SETTINGS Parameter Registration</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
-                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-http-2-error-code-registrat" class="internal xref">HTTP/2 Error Code Registration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-capsule-types" class="internal xref">Capsule Types</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
+                <p id="section-toc.1-1.10.2.4.1"><a href="#section-10.4" class="auto internal xref">10.4</a>.  <a href="#name-http-header-field-name" class="internal xref">HTTP Header Field Name</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-index" class="internal xref">Index</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-index" class="internal xref">Index</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1340,7 +1363,7 @@ HTTP/2 <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span> as the curren
 "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span>
 when, and only when, they appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">This document follows terminology defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-08#section-1.2" class="relref">Section 1.2</a> of [<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span>. Note
+<p id="section-1.1-2">This document follows terminology defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-09#section-1.2" class="relref">Section 1.2</a> of [<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span>. Note
 that this document distinguishes between a WebTransport server and an HTTP/2
 server. An HTTP/2 server is the server that terminates HTTP/2 connections; a
 WebTransport server is an application that accepts WebTransport sessions, which
@@ -1355,13 +1378,14 @@ can be accessed using HTTP/2 and this protocol.<a href="#section-1.1-2" class="p
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-protocol-overview" class="section-name selfRef">Protocol Overview</a>
       </h2>
 <p id="section-2-1">WebTransport servers are identified by an HTTPS URI as defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19#section-4.2.2" class="relref">Section 4.2.2</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">When an HTTP/2 connection is established, both the client and server have to
-send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than "0"
-to indicate that they both support WebTransport over HTTP/2. For servers, the
-value of the setting is the number of concurrent sessions the server is willing
-to receive. Clients cannot receive incoming WebTransport sessions, so any value
-greater than "0" sent by a client simply indicates support for WebTransport
-over HTTP/2.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">When an HTTP/2 connection is established, the server sends a
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than "0" to
+indicate that it supports WebTransport over HTTP/2. The value of the setting is
+the number of concurrent sessions the server is willing to receive. Note that
+the client does not need to send any value to indicate support for
+WebTransport; clients indicate support for WebTransport by using
+the "webtransport" upgrade token in CONNECT requests establishing WebTransport
+sessions (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">A client initiates a WebTransport session by sending an extended CONNECT request
 <span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>. If the server accepts the request, a WebTransport session is
 established. The stream that carries the CONNECT request is used to exchange
@@ -1379,25 +1403,21 @@ multiplexed.  In HTTP/2, WebTransport capsules are carried in HTTP/2 DATA
 frames. Multiple independent WebTransport sessions can share a connection if
 the HTTP version supports that, as HTTP/2 does.<a href="#section-2-5" class="pilcrow">¶</a></p>
 <p id="section-2-6">WebTransport capsules closely mirror a subset of QUIC frames and provide the
-essential WebTransport features.  Within a WebTransport session, endpoints can<a href="#section-2-6" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-2-7.1">
-          <p id="section-2-7.1.1">create and use bidirectional or unidirectional streams with no additional
-round trips using the <span id="iref-wt_stream-1" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule<a href="#section-2-7.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-2-8">Stream creation and data flow on streams uses flow control mechanisms modeled on
+essential WebTransport features.  Within a WebTransport session, endpoints can
+create and use bidirectional or unidirectional streams with no additional round
+trips using the <span id="iref-wt_stream-1" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule.<a href="#section-2-6" class="pilcrow">¶</a></p>
+<p id="section-2-7">Stream creation and data flow on streams uses flow control mechanisms modeled on
 those in QUIC. Flow control is managed using the WebTransport capsules:
 <span id="iref-wt_max_data-2" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a>, <span id="iref-wt_max_stream_data-3" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a>, <span id="iref-wt_max_streams-4" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a>, <span id="iref-wt_data_blocked-5" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a>,
 <span id="iref-wt_stream_data_blocked-6" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a>, and <span id="iref-wt_streams_blocked-7" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a>. Flow control for the CONNECT
 stream as a whole, as provided by the HTTP version in use, applies in addition
-to any WebTransport-session-level flow control.<a href="#section-2-8" class="pilcrow">¶</a></p>
-<p id="section-2-9">WebTransport streams can be aborted using a <span id="iref-wt_reset_stream-8" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule and a
+to any WebTransport-session-level flow control.<a href="#section-2-7" class="pilcrow">¶</a></p>
+<p id="section-2-8">WebTransport streams can be aborted using a <span id="iref-wt_reset_stream-8" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule and a
 receiver can request that a sender stop sending with a <span id="iref-wt_stop_sending-9" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a>
-capsule.<a href="#section-2-9" class="pilcrow">¶</a></p>
-<p id="section-2-10">A WebTransport session is terminated when the CONNECT stream that created it is
+capsule.<a href="#section-2-8" class="pilcrow">¶</a></p>
+<p id="section-2-9">A WebTransport session is terminated when the CONNECT stream that created it is
 closed. This implicitly closes all WebTransport streams that were
-multiplexed over that CONNECT stream.<a href="#section-2-10" class="pilcrow">¶</a></p>
+multiplexed over that CONNECT stream.<a href="#section-2-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="session-establishment-and-termination">
@@ -1407,15 +1427,15 @@ multiplexed over that CONNECT stream.<a href="#section-2-10" class="pilcrow">¶<
       </h2>
 <p id="section-3-1">A WebTransport session is a communication context between a client and server
 <span>[<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span>. This section describes how sessions begin and end.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<div id="establishing-a-transport-capable-http2-connection">
+<div id="establishing-a-webtransport-capable-http2-connection">
 <section id="section-3.1">
-        <h3 id="name-establishing-a-transport-ca">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-establishing-a-transport-ca" class="section-name selfRef">Establishing a Transport-Capable HTTP/2 Connection</a>
+        <h3 id="name-establishing-a-webtransport">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-establishing-a-webtransport" class="section-name selfRef">Establishing a WebTransport-Capable HTTP/2 Connection</a>
         </h3>
-<p id="section-3.1-1">In order to indicate support for WebTransport, both the client and the server
-MUST send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in their
-SETTINGS frame. Endpoints MUST NOT use any WebTransport-related functionality
-unless the parameter has been negotiated.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">In order to indicate support for WebTransport, the server MUST send a
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in its SETTINGS
+frame.  The client MUST NOT send a WebTransport request until it has received
+the setting indicating WebTransport support from the server.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="extended-connect-in-http2">
@@ -1424,9 +1444,10 @@ unless the parameter has been negotiated.<a href="#section-3.1-1" class="pilcrow
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-extended-connect-in-http-2" class="section-name selfRef">Extended CONNECT in HTTP/2</a>
         </h3>
 <p id="section-3.2-1"><span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span> defines an extended CONNECT method in <a href="#features" class="auto internal xref">Section 5</a>, enabled by the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. An endpoint needs to send both
-SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_WEBTRANSPORT_MAX_SESSIONS for
-WebTransport to be enabled.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. A server supporting WebTransport
+needs to send both the SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value
+greater than "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value
+of "1" for WebTransport to be enabled.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="creating-a-new-session">
@@ -1638,7 +1659,7 @@ are greater than or equal to the values provided in the SETTINGS.<a href="#secti
 <a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-flow-control-settings" class="section-name selfRef">Flow Control SETTINGS</a>
           </h4>
 <p id="section-4.3.1-1">Initial flow control limits can be exchanged via HTTP/2 SETTINGS
-(<a href="#h2-settings" class="auto internal xref">Section 9.1</a>) by providing non-zero values for<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
+(<a href="#h2-settings" class="auto internal xref">Section 10.1</a>) by providing non-zero values for<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.1-2.1">
               <p id="section-4.3.1-2.1.1"><span id="iref-wt_max_data-11" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> via <span id="iref-settings_webtransport_initi" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a><a href="#section-4.3.1-2.1.1" class="pilcrow">¶</a></p>
@@ -2475,8 +2496,6 @@ This example is intended to closely follow the example in <span><a href="https:/
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
-SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
@@ -2515,8 +2534,6 @@ difference here is the endpoint that sends the first <span id="iref-wt_stream-10
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
-SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
@@ -2549,20 +2566,37 @@ WebTransport Data
 </div>
 </section>
 </div>
-<div id="security-considerations">
+<div id="considerations-for-future-versions">
 <section id="section-8">
-      <h2 id="name-security-considerations">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      <h2 id="name-considerations-for-future-v">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-considerations-for-future-v" class="section-name selfRef">Considerations for Future Versions</a>
       </h2>
-<p id="section-8-1">WebTransport over HTTP/2 satisfies all of the security requirements imposed by
+<p id="section-8-1">Future versions of WebTransport that change the syntax of the CONNECT requests
+used to establish WebTransport sessions will need to modify the upgrade token
+used to identify WebTransport, allowing servers to offer multiple versions
+simultaneously (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">Servers that support future incompatible versions of WebTransport signal that
+support by changing the codepoint used for the
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter (see <a href="#h2-settings" class="auto internal xref">Section 10.1</a>).  Clients
+can select the associated upgrade token, if applicable, to use when
+establishing a new session, ensuring that servers will always know the syntax
+in use for every incoming request.<a href="#section-8-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-9">
+      <h2 id="name-security-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-9-1">WebTransport over HTTP/2 satisfies all of the security requirements imposed by
 <span>[<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span> on WebTransport protocols, thus providing a secure framework for
-client-server communication in cases when the client is potentially untrusted.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">WebTransport over HTTP/2 requires explicit opt-in through the use of HTTP
+client-server communication in cases when the client is potentially untrusted.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">WebTransport over HTTP/2 requires explicit opt-in through the use of HTTP
 SETTINGS; this avoids potential protocol confusion attacks by ensuring the
 HTTP/2 server explicitly supports it. It also requires the use of the Origin
 header, providing the server with the ability to deny access to Web-based
-clients that do not originate from a trusted origin.<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">Just like HTTP traffic going over HTTP/2, WebTransport pools traffic to
+clients that do not originate from a trusted origin.<a href="#section-9-2" class="pilcrow">¶</a></p>
+<p id="section-9-3">Just like HTTP traffic going over HTTP/2, WebTransport pools traffic to
 different origins within a single connection. Different origins imply different
 trust domains, meaning that the implementations have to treat each transport as
 potentially hostile towards others on the same connection. One potential attack
@@ -2571,697 +2605,697 @@ congestion control and flow control context, a single client aggressively using
 up those resources can cause other transports to stall. The user agent thus
 SHOULD implement a fairness scheme that ensures that each transport within
 connection gets a reasonable share of controlled resources; this applies both
-to sending data and to opening new streams.<a href="#section-8-3" class="pilcrow">¶</a></p>
+to sending data and to opening new streams.<a href="#section-9-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-9">
+<section id="section-10">
       <h2 id="name-iana-considerations">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-9-1">This document registers new HTTP/2 settings (<a href="#h2-settings" class="auto internal xref">Section 9.1</a>), HTTP/2 error
-codes (<a href="#iana-h2-error" class="auto internal xref">Section 9.2</a>), new capsules (<a href="#iana-capsules" class="auto internal xref">Section 9.3</a>), and the
-<code>WebTransport-Init</code> header field (<a href="#iana-header" class="auto internal xref">Section 9.4</a>).<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-10-1">This document registers new HTTP/2 settings (<a href="#h2-settings" class="auto internal xref">Section 10.1</a>), HTTP/2 error
+codes (<a href="#iana-h2-error" class="auto internal xref">Section 10.2</a>), new capsules (<a href="#iana-capsules" class="auto internal xref">Section 10.3</a>), and the
+<code>WebTransport-Init</code> header field (<a href="#iana-header" class="auto internal xref">Section 10.4</a>).<a href="#section-10-1" class="pilcrow">¶</a></p>
 <div id="h2-settings">
-<section id="section-9.1">
+<section id="section-10.1">
         <h3 id="name-http-2-settings-parameter-r">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-http-2-settings-parameter-r" class="section-name selfRef">HTTP/2 SETTINGS Parameter Registration</a>
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-http-2-settings-parameter-r" class="section-name selfRef">HTTP/2 SETTINGS Parameter Registration</a>
         </h3>
-<p id="section-9.1-1">The following entries are added to the "HTTP/2 Settings" registry established by
-<span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section-9.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-1">The following entries are added to the "HTTP/2 Settings" registry established by
+<span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section-10.1-1" class="pilcrow">¶</a></p>
 <div id="SETTINGS_WEBTRANSPORT_MAX_SESSIONS">
-<p id="section-9.1-2">The SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter indicates that the specified
+<p id="section-10.1-2">The SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter indicates that the specified
 HTTP/2 connection is WebTransport-capable and the number of concurrent sessions
 an endpoint is willing to receive. The default value for the
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter is "0", meaning that the endpoint
-is not willing to receive any WebTransport sessions.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
+is not willing to receive any WebTransport sessions.<a href="#section-10.1-2" class="pilcrow">¶</a></p>
 </div>
-<span class="break"></span><dl class="dlParallel" id="section-9.1-3">
-          <dt id="section-9.1-3.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-3.2">
-            <p id="section-9.1-3.2.1">WEBTRANSPORT_MAX_SESSIONS<a href="#section-9.1-3.2.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.1-3">
+          <dt id="section-10.1-3.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-3.2">
+            <p id="section-10.1-3.2.1">WEBTRANSPORT_MAX_SESSIONS<a href="#section-10.1-3.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-3.3">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-3.4">
-            <p id="section-9.1-3.4.1">0x2b60<a href="#section-9.1-3.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-3.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-3.4">
+            <p id="section-10.1-3.4.1">0x2b60<a href="#section-10.1-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-3.5">Default:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-3.6">
-            <p id="section-9.1-3.6.1">0<a href="#section-9.1-3.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-3.5">Default:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-3.6">
+            <p id="section-10.1-3.6.1">0<a href="#section-10.1-3.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-3.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-3.8">
-            <p id="section-9.1-3.8.1">This document<a href="#section-9.1-3.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-3.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-3.8">
+            <p id="section-10.1-3.8.1">This document<a href="#section-10.1-3.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA">
-<p id="section-9.1-4">The <span id="iref-settings_webtransport_initial_max_d" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter indicates the initial value
+<p id="section-10.1-4">The <span id="iref-settings_webtransport_initial_max_d" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter indicates the initial value
 for the session data limit, otherwise communicated by the <span id="iref-wt_max_data-105" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule
 (see <a href="#WT_MAX_DATA" class="auto internal xref">Section 6.5</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_d-2" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter is "0", indicating that the
 endpoint needs to send a <span id="iref-wt_max_data-107" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule within each session before its
-peer is allowed to send any stream data within that session.<a href="#section-9.1-4" class="pilcrow">¶</a></p>
+peer is allowed to send any stream data within that session.<a href="#section-10.1-4" class="pilcrow">¶</a></p>
 </div>
-<p id="section-9.1-5">Note that this limit applies to all WebTransport sessions that use the HTTP/2
-connection on which this SETTING is sent.<a href="#section-9.1-5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.1-6">
-          <dt id="section-9.1-6.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-6.2">
-            <p id="section-9.1-6.2.1"><span id="iref-settings_webtransport_initial_max_d-3" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a><a href="#section-9.1-6.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.1-5">Note that this limit applies to all WebTransport sessions that use the HTTP/2
+connection on which this SETTING is sent.<a href="#section-10.1-5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.1-6">
+          <dt id="section-10.1-6.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-6.2">
+            <p id="section-10.1-6.2.1"><span id="iref-settings_webtransport_initial_max_d-3" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a><a href="#section-10.1-6.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-6.3">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-6.4">
-            <p id="section-9.1-6.4.1">0x2b61<a href="#section-9.1-6.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-6.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-6.4">
+            <p id="section-10.1-6.4.1">0x2b61<a href="#section-10.1-6.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-6.5">Default:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-6.6">
-            <p id="section-9.1-6.6.1">0<a href="#section-9.1-6.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-6.5">Default:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-6.6">
+            <p id="section-10.1-6.6.1">0<a href="#section-10.1-6.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-6.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-6.8">
-            <p id="section-9.1-6.8.1">This document<a href="#section-9.1-6.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-6.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-6.8">
+            <p id="section-10.1-6.8.1">This document<a href="#section-10.1-6.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI">
-<p id="section-9.1-7">The <span id="iref-settings_webtransport_initial_max_s-3" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter indicates the
+<p id="section-10.1-7">The <span id="iref-settings_webtransport_initial_max_s-3" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter indicates the
 initial value for the stream data limit for incoming unidirectional streams,
 otherwise communicated by the <span id="iref-wt_max_stream_data-110" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
 <a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-4" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_stream_data-112" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
-any stream data on those streams.<a href="#section-9.1-7" class="pilcrow">¶</a></p>
+any stream data on those streams.<a href="#section-10.1-7" class="pilcrow">¶</a></p>
 </div>
-<p id="section-9.1-8">Note that this limit applies to all WebTransport streams on all sessions that
-use the HTTP/2 connection on which this SETTING is sent.<a href="#section-9.1-8" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.1-9">
-          <dt id="section-9.1-9.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-9.2">
-            <p id="section-9.1-9.2.1"><span id="iref-settings_webtransport_initial_max_s-5" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a><a href="#section-9.1-9.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.1-8">Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.<a href="#section-10.1-8" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.1-9">
+          <dt id="section-10.1-9.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-9.2">
+            <p id="section-10.1-9.2.1"><span id="iref-settings_webtransport_initial_max_s-5" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a><a href="#section-10.1-9.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-9.3">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-9.4">
-            <p id="section-9.1-9.4.1">0x2b62<a href="#section-9.1-9.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-9.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-9.4">
+            <p id="section-10.1-9.4.1">0x2b62<a href="#section-10.1-9.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-9.5">Default:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-9.6">
-            <p id="section-9.1-9.6.1">0<a href="#section-9.1-9.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-9.5">Default:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-9.6">
+            <p id="section-10.1-9.6.1">0<a href="#section-10.1-9.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-9.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-9.8">
-            <p id="section-9.1-9.8.1">This document<a href="#section-9.1-9.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-9.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-9.8">
+            <p id="section-10.1-9.8.1">This document<a href="#section-10.1-9.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI">
-<p id="section-9.1-10">The <span id="iref-settings_webtransport_initial_max_s-6" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter indicates the
+<p id="section-10.1-10">The <span id="iref-settings_webtransport_initial_max_s-6" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
 streams, otherwise communicated by the <span id="iref-wt_max_stream_data-115" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
 <a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-7" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_stream_data-117" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
-any stream data on those streams.<a href="#section-9.1-10" class="pilcrow">¶</a></p>
+any stream data on those streams.<a href="#section-10.1-10" class="pilcrow">¶</a></p>
 </div>
-<p id="section-9.1-11">Note that this limit applies to all WebTransport streams on all sessions that
-use the HTTP/2 connection on which this SETTING is sent.<a href="#section-9.1-11" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.1-12">
-          <dt id="section-9.1-12.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-12.2">
-            <p id="section-9.1-12.2.1"><span id="iref-settings_webtransport_initial_max_s-8" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a><a href="#section-9.1-12.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.1-11">Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.<a href="#section-10.1-11" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.1-12">
+          <dt id="section-10.1-12.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-12.2">
+            <p id="section-10.1-12.2.1"><span id="iref-settings_webtransport_initial_max_s-8" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a><a href="#section-10.1-12.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-12.3">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-12.4">
-            <p id="section-9.1-12.4.1">0x2b63<a href="#section-9.1-12.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-12.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-12.4">
+            <p id="section-10.1-12.4.1">0x2b63<a href="#section-10.1-12.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-12.5">Default:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-12.6">
-            <p id="section-9.1-12.6.1">0<a href="#section-9.1-12.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-12.5">Default:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-12.6">
+            <p id="section-10.1-12.6.1">0<a href="#section-10.1-12.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-12.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-12.8">
-            <p id="section-9.1-12.8.1">This document<a href="#section-9.1-12.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-12.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-12.8">
+            <p id="section-10.1-12.8.1">This document<a href="#section-10.1-12.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI">
-<p id="section-9.1-13">The <span id="iref-settings_webtransport_initial_max_s-9" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter indicates the
+<p id="section-10.1-13">The <span id="iref-settings_webtransport_initial_max_s-9" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter indicates the
 initial value for the unidirectional max stream limit, otherwise communicated
 by the <span id="iref-wt_max_streams-120" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>). The default value for
 the <span id="iref-settings_webtransport_initial_max_s-10" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_streams-122" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
 WebTransport session before its peer is allowed to create any unidirectional
-streams within that session.<a href="#section-9.1-13" class="pilcrow">¶</a></p>
+streams within that session.<a href="#section-10.1-13" class="pilcrow">¶</a></p>
 </div>
-<p id="section-9.1-14">Note that this limit applies to all WebTransport sessions that use the HTTP/2
-connection on which this SETTING is sent.<a href="#section-9.1-14" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.1-15">
-          <dt id="section-9.1-15.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-15.2">
-            <p id="section-9.1-15.2.1"><span id="iref-settings_webtransport_initial_max_s-11" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a><a href="#section-9.1-15.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.1-14">Note that this limit applies to all WebTransport sessions that use the HTTP/2
+connection on which this SETTING is sent.<a href="#section-10.1-14" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.1-15">
+          <dt id="section-10.1-15.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-15.2">
+            <p id="section-10.1-15.2.1"><span id="iref-settings_webtransport_initial_max_s-11" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a><a href="#section-10.1-15.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-15.3">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-15.4">
-            <p id="section-9.1-15.4.1">0x2b64<a href="#section-9.1-15.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-15.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-15.4">
+            <p id="section-10.1-15.4.1">0x2b64<a href="#section-10.1-15.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-15.5">Default:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-15.6">
-            <p id="section-9.1-15.6.1">0<a href="#section-9.1-15.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-15.5">Default:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-15.6">
+            <p id="section-10.1-15.6.1">0<a href="#section-10.1-15.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-15.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-15.8">
-            <p id="section-9.1-15.8.1">This document<a href="#section-9.1-15.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-15.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-15.8">
+            <p id="section-10.1-15.8.1">This document<a href="#section-10.1-15.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI">
-<p id="section-9.1-16">The <span id="iref-settings_webtransport_initial_max_s-12" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter indicates the
+<p id="section-10.1-16">The <span id="iref-settings_webtransport_initial_max_s-12" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter indicates the
 initial value for the bidirectional max stream limit, otherwise communicated by
 the <span id="iref-wt_max_streams-125" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-13" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_streams-127" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
 WebTransport session before its peer is allowed to create any bidirectional
-streams within that session.<a href="#section-9.1-16" class="pilcrow">¶</a></p>
+streams within that session.<a href="#section-10.1-16" class="pilcrow">¶</a></p>
 </div>
-<p id="section-9.1-17">Note that this limit applies to all WebTransport sessions that use the HTTP/2
-connection on which this SETTING is sent.<a href="#section-9.1-17" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.1-18">
-          <dt id="section-9.1-18.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-18.2">
-            <p id="section-9.1-18.2.1"><span id="iref-settings_webtransport_initial_max_s-14" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a><a href="#section-9.1-18.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.1-17">Note that this limit applies to all WebTransport sessions that use the HTTP/2
+connection on which this SETTING is sent.<a href="#section-10.1-17" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.1-18">
+          <dt id="section-10.1-18.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-18.2">
+            <p id="section-10.1-18.2.1"><span id="iref-settings_webtransport_initial_max_s-14" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a><a href="#section-10.1-18.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-18.3">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-18.4">
-            <p id="section-9.1-18.4.1">0x2b65<a href="#section-9.1-18.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-18.3">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-18.4">
+            <p id="section-10.1-18.4.1">0x2b65<a href="#section-10.1-18.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-18.5">Default:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-18.6">
-            <p id="section-9.1-18.6.1">0<a href="#section-9.1-18.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-18.5">Default:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-18.6">
+            <p id="section-10.1-18.6.1">0<a href="#section-10.1-18.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.1-18.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.1-18.8">
-            <p id="section-9.1-18.8.1">This document<a href="#section-9.1-18.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.1-18.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.1-18.8">
+            <p id="section-10.1-18.8.1">This document<a href="#section-10.1-18.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="iana-h2-error">
-<section id="section-9.2">
+<section id="section-10.2">
         <h3 id="name-http-2-error-code-registrat">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-http-2-error-code-registrat" class="section-name selfRef">HTTP/2 Error Code Registration</a>
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-http-2-error-code-registrat" class="section-name selfRef">HTTP/2 Error Code Registration</a>
         </h3>
-<p id="section-9.2-1">The following entries are added to the "HTTP/2 Error Code" registry established by
-<span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<p id="section-9.2-2">For WEBTRANSPORT_ERROR:<a href="#section-9.2-2" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.2-3">
-          <dt id="section-9.2-3.1">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-3.2">
-            <p id="section-9.2-3.2.1">0xTBD<a href="#section-9.2-3.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.2-1">The following entries are added to the "HTTP/2 Error Code" registry established by
+<span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.2-2">For WEBTRANSPORT_ERROR:<a href="#section-10.2-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.2-3">
+          <dt id="section-10.2-3.1">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-3.2">
+            <p id="section-10.2-3.2.1">0xTBD<a href="#section-10.2-3.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.2-3.3">Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-3.4">
-            <p id="section-9.2-3.4.1">WEBTRANSPORT_ERROR<a href="#section-9.2-3.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.2-3.3">Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-3.4">
+            <p id="section-10.2-3.4.1">WEBTRANSPORT_ERROR<a href="#section-10.2-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.2-3.5">Description:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-3.6">
-            <p id="section-9.2-3.6.1">General WebTransport error detected<a href="#section-9.2-3.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.2-3.5">Description:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-3.6">
+            <p id="section-10.2-3.6.1">General WebTransport error detected<a href="#section-10.2-3.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.2-3.7">Reference:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-3.8">
-            <p id="section-9.2-3.8.1"><a href="#errors" class="auto internal xref">Section 3.5</a><a href="#section-9.2-3.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.2-3.7">Reference:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-3.8">
+            <p id="section-10.2-3.8.1"><a href="#errors" class="auto internal xref">Section 3.5</a><a href="#section-10.2-3.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.2-4">For WEBTRANSPORT_STREAM_STATE_ERROR:<a href="#section-9.2-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.2-5">
-          <dt id="section-9.2-5.1">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-5.2">
-            <p id="section-9.2-5.2.1">0xTBD<a href="#section-9.2-5.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.2-4">For WEBTRANSPORT_STREAM_STATE_ERROR:<a href="#section-10.2-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.2-5">
+          <dt id="section-10.2-5.1">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-5.2">
+            <p id="section-10.2-5.2.1">0xTBD<a href="#section-10.2-5.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.2-5.3">Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-5.4">
-            <p id="section-9.2-5.4.1">WEBTRANSPORT_STREAM_STATE_ERROR<a href="#section-9.2-5.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.2-5.3">Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-5.4">
+            <p id="section-10.2-5.4.1">WEBTRANSPORT_STREAM_STATE_ERROR<a href="#section-10.2-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.2-5.5">Description:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-5.6">
-            <p id="section-9.2-5.6.1">Unexpected WebTransport stream-related capsule received<a href="#section-9.2-5.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.2-5.5">Description:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-5.6">
+            <p id="section-10.2-5.6.1">Unexpected WebTransport stream-related capsule received<a href="#section-10.2-5.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.2-5.7">Reference:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.2-5.8">
-            <p id="section-9.2-5.8.1"><a href="#errors" class="auto internal xref">Section 3.5</a><a href="#section-9.2-5.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.2-5.7">Reference:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.2-5.8">
+            <p id="section-10.2-5.8.1"><a href="#errors" class="auto internal xref">Section 3.5</a><a href="#section-10.2-5.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="iana-capsules">
-<section id="section-9.3">
+<section id="section-10.3">
         <h3 id="name-capsule-types">
-<a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-capsule-types" class="section-name selfRef">Capsule Types</a>
+<a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-capsule-types" class="section-name selfRef">Capsule Types</a>
         </h3>
-<p id="section-9.3-1">The following entries are added to the "HTTP Capsule Types" registry established
-by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<a href="#section-9.3-1" class="pilcrow">¶</a></p>
-<p id="section-9.3-2">The <code>PADDING</code> capsule.<a href="#section-9.3-2" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-3">
-          <dt id="section-9.3-3.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.2">
-            <p id="section-9.3-3.2.1">0x190B4D38<a href="#section-9.3-3.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-1">The following entries are added to the "HTTP Capsule Types" registry established
+by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<a href="#section-10.3-1" class="pilcrow">¶</a></p>
+<p id="section-10.3-2">The <code>PADDING</code> capsule.<a href="#section-10.3-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-3">
+          <dt id="section-10.3-3.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.2">
+            <p id="section-10.3-3.2.1">0x190B4D38<a href="#section-10.3-3.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-3.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.4">
-            <p id="section-9.3-3.4.1"><span id="iref-padding-129" class="iref"></span><a href="#PADDING" class="internal xref">PADDING</a><a href="#section-9.3-3.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-3.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.4">
+            <p id="section-10.3-3.4.1"><span id="iref-padding-129" class="iref"></span><a href="#PADDING" class="internal xref">PADDING</a><a href="#section-10.3-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-3.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.6">
-            <p id="section-9.3-3.6.1">permanent<a href="#section-9.3-3.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-3.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.6">
+            <p id="section-10.3-3.6.1">permanent<a href="#section-10.3-3.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-3.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.8">
-            <p id="section-9.3-3.8.1">This document<a href="#section-9.3-3.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-3.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.8">
+            <p id="section-10.3-3.8.1">This document<a href="#section-10.3-3.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-3.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.10">
-            <p id="section-9.3-3.10.1">IETF<a href="#section-9.3-3.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-3.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.10">
+            <p id="section-10.3-3.10.1">IETF<a href="#section-10.3-3.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-3.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.12">
-            <p id="section-9.3-3.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-3.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-3.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.12">
+            <p id="section-10.3-3.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-3.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-3.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-3.14">
-            <p id="section-9.3-3.14.1">None<a href="#section-9.3-3.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-3.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-3.14">
+            <p id="section-10.3-3.14.1">None<a href="#section-10.3-3.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-4">The <code>WT_RESET_STREAM</code> capsule.<a href="#section-9.3-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-5">
-          <dt id="section-9.3-5.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.2">
-            <p id="section-9.3-5.2.1">0x190B4D39<a href="#section-9.3-5.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-4">The <code>WT_RESET_STREAM</code> capsule.<a href="#section-10.3-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-5">
+          <dt id="section-10.3-5.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.2">
+            <p id="section-10.3-5.2.1">0x190B4D39<a href="#section-10.3-5.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-5.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.4">
-            <p id="section-9.3-5.4.1"><span id="iref-wt_reset_stream-130" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a><a href="#section-9.3-5.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-5.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.4">
+            <p id="section-10.3-5.4.1"><span id="iref-wt_reset_stream-130" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a><a href="#section-10.3-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-5.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.6">
-            <p id="section-9.3-5.6.1">permanent<a href="#section-9.3-5.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-5.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.6">
+            <p id="section-10.3-5.6.1">permanent<a href="#section-10.3-5.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-5.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.8">
-            <p id="section-9.3-5.8.1">This document<a href="#section-9.3-5.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-5.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.8">
+            <p id="section-10.3-5.8.1">This document<a href="#section-10.3-5.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-5.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.10">
-            <p id="section-9.3-5.10.1">IETF<a href="#section-9.3-5.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-5.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.10">
+            <p id="section-10.3-5.10.1">IETF<a href="#section-10.3-5.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-5.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.12">
-            <p id="section-9.3-5.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-5.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-5.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.12">
+            <p id="section-10.3-5.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-5.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-5.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-5.14">
-            <p id="section-9.3-5.14.1">None<a href="#section-9.3-5.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-5.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-5.14">
+            <p id="section-10.3-5.14.1">None<a href="#section-10.3-5.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-6">The <code>WT_STOP_SENDING</code> capsule.<a href="#section-9.3-6" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-7">
-          <dt id="section-9.3-7.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.2">
-            <p id="section-9.3-7.2.1">0x190B4D3A<a href="#section-9.3-7.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-6">The <code>WT_STOP_SENDING</code> capsule.<a href="#section-10.3-6" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-7">
+          <dt id="section-10.3-7.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.2">
+            <p id="section-10.3-7.2.1">0x190B4D3A<a href="#section-10.3-7.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-7.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.4">
-            <p id="section-9.3-7.4.1"><span id="iref-wt_stop_sending-131" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a><a href="#section-9.3-7.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-7.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.4">
+            <p id="section-10.3-7.4.1"><span id="iref-wt_stop_sending-131" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a><a href="#section-10.3-7.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-7.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.6">
-            <p id="section-9.3-7.6.1">permanent<a href="#section-9.3-7.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-7.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.6">
+            <p id="section-10.3-7.6.1">permanent<a href="#section-10.3-7.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-7.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.8">
-            <p id="section-9.3-7.8.1">This document<a href="#section-9.3-7.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-7.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.8">
+            <p id="section-10.3-7.8.1">This document<a href="#section-10.3-7.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-7.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.10">
-            <p id="section-9.3-7.10.1">IETF<a href="#section-9.3-7.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-7.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.10">
+            <p id="section-10.3-7.10.1">IETF<a href="#section-10.3-7.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-7.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.12">
-            <p id="section-9.3-7.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-7.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-7.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.12">
+            <p id="section-10.3-7.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-7.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-7.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-7.14">
-            <p id="section-9.3-7.14.1">None<a href="#section-9.3-7.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-7.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-7.14">
+            <p id="section-10.3-7.14.1">None<a href="#section-10.3-7.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-8">The <code>WT_STREAM</code> capsule.<a href="#section-9.3-8" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-9">
-          <dt id="section-9.3-9.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.2">
-            <p id="section-9.3-9.2.1">0x190B4D3B..0x190B4D3C<a href="#section-9.3-9.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-8">The <code>WT_STREAM</code> capsule.<a href="#section-10.3-8" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-9">
+          <dt id="section-10.3-9.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.2">
+            <p id="section-10.3-9.2.1">0x190B4D3B..0x190B4D3C<a href="#section-10.3-9.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-9.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.4">
-            <p id="section-9.3-9.4.1"><span id="iref-wt_stream-132" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a><a href="#section-9.3-9.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-9.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.4">
+            <p id="section-10.3-9.4.1"><span id="iref-wt_stream-132" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a><a href="#section-10.3-9.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-9.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.6">
-            <p id="section-9.3-9.6.1">permanent<a href="#section-9.3-9.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-9.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.6">
+            <p id="section-10.3-9.6.1">permanent<a href="#section-10.3-9.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-9.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.8">
-            <p id="section-9.3-9.8.1">This document<a href="#section-9.3-9.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-9.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.8">
+            <p id="section-10.3-9.8.1">This document<a href="#section-10.3-9.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-9.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.10">
-            <p id="section-9.3-9.10.1">IETF<a href="#section-9.3-9.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-9.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.10">
+            <p id="section-10.3-9.10.1">IETF<a href="#section-10.3-9.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-9.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.12">
-            <p id="section-9.3-9.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-9.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-9.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.12">
+            <p id="section-10.3-9.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-9.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-9.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-9.14">
-            <p id="section-9.3-9.14.1">None<a href="#section-9.3-9.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-9.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-9.14">
+            <p id="section-10.3-9.14.1">None<a href="#section-10.3-9.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-10">The <code>WT_MAX_DATA</code> capsule.<a href="#section-9.3-10" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-11">
-          <dt id="section-9.3-11.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.2">
-            <p id="section-9.3-11.2.1">0x190B4D3D<a href="#section-9.3-11.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-10">The <code>WT_MAX_DATA</code> capsule.<a href="#section-10.3-10" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-11">
+          <dt id="section-10.3-11.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.2">
+            <p id="section-10.3-11.2.1">0x190B4D3D<a href="#section-10.3-11.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-11.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.4">
-            <p id="section-9.3-11.4.1"><span id="iref-wt_max_data-133" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a><a href="#section-9.3-11.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-11.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.4">
+            <p id="section-10.3-11.4.1"><span id="iref-wt_max_data-133" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a><a href="#section-10.3-11.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-11.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.6">
-            <p id="section-9.3-11.6.1">permanent<a href="#section-9.3-11.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-11.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.6">
+            <p id="section-10.3-11.6.1">permanent<a href="#section-10.3-11.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-11.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.8">
-            <p id="section-9.3-11.8.1">This document<a href="#section-9.3-11.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-11.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.8">
+            <p id="section-10.3-11.8.1">This document<a href="#section-10.3-11.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-11.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.10">
-            <p id="section-9.3-11.10.1">IETF<a href="#section-9.3-11.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-11.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.10">
+            <p id="section-10.3-11.10.1">IETF<a href="#section-10.3-11.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-11.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.12">
-            <p id="section-9.3-11.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-11.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-11.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.12">
+            <p id="section-10.3-11.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-11.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-11.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-11.14">
-            <p id="section-9.3-11.14.1">None<a href="#section-9.3-11.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-11.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-11.14">
+            <p id="section-10.3-11.14.1">None<a href="#section-10.3-11.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-12">The <code>WT_MAX_STREAM_DATA</code> capsule.<a href="#section-9.3-12" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-13">
-          <dt id="section-9.3-13.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.2">
-            <p id="section-9.3-13.2.1">0x190B4D3E<a href="#section-9.3-13.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-12">The <code>WT_MAX_STREAM_DATA</code> capsule.<a href="#section-10.3-12" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-13">
+          <dt id="section-10.3-13.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.2">
+            <p id="section-10.3-13.2.1">0x190B4D3E<a href="#section-10.3-13.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-13.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.4">
-            <p id="section-9.3-13.4.1"><span id="iref-wt_max_stream_data-134" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a><a href="#section-9.3-13.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-13.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.4">
+            <p id="section-10.3-13.4.1"><span id="iref-wt_max_stream_data-134" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a><a href="#section-10.3-13.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-13.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.6">
-            <p id="section-9.3-13.6.1">permanent<a href="#section-9.3-13.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-13.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.6">
+            <p id="section-10.3-13.6.1">permanent<a href="#section-10.3-13.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-13.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.8">
-            <p id="section-9.3-13.8.1">This document<a href="#section-9.3-13.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-13.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.8">
+            <p id="section-10.3-13.8.1">This document<a href="#section-10.3-13.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-13.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.10">
-            <p id="section-9.3-13.10.1">IETF<a href="#section-9.3-13.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-13.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.10">
+            <p id="section-10.3-13.10.1">IETF<a href="#section-10.3-13.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-13.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.12">
-            <p id="section-9.3-13.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-13.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-13.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.12">
+            <p id="section-10.3-13.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-13.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-13.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-13.14">
-            <p id="section-9.3-13.14.1">None<a href="#section-9.3-13.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-13.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-13.14">
+            <p id="section-10.3-13.14.1">None<a href="#section-10.3-13.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-14">The <code>WT_MAX_STREAMS</code> capsule.<a href="#section-9.3-14" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-15">
-          <dt id="section-9.3-15.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.2">
-            <p id="section-9.3-15.2.1">0x190B4D3F..0x190B4D40<a href="#section-9.3-15.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-14">The <code>WT_MAX_STREAMS</code> capsule.<a href="#section-10.3-14" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-15">
+          <dt id="section-10.3-15.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.2">
+            <p id="section-10.3-15.2.1">0x190B4D3F..0x190B4D40<a href="#section-10.3-15.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-15.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.4">
-            <p id="section-9.3-15.4.1"><span id="iref-wt_max_streams-135" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a><a href="#section-9.3-15.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-15.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.4">
+            <p id="section-10.3-15.4.1"><span id="iref-wt_max_streams-135" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a><a href="#section-10.3-15.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-15.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.6">
-            <p id="section-9.3-15.6.1">permanent<a href="#section-9.3-15.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-15.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.6">
+            <p id="section-10.3-15.6.1">permanent<a href="#section-10.3-15.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-15.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.8">
-            <p id="section-9.3-15.8.1">This document<a href="#section-9.3-15.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-15.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.8">
+            <p id="section-10.3-15.8.1">This document<a href="#section-10.3-15.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-15.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.10">
-            <p id="section-9.3-15.10.1">IETF<a href="#section-9.3-15.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-15.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.10">
+            <p id="section-10.3-15.10.1">IETF<a href="#section-10.3-15.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-15.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.12">
-            <p id="section-9.3-15.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-15.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-15.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.12">
+            <p id="section-10.3-15.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-15.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-15.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-15.14">
-            <p id="section-9.3-15.14.1">None<a href="#section-9.3-15.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-15.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-15.14">
+            <p id="section-10.3-15.14.1">None<a href="#section-10.3-15.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-16">The <code>WT_DATA_BLOCKED</code> capsule.<a href="#section-9.3-16" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-17">
-          <dt id="section-9.3-17.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.2">
-            <p id="section-9.3-17.2.1">0x190B4D41<a href="#section-9.3-17.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-16">The <code>WT_DATA_BLOCKED</code> capsule.<a href="#section-10.3-16" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-17">
+          <dt id="section-10.3-17.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.2">
+            <p id="section-10.3-17.2.1">0x190B4D41<a href="#section-10.3-17.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-17.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.4">
-            <p id="section-9.3-17.4.1"><span id="iref-wt_data_blocked-136" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a><a href="#section-9.3-17.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-17.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.4">
+            <p id="section-10.3-17.4.1"><span id="iref-wt_data_blocked-136" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a><a href="#section-10.3-17.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-17.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.6">
-            <p id="section-9.3-17.6.1">permanent<a href="#section-9.3-17.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-17.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.6">
+            <p id="section-10.3-17.6.1">permanent<a href="#section-10.3-17.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-17.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.8">
-            <p id="section-9.3-17.8.1">This document<a href="#section-9.3-17.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-17.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.8">
+            <p id="section-10.3-17.8.1">This document<a href="#section-10.3-17.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-17.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.10">
-            <p id="section-9.3-17.10.1">IETF<a href="#section-9.3-17.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-17.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.10">
+            <p id="section-10.3-17.10.1">IETF<a href="#section-10.3-17.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-17.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.12">
-            <p id="section-9.3-17.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-17.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-17.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.12">
+            <p id="section-10.3-17.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-17.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-17.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-17.14">
-            <p id="section-9.3-17.14.1">None<a href="#section-9.3-17.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-17.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-17.14">
+            <p id="section-10.3-17.14.1">None<a href="#section-10.3-17.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-18">The <code>WT_STREAM_DATA_BLOCKED</code> capsule.<a href="#section-9.3-18" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-19">
-          <dt id="section-9.3-19.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.2">
-            <p id="section-9.3-19.2.1">0x190B4D42<a href="#section-9.3-19.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-18">The <code>WT_STREAM_DATA_BLOCKED</code> capsule.<a href="#section-10.3-18" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-19">
+          <dt id="section-10.3-19.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.2">
+            <p id="section-10.3-19.2.1">0x190B4D42<a href="#section-10.3-19.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-19.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.4">
-            <p id="section-9.3-19.4.1"><span id="iref-wt_stream_data_blocked-137" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a><a href="#section-9.3-19.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-19.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.4">
+            <p id="section-10.3-19.4.1"><span id="iref-wt_stream_data_blocked-137" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a><a href="#section-10.3-19.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-19.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.6">
-            <p id="section-9.3-19.6.1">permanent<a href="#section-9.3-19.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-19.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.6">
+            <p id="section-10.3-19.6.1">permanent<a href="#section-10.3-19.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-19.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.8">
-            <p id="section-9.3-19.8.1">This document<a href="#section-9.3-19.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-19.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.8">
+            <p id="section-10.3-19.8.1">This document<a href="#section-10.3-19.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-19.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.10">
-            <p id="section-9.3-19.10.1">IETF<a href="#section-9.3-19.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-19.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.10">
+            <p id="section-10.3-19.10.1">IETF<a href="#section-10.3-19.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-19.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.12">
-            <p id="section-9.3-19.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-19.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-19.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.12">
+            <p id="section-10.3-19.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-19.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-19.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-19.14">
-            <p id="section-9.3-19.14.1">None<a href="#section-9.3-19.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-19.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-19.14">
+            <p id="section-10.3-19.14.1">None<a href="#section-10.3-19.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-9.3-20">The <code>WT_STREAMS_BLOCKED</code> capsule.<a href="#section-9.3-20" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlCompact dlParallel" id="section-9.3-21">
-          <dt id="section-9.3-21.1">Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.2">
-            <p id="section-9.3-21.2.1">0x190B4D43..0x190B4D44<a href="#section-9.3-21.2.1" class="pilcrow">¶</a></p>
+<p id="section-10.3-20">The <code>WT_STREAMS_BLOCKED</code> capsule.<a href="#section-10.3-20" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlCompact dlParallel" id="section-10.3-21">
+          <dt id="section-10.3-21.1">Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.2">
+            <p id="section-10.3-21.2.1">0x190B4D43..0x190B4D44<a href="#section-10.3-21.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-21.3">Capsule Type:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.4">
-            <p id="section-9.3-21.4.1"><span id="iref-wt_streams_blocked-138" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a><a href="#section-9.3-21.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-21.3">Capsule Type:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.4">
+            <p id="section-10.3-21.4.1"><span id="iref-wt_streams_blocked-138" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a><a href="#section-10.3-21.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-21.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.6">
-            <p id="section-9.3-21.6.1">permanent<a href="#section-9.3-21.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-21.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.6">
+            <p id="section-10.3-21.6.1">permanent<a href="#section-10.3-21.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-21.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.8">
-            <p id="section-9.3-21.8.1">This document<a href="#section-9.3-21.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-21.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.8">
+            <p id="section-10.3-21.8.1">This document<a href="#section-10.3-21.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-21.9">Change Controller:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.10">
-            <p id="section-9.3-21.10.1">IETF<a href="#section-9.3-21.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-21.9">Change Controller:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.10">
+            <p id="section-10.3-21.10.1">IETF<a href="#section-10.3-21.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-21.11">Contact:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.12">
-            <p id="section-9.3-21.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-9.3-21.12.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-21.11">Contact:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.12">
+            <p id="section-10.3-21.12.1">WebTransport Working Group <a href="mailto:webtransport@ietf.org">webtransport@ietf.org</a><a href="#section-10.3-21.12.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.3-21.13">Notes:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.3-21.14">
-            <p id="section-9.3-21.14.1">None<a href="#section-9.3-21.14.1" class="pilcrow">¶</a></p>
+<dt id="section-10.3-21.13">Notes:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.3-21.14">
+            <p id="section-10.3-21.14.1">None<a href="#section-10.3-21.14.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 </section>
 </div>
 <div id="iana-header">
-<section id="section-9.4">
+<section id="section-10.4">
         <h3 id="name-http-header-field-name">
-<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-http-header-field-name" class="section-name selfRef">HTTP Header Field Name</a>
+<a href="#section-10.4" class="section-number selfRef">10.4. </a><a href="#name-http-header-field-name" class="section-name selfRef">HTTP Header Field Name</a>
         </h3>
-<p id="section-9.4-1">IANA will register the following entry in the "Hypertext Transfer Protocol
+<p id="section-10.4-1">IANA will register the following entry in the "Hypertext Transfer Protocol
 (HTTP) Field Name Registry" maintained at
-<a href="https://www.iana.org/assignments/http-fields">https://www.iana.org/assignments/http-fields</a>:<a href="#section-9.4-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-9.4-2">
-          <dt id="section-9.4-2.1">Field Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.4-2.2">
-            <p id="section-9.4-2.2.1">WebTransport-Init<a href="#section-9.4-2.2.1" class="pilcrow">¶</a></p>
+<a href="https://www.iana.org/assignments/http-fields">https://www.iana.org/assignments/http-fields</a>:<a href="#section-10.4-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-10.4-2">
+          <dt id="section-10.4-2.1">Field Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.4-2.2">
+            <p id="section-10.4-2.2.1">WebTransport-Init<a href="#section-10.4-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.4-2.3">Template:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.4-2.4">
-            <p id="section-9.4-2.4.1">None<a href="#section-9.4-2.4.1" class="pilcrow">¶</a></p>
+<dt id="section-10.4-2.3">Template:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.4-2.4">
+            <p id="section-10.4-2.4.1">None<a href="#section-10.4-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.4-2.5">Status:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.4-2.6">
-            <p id="section-9.4-2.6.1">permanent<a href="#section-9.4-2.6.1" class="pilcrow">¶</a></p>
+<dt id="section-10.4-2.5">Status:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.4-2.6">
+            <p id="section-10.4-2.6.1">permanent<a href="#section-10.4-2.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.4-2.7">Reference:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.4-2.8">
-            <p id="section-9.4-2.8.1">This document<a href="#section-9.4-2.8.1" class="pilcrow">¶</a></p>
+<dt id="section-10.4-2.7">Reference:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.4-2.8">
+            <p id="section-10.4-2.8.1">This document<a href="#section-10.4-2.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-9.4-2.9">Comments:</dt>
-          <dd style="margin-left: 1.5em" id="section-9.4-2.10">
-            <p id="section-9.4-2.10.1">None<a href="#section-9.4-2.10.1" class="pilcrow">¶</a></p>
+<dt id="section-10.4-2.9">Comments:</dt>
+          <dd style="margin-left: 1.5em" id="section-10.4-2.10">
+            <p id="section-10.4-2.10.1">None<a href="#section-10.4-2.10.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -3270,14 +3304,14 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-10">
+<section id="section-11">
       <h2 id="name-references">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-10.1">
+<section id="section-11.1">
         <h3 id="name-normative-references">
-<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="HTTP">[HTTP]</dt>
@@ -3298,7 +3332,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dd class="break"></dd>
 <dt id="OVERVIEW">[OVERVIEW]</dt>
         <dd>
-<span class="refAuthor">Vasiliev, V.</span>, <span class="refTitle">"The WebTransport Protocol Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-overview-08</span>, <time datetime="2024-08-25" class="refDate">25 August 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-08">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Vasiliev, V.</span>, <span class="refTitle">"The WebTransport Protocol Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-overview-09</span>, <time datetime="2025-02-25" class="refDate">25 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-09">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-overview-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="PARTIAL-RESET">[PARTIAL-RESET]</dt>
         <dd>
@@ -3352,9 +3386,9 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-10.2">
+<section id="section-11.2">
         <h3 id="name-informative-references">
-<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="DATAGRAM">[DATAGRAM]</dt>
@@ -3415,7 +3449,7 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                   <p id="appendix-B-2.1.2.1.1.2.1">
                     <a href="#section-6.1-1" class="auto internal xref">Section 6.1, Paragraph 1</a>; 
 <a href="#section-6.1-2" class="auto internal xref">Section 6.1, Paragraph 2</a>; 
-<a href="#section-9.3-3.4.1" class="auto internal xref">Section 9.3, Paragraph 3.4.1</a><a href="#appendix-B-2.1.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-3.4.1" class="auto internal xref">Section 10.3, Paragraph 3.4.1</a><a href="#appendix-B-2.1.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>
@@ -3435,8 +3469,8 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                   <p id="appendix-B-2.2.2.1.1.2.1">
                     <a href="#section-4.3.1-2.1.1" class="auto internal xref">Section 4.3.1, Paragraph 2.1.1</a>; 
 <a href="#section-6.5-7" class="auto internal xref">Section 6.5, Paragraph 7</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="auto internal xref">Section 9.1, Paragraph 4</a>; 
-<a href="#section-9.1-6.2.1" class="auto internal xref">Section 9.1, Paragraph 6.2.1</a><a href="#appendix-B-2.2.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="auto internal xref">Section 10.1, Paragraph 4</a>; 
+<a href="#section-10.1-6.2.1" class="auto internal xref">Section 10.1, Paragraph 6.2.1</a><a href="#appendix-B-2.2.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.2.2.1.1.3">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</dt>
@@ -3444,8 +3478,8 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                   <p id="appendix-B-2.2.2.1.1.4.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-7" class="auto internal xref">Section 6.6, Paragraph 7</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="auto internal xref">Section 9.1, Paragraph 10</a>; 
-<a href="#section-9.1-12.2.1" class="auto internal xref">Section 9.1, Paragraph 12.2.1</a><a href="#appendix-B-2.2.2.1.1.4.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="auto internal xref">Section 10.1, Paragraph 10</a>; 
+<a href="#section-10.1-12.2.1" class="auto internal xref">Section 10.1, Paragraph 12.2.1</a><a href="#appendix-B-2.2.2.1.1.4.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.2.2.1.1.5">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</dt>
@@ -3453,8 +3487,8 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                   <p id="appendix-B-2.2.2.1.1.6.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-7" class="auto internal xref">Section 6.6, Paragraph 7</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 9.1, Paragraph 7</a>; 
-<a href="#section-9.1-9.2.1" class="auto internal xref">Section 9.1, Paragraph 9.2.1</a><a href="#appendix-B-2.2.2.1.1.6.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 10.1, Paragraph 7</a>; 
+<a href="#section-10.1-9.2.1" class="auto internal xref">Section 10.1, Paragraph 9.2.1</a><a href="#appendix-B-2.2.2.1.1.6.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.2.2.1.1.7">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</dt>
@@ -3462,8 +3496,8 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                   <p id="appendix-B-2.2.2.1.1.8.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-6.7-9" class="auto internal xref">Section 6.7, Paragraph 9</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 9.1, Paragraph 16</a>; 
-<a href="#section-9.1-18.2.1" class="auto internal xref">Section 9.1, Paragraph 18.2.1</a><a href="#appendix-B-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 10.1, Paragraph 16</a>; 
+<a href="#section-10.1-18.2.1" class="auto internal xref">Section 10.1, Paragraph 18.2.1</a><a href="#appendix-B-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.2.2.1.1.9">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</dt>
@@ -3471,8 +3505,8 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                   <p id="appendix-B-2.2.2.1.1.10.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-6.7-9" class="auto internal xref">Section 6.7, Paragraph 9</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 9.1, Paragraph 13</a>; 
-<a href="#section-9.1-15.2.1" class="auto internal xref">Section 9.1, Paragraph 15.2.1</a><a href="#appendix-B-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 10.1, Paragraph 13</a>; 
+<a href="#section-10.1-15.2.1" class="auto internal xref">Section 10.1, Paragraph 15.2.1</a><a href="#appendix-B-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>
@@ -3490,47 +3524,47 @@ contributions in the design and implementation of this work.<a href="#appendix-A
                 <dt id="appendix-B-2.3.2.1.1.1">WT_DATA_BLOCKED</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.2">
                   <p id="appendix-B-2.3.2.1.1.2.1">
-                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
+                    <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.8-1" class="auto internal xref">Section 6.8, Paragraph 1</a>; 
 <a href="#section-6.8-3" class="auto internal xref">Section 6.8, Paragraph 3</a>; 
 <a href="#section-6.8-5" class="auto internal xref">Section 6.8, Paragraph 5</a>; 
 <a href="#section-6.9-1" class="auto internal xref">Section 6.9, Paragraph 1</a>; 
-<a href="#section-9.3-17.4.1" class="auto internal xref">Section 9.3, Paragraph 17.4.1</a><a href="#appendix-B-2.3.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-17.4.1" class="auto internal xref">Section 10.3, Paragraph 17.4.1</a><a href="#appendix-B-2.3.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.3">WT_MAX_DATA</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.4">
                   <p id="appendix-B-2.3.2.1.1.4.1">
-                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
+                    <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.3.1-2.1.1" class="auto internal xref">Section 4.3.1, Paragraph 2.1.1</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.5-1" class="auto internal xref">Section 6.5, Paragraph 1</a>; 
 <a href="#section-6.5-3" class="auto internal xref">Section 6.5, Paragraph 3</a>; 
 <a href="#section-6.5-6" class="auto internal xref">Section 6.5, Paragraph 6</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="auto internal xref">Section 9.1, Paragraph 4</a>; 
-<a href="#section-9.3-11.4.1" class="auto internal xref">Section 9.3, Paragraph 11.4.1</a><a href="#appendix-B-2.3.2.1.1.4.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="auto internal xref">Section 10.1, Paragraph 4</a>; 
+<a href="#section-10.3-11.4.1" class="auto internal xref">Section 10.3, Paragraph 11.4.1</a><a href="#appendix-B-2.3.2.1.1.4.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.5">WT_MAX_STREAM_DATA</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.6">
                   <p id="appendix-B-2.3.2.1.1.6.1">
-                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
+                    <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.6-1" class="auto internal xref">Section 6.6, Paragraph 1</a>; 
 <a href="#section-6.6-3" class="auto internal xref">Section 6.6, Paragraph 3</a>; 
 <a href="#section-6.6-6" class="auto internal xref">Section 6.6, Paragraph 6</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 9.1, Paragraph 7</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="auto internal xref">Section 9.1, Paragraph 10</a>; 
-<a href="#section-9.3-13.4.1" class="auto internal xref">Section 9.3, Paragraph 13.4.1</a><a href="#appendix-B-2.3.2.1.1.6.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 10.1, Paragraph 7</a>; 
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="auto internal xref">Section 10.1, Paragraph 10</a>; 
+<a href="#section-10.3-13.4.1" class="auto internal xref">Section 10.3, Paragraph 13.4.1</a><a href="#appendix-B-2.3.2.1.1.6.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.7">WT_MAX_STREAMS</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.8">
                   <p id="appendix-B-2.3.2.1.1.8.1">
-                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
+                    <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.2-1" class="auto internal xref">Section 4.2, Paragraph 1</a>; 
 <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
@@ -3538,39 +3572,39 @@ contributions in the design and implementation of this work.<a href="#appendix-A
 <a href="#section-6.7-2" class="auto internal xref">Section 6.7, Paragraph 2</a>; 
 <a href="#section-6.7-4" class="auto internal xref">Section 6.7, Paragraph 4</a>; 
 <a href="#section-6.7-8" class="auto internal xref">Section 6.7, Paragraph 8</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 9.1, Paragraph 13</a>; 
-<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 9.1, Paragraph 16</a>; 
-<a href="#section-9.3-15.4.1" class="auto internal xref">Section 9.3, Paragraph 15.4.1</a><a href="#appendix-B-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 10.1, Paragraph 13</a>; 
+<a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 10.1, Paragraph 16</a>; 
+<a href="#section-10.3-15.4.1" class="auto internal xref">Section 10.3, Paragraph 15.4.1</a><a href="#appendix-B-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.9">WT_RESET_STREAM</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.10">
                   <p id="appendix-B-2.3.2.1.1.10.1">
-                    <a href="#section-2-9" class="auto internal xref">Section 2, Paragraph 9</a>; 
+                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
 <a href="#section-6.2-1" class="auto internal xref">Section 6.2, Paragraph 1</a>; 
 <a href="#section-6.2-2" class="auto internal xref">Section 6.2, Paragraph 2</a>; 
 <a href="#section-6.2-3" class="auto internal xref">Section 6.2, Paragraph 3</a>; 
 <a href="#section-6.2-5" class="auto internal xref">Section 6.2, Paragraph 5</a>; 
 <a href="#section-6.2-8" class="auto internal xref">Section 6.2, Paragraph 8</a>; 
 <a href="#section-6.14-3" class="auto internal xref">Section 6.14, Paragraph 3</a>; 
-<a href="#section-9.3-5.4.1" class="auto internal xref">Section 9.3, Paragraph 5.4.1</a><a href="#appendix-B-2.3.2.1.1.10.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-5.4.1" class="auto internal xref">Section 10.3, Paragraph 5.4.1</a><a href="#appendix-B-2.3.2.1.1.10.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.11">WT_STOP_SENDING</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.12">
                   <p id="appendix-B-2.3.2.1.1.12.1">
-                    <a href="#section-2-9" class="auto internal xref">Section 2, Paragraph 9</a>; 
+                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
 <a href="#section-6.3-1" class="auto internal xref">Section 6.3, Paragraph 1</a>; 
 <a href="#section-6.3-3" class="auto internal xref">Section 6.3, Paragraph 3</a>; 
 <a href="#section-6.3-5" class="auto internal xref">Section 6.3, Paragraph 5</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
-<a href="#section-9.3-7.4.1" class="auto internal xref">Section 9.3, Paragraph 7.4.1</a><a href="#appendix-B-2.3.2.1.1.12.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-7.4.1" class="auto internal xref">Section 10.3, Paragraph 7.4.1</a><a href="#appendix-B-2.3.2.1.1.12.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.13">WT_STREAM</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.14">
                   <p id="appendix-B-2.3.2.1.1.14.1">
-                    <a href="#section-2-7.1.1" class="auto internal xref">Section 2, Paragraph 7.1.1</a>; 
+                    <a href="#section-2-6" class="auto internal xref">Section 2, Paragraph 6</a>; 
 <a href="#section-5.1-2" class="auto internal xref">Section 5.1, Paragraph 2</a>; 
 <a href="#section-6.2-2" class="auto internal xref">Section 6.2, Paragraph 2</a>; 
 <a href="#section-6.2-3" class="auto internal xref">Section 6.2, Paragraph 3</a>; 
@@ -3584,31 +3618,31 @@ contributions in the design and implementation of this work.<a href="#appendix-A
 <a href="#section-6.6-5" class="auto internal xref">Section 6.6, Paragraph 5</a>; 
 <a href="#section-6.14-3" class="auto internal xref">Section 6.14, Paragraph 3</a>; 
 <a href="#section-7-3" class="auto internal xref">Section 7, Paragraph 3</a>; 
-<a href="#section-9.3-9.4.1" class="auto internal xref">Section 9.3, Paragraph 9.4.1</a><a href="#appendix-B-2.3.2.1.1.14.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-9.4.1" class="auto internal xref">Section 10.3, Paragraph 9.4.1</a><a href="#appendix-B-2.3.2.1.1.14.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.15">WT_STREAM_DATA_BLOCKED</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.16">
                   <p id="appendix-B-2.3.2.1.1.16.1">
-                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
+                    <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.9-1" class="auto internal xref">Section 6.9, Paragraph 1</a>; 
 <a href="#section-6.9-3" class="auto internal xref">Section 6.9, Paragraph 3</a>; 
 <a href="#section-6.9-5" class="auto internal xref">Section 6.9, Paragraph 5</a>; 
 <a href="#section-6.9-6" class="auto internal xref">Section 6.9, Paragraph 6</a>; 
-<a href="#section-9.3-19.4.1" class="auto internal xref">Section 9.3, Paragraph 19.4.1</a><a href="#appendix-B-2.3.2.1.1.16.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-19.4.1" class="auto internal xref">Section 10.3, Paragraph 19.4.1</a><a href="#appendix-B-2.3.2.1.1.16.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-B-2.3.2.1.1.17">WT_STREAMS_BLOCKED</dt>
                 <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.18">
                   <p id="appendix-B-2.3.2.1.1.18.1">
-                    <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
+                    <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.10-1" class="auto internal xref">Section 6.10, Paragraph 1</a>; 
 <a href="#section-6.10-2" class="auto internal xref">Section 6.10, Paragraph 2</a>; 
 <a href="#section-6.10-4" class="auto internal xref">Section 6.10, Paragraph 4</a>; 
 <a href="#section-6.10-6" class="auto internal xref">Section 6.10, Paragraph 6</a>; 
-<a href="#section-9.3-21.4.1" class="auto internal xref">Section 9.3, Paragraph 21.4.1</a><a href="#appendix-B-2.3.2.1.1.18.1" class="pilcrow">¶</a></p>
+<a href="#section-10.3-21.4.1" class="auto internal xref">Section 10.3, Paragraph 21.4.1</a><a href="#appendix-B-2.3.2.1.1.18.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>

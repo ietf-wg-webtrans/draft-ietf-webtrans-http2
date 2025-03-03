@@ -117,13 +117,14 @@ can be accessed using HTTP/2 and this protocol.
 WebTransport servers are identified by an HTTPS URI as defined in {{Section
 4.2.2 of HTTP}}.
 
-When an HTTP/2 connection is established, both the client and server have to
-send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than "0"
-to indicate that they both support WebTransport over HTTP/2. For servers, the
-value of the setting is the number of concurrent sessions the server is willing
-to receive. Clients cannot receive incoming WebTransport sessions, so any value
-greater than "0" sent by a client simply indicates support for WebTransport
-over HTTP/2.
+When an HTTP/2 connection is established, the server sends a
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than "0" to
+indicate that it supports WebTransport over HTTP/2. The value of the setting is
+the number of concurrent sessions the server is willing to receive. Note that
+the client does not need to send any value to indicate support for
+WebTransport; clients indicate support for WebTransport by using
+the "webtransport" upgrade token in CONNECT requests establishing WebTransport
+sessions (see {{Section 9.1 of WEBTRANSPORT-H3}}).
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -146,9 +147,8 @@ the HTTP version supports that, as HTTP/2 does.
 
 WebTransport capsules closely mirror a subset of QUIC frames and provide the
 essential WebTransport features.  Within a WebTransport session, endpoints can
-
-* create and use bidirectional or unidirectional streams with no additional
-  round trips using the WT_STREAM capsule
+create and use bidirectional or unidirectional streams with no additional round
+trips using the WT_STREAM capsule.
 
 Stream creation and data flow on streams uses flow control mechanisms modeled on
 those in QUIC. Flow control is managed using the WebTransport capsules:
@@ -170,19 +170,20 @@ multiplexed over that CONNECT stream.
 A WebTransport session is a communication context between a client and server
 {{OVERVIEW}}. This section describes how sessions begin and end.
 
-## Establishing a Transport-Capable HTTP/2 Connection
+## Establishing a WebTransport-Capable HTTP/2 Connection
 
-In order to indicate support for WebTransport, both the client and the server
-MUST send a SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in their
-SETTINGS frame. Endpoints MUST NOT use any WebTransport-related functionality
-unless the parameter has been negotiated.
+In order to indicate support for WebTransport, the server MUST send a
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in its SETTINGS
+frame.  The client MUST NOT send a WebTransport request until it has received
+the setting indicating WebTransport support from the server.
 
 ## Extended CONNECT in HTTP/2
 
 {{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. An endpoint needs to send both
-SETTINGS_ENABLE_CONNECT_PROTOCOL and SETTINGS_WEBTRANSPORT_MAX_SESSIONS for
-WebTransport to be enabled.
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. A server supporting WebTransport
+needs to send both the SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value
+greater than "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value
+of "1" for WebTransport to be enabled.
 
 ## Creating a New Session
 
@@ -1051,8 +1052,6 @@ This example is intended to closely follow the example in {{Section 5.1 of
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
-SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
@@ -1091,8 +1090,6 @@ difference here is the endpoint that sends the first WT_STREAM capsule.
 [[ From Client ]]                   [[ From Server ]]
 
 SETTINGS
-SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 1
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
@@ -1123,6 +1120,19 @@ WebTransport Data
                                     WebTransport Data
 ~~~
 
+# Considerations for Future Versions
+
+Future versions of WebTransport that change the syntax of the CONNECT requests
+used to establish WebTransport sessions will need to modify the upgrade token
+used to identify WebTransport, allowing servers to offer multiple versions
+simultaneously (see {{Section 9.1 of WEBTRANSPORT-H3}}).
+
+Servers that support future incompatible versions of WebTransport signal that
+support by changing the codepoint used for the
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter (see {{h2-settings}}).  Clients
+can select the associated upgrade token, if applicable, to use when
+establishing a new session, ensuring that servers will always know the syntax
+in use for every incoming request.
 
 # Security Considerations
 

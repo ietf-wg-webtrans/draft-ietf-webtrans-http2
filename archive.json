@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-02T01:07:08.814493+00:00",
+  "timestamp": "2025-03-04T01:04:19.345527+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2084,70 +2084,6 @@
       ]
     },
     {
-      "number": 102,
-      "id": "I_kwDODnOl8857IrGa",
-      "title": "Ambiguity of WT_MAX_STREAMS (http/2 versus http/3)",
-      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/102",
-      "state": "OPEN",
-      "author": "martenrichter",
-      "authorAssociation": "NONE",
-      "assignees": [
-        "ekinnear"
-      ],
-      "labels": [
-        "ready for PR",
-        "flow-control"
-      ],
-      "body": "I am just in the course of writing unit tests and implementing WT_MAX_STREAMS,\r\nI came up with a slight difference.\r\n\r\nFor http/3, the session stream would also be counted in the maximum allowed streams\r\nso that a limit of 100 bidirectional streams translates (at least for quiche) to 99 possible bidirectional streams.\r\nFor http/2, the session is not handled in the same way as the streams, so the limit means something different for http/2.\r\nCan this lead to problems if intermediaries translate http/2 to http/3 WT_MAX_STREAMS and vice versa?",
-      "createdAt": "2024-01-04T15:34:36Z",
-      "updatedAt": "2024-03-17T12:19:50Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "ekinnear",
-          "authorAssociation": "COLLABORATOR",
-          "body": "HTTP/3 also has control streams as well that are included in the HTTP/3 level limit.\r\n\r\nThat said, because of the way that WT over HTTP/3 explodes streams out to native H3 streams, the flow control at the HTTP/3 layer cannot directly be translated to MAX_STREAMS in HTTP/2 (or the WT_MAX_STREAMS happening in either H3 or H2).\r\n\r\nThe current proposal to bring WT_MAX_STREAMS to H3 would have identical semantics, unless I'm missing something. :) \r\n\r\nOtherwise, there is no way to have an equivalent amount of per-session control over streams across HTTP/3 and HTTP/2.",
-          "createdAt": "2024-01-09T23:39:40Z",
-          "updatedAt": "2024-01-09T23:39:40Z"
-        },
-        {
-          "author": "ekinnear",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Let's discuss this in the context of the flow control for HTTP/3 discussion, as well.",
-          "createdAt": "2024-01-09T23:40:04Z",
-          "updatedAt": "2024-01-09T23:40:04Z"
-        },
-        {
-          "author": "martenrichter",
-          "authorAssociation": "NONE",
-          "body": "The point arose because I am giving the server and client-side user the ability to adjust the maximum stream limit.\r\nFor http/3 I can in fact open 99 streams for a limit of 100, and for http/2 I can open 100 streams for the same limit. \r\nNow, the question is if I should set the internal offset to 101 for http/3 to be consistent or something else. Of course, the question remains whether this is accessible via the js API in the browser.",
-          "createdAt": "2024-01-21T11:15:03Z",
-          "updatedAt": "2024-01-21T11:15:03Z"
-        },
-        {
-          "author": "ekinnear",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Discussed in editor's meeting: \r\n\r\nIf we bring flow control to H3 as well, the limit is separate and it's easy to ensure that they're not off-by-one and instead match. \r\n\r\nIf we don't bring flow control to H3, then we're somewhat stuck, since there's no good way to have them be the same because they refer to fundamentally different things.",
-          "createdAt": "2024-01-23T23:22:32Z",
-          "updatedAt": "2024-01-23T23:22:48Z"
-        },
-        {
-          "author": "martenrichter",
-          "authorAssociation": "NONE",
-          "body": "Interesting, but I am a bit confused as Quiche from Google has the limits from the underlying quic stream count available. So these would then be put into relation? (And, of course, pooled connections are another issue...)",
-          "createdAt": "2024-01-24T05:54:20Z",
-          "updatedAt": "2024-01-24T05:54:20Z"
-        },
-        {
-          "author": "ekinnear",
-          "authorAssociation": "COLLABORATOR",
-          "body": "> the limits from the underlying quic stream count available. So these would then be put into relation? (And, of course, pooled connections are another issue...)\r\n\r\nI think that's the issue -- for non-pooled (with other WT sessions, or HTTP requests) connections, we can kinda-sorta use the H3 limits, but even in those cases you've got the control streams and other H3 machinery that isn't really part of the WT stream \"count\" but would count for H3 flow control purposes. For anything with pooling, then we really need the flow control that we discussed during the interim. \r\n\r\nEither way, making things as consistent as possible still seems more than worthwhile.",
-          "createdAt": "2024-03-17T12:19:49Z",
-          "updatedAt": "2024-03-17T12:19:49Z"
-        }
-      ]
-    },
-    {
       "number": 103,
       "id": "I_kwDODnOl8858uhwD",
       "title": "Missing acknowledgement mechanism leads to problems in the case of stream closure",
@@ -2211,7 +2147,7 @@
       "id": "I_kwDODnOl886BORvO",
       "title": "Adjust SETTINGS and establishment to match HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/105",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -2222,8 +2158,8 @@
       ],
       "body": "Now that HTTP/3 is being updated per https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/143, https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/141, https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/140, and https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/135, we should update HTTP/2 to match.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/135#issuecomment-1907120035",
       "createdAt": "2024-03-04T23:47:17Z",
-      "updatedAt": "2024-07-25T22:59:26Z",
-      "closedAt": null,
+      "updatedAt": "2025-03-03T23:57:08Z",
+      "closedAt": "2025-03-03T23:57:08Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -2393,6 +2329,26 @@
           "updatedAt": "2024-09-23T06:12:10Z"
         }
       ]
+    },
+    {
+      "number": 117,
+      "id": "I_kwDODnOl886saOHH",
+      "title": "Remove flow control capsule definitions and instead reference H3 definitions",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/117",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Remove flow control capsule definitions and instead reference H3 definitions.\n\nOnce we're happy with the shape of flow control in H3, we should remove the overlapping definitions from the H2 document and instead reference the H3 versions.",
+      "createdAt": "2025-03-03T23:32:56Z",
+      "updatedAt": "2025-03-03T23:46:22Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -7874,6 +7830,34 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 116,
+      "id": "PR_kwDODnOl886NOM2q",
+      "title": "Update settings based on latest H3 changes, including examples. ",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/116",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update settings based on latest H3 changes, including examples.\r\nAlso include considerations for future versions.\r\n\r\nFixes #105",
+      "createdAt": "2025-03-03T23:24:47Z",
+      "updatedAt": "2025-03-03T23:57:07Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "2f0d8f3e5337c708ab11f456064f7e0da67b5ec7",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/adjust_settings",
+      "headRefOid": "27821beab79444f97c9e5573adce4e120fe23486",
+      "closedAt": "2025-03-03T23:57:07Z",
+      "mergedAt": "2025-03-03T23:57:07Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "09aab4f0a80c39a5c0431ca5db7adc28f48ff9e5"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }

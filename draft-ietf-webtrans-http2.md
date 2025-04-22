@@ -1644,5 +1644,6 @@ Comments:
 # Acknowledgments
 {:numbered="false"}
 
-Thanks to Anthony Chivetta, Joshua Otto, and Valentin Pistol for their
-contributions in the design and implementation of this work.
+Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto, and
+Valentin Pistol for their contributions in the design and implementation of
+this work.

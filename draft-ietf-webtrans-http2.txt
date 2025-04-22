@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 4 September 2025                                       T. Pauly
+Expires: 24 October 2025                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 4 September 2025                                       T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                            3 March 2025
+                                                           22 April 2025
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2025.
+   This Internet-Draft will expire on 24 October 2025.
 
 Copyright Notice
 
@@ -1553,9 +1553,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-11, 21 October 2024,
+              ietf-webtrans-http3-12, 3 March 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-11>.
+              webtrans-http3-12>.
 
 11.2.  Informative References
 
@@ -1586,8 +1586,9 @@ WebTransport Data
 
 Acknowledgments
 
-   Thanks to Anthony Chivetta, Joshua Otto, and Valentin Pistol for
-   their contributions in the design and implementation of this work.
+   Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto,
+   and Valentin Pistol for their contributions in the design and
+   implementation of this work.
 
 Index
 

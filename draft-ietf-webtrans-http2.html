@@ -18,18 +18,18 @@ describes a protocol that can provide many of the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available. 
     " name="description">
-<meta content="xml2rfc 3.28.0" name="generator">
+<meta content="xml2rfc 3.28.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-webtrans-http2-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.28.0
-    Python 3.12.9
+  xml2rfc 3.28.1
+    Python 3.12.10
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.5
+    Jinja2 3.1.6
     lxml 5.3.0
-    platformdirs 4.3.6
+    platformdirs 4.3.7
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.3
@@ -1053,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">March 2025</td>
+<td class="right">April 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 4 September 2025</td>
+<td class="center">Expires 24 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-03-03" class="published">3 March 2025</time>
+<time datetime="2025-04-22" class="published">22 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-09-04">4 September 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-24">24 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1145,7 +1145,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1385,7 +1385,7 @@ the number of concurrent sessions the server is willing to receive. Note that
 the client does not need to send any value to indicate support for
 WebTransport; clients indicate support for WebTransport by using
 the "webtransport" upgrade token in CONNECT requests establishing WebTransport
-sessions (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-2-2" class="pilcrow">¶</a></p>
+sessions (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">A client initiates a WebTransport session by sending an extended CONNECT request
 <span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>. If the server accepts the request, a WebTransport session is
 established. The stream that carries the CONNECT request is used to exchange
@@ -1459,7 +1459,7 @@ of "1" for WebTransport to be enabled.<a href="#section-3.2-1" class="pilcrow">�
 using the <code>https</code> URI scheme <span>[<a href="#RFC7230" class="cite xref">RFC7230</a>]</span>.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The <code>:protocol</code> pseudo-header field (<span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>) MUST be set to
-<code>webtransport</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-7.1" class="relref">Section 7.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>). The <code>:scheme</code> field MUST be
+<code>webtransport</code> (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-7.1" class="relref">Section 7.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>). The <code>:scheme</code> field MUST be
 <code>https</code>. Both the <code>:authority</code> and the <code>:path</code> value MUST be set; those fields
 indicate the desired WebTransport server. In a Web context, the request MUST
 include an <code>Origin</code> header field <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> that includes the origin of
@@ -1498,7 +1498,7 @@ in preference order. If the server receives such a header, it MAY include a
 <code>WT-Protocol</code> field in a successful (2xx) response. If it does, the server
 MUST include a single choice from the client's list in that field. Servers MAY
 reject the request if the client did not include a suitable protocol.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Both <code>WT-Available-Protocols</code> and <code>WT-Protocol</code> are defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-3.4" class="relref">Section 3.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Both <code>WT-Available-Protocols</code> and <code>WT-Protocol</code> are defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-3.4" class="relref">Section 3.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="errors">
@@ -2386,7 +2386,7 @@ natively supports QUIC datagrams, such as WebTransport over HTTP/3
 <a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-close_webtransport_session-" class="section-name selfRef">CLOSE_WEBTRANSPORT_SESSION Capsule</a>
         </h3>
 <p id="section-6.12-1">WebTransport over HTTP/2 uses the CLOSE_WEBTRANSPORT_SESSION capsule defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-5" class="relref">Section 5</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to terminate a WebTransport session with an
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5" class="relref">Section 5</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to terminate a WebTransport session with an
 application error code and message.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
 <p id="section-6.12-2">WebTransport sessions can be terminated by optionally sending a
 CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
@@ -2440,7 +2440,7 @@ error string.<a href="#section-6.12-7" class="pilcrow">¶</a></p>
 gracefully stop accepting new streams while still finishing processing of
 previously established streams.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
 <p id="section-6.13-2">WebTransport over HTTP/2 uses the DRAIN_WEBTRANSPORT_SESSION capsule defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-4.6" class="relref">Section 4.6</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to gracefully shut down a WebTransport
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-4.6" class="relref">Section 4.6</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to gracefully shut down a WebTransport
 session.<a href="#section-6.13-2" class="pilcrow">¶</a></p>
 <span id="name-drain_webtransport_session-c"></span><div id="fig-drain_webtransport_session">
 <figure id="figure-13">
@@ -2574,7 +2574,7 @@ WebTransport Data
 <p id="section-8-1">Future versions of WebTransport that change the syntax of the CONNECT requests
 used to establish WebTransport sessions will need to modify the upgrade token
 used to identify WebTransport, allowing servers to offer multiple versions
-simultaneously (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-8-1" class="pilcrow">¶</a></p>
+simultaneously (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Servers that support future incompatible versions of WebTransport signal that
 support by changing the codepoint used for the
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter (see <a href="#h2-settings" class="auto internal xref">Section 10.1</a>).  Clients
@@ -3380,7 +3380,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dd class="break"></dd>
 <dt id="WEBTRANSPORT-H3">[WEBTRANSPORT-H3]</dt>
       <dd>
-<span class="refAuthor">Frindell, A.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"WebTransport over HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-http3-11</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-11</a>&gt;</span>. </dd>
+<span class="refAuthor">Frindell, A.</span>, <span class="refAuthor">Kinnear, E.</span>, and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"WebTransport over HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-webtrans-http3-12</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12">https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -3421,8 +3421,9 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">Thanks to Anthony Chivetta, Joshua Otto, and Valentin Pistol for their
-contributions in the design and implementation of this work.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto, and
+Valentin Pistol for their contributions in the design and implementation of
+this work.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="appendix-B">

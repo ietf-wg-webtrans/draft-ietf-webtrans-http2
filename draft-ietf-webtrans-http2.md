@@ -1042,6 +1042,31 @@ For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
 forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
 WT_STREAM capsule without error.
 
+## Datagram Size Limits
+
+The SETTINGS_MAX_DATAGRAM_SIZE setting provides endpoints with the means to
+signal any limits that might exist on the processing or onward forwarding of
+DATAGRAM capsules.  An endpoint can update this setting to reflect its current
+understanding of the largest DATAGRAM payload that it can accept.
+
+An endpoint that forwards datagrams over QUIC will be constrained in what it can
+forward. Datagrams that are too large cannot be forwarded if they cause QUIC
+packets to exceed the path MTU for the chosen path.
+
+Endpoints might also choose to limit the size of datagrams either because of
+implementation-defined constraints, such as memory handling.
+
+There is a single value of SETTINGS_MAX_DATAGRAM_SIZE that applies to the entire
+connection.  An endpoint that forwards datagrams over multiple different
+connections needs to set the value of SETTINGS_MAX_DATAGRAM_SIZE to the smallest
+of the values that might apply.
+
+The value of SETTINGS_MAX_DATAGRAM_SIZE defaults to 2<sup>62</sup>-1, implying
+no bound.  The value of SETTINGS_MAX_DATAGRAM_SIZE can be updated as estimates
+of the path MTU that might be used for forwarding change or in reaction to
+requests that change where datagrams might be forwarded.
+
+
 # Examples
 
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
@@ -1178,7 +1203,7 @@ is not willing to receive any WebTransport sessions.
 
 Setting Name:
 
-: WEBTRANSPORT_MAX_SESSIONS
+: SETTINGS_WEBTRANSPORT_MAX_SESSIONS
 
 Value:
 
@@ -1333,6 +1358,29 @@ Value:
 Default:
 
 : 0
+
+Specification:
+
+: This document
+
+
+{: anchor="SETTINGS_MAX_DATAGRAM_SIZE"}
+
+The SETTINGS_MAX_DATAGRAM_SIZE parameter specifies a limit on the
+size of the content of DATAGRAM capsules.  The default value for the
+SETTINGS_MAX_DATAGRAM_SIZE parameter is 2<sup>62</sup>-1.
+
+Setting Name:
+
+: SETTINGS_MAX_DATAGRAM_SIZE
+
+Value:
+
+: 0x2b66
+
+Default:
+
+: 2^62-1
 
 Specification:
 

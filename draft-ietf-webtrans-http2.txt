@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 24 October 2025                                        T. Pauly
+Expires: 26 October 2025                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 24 October 2025                                        T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                           22 April 2025
+                                                           24 April 2025
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 October 2025.
+   This Internet-Draft will expire on 26 October 2025.
 
 Copyright Notice
 

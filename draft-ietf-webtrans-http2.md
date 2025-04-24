@@ -1066,6 +1066,12 @@ no bound.  The value of SETTINGS_MAX_DATAGRAM_SIZE can be updated as estimates
 of the path MTU that might be used for forwarding change or in reaction to
 requests that change where datagrams might be forwarded.
 
+An endpoint MUST NOT send a DATAGRAM capsule that exceeds the value of
+SETTINGS_MAX_DATAGRAM_SIZE after acknowledging the setting.  An endpoint that
+receives a DATAGRAM capsule that exceeds this limit MUST drop the capsule and
+MAY choose to close the connection with a PROTOCOL_ERROR; see {{Section 7 of
+HTTP2}}.
+
 
 # Examples
 

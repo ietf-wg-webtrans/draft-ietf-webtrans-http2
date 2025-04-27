@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-24T01:08:46.700618+00:00",
+  "timestamp": "2025-04-27T01:13:00.342647+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2456,7 +2456,7 @@
       "labels": [],
       "body": "In QUIC, we have the path MTU.  We don't have the same in h2, so DATAGRAM capsules can be any size.  That's not realistic, so I propose we use a setting to communicate a size limit.  There's a bunch of reasons that this is probably not good enough.  Mostly, there's no way to ensure that this value accurately reflects the minimum limit that applies to a chain of forwarding hops.  That means that an application that really cares will have to do its own probing of the path (and do so continuously, just like with PLPMTUD). But even if this is only used to cap the size to something that is moderately reasonable in terms of memory consumption at the consuming end, we win.\n\nSee #123.",
       "createdAt": "2025-04-23T00:21:36Z",
-      "updatedAt": "2025-04-23T21:10:24Z",
+      "updatedAt": "2025-04-24T17:20:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -2465,6 +2465,34 @@
           "body": "We would need this for h3 as well, because it's possible to send HTTP Datagrams in capsules over h3 as well",
           "createdAt": "2025-04-23T21:10:24Z",
           "updatedAt": "2025-04-23T21:10:24Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "For h3, the limits on UDP datagram size ensure that you can limit the HTTP datagram size without this.  It's not perfect, but then neither is this.  In h2, there's no way to effectively limit HTTP datagram size otherwise.  With that in mind, do you think we'd need it in both versions?",
+          "createdAt": "2025-04-24T04:42:22Z",
+          "updatedAt": "2025-04-24T04:42:22Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In h3, HTTP Datagrams can be sent either of two ways:\n* QUIC DATAGRAM frames\n* DATAGRAM capsules\n\nQUIC DATAGRAM frames are limited in size by the path MTU which should be a sufficient cap for everyone.\n\nDATAGRAM capsules aren't capped though. If we think those should be capped, then we should cap them in both h2 and h3. It would be strange to provide a mechanism for capping it to 2000 bytes in h2 but leave it unlimited in h3.",
+          "createdAt": "2025-04-24T16:46:18Z",
+          "updatedAt": "2025-04-24T16:46:18Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "NONE",
+          "body": "I tend to agree with David, I don't like the mismatch between h2 and h3. The use of capsule protocol is a property of the request stream, not a connection. That would imply we should manage datagram sizes at the capsule protocol level (if anything should be done at all). In other words, advertise a datagram capsule limit via a header and allow in-band runtime updates via a new capsule type. That sounds purest but a lot more machinery to add. \n\nIf we wanted to pursue that path, we might want to consider to spin it off to an rfc 9297bis (which is an idea we've been tossing about in HTTPbis anyway).",
+          "createdAt": "2025-04-24T17:10:28Z",
+          "updatedAt": "2025-04-24T17:10:28Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Adding a MAX_DATAGRAM_SIZE capsule sounds like an easy fix. The capsule would just contain a varint, and the semantics would be that the sender of the capsule indicates that it will silently drop all received DATAGRAM capsules that are larger than this limit. But yeah that probably doesn't belong in the WebTransport documents.",
+          "createdAt": "2025-04-24T17:20:08Z",
+          "updatedAt": "2025-04-24T17:20:22Z"
         }
       ]
     }
@@ -8118,13 +8146,13 @@
       "labels": [],
       "body": "I realized that there wasn't an easy way to communicate datagram size limits in h2.  This is the minimal thing.\r\n\r\nThis is new, so I'll open an issue to discuss...",
       "createdAt": "2025-04-23T00:18:21Z",
-      "updatedAt": "2025-04-23T11:48:39Z",
+      "updatedAt": "2025-04-25T18:14:14Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "2247738a09596a24825c534a11469ee503c11cc1",
       "headRepository": "martinthomson/draft-webtransport-http2",
       "headRefName": "max-datagram-size",
-      "headRefOid": "0c2dcabe6799dbb549881a96d736b152f5522aed",
+      "headRefOid": "e37d54fe3f099e4247b316ab2cd739e0dd3060cb",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -8136,6 +8164,34 @@
           "body": "What is supposwd to happen if a too large capsule is received?",
           "createdAt": "2025-04-23T11:48:38Z",
           "updatedAt": "2025-04-23T11:48:38Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oops, I think that the only thing to do is a) drop the datagram, and b) (maybe) close the connection.  Because datagrams aren't guaranteed to get through and this might be just one hop on a multi-hop exchange, it doesn't make sense to mandate that the connection be closed, but endpoints should not be exceeding this limit.",
+          "createdAt": "2025-04-24T05:34:49Z",
+          "updatedAt": "2025-04-24T05:34:49Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Closing the connection is fraught, because an endpoint could send a large DATAGRAM capsule before it receives the peer's settings. I think the only option is to silently drop.\r\n\r\nWe could close the connection if we know for certain that the offending large HTTP datagram was sent after the settings were ACKed, but I don't know if that's worth the effort",
+          "createdAt": "2025-04-24T16:48:52Z",
+          "updatedAt": "2025-04-24T16:48:52Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I didn't *require* that the connection be closed, and I don't see any way for an endpoint to send a datagram capsule prior to receiving updated SETTINGS.  That is, I can't see how you would ever receive something that is larger than you can handle (assuming you bother to set the setting, I guess).",
+          "createdAt": "2025-04-24T23:13:39Z",
+          "updatedAt": "2025-04-24T23:13:39Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Are you saying that specifically about WebTransport, because in WebTransport we require waiting on settings before acting on requests? Because in the common case you could imagine having the request arrive before settings in h3.",
+          "createdAt": "2025-04-25T18:14:13Z",
+          "updatedAt": "2025-04-25T18:14:13Z"
         }
       ],
       "reviews": []

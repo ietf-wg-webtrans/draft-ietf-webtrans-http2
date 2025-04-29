@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-27T01:13:00.342647+00:00",
+  "timestamp": "2025-04-29T01:09:00.664423+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2456,7 +2456,7 @@
       "labels": [],
       "body": "In QUIC, we have the path MTU.  We don't have the same in h2, so DATAGRAM capsules can be any size.  That's not realistic, so I propose we use a setting to communicate a size limit.  There's a bunch of reasons that this is probably not good enough.  Mostly, there's no way to ensure that this value accurately reflects the minimum limit that applies to a chain of forwarding hops.  That means that an application that really cares will have to do its own probing of the path (and do so continuously, just like with PLPMTUD). But even if this is only used to cap the size to something that is moderately reasonable in terms of memory consumption at the consuming end, we win.\n\nSee #123.",
       "createdAt": "2025-04-23T00:21:36Z",
-      "updatedAt": "2025-04-24T17:20:23Z",
+      "updatedAt": "2025-04-27T18:19:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -2493,6 +2493,20 @@
           "body": "Adding a MAX_DATAGRAM_SIZE capsule sounds like an easy fix. The capsule would just contain a varint, and the semantics would be that the sender of the capsule indicates that it will silently drop all received DATAGRAM capsules that are larger than this limit. But yeah that probably doesn't belong in the WebTransport documents.",
           "createdAt": "2025-04-24T17:20:08Z",
           "updatedAt": "2025-04-24T17:20:22Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "I am thinking of testing it in my implementation, and I am wondering if the flow control window sizes pose a limit that would simply implementations.",
+          "createdAt": "2025-04-27T08:43:29Z",
+          "updatedAt": "2025-04-27T08:43:29Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Here is a prototype implementation for http2:\nhttps://github.com/fails-components/webtransport/pull/375\nincluding a capsule for the value (I need it for my webtransport over websocket flavor).\nAlso one test is added (inverse direction is missing).\nNote, that I included in the server code, code that will reject non stream capsules over a multiple of session window size, as it might be an attack vector.",
+          "createdAt": "2025-04-27T18:19:00Z",
+          "updatedAt": "2025-04-27T18:19:00Z"
         }
       ]
     }
@@ -8146,7 +8160,7 @@
       "labels": [],
       "body": "I realized that there wasn't an easy way to communicate datagram size limits in h2.  This is the minimal thing.\r\n\r\nThis is new, so I'll open an issue to discuss...",
       "createdAt": "2025-04-23T00:18:21Z",
-      "updatedAt": "2025-04-25T18:14:14Z",
+      "updatedAt": "2025-04-28T05:55:52Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "2247738a09596a24825c534a11469ee503c11cc1",
@@ -8192,6 +8206,13 @@
           "body": "Are you saying that specifically about WebTransport, because in WebTransport we require waiting on settings before acting on requests? Because in the common case you could imagine having the request arrive before settings in h3.",
           "createdAt": "2025-04-25T18:14:13Z",
           "updatedAt": "2025-04-25T18:14:13Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As noted elsewhere, if we want h3, then we might consider a different design.  That's only relevant if you use DATAGRAM capsules, of course.",
+          "createdAt": "2025-04-28T05:55:51Z",
+          "updatedAt": "2025-04-28T05:55:51Z"
         }
       ],
       "reviews": []

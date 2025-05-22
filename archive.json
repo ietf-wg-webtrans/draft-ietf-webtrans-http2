@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-29T01:09:00.664423+00:00",
+  "timestamp": "2025-05-22T01:11:19.027701+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2456,7 +2456,7 @@
       "labels": [],
       "body": "In QUIC, we have the path MTU.  We don't have the same in h2, so DATAGRAM capsules can be any size.  That's not realistic, so I propose we use a setting to communicate a size limit.  There's a bunch of reasons that this is probably not good enough.  Mostly, there's no way to ensure that this value accurately reflects the minimum limit that applies to a chain of forwarding hops.  That means that an application that really cares will have to do its own probing of the path (and do so continuously, just like with PLPMTUD). But even if this is only used to cap the size to something that is moderately reasonable in terms of memory consumption at the consuming end, we win.\n\nSee #123.",
       "createdAt": "2025-04-23T00:21:36Z",
-      "updatedAt": "2025-04-27T18:19:01Z",
+      "updatedAt": "2025-05-20T23:03:48Z",
       "closedAt": null,
       "comments": [
         {
@@ -2507,6 +2507,13 @@
           "body": "Here is a prototype implementation for http2:\nhttps://github.com/fails-components/webtransport/pull/375\nincluding a capsule for the value (I need it for my webtransport over websocket flavor).\nAlso one test is added (inverse direction is missing).\nNote, that I included in the server code, code that will reject non stream capsules over a multiple of session window size, as it might be an attack vector.",
           "createdAt": "2025-04-27T18:19:00Z",
           "updatedAt": "2025-04-27T18:19:00Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@DavidSchinazi, why do you suggest a capsule?  Are you thinking that this needs to be signaled anew for every session?  That does address most of the concerns about end-to-end and various dynamics.  Should we spin up a new draft just for that?",
+          "createdAt": "2025-05-20T23:03:47Z",
+          "updatedAt": "2025-05-20T23:03:47Z"
         }
       ]
     }

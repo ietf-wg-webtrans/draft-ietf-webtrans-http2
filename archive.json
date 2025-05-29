@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-22T01:11:19.027701+00:00",
+  "timestamp": "2025-05-29T01:12:00.023168+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2456,7 +2456,7 @@
       "labels": [],
       "body": "In QUIC, we have the path MTU.  We don't have the same in h2, so DATAGRAM capsules can be any size.  That's not realistic, so I propose we use a setting to communicate a size limit.  There's a bunch of reasons that this is probably not good enough.  Mostly, there's no way to ensure that this value accurately reflects the minimum limit that applies to a chain of forwarding hops.  That means that an application that really cares will have to do its own probing of the path (and do so continuously, just like with PLPMTUD). But even if this is only used to cap the size to something that is moderately reasonable in terms of memory consumption at the consuming end, we win.\n\nSee #123.",
       "createdAt": "2025-04-23T00:21:36Z",
-      "updatedAt": "2025-05-20T23:03:48Z",
+      "updatedAt": "2025-05-28T06:28:49Z",
       "closedAt": null,
       "comments": [
         {
@@ -2514,6 +2514,34 @@
           "body": "@DavidSchinazi, why do you suggest a capsule?  Are you thinking that this needs to be signaled anew for every session?  That does address most of the concerns about end-to-end and various dynamics.  Should we spin up a new draft just for that?",
           "createdAt": "2025-05-20T23:03:47Z",
           "updatedAt": "2025-05-20T23:03:47Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@martinthomson the max datagram capsule size is an end-to-end property of the endpoints (generally based on acceptable receive buffer sizes). Since two capsule requests on the same `client---intermediary` connection could be handled by two different backends, it makes sense to renegotiate it on each request.\n\nOn the topic of where to do this, we could either split it into its own draft, otherwise Lucas and I have been chatting about doing either a followup or a bis to 9297, so we could put this there as well. I'm thinking a 9297bis which adds some new features like this MAX_DATAGRAM_SIZE capsule is probably the best path forward. @LPardue, thoughts?",
+          "createdAt": "2025-05-27T21:46:56Z",
+          "updatedAt": "2025-05-27T21:46:56Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "The discussion at W3C looks like they do not care in the moment (see transcript https://www.w3.org/wiki/WebTransport/Meetings2023#WebTransport_Bi-weekly_Virtual_Meeting_#102_late_-_May_20,_2025).",
+          "createdAt": "2025-05-28T06:04:01Z",
+          "updatedAt": "2025-05-28T06:04:01Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That's not how I interpreted that discussion.  I suggested that we remove the hard dependency on the protocol gaining a mechanism for signaling this, that's all.  This was to allow progress to continue on API specifications, without prejudice to how the protocols continue to evolve.  It seems like this is a useful mechanism to be able to signal and @DavidSchinazi's proposal seems like a good way to proceed.",
+          "createdAt": "2025-05-28T06:24:44Z",
+          "updatedAt": "2025-05-28T06:24:44Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Ok, that interpretation sounds better, I am only reading the transcript, and I wanted you to be also aware. And yes, a capsule should work, that's why I made a demo implementation, it should, for most scenarios with proxies, etc, provide a solution.",
+          "createdAt": "2025-05-28T06:28:48Z",
+          "updatedAt": "2025-05-28T06:28:48Z"
         }
       ]
     }

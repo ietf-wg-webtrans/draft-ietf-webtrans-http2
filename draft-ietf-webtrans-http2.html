@@ -28,12 +28,12 @@ protocol is not available.
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
-    lxml 5.3.0
-    platformdirs 4.3.7
+    lxml 5.3.1
+    platformdirs 4.3.8
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.3
-    setuptools 70.3.0
+    setuptools 80.9.0
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-webtrans-http2.xml" rel="alternate" type="application/rfc+xml">
@@ -1053,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">April 2025</td>
+<td class="right">June 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 26 October 2025</td>
+<td class="center">Expires 5 December 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-24" class="published">24 April 2025</time>
+<time datetime="2025-06-03" class="published">3 June 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-26">26 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-12-05">5 December 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1145,7 +1145,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1278,10 +1278,10 @@ draft corresponding to this document can be found at
                 <p id="section-toc.1-1.6.2.11.1"><a href="#section-6.11" class="auto internal xref">6.11</a>. <a href="#name-datagram-capsule" class="internal xref">DATAGRAM Capsule</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.12">
-                <p id="section-toc.1-1.6.2.12.1"><a href="#section-6.12" class="auto internal xref">6.12</a>. <a href="#name-close_webtransport_session-" class="internal xref">CLOSE_WEBTRANSPORT_SESSION Capsule</a></p>
+                <p id="section-toc.1-1.6.2.12.1"><a href="#section-6.12" class="auto internal xref">6.12</a>. <a href="#name-wt_close_session-capsule" class="internal xref">WT_CLOSE_SESSION Capsule</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.13">
-                <p id="section-toc.1-1.6.2.13.1"><a href="#section-6.13" class="auto internal xref">6.13</a>. <a href="#name-drain_webtransport_session-" class="internal xref">DRAIN_WEBTRANSPORT_SESSION Capsule</a></p>
+                <p id="section-toc.1-1.6.2.13.1"><a href="#section-6.13" class="auto internal xref">6.13</a>. <a href="#name-wt_drain_session-capsule" class="internal xref">WT_DRAIN_SESSION Capsule</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.14">
                 <p id="section-toc.1-1.6.2.14.1"><a href="#section-6.14" class="auto internal xref">6.14</a>. <a href="#name-capsule-ordering-and-reliab" class="internal xref">Capsule Ordering and Reliability</a></p>
@@ -1508,15 +1508,15 @@ reject the request if the client did not include a suitable protocol.<a href="#s
         </h3>
 <p id="section-3.5-1">An WebTransport session over HTTP/2 is terminated when either endpoint closes
 the stream associated with the CONNECT request that initiated the session.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.5-2">Prior to closing the stream associated with the CONNECT request, either endpoint
-can send a CLOSE_WEBTRANSPORT_SESSION capsule with an application error code
-and message to convey additional information about the reasons for the closure
-of the session.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">Prior to closing the stream associated with the CONNECT request, either
+endpoint can send a WT_CLOSE_SESSION capsule with an application error code
+and message to convey additional information about the reasons for the
+closure of the session.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
 <p id="section-3.5-3">Session errors result in the termination of a session.  Errors can be reported
-using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes an error code and
-an optional explanatory message.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
-<p id="section-3.5-4">An endpoint can terminate a session without sending a CLOSE_WEBTRANSPORT_SESSION
-capsule by closing the HTTP/2 stream.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+using the WT_CLOSE_SESSION capsule, which includes an error code and an
+optional explanatory message.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+<p id="section-3.5-4">An endpoint can terminate a session without sending a WT_CLOSE_SESSION capsule
+by closing the HTTP/2 stream.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 <p id="section-3.5-5">A stream that is reset terminates the session without providing an
 application-level signal, though there will be an HTTP/2 error code.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
 <p id="section-3.5-6">This document reserves the following HTTP/2 error codes for use with reporting
@@ -1534,8 +1534,8 @@ codes.<a href="#section-3.5-7.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.5-8">Prior terminating a stream with an error, a CLOSE_WEBTRANSPORT_SESSION capsule
-with an application-specified error code MAY be sent.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
+<p id="section-3.5-8">Prior terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
+application-specified error code MAY be sent.<a href="#section-3.5-8" class="pilcrow">¶</a></p>
 <p id="section-3.5-9">Session errors do not necessarily result in any change of HTTP/2 connection
 state, except that an endpoint might choose to terminate a connection in
 response to stream errors; see <span><a href="https://rfc-editor.org/rfc/rfc9113#section-5.4" class="relref">Section 5.4</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.<a href="#section-3.5-9" class="pilcrow">¶</a></p>
@@ -2380,23 +2380,23 @@ natively supports QUIC datagrams, such as WebTransport over HTTP/3
 <span>[<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to use native QUIC datagrams.<a href="#section-6.11-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="CLOSE_WEBTRANSPORT_SESSION_CAPSULE">
+<div id="WT_CLOSE_SESSION_CAPSULE">
 <section id="section-6.12">
-        <h3 id="name-close_webtransport_session-">
-<a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-close_webtransport_session-" class="section-name selfRef">CLOSE_WEBTRANSPORT_SESSION Capsule</a>
+        <h3 id="name-wt_close_session-capsule">
+<a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-wt_close_session-capsule" class="section-name selfRef">WT_CLOSE_SESSION Capsule</a>
         </h3>
-<p id="section-6.12-1">WebTransport over HTTP/2 uses the CLOSE_WEBTRANSPORT_SESSION capsule defined in
+<p id="section-6.12-1">WebTransport over HTTP/2 uses the WT_CLOSE_SESSION capsule defined in
 <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5" class="relref">Section 5</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to terminate a WebTransport session with an
 application error code and message.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
 <p id="section-6.12-2">WebTransport sessions can be terminated by optionally sending a
-CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2 stream
-associated with the session (see <a href="#errors" class="auto internal xref">Section 3.5</a>).<a href="#section-6.12-2" class="pilcrow">¶</a></p>
-<span id="name-close_webtransport_session-c"></span><div id="fig-close_webtransport-session">
+WT_CLOSE_SESSION capsule and then by closing the HTTP/2 stream associated
+with the session (see <a href="#errors" class="auto internal xref">Section 3.5</a>).<a href="#section-6.12-2" class="pilcrow">¶</a></p>
+<span id="name-wt_close_session-capsule-fo"></span><div id="fig-wt_close_session">
 <figure id="figure-12">
           <div class="alignLeft art-text artwork" id="section-6.12-3.1">
 <pre>
-CLOSE_WEBTRANSPORT_SESSION Capsule {
-  Type (i) = CLOSE_WEBTRANSPORT_SESSION,
+WT_CLOSE_SESSION Capsule {
+  Type (i) = WT_CLOSE_SESSION,
   Length (i),
   Application Error Code (32),
   Application Error Message (..8192),
@@ -2404,11 +2404,11 @@ CLOSE_WEBTRANSPORT_SESSION Capsule {
 </pre>
 </div>
 <figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
-<a href="#name-close_webtransport_session-c" class="selfRef">CLOSE_WEBTRANSPORT_SESSION Capsule Format</a>
+<a href="#name-wt_close_session-capsule-fo" class="selfRef">WT_CLOSE_SESSION Capsule Format</a>
           </figcaption></figure>
 </div>
-<p id="section-6.12-4">When used in WebTransport over HTTP/2, CLOSE_WEBTRANSPORT_SESSION capsules
-contain the following fields:<a href="#section-6.12-4" class="pilcrow">¶</a></p>
+<p id="section-6.12-4">When used in WebTransport over HTTP/2, WT_CLOSE_SESSION capsules contain the
+following fields:<a href="#section-6.12-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-6.12-5">
           <dt id="section-6.12-5.1">Application Error Code:</dt>
           <dd style="margin-left: 1.5em" id="section-6.12-5.2">
@@ -2423,44 +2423,43 @@ length MUST NOT exceed 1024 bytes.<a href="#section-6.12-5.4.1" class="pilcrow">
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-6.12-6">An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST then close the
-stream. The recipient MUST close the stream upon receipt of the capsule.<a href="#section-6.12-6" class="pilcrow">¶</a></p>
-<p id="section-6.12-7">Cleanly terminating a WebTransport session without a CLOSE_WEBTRANSPORT_SESSION
-capsule is semantically equivalent to terminating it with a
-CLOSE_WEBTRANSPORT_SESSION capsule that has an error code of 0 and an empty
-error string.<a href="#section-6.12-7" class="pilcrow">¶</a></p>
+<p id="section-6.12-6">An endpoint that sends a WT_CLOSE_SESSION capsule MUST then close the stream.
+The recipient MUST close the stream upon receipt of the capsule.<a href="#section-6.12-6" class="pilcrow">¶</a></p>
+<p id="section-6.12-7">Cleanly terminating a WebTransport session without a WT_CLOSE_SESSION capsule
+is semantically equivalent to terminating it with a WT_CLOSE_SESSION capsule
+that has an error code of 0 and an empty error string.<a href="#section-6.12-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="DRAIN_WEBTRANSPORT_SESSION_CAPSULE">
+<div id="WT_DRAIN_SESSION_CAPSULE">
 <section id="section-6.13">
-        <h3 id="name-drain_webtransport_session-">
-<a href="#section-6.13" class="section-number selfRef">6.13. </a><a href="#name-drain_webtransport_session-" class="section-name selfRef">DRAIN_WEBTRANSPORT_SESSION Capsule</a>
+        <h3 id="name-wt_drain_session-capsule">
+<a href="#section-6.13" class="section-number selfRef">6.13. </a><a href="#name-wt_drain_session-capsule" class="section-name selfRef">WT_DRAIN_SESSION Capsule</a>
         </h3>
 <p id="section-6.13-1">HTTP/2 uses GOAWAY frames (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-6.8" class="relref">Section 6.8</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>) to allow an endpoint to
 gracefully stop accepting new streams while still finishing processing of
 previously established streams.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
-<p id="section-6.13-2">WebTransport over HTTP/2 uses the DRAIN_WEBTRANSPORT_SESSION capsule defined in
+<p id="section-6.13-2">WebTransport over HTTP/2 uses the WT_DRAIN_SESSION capsule defined in
 <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-4.6" class="relref">Section 4.6</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to gracefully shut down a WebTransport
 session.<a href="#section-6.13-2" class="pilcrow">¶</a></p>
-<span id="name-drain_webtransport_session-c"></span><div id="fig-drain_webtransport_session">
+<span id="name-wt_drain_session-capsule-fo"></span><div id="fig-wt_drain_session">
 <figure id="figure-13">
           <div class="alignLeft art-text artwork" id="section-6.13-3.1">
 <pre>
-DRAIN_WEBTRANSPORT_SESSION Capsule {
-  Type (i) = DRAIN_WEBTRANSPORT_SESSION,
+WT_DRAIN_SESSION Capsule {
+  Type (i) = WT_DRAIN_SESSION,
   Length (i) = 0
 }
 </pre>
 </div>
 <figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
-<a href="#name-drain_webtransport_session-c" class="selfRef">DRAIN_WEBTRANSPORT_SESSION Capsule Format</a>
+<a href="#name-wt_drain_session-capsule-fo" class="selfRef">WT_DRAIN_SESSION Capsule Format</a>
           </figcaption></figure>
 </div>
-<p id="section-6.13-4">After sending or receiving either a DRAIN_WEBTRANSPORT_SESSION capsule or HTTP/2
-GOAWAY frame, an endpoint MAY continue using the session and MAY open new
+<p id="section-6.13-4">After sending or receiving either a WT_DRAIN_SESSION capsule or HTTP/2 GOAWAY
+frame, an endpoint MAY continue using the session and MAY open new
 WebTransport streams. The signal is intended for the application using
-WebTransport, which is expected to attempt to gracefully terminate the session
-as soon as possible.<a href="#section-6.13-4" class="pilcrow">¶</a></p>
+WebTransport, which is expected to attempt to gracefully terminate the
+session as soon as possible.<a href="#section-6.13-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="capsule-ordering-and-reliability">

@@ -5,7 +5,7 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 26 October 2025                                        T. Pauly
+Expires: 5 December 2025                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 26 October 2025                                        T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                           24 April 2025
+                                                             3 June 2025
 
 
                         WebTransport over HTTP/2
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 October 2025.
+   This Internet-Draft will expire on 5 December 2025.
 
 Copyright Notice
 
@@ -103,8 +103,8 @@ Table of Contents
      6.9.  WT_STREAM_DATA_BLOCKED Capsule
      6.10. WT_STREAMS_BLOCKED Capsule
      6.11. DATAGRAM Capsule
-     6.12. CLOSE_WEBTRANSPORT_SESSION Capsule
-     6.13. DRAIN_WEBTRANSPORT_SESSION Capsule
+     6.12. WT_CLOSE_SESSION Capsule
+     6.13. WT_DRAIN_SESSION Capsule
      6.14. Capsule Ordering and Reliability
    7.  Examples
    8.  Considerations for Future Versions
@@ -297,16 +297,16 @@ Table of Contents
    initiated the session.
 
    Prior to closing the stream associated with the CONNECT request,
-   either endpoint can send a CLOSE_WEBTRANSPORT_SESSION capsule with an
+   either endpoint can send a WT_CLOSE_SESSION capsule with an
    application error code and message to convey additional information
    about the reasons for the closure of the session.
 
    Session errors result in the termination of a session.  Errors can be
-   reported using the CLOSE_WEBTRANSPORT_SESSION capsule, which includes
-   an error code and an optional explanatory message.
+   reported using the WT_CLOSE_SESSION capsule, which includes an error
+   code and an optional explanatory message.
 
    An endpoint can terminate a session without sending a
-   CLOSE_WEBTRANSPORT_SESSION capsule by closing the HTTP/2 stream.
+   WT_CLOSE_SESSION capsule by closing the HTTP/2 stream.
 
    A stream that is reset terminates the session without providing an
    application-level signal, though there will be an HTTP/2 error code.
@@ -320,9 +320,8 @@ Table of Contents
    WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):  A stream-related capsule
       identified a stream that was in an invalid state.
 
-   Prior terminating a stream with an error, a
-   CLOSE_WEBTRANSPORT_SESSION capsule with an application-specified
-   error code MAY be sent.
+   Prior terminating a stream with an error, a WT_CLOSE_SESSION capsule
+   with an application-specified error code MAY be sent.
 
    Session errors do not necessarily result in any change of HTTP/2
    connection state, except that an endpoint might choose to terminate a
@@ -986,27 +985,27 @@ Table of Contents
    [WEBTRANSPORT-H3], intermediaries follow the requirements in
    [WEBTRANSPORT-H3] to use native QUIC datagrams.
 
-6.12.  CLOSE_WEBTRANSPORT_SESSION Capsule
+6.12.  WT_CLOSE_SESSION Capsule
 
-   WebTransport over HTTP/2 uses the CLOSE_WEBTRANSPORT_SESSION capsule
-   defined in Section 5 of [WEBTRANSPORT-H3] to terminate a WebTransport
-   session with an application error code and message.
+   WebTransport over HTTP/2 uses the WT_CLOSE_SESSION capsule defined in
+   Section 5 of [WEBTRANSPORT-H3] to terminate a WebTransport session
+   with an application error code and message.
 
    WebTransport sessions can be terminated by optionally sending a
-   CLOSE_WEBTRANSPORT_SESSION capsule and then by closing the HTTP/2
-   stream associated with the session (see Section 3.5).
+   WT_CLOSE_SESSION capsule and then by closing the HTTP/2 stream
+   associated with the session (see Section 3.5).
 
-   CLOSE_WEBTRANSPORT_SESSION Capsule {
-     Type (i) = CLOSE_WEBTRANSPORT_SESSION,
+   WT_CLOSE_SESSION Capsule {
+     Type (i) = WT_CLOSE_SESSION,
      Length (i),
      Application Error Code (32),
      Application Error Message (..8192),
    }
 
-            Figure 12: CLOSE_WEBTRANSPORT_SESSION Capsule Format
+                 Figure 12: WT_CLOSE_SESSION Capsule Format
 
-   When used in WebTransport over HTTP/2, CLOSE_WEBTRANSPORT_SESSION
-   capsules contain the following fields:
+   When used in WebTransport over HTTP/2, WT_CLOSE_SESSION capsules
+   contain the following fields:
 
    Application Error Code:  A 32-bit error code provided by the
       application closing the connection.
@@ -1016,37 +1015,37 @@ Table of Contents
       takes up the remainder of the capsule, and its length MUST NOT
       exceed 1024 bytes.
 
-   An endpoint that sends a CLOSE_WEBTRANSPORT_SESSION capsule MUST then
-   close the stream.  The recipient MUST close the stream upon receipt
-   of the capsule.
+   An endpoint that sends a WT_CLOSE_SESSION capsule MUST then close the
+   stream.  The recipient MUST close the stream upon receipt of the
+   capsule.
 
-   Cleanly terminating a WebTransport session without a
-   CLOSE_WEBTRANSPORT_SESSION capsule is semantically equivalent to
-   terminating it with a CLOSE_WEBTRANSPORT_SESSION capsule that has an
-   error code of 0 and an empty error string.
+   Cleanly terminating a WebTransport session without a WT_CLOSE_SESSION
+   capsule is semantically equivalent to terminating it with a
+   WT_CLOSE_SESSION capsule that has an error code of 0 and an empty
+   error string.
 
-6.13.  DRAIN_WEBTRANSPORT_SESSION Capsule
+6.13.  WT_DRAIN_SESSION Capsule
 
    HTTP/2 uses GOAWAY frames (Section 6.8 of [HTTP2]) to allow an
    endpoint to gracefully stop accepting new streams while still
    finishing processing of previously established streams.
 
-   WebTransport over HTTP/2 uses the DRAIN_WEBTRANSPORT_SESSION capsule
-   defined in Section 4.6 of [WEBTRANSPORT-H3] to gracefully shut down a
+   WebTransport over HTTP/2 uses the WT_DRAIN_SESSION capsule defined in
+   Section 4.6 of [WEBTRANSPORT-H3] to gracefully shut down a
    WebTransport session.
 
-   DRAIN_WEBTRANSPORT_SESSION Capsule {
-     Type (i) = DRAIN_WEBTRANSPORT_SESSION,
+   WT_DRAIN_SESSION Capsule {
+     Type (i) = WT_DRAIN_SESSION,
      Length (i) = 0
    }
 
-            Figure 13: DRAIN_WEBTRANSPORT_SESSION Capsule Format
+                 Figure 13: WT_DRAIN_SESSION Capsule Format
 
-   After sending or receiving either a DRAIN_WEBTRANSPORT_SESSION
-   capsule or HTTP/2 GOAWAY frame, an endpoint MAY continue using the
-   session and MAY open new WebTransport streams.  The signal is
-   intended for the application using WebTransport, which is expected to
-   attempt to gracefully terminate the session as soon as possible.
+   After sending or receiving either a WT_DRAIN_SESSION capsule or
+   HTTP/2 GOAWAY frame, an endpoint MAY continue using the session and
+   MAY open new WebTransport streams.  The signal is intended for the
+   application using WebTransport, which is expected to attempt to
+   gracefully terminate the session as soon as possible.
 
 6.14.  Capsule Ordering and Reliability
 

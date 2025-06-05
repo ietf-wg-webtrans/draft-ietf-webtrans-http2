@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-29T01:12:00.023168+00:00",
+  "timestamp": "2025-06-05T01:12:19.945458+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2411,7 +2411,7 @@
       "id": "I_kwDODnOl886zaUXP",
       "title": "Rename capsules from WEBTRANSPORT* to be consistently WT*",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/119",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -2420,8 +2420,8 @@
       "labels": [],
       "body": "Update to match H3 capsule name changes.\n\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/193#issue-3009980652\n\n> We've also got DRAIN_WT_SESSION and CLOSE_WT_SESSION (which might want to be renamed as such) in common now, do we need to add those to the list of concepts that should be in the overview? (Even if not referred to by the W3C API) \n\n _Originally posted by @ekinnear in [#12](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-overview/issues/12#issuecomment-1977689488)_",
       "createdAt": "2025-04-22T06:31:52Z",
-      "updatedAt": "2025-04-22T06:32:02Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-03T23:20:44Z",
+      "closedAt": "2025-06-03T23:20:44Z",
       "comments": []
     },
     {
@@ -8101,24 +8101,26 @@
       "id": "PR_kwDODnOl886TYogd",
       "title": "Rename DRAIN_WEBTRANSPORT_SESSION to WT_DRAIN_SESSION and CLOSE_WEBTRANSPORT_SESSION to WT_CLOSE_SESSION",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/122",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Rename DRAIN_WEBTRANSPORT_SESSION to WT_DRAIN_SESSION and CLOSE_WEBTRANSPORT_SESSION to WT_CLOSE_SESSION\r\n\r\nFixes #119",
       "createdAt": "2025-04-22T06:48:15Z",
-      "updatedAt": "2025-04-23T02:36:06Z",
+      "updatedAt": "2025-06-03T23:20:49Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "09aab4f0a80c39a5c0431ca5db7adc28f48ff9e5",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/capsule_rename",
       "headRefOid": "b5cf6228763d30131b411760cab5fdb01ba41cc2",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-06-03T23:20:43Z",
+      "mergedAt": "2025-06-03T23:20:43Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "26bdeb6cacf37266d0209280f27fed63c28c2d6b"
+      },
       "comments": [
         {
           "author": "ekinnear",
@@ -8188,21 +8190,21 @@
       "id": "PR_kwDODnOl886TgjGW",
       "title": "A setting for maximum datagram size",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/123",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "I realized that there wasn't an easy way to communicate datagram size limits in h2.  This is the minimal thing.\r\n\r\nThis is new, so I'll open an issue to discuss...",
       "createdAt": "2025-04-23T00:18:21Z",
-      "updatedAt": "2025-04-28T05:55:52Z",
+      "updatedAt": "2025-06-03T23:24:34Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "2247738a09596a24825c534a11469ee503c11cc1",
       "headRepository": "martinthomson/draft-webtransport-http2",
       "headRefName": "max-datagram-size",
       "headRefOid": "e37d54fe3f099e4247b316ab2cd739e0dd3060cb",
-      "closedAt": null,
+      "closedAt": "2025-06-03T23:24:34Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -8248,6 +8250,13 @@
           "body": "As noted elsewhere, if we want h3, then we might consider a different design.  That's only relevant if you use DATAGRAM capsules, of course.",
           "createdAt": "2025-04-28T05:55:51Z",
           "updatedAt": "2025-04-28T05:55:51Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Based on the conversation, it'll be best to do this in a way that's end-to-end (not hop-by-hop as settings are), and as a more generic document instead of bundled with WebTransport. Closing the PR",
+          "createdAt": "2025-06-03T23:24:34Z",
+          "updatedAt": "2025-06-03T23:24:34Z"
         }
       ],
       "reviews": []

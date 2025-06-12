@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-05T01:12:19.945458+00:00",
+  "timestamp": "2025-06-12T01:12:36.799512+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1834,7 +1834,7 @@
       ],
       "body": "H2 matches H3 in being permissive about flow control violations around the stream limit.\r\n\r\n> the asynchronous nature of the protocol\r\n\r\n> A server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.\r\n\r\n> _Originally posted by @martinthomson in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91#discussion_r1368470323_\r\n            ",
       "createdAt": "2023-10-23T21:10:08Z",
-      "updatedAt": "2024-07-25T01:56:42Z",
+      "updatedAt": "2025-06-10T23:58:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -1857,6 +1857,13 @@
           "body": "(Pinged to discuss in more detail)",
           "createdAt": "2024-07-25T01:56:41Z",
           "updatedAt": "2024-07-25T01:56:41Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proceeding with https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/94#issuecomment-1788125544",
+          "createdAt": "2025-06-10T23:58:43Z",
+          "updatedAt": "2025-06-10T23:58:43Z"
         }
       ]
     },
@@ -2353,13 +2360,22 @@
         "ekinnear"
       ],
       "labels": [
-        "editorial"
+        "editorial",
+        "flow-control"
       ],
       "body": "Remove flow control capsule definitions and instead reference H3 definitions.\n\nOnce we're happy with the shape of flow control in H3, we should remove the overlapping definitions from the H2 document and instead reference the H3 versions.",
       "createdAt": "2025-03-03T23:32:56Z",
-      "updatedAt": "2025-03-03T23:46:22Z",
+      "updatedAt": "2025-06-10T19:43:14Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Waiting to tackle this until we finish revving flow control in H3.",
+          "createdAt": "2025-06-10T19:43:06Z",
+          "updatedAt": "2025-06-10T19:43:06Z"
+        }
+      ]
     },
     {
       "number": 118,
@@ -2373,7 +2389,7 @@
       "labels": [],
       "body": "WHATWG Fetch is not full-duplex in browser - with one exception. See [Fetch body streams are not full duplex #1254](https://github.com/whatwg/fetch/issues/1254) Node.js, Deno, Bun, Cloudflare Workerd JavaScript runtimes implement full-duplex streaming over `fetch()` with `duplex` property set to half, over HTTP/2.\n\nCreate a WHATWG `TransformStream`, set `body` to `readable`, write to `writable`. Read data both ways, using a single connection.\n\nThe exception re browsers and `fetch()` full duplex streaming is on Chromium-based browsers, between a `WindowClient` or `Client` and a `ServiceWorker`. That might skip networking altogether and be mojo based on Chromium. Works online https://plnkr.co/plunk/2PQK21kZTZvZ2oVi and locally using various means nonetheless.\n\nPretty simple. \n\nWhat I noticed about WebTransport over HTTP/3 is the certificate parts. Let's say a use case is user on own machine and decide to stream back and forth between local applications and Web applications, in DevTools console or Snippets or Web Console. Possible on Chromium. Havn't been able to get WebTransport over HTTP/3 to work on Firefox Nightly 138 from a Deno server. Firefox wants certificates. Don't really need certificates. I'm on my own machine, with my own local server. I'm good locally. The certificates thing is baked in. Now I have to create certificates and pack those around, too. If I'm publishing and communicating with the Web at large, maybe. If I decide to use the bi-directional streaming capability locally, I still have to deal with certificates. Why? \n\nIf it's because nobody brought it up during early discussions. I think local development considerations - should be considered, in the specification. So browsers don't get along the way and think every use of WebTransport over HTTP/2 MUST be between a remote server and remote clients. The whole process can be local. And is in many cases when testing gear locally. \n\nI implemented a HTTP and WebSocket server in the browser using JavaScript in an Isolated Web App, using Direct Sockets `TCPServerSocket`, here https://github.com/guest271314/direct-sockets-http-ws-server/blob/main/assets/script.js.\n\nI could kind of follow the original simple C server explanation. Then re-wrote the Node.js version of the WebSocket server to be runtime agnostic.\n\n\n\n\nNow I'm looking at WebTransport over HTTP/2 so I stream to and from local applications. \n\nI'm having a challenging time trying to figure out what the basic headers look like so I can test this out in an IWA with `TCPServerSocket` in the browser.\n\nNative Messaging on Chromium still uses JSON over IPC. I'm considering WebTransport over HTTP/2 implemented in the browser, to implement Native Messaging protocol using WHATWG Streams - instead of JSON, which even when an `Array`, still has to be passed to a `Uint8Array`, or other TypedArray for audio and video processing, etc. With WHATWG Streams, even though different runtimes and repositories implement differently, it's possible some time to run the same code in multiple runtimes and contexts.\n\nOver regular HTTP. Locally. So what do the basic header exchanges *look* like, say, if you are writing JavaScript `TypedArray`s? That is, make this, or at least consider an option to make part of this, as simple as WHATWH Fetch over HTTP/2. And keep local development and programming in mind. I can write out a basic paragraph, summarizing the above, if somebody here is also interesting in codering local development without all of the \"security\" stuff that is mainly thinking about external services always being baked in. Thanks for hearing me out.\n\n",
       "createdAt": "2025-03-27T00:08:03Z",
-      "updatedAt": "2025-04-22T01:42:41Z",
+      "updatedAt": "2025-06-11T00:20:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -2403,6 +2419,20 @@
           "body": "E.g., \"server\"\n\n```\nimport { Http3Server } from \"./node_modules/@fails-components/webtransport/lib/index.node.js\";\n\nimport certificates from \"../cert.json\" with { type: \"json\" };\n\nconst sessionStream = server.sessionStream('/')\nconst sessionReader = sessionStream.getReader()\n\nwhile (true) {\n  const { value: session, done } = await sessionReader.read()\n  if (done) break;\n  console.log(session.closed);\n  let incomingTotalLength = 0;\n  let incomingCurrentLength = 0;\n  const buffer = new ArrayBuffer(0, { maxByteLength: 4 });\n  const view = new DataView(buffer);\n  const encoder = new TextEncoder();\n  const decoder = new TextDecoder();\n  // await wt.ready;\n  for await (\n    const { readable, writable } of session.incomingBidirectionalStreams\n  ) {\n    const writer = writable.getWriter();\n    await readable\n      // .pipeThrough(new TextDecoderStream())\n      .pipeTo(\n        new WritableStream({\n          async write(value) {\n            if (incomingTotalLength === 0 && incomingCurrentLength === 0) {\n              buffer.resize(4);\n              for (let i = 0; i < 4; i++) {\n                view.setUint8(i, value[i]);\n              }\n              incomingTotalLength = view.getUint32(0, true);\n              console.log(value.length, incomingTotalLength);\n              value = value.subarray(4);\n            }\n            const encoded = encoder.encode(\n              decoder.decode(value).toUpperCase(),\n            );\n            await writer.ready;\n            await writer.write(encoded);\n            await writer.ready; //.then(() => console.log(`Done writing ${encoded.length} to writable, ${} total bytes written.`));\n            incomingCurrentLength += encoded.length;\n            console.log(\n              `Done writing ${encoded.length} bytes to writable, ${incomingCurrentLength} of ${incomingTotalLength} bytes written.`,\n            );\n          },\n          close() {\n            console.log(\"readable closed\");\n          },\n        }),\n      ).then(() => console.log(\"pipeTo() done\"))\n      .catch((e) => console.log(e));\n    buffer.resize(0);\n  }\n  session.closed.then(() => ({\n    code: 5000,\n    reason: `Done streaming request ${requests++}`,\n  })).then((res) => console.log(res)).catch((e) => e.message);\n}\n```\n\n\"client\"\n\n```\nconst serverCertificateHashes = [{\n  \"algorithm\": \"sha-256\",\n  \"value\": Uint8Array.of(1,2,3,...),\n}, ];\n\nif (!/Deno|Chrome|Firefox/i.test(navigator.userAgent)) {\n  let {WebTransport, quicheLoaded} = await import(\"./node_modules/@fails-components/webtransport/lib/index.node.js\");\n  await quicheLoaded;\n  globalThis.WebTransport = WebTransport;\n}\n\nasync function createStream(wt, data) {\n  const abortable = new AbortController();\n  const {signal} = abortable;\n  const {readable, writable} = await wt.createBidirectionalStream();\n  let header = new Uint8Array(Uint32Array.from({\n    length: 4,\n  }, (_, index) => (data.length >> (index * 8)) & 0xff, ));\n  let view = new DataView(header.buffer);\n  let outgoingTotalLength = view.getUint32(0, true);\n  console.log({\n    outgoingTotalLength\n  });\n  let incomingTotalLength = 0;\n  const writer = writable.getWriter();\n  await writer.ready;\n  await writer.write(header).then( () => console.log(`Outgoing total length ${outgoingTotalLength} written.`));\n  await writer.ready;\n  await writer.write(data).then( () => console.log(`${data.length} bytes written.`)).catch( (e) => console.log(e));\n  await writer.ready;\n\n  for await(const value of readable.pipeThrough(new TextDecoderStream())) {\n    console.log(incomingTotalLength += value.length);\n    if (incomingTotalLength === outgoingTotalLength) {\n      await writer.ready;\n      await writer.close().catch( (e) => {}\n      );\n      await writer.closed;\n      writer.releaseLock();\n      break;\n    }\n  }\n  console.log(readable.locked);\n  return \"Stream done\";\n}\n\n//console.log([...certHash]);\nconst client = new WebTransport(`https://127.0.0.1:8080`,{\n  serverCertificateHashes,\n},);\nclient.closed.then(console.log).catch(console.log);\nawait client.ready;\nconst encoder = new TextEncoder();\n\nvar data = encoder.encode(\"x\".repeat((1024 ** 2) * 7));\n\nvar res = await createStream(client, data);\nconsole.log(res);\n```\n\n**without** the serverCertificateHashes part, where the communication is local. \n\nParsing JSON to `Uint8Array` is expensive for Native Messaging. So what I'm thinking is use QUIC, HTTP/3, WHATWG Streams locally. Between native host and client (the browser). \n\nPossible by using Chromium's implementation of `fetch()` and `ServiceWorker` due to Mojo library being used internally to full-duplex stream.\n\nWhat I'm ultimately working towards is implementing a WebTransport server using WICG Direct Sockets `UDPSocket`, and/or `TCPServerSocket` (WebTransport over HTTP/2), in the browser. In addition to Native Messaging streams [\nFugu Request: Native Transferable Streams](https://issues.chromium.org/issues/40769448).\n\nWebtransport, over HTTP/2 or HTTP/3, does not necessarily have to involve ALPN or TLS - particularly when the communication is local to the same machine. That's the ask. To consider completely local usages where generating certificates and verifying certificates, ostensibly for usage on open wire, is N/A.",
           "createdAt": "2025-04-22T01:42:40Z",
           "updatedAt": "2025-04-22T01:42:40Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: this seems like an extension in the scope of WebTransport. Unless others also clamor for this area of research, we'll go ahead and close this as out of scope.",
+          "createdAt": "2025-06-11T00:02:37Z",
+          "updatedAt": "2025-06-11T00:02:37Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "NONE",
+          "body": "Speaking as an individual: with Internet protocols there are commonly circumstances or use cases under which deviation from the normative requirements of the protocol can satisfy the use case. However, that is a often an implementation choice using information outside the purview of an Internet protocol. \n\nFor example, here the summary seems to be that via some out-of-band information or prior knowledge, a limited deployment where both endpoint are under administrative control of the same actor can sidestep requirement of the WebTransport Internet protocol definition wrt handshake.\n\nThe high order bit is that Internet protocols are design to facilitate interoperability. When client and server can make assumptions about their deployment environment, interoperability is not a concern. So theose deployment do not need to operate under the requirements of the protocol. Changing the requirements does not satisfy the needs of the Internet protocol. So, as an individual, +1 that this is a request in scope change and I do not support it given what the WG is chartered to develop. \n\nMy understanding of the ask here seems to be to change an implementation to allow operating in a mode that does not strictly adhere to the protocol. That is a question for implementations that this WG cannot answer and so needs to be redirected to the implementation(s). ",
+          "createdAt": "2025-06-11T00:20:52Z",
+          "updatedAt": "2025-06-11T00:20:52Z"
         }
       ]
     },
@@ -2449,15 +2479,15 @@
       "id": "I_kwDODnOl886zjY9c",
       "title": "Maximum datagram size",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/124",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "In QUIC, we have the path MTU.  We don't have the same in h2, so DATAGRAM capsules can be any size.  That's not realistic, so I propose we use a setting to communicate a size limit.  There's a bunch of reasons that this is probably not good enough.  Mostly, there's no way to ensure that this value accurately reflects the minimum limit that applies to a chain of forwarding hops.  That means that an application that really cares will have to do its own probing of the path (and do so continuously, just like with PLPMTUD). But even if this is only used to cap the size to something that is moderately reasonable in terms of memory consumption at the consuming end, we win.\n\nSee #123.",
       "createdAt": "2025-04-23T00:21:36Z",
-      "updatedAt": "2025-05-28T06:28:49Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-11T00:04:54Z",
+      "closedAt": "2025-06-11T00:04:54Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -2542,6 +2572,13 @@
           "body": "Ok, that interpretation sounds better, I am only reading the transcript, and I wanted you to be also aware. And yes, a capsule should work, that's why I made a demo implementation, it should, for most scenarios with proxies, etc, provide a solution.",
           "createdAt": "2025-05-28T06:28:48Z",
           "updatedAt": "2025-05-28T06:28:48Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Based on the discussion above, if we solve this we'll want to do it at the capsule layer, so it won't require changes in WebTransport. Based on that, closing this issue with no action.",
+          "createdAt": "2025-06-11T00:04:54Z",
+          "updatedAt": "2025-06-11T00:04:54Z"
         }
       ]
     }

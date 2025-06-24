@@ -1385,7 +1385,7 @@ the number of concurrent sessions the server is willing to receive. Note that
 the client does not need to send any value to indicate support for
 WebTransport; clients indicate support for WebTransport by using
 the "webtransport" upgrade token in CONNECT requests establishing WebTransport
-sessions (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-2-2" class="pilcrow">¶</a></p>
+sessions (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-2-2" class="pilcrow">¶</a></p>
 <p id="section-2-3">A client initiates a WebTransport session by sending an extended CONNECT request
 <span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>. If the server accepts the request, a WebTransport session is
 established. The stream that carries the CONNECT request is used to exchange
@@ -2045,9 +2045,9 @@ for a stream that is not in a valid state.<a href="#section-6.4-6" class="pilcro
         <h3 id="name-wt_max_data-capsule">
 <a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-wt_max_data-capsule" class="section-name selfRef">WT_MAX_DATA Capsule</a>
         </h3>
-<p id="section-6.5-1">An HTTP capsule <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span> called <span id="iref-wt_max_data-55" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> (type=0x190B4D3D) (See
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5.4.3" class="relref">Section 5.4.3</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>) is used to inform the peer of the
-maximum amount of data that can be sent on the WebTransport session as a whole.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<p id="section-6.5-1">An HTTP capsule <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span> called <span id="iref-wt_max_data-55" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> (type=0x190B4D3D)
+(<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5.4.3" class="relref">Section 5.4.3</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>) is used to inform the peer of the maximum
+amount of data that can be sent on the WebTransport session as a whole.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 <span id="name-wt_max_data-capsule-format"></span><div id="fig-wt_max_data">
 <figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-6.5-2.1">
@@ -2201,7 +2201,7 @@ for <span id="iref-settings_webtransport_initial_max_s" class="iref"></span><a h
         <h3 id="name-wt_data_blocked-capsule">
 <a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-wt_data_blocked-capsule" class="section-name selfRef">WT_DATA_BLOCKED Capsule</a>
         </h3>
-<p id="section-6.8-1">A sender SHOULD send a <span id="iref-wt_data_blocked-83" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsule (type=0x190B4D41) (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5.6.4" class="relref">Section 5.6.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>) when it wishes to send data but is unable to do so
+<p id="section-6.8-1">A sender SHOULD send a <span id="iref-wt_data_blocked-83" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsule (type=0x190B4D41) (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5.6.4" class="relref">Section 5.6.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>) when it wishes to send data but is unable to do so
 due to WebTransport session-level flow control.  <span id="iref-wt_data_blocked-84" class="iref"></span><a href="#WT_DATA_BLOCKED" class="internal xref">WT_DATA_BLOCKED</a> capsules can be
 used as input to tuning of flow control algorithms.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
 <span id="name-wt_data_blocked-capsule-for"></span><div id="fig-wt_data_blocked">
@@ -2292,7 +2292,7 @@ is received for a stream that is not in a valid state.<a href="#section-6.9-6" c
 <a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-wt_streams_blocked-capsule" class="section-name selfRef">WT_STREAMS_BLOCKED Capsule</a>
         </h3>
 <p id="section-6.10-1">A sender SHOULD send a <span id="iref-wt_streams_blocked-95" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule (type=0x190B4D43 or
-0x190B4D44) (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5.4.2" class="relref">Section 5.4.2</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>) when it wishes to open a
+0x190B4D44) (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-5.4.2" class="relref">Section 5.4.2</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>) when it wishes to open a
 stream but is unable to do so due to the maximum stream limit set by its peer.
 A <span id="iref-wt_streams_blocked-96" class="iref"></span><a href="#WT_STREAMS_BLOCKED" class="internal xref">WT_STREAMS_BLOCKED</a> capsule of type 0x190B4D43 is used to indicate reaching the
 bidirectional stream limit, and a STREAMS_BLOCKED capsule of type 0x190B4D44 is
@@ -2571,7 +2571,7 @@ WebTransport Data
 <p id="section-8-1">Future versions of WebTransport that change the syntax of the CONNECT requests
 used to establish WebTransport sessions will need to modify the upgrade token
 used to identify WebTransport, allowing servers to offer multiple versions
-simultaneously (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-8-1" class="pilcrow">¶</a></p>
+simultaneously (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-12#section-9.1" class="relref">Section 9.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>).<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Servers that support future incompatible versions of WebTransport signal that
 support by changing the codepoint used for the
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter (see <a href="#h2-settings" class="auto internal xref">Section 10.1</a>).  Clients
@@ -2652,7 +2652,7 @@ is not willing to receive any WebTransport sessions.<a href="#section-10.1-2" cl
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA">
 <p id="section-10.1-4">The <span id="iref-settings_webtransport_initial_max_d" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter indicates the initial value
 for the session data limit, otherwise communicated by the <span id="iref-wt_max_data-105" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule
-(see <a href="#WT_MAX_DATA" class="auto internal xref">Section 6.5</a>). The default value for the
+(<a href="#WT_MAX_DATA" class="auto internal xref">Section 6.5</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_d-2" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA</a> parameter is "0", indicating that the
 endpoint needs to send a <span id="iref-wt_max_data-107" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule within each session before its
 peer is allowed to send any stream data within that session.<a href="#section-10.1-4" class="pilcrow">¶</a></p>
@@ -2684,8 +2684,8 @@ connection on which this SETTING is sent.<a href="#section-10.1-5" class="pilcro
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI">
 <p id="section-10.1-7">The <span id="iref-settings_webtransport_initial_max_s-3" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter indicates the
 initial value for the stream data limit for incoming unidirectional streams,
-otherwise communicated by the <span id="iref-wt_max_stream_data-110" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
-<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>). The default value for the
+otherwise communicated by the <span id="iref-wt_max_stream_data-110" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule
+(<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>).  The default value for the
 <span id="iref-settings_webtransport_initial_max_s-4" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_stream_data-112" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
@@ -2718,8 +2718,8 @@ use the HTTP/2 connection on which this SETTING is sent.<a href="#section-10.1-8
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI">
 <p id="section-10.1-10">The <span id="iref-settings_webtransport_initial_max_s-6" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
-streams, otherwise communicated by the <span id="iref-wt_max_stream_data-115" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (see
-<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>). The default value for the
+streams, otherwise communicated by the <span id="iref-wt_max_stream_data-115" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule
+(<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-7" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_stream_data-117" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
@@ -2752,7 +2752,7 @@ use the HTTP/2 connection on which this SETTING is sent.<a href="#section-10.1-1
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI">
 <p id="section-10.1-13">The <span id="iref-settings_webtransport_initial_max_s-9" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter indicates the
 initial value for the unidirectional max stream limit, otherwise communicated
-by the <span id="iref-wt_max_streams-120" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>). The default value for
+by the <span id="iref-wt_max_streams-120" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (<a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>). The default value for
 the <span id="iref-settings_webtransport_initial_max_s-10" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_streams-122" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
 WebTransport session before its peer is allowed to create any unidirectional
@@ -2785,7 +2785,7 @@ connection on which this SETTING is sent.<a href="#section-10.1-14" class="pilcr
 <div id="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI">
 <p id="section-10.1-16">The <span id="iref-settings_webtransport_initial_max_s-12" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter indicates the
 initial value for the bidirectional max stream limit, otherwise communicated by
-the <span id="iref-wt_max_streams-125" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (see <a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>). The default value for the
+the <span id="iref-wt_max_streams-125" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (<a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>). The default value for the
 <span id="iref-settings_webtransport_initial_max_s-13" class="iref"></span><a href="#SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_streams-127" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual
 WebTransport session before its peer is allowed to create any bidirectional

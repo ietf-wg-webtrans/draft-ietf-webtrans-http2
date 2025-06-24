@@ -124,7 +124,7 @@ the number of concurrent sessions the server is willing to receive. Note that
 the client does not need to send any value to indicate support for
 WebTransport; clients indicate support for WebTransport by using
 the "webtransport" upgrade token in CONNECT requests establishing WebTransport
-sessions (see {{Section 9.1 of WEBTRANSPORT-H3}}).
+sessions ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -336,7 +336,7 @@ non-zero value.
 
 ## Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
-This document defines a WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}) that allows
+The WT_MAX_STREAMS capsule ({{Section 5.6.1 of WEBTRANSPORT-H3}}) allows
 each endpoint to limit the number of streams its peer is permitted to open as
 part of a WebTransport session.  There is a separate limit for bidirectional
 streams and for unidirectional streams.  Note that, unlike WebTransport over
@@ -680,9 +680,9 @@ for a stream that is not in a valid state.
 
 *[WT_MAX_DATA]: #
 
-An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_DATA (type=0x190B4D3D) is
-introduced to inform the peer of the maximum amount of data that can be sent on
-the WebTransport session as a whole.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_DATA (type=0x190B4D3D)
+({{Section 5.4.3 of WEBTRANSPORT-H3}}) is used to inform the peer of the maximum
+amount of data that can be sent on the WebTransport session as a whole.
 
 ~~~
 WT_MAX_DATA Capsule {
@@ -765,11 +765,11 @@ the same stream.
 
 *[WT_MAX_STREAMS]: #
 
-An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is introduced to inform
-the peer of the cumulative number of streams of a given type it is permitted to
-open.  A WT_MAX_STREAMS capsule with a type of 0x190B4D3F applies to
-bidirectional streams, and a WT_MAX_STREAMS capsule with a type of 0x190B4D40
-applies to unidirectional streams.
+An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is defined by {{Section
+5.6.1 of WEBTRANSPORT-H3}} to inform the peer of the cumulative number of
+streams of a given type it is permitted to open.  A WT_MAX_STREAMS capsule with
+a type of 0x190B4D3F applies to bidirectional streams, and a WT_MAX_STREAMS
+capsule with a type of 0x190B4D40 applies to unidirectional streams.
 
 Note that, because Maximum Streams is a cumulative value representing the total
 allowed number of streams, including previously closed streams, endpoints
@@ -814,10 +814,10 @@ SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI.
 
 *[WT_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41) when it wishes
-to send data but is unable to do so due to WebTransport session-level flow
-control. WT_DATA_BLOCKED capsules can be used as input to tuning of flow
-control algorithms.
+A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41) ({{Section
+5.6.4 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable to do so
+due to WebTransport session-level flow control.  WT_DATA_BLOCKED capsules can be
+used as input to tuning of flow control algorithms.
 
 ~~~
 WT_DATA_BLOCKED Capsule {
@@ -885,11 +885,11 @@ is received for a stream that is not in a valid state.
 *[WT_STREAMS_BLOCKED]: #
 
 A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x190B4D43 or
-0x190B4D44) when it wishes to open a stream but is unable to do so due to the
-maximum stream limit set by its peer.  A WT_STREAMS_BLOCKED capsule of type
-0x190B4D43 is used to indicate reaching the bidirectional stream limit, and a
-STREAMS_BLOCKED capsule of type 0x190B4D44 is used to indicate reaching the
-unidirectional stream limit.
+0x190B4D44) ({{Section 5.4.2 of WEBTRANSPORT-H3}}) when it wishes to open a
+stream but is unable to do so due to the maximum stream limit set by its peer.
+A WT_STREAMS_BLOCKED capsule of type 0x190B4D43 is used to indicate reaching the
+bidirectional stream limit, and a STREAMS_BLOCKED capsule of type 0x190B4D44 is
+used to indicate reaching the unidirectional stream limit.
 
 A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that
 a new stream was needed and the stream limit prevented the creation of the
@@ -1124,7 +1124,7 @@ WebTransport Data
 Future versions of WebTransport that change the syntax of the CONNECT requests
 used to establish WebTransport sessions will need to modify the upgrade token
 used to identify WebTransport, allowing servers to offer multiple versions
-simultaneously (see {{Section 9.1 of WEBTRANSPORT-H3}}).
+simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
 Servers that support future incompatible versions of WebTransport signal that
 support by changing the codepoint used for the
@@ -1195,7 +1195,7 @@ Specification:
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter indicates the initial value
 for the session data limit, otherwise communicated by the WT_MAX_DATA capsule
-(see {{WT_MAX_DATA}}). The default value for the
+({{WT_MAX_DATA}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter is "0", indicating that the
 endpoint needs to send a WT_MAX_DATA capsule within each session before its
 peer is allowed to send any stream data within that session.
@@ -1223,8 +1223,8 @@ Specification:
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the
 initial value for the stream data limit for incoming unidirectional streams,
-otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
-{{WT_MAX_STREAM_DATA}}). The default value for the
+otherwise communicated by the WT_MAX_STREAM_DATA capsule
+({{WT_MAX_STREAM_DATA}}).  The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0", indicating
 that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
@@ -1253,8 +1253,8 @@ Specification:
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
-streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule (see
-{{WT_MAX_STREAM_DATA}}). The default value for the
+streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule
+({{WT_MAX_STREAM_DATA}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating
 that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
@@ -1283,7 +1283,7 @@ Specification:
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter indicates the
 initial value for the unidirectional max stream limit, otherwise communicated
-by the WT_MAX_STREAMS capsule (see {{WT_MAX_STREAMS}}). The default value for
+by the WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}). The default value for
 the SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter is "0", indicating
 that the endpoint needs to send WT_MAX_STREAMS capsules on each individual
 WebTransport session before its peer is allowed to create any unidirectional
@@ -1312,7 +1312,7 @@ Specification:
 
 The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter indicates the
 initial value for the bidirectional max stream limit, otherwise communicated by
-the WT_MAX_STREAMS capsule (see {{WT_MAX_STREAMS}}). The default value for the
+the WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}). The default value for the
 SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter is "0", indicating
 that the endpoint needs to send WT_MAX_STREAMS capsules on each individual
 WebTransport session before its peer is allowed to create any bidirectional
@@ -1473,30 +1473,6 @@ Notes:
 : None
 {: spacing="compact"}
 
-The `WT_MAX_DATA` capsule.
-
-Value:
-: 0x190B4D3D
-
-Capsule Type:
-: WT_MAX_DATA
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
 The `WT_MAX_STREAM_DATA` capsule.
 
 Value:
@@ -1504,102 +1480,6 @@ Value:
 
 Capsule Type:
 : WT_MAX_STREAM_DATA
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
-The `WT_MAX_STREAMS` capsule.
-
-Value:
-: 0x190B4D3F..0x190B4D40
-
-Capsule Type:
-: WT_MAX_STREAMS
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
-The `WT_DATA_BLOCKED` capsule.
-
-Value:
-: 0x190B4D41
-
-Capsule Type:
-: WT_DATA_BLOCKED
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
-The `WT_STREAM_DATA_BLOCKED` capsule.
-
-Value:
-: 0x190B4D42
-
-Capsule Type:
-: WT_STREAM_DATA_BLOCKED
-
-Status:
-: permanent
-
-Specification:
-: This document
-
-Change Controller:
-: IETF
-
-Contact:
-: WebTransport Working Group <webtransport@ietf.org>
-
-Notes:
-: None
-{: spacing="compact"}
-
-The `WT_STREAMS_BLOCKED` capsule.
-
-Value:
-: 0x190B4D43..0x190B4D44
-
-Capsule Type:
-: WT_STREAMS_BLOCKED
 
 Status:
 : permanent

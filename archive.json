@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-26T01:13:20.817796+00:00",
+  "timestamp": "2025-07-01T01:21:52.363873+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2652,9 +2652,17 @@
       "labels": [],
       "body": "In https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/117 we changed text to cite the capsule definition in the WT/HTTP/3 spec. \n\nThis reminded me of an edge case with capsules where the capsule length might be longer than allowed by a stream. Creating this issue to task me to go away and ensure that there is text somewhere (maybe even the capsule protocol rfc itself) to covers this edge case.",
       "createdAt": "2025-06-24T23:36:04Z",
-      "updatedAt": "2025-06-24T23:36:07Z",
+      "updatedAt": "2025-06-29T08:23:45Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "May be related, when implementing the http/2 capsule parser, I decided to close the connection if capsule sizes exceed a certain amount (control capsules lower than data carrying capsules), so that a malicious client can not consume too much memory on the server:\nhttps://github.com/fails-components/webtransport/blob/5c49b0f5801c6d8c06289cfb25046e409cb30919/main/lib/http2/node/capsuleparser.js#L109\n\nI am unsure if a mechanism or limit like this is necessary in the specification. (I related it to the window size).",
+          "createdAt": "2025-06-29T08:23:45Z",
+          "updatedAt": "2025-06-29T08:23:45Z"
+        }
+      ]
     }
   ],
   "pulls": [

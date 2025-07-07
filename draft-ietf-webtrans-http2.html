@@ -1053,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">June 2025</td>
+<td class="right">July 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 26 December 2025</td>
+<td class="center">Expires 8 January 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-24" class="published">24 June 2025</time>
+<time datetime="2025-07-07" class="published">7 July 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-26">26 December 2025</time></dd>
+<dd class="expires"><time datetime="2026-01-08">8 January 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1145,7 +1145,7 @@ draft corresponding to this document can be found at
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1587,35 +1587,38 @@ defines the final two.<a href="#section-4-4" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-4.1-1">This document defines a SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter that allows
 the server to limit the maximum number of concurrent WebTransport sessions on a
-single HTTP/2 connection.  The client MUST NOT open more sessions than
-indicated in the server SETTINGS parameters.  The server MUST NOT close the
-connection if the client opens sessions exceeding this limit, as the client and
-the server do not have a consistent view of how many sessions are open due to
-the asynchronous nature of the protocol; instead, it MUST reset all of the
-CONNECT streams it is not willing to process with the <code>REFUSED_STREAM</code>
-error code (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.7" class="relref">Section 8.7</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>).<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">Just like other HTTP requests, WebTransport sessions, and data sent on those
-sessions, are counted against flow control limits.  Servers that wish to limit
-the rate of incoming requests on any particular session have multiple
-mechanisms:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.1-3.1">
-            <p id="section-4.1-3.1.1">The <code>REFUSED_STREAM</code> error code defined in <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.7" class="relref">Section 8.7</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>
-indicates to the receiving HTTP/2 stack that the request was not processed in
-any way.<a href="#section-4.1-3.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.1-3.2">
-            <p id="section-4.1-3.2.1">HTTP status code 429 indicates that the request was rejected due to rate
-limiting <span>[<a href="#RFC6585" class="cite xref">RFC6585</a>]</span>.  Unlike the previous method, this signal is directly
-propagated to the application.<a href="#section-4.1-3.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-4.1-4">An endpoint that wishes to reduce the value of
+single HTTP/2 connection.  The client MUST NOT open more concurrent sessions
+than indicated by the server SETTINGS parameters.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">SETTINGS synchronization via acknowledgements in HTTP/2 enables both endpoints
+to agree on the current value of each setting (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-6.5.3" class="relref">Section 6.5.3</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>).  A
+WebTransport server enforces the session limit at the time a new session is
+opened by comparing the number of currently open WebTransport sessions against
+the currently acknowledged SETTINGS value for
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS.  A server that receives an incoming CONNECT
+stream that would cause it to exceed its session limit MUST reset that stream
+with the <code>REFUSED_STREAM</code> error code (<span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.7" class="relref">Section 8.7</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>).<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">A WebTransport server that wishes to reduce the value of
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
 of open sessions can either close sessions that exceed the new value or allow
 those sessions to complete. Endpoints MUST NOT reduce the value of
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
-non-zero value.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+non-zero value.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-4">Just like other HTTP requests, WebTransport sessions, and data sent on those
+sessions, are counted against flow control limits.  Servers that wish to limit
+the rate of incoming requests on any particular session have multiple
+mechanisms:<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-5.1">
+            <p id="section-4.1-5.1.1">The <code>REFUSED_STREAM</code> error code defined in <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.7" class="relref">Section 8.7</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>
+indicates to the receiving HTTP/2 stack that the request was not processed in
+any way.<a href="#section-4.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-5.2">
+            <p id="section-4.1-5.2.1">HTTP status code 429 indicates that the request was rejected due to rate
+limiting <span>[<a href="#RFC6585" class="cite xref">RFC6585</a>]</span>.  Unlike the previous method, this signal is directly
+propagated to the application.<a href="#section-4.1-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="flow-control-limit-streams">

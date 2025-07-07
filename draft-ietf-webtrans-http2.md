@@ -307,13 +307,24 @@ defines the final two.
 
 This document defines a SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter that allows
 the server to limit the maximum number of concurrent WebTransport sessions on a
-single HTTP/2 connection.  The client MUST NOT open more sessions than
-indicated in the server SETTINGS parameters.  The server MUST NOT close the
-connection if the client opens sessions exceeding this limit, as the client and
-the server do not have a consistent view of how many sessions are open due to
-the asynchronous nature of the protocol; instead, it MUST reset all of the
-CONNECT streams it is not willing to process with the `REFUSED_STREAM`
-error code ({{Section 8.7 of HTTP2}}).
+single HTTP/2 connection.  The client MUST NOT open more concurrent sessions
+than indicated by the server SETTINGS parameters.
+
+SETTINGS synchronization via acknowledgements in HTTP/2 enables both endpoints
+to agree on the current value of each setting ({{Section 6.5.3 of HTTP2}}).  A
+WebTransport server enforces the session limit at the time a new session is
+opened by comparing the number of currently open WebTransport sessions against
+the currently acknowledged SETTINGS value for
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS.  A server that receives an incoming stream
+that would cause it to exceed its session limit MUST reset that stream with the
+`REFUSED_STREAM` error code ({{Section 8.7 of HTTP2}}).
+
+A WebTransport server that wishes to reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
+of open sessions can either close sessions that exceed the new value or allow
+those sessions to complete. Endpoints MUST NOT reduce the value of
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
+non-zero value.
 
 Just like other HTTP requests, WebTransport sessions, and data sent on those
 sessions, are counted against flow control limits.  Servers that wish to limit
@@ -326,13 +337,6 @@ mechanisms:
 * HTTP status code 429 indicates that the request was rejected due to rate
   limiting {{!RFC6585}}.  Unlike the previous method, this signal is directly
   propagated to the application.
-
-An endpoint that wishes to reduce the value of
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
-of open sessions can either close sessions that exceed the new value or allow
-those sessions to complete. Endpoints MUST NOT reduce the value of
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
-non-zero value.
 
 ## Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 

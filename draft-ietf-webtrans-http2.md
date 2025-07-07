@@ -315,9 +315,9 @@ to agree on the current value of each setting ({{Section 6.5.3 of HTTP2}}).  A
 WebTransport server enforces the session limit at the time a new session is
 opened by comparing the number of currently open WebTransport sessions against
 the currently acknowledged SETTINGS value for
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS.  A server that receives an incoming stream
-that would cause it to exceed its session limit MUST reset that stream with the
-`REFUSED_STREAM` error code ({{Section 8.7 of HTTP2}}).
+SETTINGS_WEBTRANSPORT_MAX_SESSIONS.  A server that receives an incoming CONNECT
+stream that would cause it to exceed its session limit MUST reset that stream
+with the `REFUSED_STREAM` error code ({{Section 8.7 of HTTP2}}).
 
 A WebTransport server that wishes to reduce the value of
 SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number

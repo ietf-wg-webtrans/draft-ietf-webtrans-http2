@@ -118,13 +118,13 @@ WebTransport servers are identified by an HTTPS URI as defined in {{Section
 4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, the server sends a
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value greater than "0" to
-indicate that it supports WebTransport over HTTP/2. The value of the setting is
-the number of concurrent sessions the server is willing to receive. Note that
-the client does not need to send any value to indicate support for
-WebTransport; clients indicate support for WebTransport by using
-the "webtransport" upgrade token in CONNECT requests establishing WebTransport
-sessions ({{Section 9.1 of WEBTRANSPORT-H3}}).
+SETTINGS_WT_MAX_SESSIONS setting with a value greater than "0" to indicate that
+it supports WebTransport over HTTP/2. The value of the setting is the number of
+concurrent sessions the server is willing to receive. Note that the client does
+not need to send any value to indicate support for WebTransport; clients
+indicate support for WebTransport by using the "webtransport" upgrade token in
+CONNECT requests establishing WebTransport sessions ({{Section 9.1 of
+WEBTRANSPORT-H3}}).
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -173,17 +173,17 @@ A WebTransport session is a communication context between a client and server
 ## Establishing a WebTransport-Capable HTTP/2 Connection
 
 In order to indicate support for WebTransport, the server MUST send a
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS value greater than "0" in its SETTINGS
-frame.  The client MUST NOT send a WebTransport request until it has received
-the setting indicating WebTransport support from the server.
+SETTINGS_WT_MAX_SESSIONS value greater than "0" in its SETTINGS frame.  The
+client MUST NOT send a WebTransport request until it has received the setting
+indicating WebTransport support from the server.
 
 ## Extended CONNECT in HTTP/2
 
 {{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
 SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. A server supporting WebTransport
-needs to send both the SETTINGS_WEBTRANSPORT_MAX_SESSIONS setting with a value
-greater than "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value
-of "1" for WebTransport to be enabled.
+needs to send both the SETTINGS_WT_MAX_SESSIONS setting with a value greater
+than "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1"
+for WebTransport to be enabled.
 
 ## Creating a New Session
 
@@ -305,8 +305,8 @@ defines the final two.
 
 ## Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
 
-This document defines a SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter that allows
-the server to limit the maximum number of concurrent WebTransport sessions on a
+This document defines a SETTINGS_WT_MAX_SESSIONS parameter that allows the
+server to limit the maximum number of concurrent WebTransport sessions on a
 single HTTP/2 connection.  The client MUST NOT open more concurrent sessions
 than indicated by the server SETTINGS parameters.
 
@@ -314,17 +314,16 @@ SETTINGS synchronization via acknowledgements in HTTP/2 enables both endpoints
 to agree on the current value of each setting ({{Section 6.5.3 of HTTP2}}).  A
 WebTransport server enforces the session limit at the time a new session is
 opened by comparing the number of currently open WebTransport sessions against
-the currently acknowledged SETTINGS value for
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS.  A server that receives an incoming CONNECT
-stream that would cause it to exceed its session limit MUST reset that stream
-with the `REFUSED_STREAM` error code ({{Section 8.7 of HTTP2}}).
+the currently acknowledged SETTINGS value for SETTINGS_WT_MAX_SESSIONS.  A
+server that receives an incoming CONNECT stream that would cause it to exceed its
+session limit MUST reset that stream with the `REFUSED_STREAM` error code
+({{Section 8.7 of HTTP2}}).
 
 A WebTransport server that wishes to reduce the value of
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS to a value that is below the current number
-of open sessions can either close sessions that exceed the new value or allow
-those sessions to complete. Endpoints MUST NOT reduce the value of
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS to "0" after previously advertising a
-non-zero value.
+SETTINGS_WT_MAX_SESSIONS to a value that is below the current number of open
+sessions can either close sessions that exceed the new value or allow those
+sessions to complete. Endpoints MUST NOT reduce the value of
+SETTINGS_WT_MAX_SESSIONS to "0" after previously advertising a non-zero value.
 
 Just like other HTTP requests, WebTransport sessions, and data sent on those
 sessions, are counted against flow control limits.  Servers that wish to limit
@@ -371,20 +370,20 @@ are greater than or equal to the values provided in the SETTINGS.
 
 ### Flow Control SETTINGS {#flow-control-settings}
 
-*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA]: #
-*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI]: #
-*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI]: #
-*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI]: #
-*[SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI]: #
+*[SETTINGS_WT_INITIAL_MAX_DATA]: #
+*[SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI]: #
+*[SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI]: #
+*[SETTINGS_WT_INITIAL_MAX_STREAMS_UNI]: #
+*[SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI]: #
 
 Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 ({{h2-settings}}) by providing non-zero values for
 
-* WT_MAX_DATA via SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA
-* WT_MAX_STREAM_DATA via SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
-  SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI
-* WT_MAX_STREAMS via SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI and
-  SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI
+* WT_MAX_DATA via SETTINGS_WT_INITIAL_MAX_DATA
+* WT_MAX_STREAM_DATA via SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI and
+  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
+* WT_MAX_STREAMS via SETTINGS_WT_INITIAL_MAX_STREAMS_UNI and
+  SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
 
 
 ### Flow Control Header Field {#flow-control-header}
@@ -713,7 +712,7 @@ capsules for flow control purposes and MUST generate and send appropriate flow
 control signals for their limits; see {{flow-control-intermediaries}}.
 
 The initial value for this limit MAY be communicated by sending a non-zero value
-for SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA.
+for SETTINGS_WT_INITIAL_MAX_DATA.
 
 ## WT_MAX_STREAM_DATA Capsule {#WT_MAX_STREAM_DATA}
 
@@ -755,8 +754,8 @@ send appropriate flow control signals for their limits; see
 
 Initial values for this limit for unidirectional and bidirectional streams MAY
 be communicated by sending non-zero values for
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI and
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI and
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
 
 A WT_MAX_STREAM_DATA capsule MUST NOT be sent after a sender requests that a
 stream be closed with WT_STOP_SENDING.  While QUIC permits redundant
@@ -811,8 +810,8 @@ WT_MAX_STREAMS capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits.
 
 Initial values for these limits MAY be communicated by sending non-zero values
-for SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI and
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI.
+for SETTINGS_WT_INITIAL_MAX_STREAMS_UNI and
+SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI.
 
 ## WT_DATA_BLOCKED Capsule {#WT_DATA_BLOCKED}
 
@@ -1058,7 +1057,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 100
+                                    SETTINGS_WT_MAX_SESSIONS = 100
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1096,7 +1095,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_WEBTRANSPORT_MAX_SESSIONS = 100
+                                    SETTINGS_WT_MAX_SESSIONS = 100
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1131,11 +1130,10 @@ used to identify WebTransport, allowing servers to offer multiple versions
 simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
 Servers that support future incompatible versions of WebTransport signal that
-support by changing the codepoint used for the
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter (see {{h2-settings}}).  Clients
-can select the associated upgrade token, if applicable, to use when
-establishing a new session, ensuring that servers will always know the syntax
-in use for every incoming request.
+support by changing the codepoint used for the SETTINGS_WT_MAX_SESSIONS
+parameter (see {{h2-settings}}).  Clients can select the associated upgrade
+token, if applicable, to use when establishing a new session, ensuring that
+servers will always know the syntax in use for every incoming request.
 
 # Security Considerations
 
@@ -1171,13 +1169,13 @@ codes ({{iana-h2-error}}), new capsules ({{iana-capsules}}), and the
 The following entries are added to the "HTTP/2 Settings" registry established by
 {{HTTP2}}:
 
-{: anchor="SETTINGS_WEBTRANSPORT_MAX_SESSIONS"}
+{: anchor="SETTINGS_WT_MAX_SESSIONS"}
 
-The SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter indicates that the specified
-HTTP/2 connection is WebTransport-capable and the number of concurrent sessions
-an endpoint is willing to receive. The default value for the
-SETTINGS_WEBTRANSPORT_MAX_SESSIONS parameter is "0", meaning that the endpoint
-is not willing to receive any WebTransport sessions.
+The SETTINGS_WT_MAX_SESSIONS parameter indicates that the specified HTTP/2
+connection is WebTransport-capable and the number of concurrent sessions an
+endpoint is willing to receive.  The default value for the
+SETTINGS_WT_MAX_SESSIONS parameter is "0", meaning that the endpoint is not
+willing to receive any WebTransport sessions.
 
 Setting Name:
 
@@ -1195,21 +1193,21 @@ Specification:
 
 : This document
 
-{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA"}
+{: anchor="SETTINGS_WT_INITIAL_MAX_DATA"}
 
-The SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter indicates the initial value
-for the session data limit, otherwise communicated by the WT_MAX_DATA capsule
-({{WT_MAX_DATA}}). The default value for the
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA parameter is "0", indicating that the
-endpoint needs to send a WT_MAX_DATA capsule within each session before its
-peer is allowed to send any stream data within that session.
+The SETTINGS_WT_INITIAL_MAX_DATA parameter indicates the initial value for the
+session data limit, otherwise communicated by the WT_MAX_DATA capsule
+({{WT_MAX_DATA}}).  The default value for the SETTINGS_WT_INITIAL_MAX_DATA
+parameter is "0", indicating that the endpoint needs to send a WT_MAX_DATA
+capsule within each session before its peer is allowed to send any stream data
+within that session.
 
 Note that this limit applies to all WebTransport sessions that use the HTTP/2
 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WEBTRANSPORT_INITIAL_MAX_DATA
+: SETTINGS_WT_INITIAL_MAX_DATA
 
 Value:
 
@@ -1223,23 +1221,22 @@ Specification:
 
 : This document
 
-{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI"}
+{: anchor="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI"}
 
-The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the
-initial value for the stream data limit for incoming unidirectional streams,
-otherwise communicated by the WT_MAX_STREAM_DATA capsule
-({{WT_MAX_STREAM_DATA}}).  The default value for the
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0", indicating
-that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
-within each individual WebTransport session before its peer is allowed to send
-any stream data on those streams.
+The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the initial
+value for the stream data limit for incoming unidirectional streams, otherwise
+communicated by the WT_MAX_STREAM_DATA capsule({{WT_MAX_STREAM_DATA}}).  The
+default value for the SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0",
+indicating that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each
+stream within each individual WebTransport session before its peer is allowed
+to send any stream data on those streams.
 
 Note that this limit applies to all WebTransport streams on all sessions that
 use the HTTP/2 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_UNI
+: SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI
 
 Value:
 
@@ -1253,23 +1250,23 @@ Specification:
 
 : This document
 
-{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI"}
+{: anchor="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI"}
 
-The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the
-initial value for the stream data limit for incoming data on bidirectional
-streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule
-({{WT_MAX_STREAM_DATA}}). The default value for the
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating
-that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
-within each individual WebTransport session before its peer is allowed to send
-any stream data on those streams.
+The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the initial
+value for the stream data limit for incoming data on bidirectional streams,
+otherwise communicated by the WT_MAX_STREAM_DATA capsule
+({{WT_MAX_STREAM_DATA}}).  The default value for the
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating that the
+endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream within each
+individual WebTransport session before its peer is allowed to send any stream
+data on those streams.
 
 Note that this limit applies to all WebTransport streams on all sessions that
 use the HTTP/2 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAM_DATA_BIDI
+: SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
 
 Value:
 
@@ -1283,22 +1280,22 @@ Specification:
 
 : This document
 
-{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI"}
+{: anchor="SETTINGS_WT_INITIAL_MAX_STREAMS_UNI"}
 
-The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter indicates the
-initial value for the unidirectional max stream limit, otherwise communicated
-by the WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}). The default value for
-the SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI parameter is "0", indicating
-that the endpoint needs to send WT_MAX_STREAMS capsules on each individual
-WebTransport session before its peer is allowed to create any unidirectional
-streams within that session.
+The SETTINGS_WT_INITIAL_MAX_STREAMS_UNI parameter indicates the initial value
+for the unidirectional max stream limit, otherwise communicated by the
+WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}).  The default value for the
+SETTINGS_WT_INITIAL_MAX_STREAMS_UNI parameter is "0", indicating that the
+endpoint needs to send WT_MAX_STREAMS capsules on each individual WebTransport
+session before its peer is allowed to create any unidirectional streams within
+that session.
 
 Note that this limit applies to all WebTransport sessions that use the HTTP/2
 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_UNI
+: SETTINGS_WT_INITIAL_MAX_STREAMS_UNI
 
 Value:
 
@@ -1312,22 +1309,22 @@ Specification:
 
 : This document
 
-{: anchor="SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI"}
+{: anchor="SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI"}
 
-The SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter indicates the
-initial value for the bidirectional max stream limit, otherwise communicated by
-the WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}). The default value for the
-SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI parameter is "0", indicating
-that the endpoint needs to send WT_MAX_STREAMS capsules on each individual
-WebTransport session before its peer is allowed to create any bidirectional
-streams within that session.
+The SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI parameter indicates the initial value
+for the bidirectional max stream limit, otherwise communicated by the
+WT_MAX_STREAMS capsule ({{WT_MAX_STREAMS}}).  The default value for the
+SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI parameter is "0", indicating that the
+endpoint needs to send WT_MAX_STREAMS capsules on each individual WebTransport
+session before its peer is allowed to create any bidirectional streams within
+that session.
 
 Note that this limit applies to all WebTransport sessions that use the HTTP/2
 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WEBTRANSPORT_INITIAL_MAX_STREAMS_BIDI
+: SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
 
 Value:
 
@@ -1343,8 +1340,8 @@ Specification:
 
 ## HTTP/2 Error Code Registration {#iana-h2-error}
 
-The following entries are added to the "HTTP/2 Error Code" registry established by
-{{HTTP2}}:
+The following entries are added to the "HTTP/2 Error Code" registry established
+by {{HTTP2}}:
 
 For WEBTRANSPORT_ERROR:
 

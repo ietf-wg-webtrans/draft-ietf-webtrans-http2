@@ -2,25 +2,29 @@
 title: "WebTransport over HTTP/2"
 abbrev: "WebTransport-H2"
 docname: draft-ietf-webtrans-http2-latest
-
-date: {DATE}
+number:
+date:
+consensus: true
+v: 3
 category: std
-
-ipr: trust200902
-area: art
-workgroup: webtrans
-keyword: Internet-Draft
-
-stand_alone: yes
-pi: [toc, sortrefs, symrefs]
-
+area: "Web and Internet Transport"
+wg: WEBTRANS
+venue:
+  group: "WebTransport"
+  type: "Working Group"
+  mail: "webtransport@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/webtransport/"
+  github: "ietf-wg-webtrans/draft-ietf-webtrans-http2"
+  latest: "https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/#go.draft-ietf-webtrans-http2.html"
+keyword:
+  - webtransport
 author:
- -
+  -
     ins: A. Frindell
     name: Alan Frindell
     organization: Facebook Inc.
     email: afrind@fb.com
- -
+  -
     ins: E. Kinnear
     name: Eric Kinnear
     org: Apple Inc.
@@ -28,7 +32,7 @@ author:
     city: Cupertino, California 95014
     country: United States of America
     email: ekinnear@apple.com
- -
+  -
     ins: T. Pauly
     name: Tommy Pauly
     org: Apple Inc.
@@ -36,17 +40,17 @@ author:
     city: Cupertino, California 95014
     country: United States of America
     email: tpauly@apple.com
- -
+  -
     ins: M. Thomson
     name: Martin Thomson
     org: Mozilla
     email: mt@lowentropy.net
- -
+  -
     ins: V. Vasiliev
     name: Victor Vasiliev
     organization: Google
     email: vasilvv@google.com
- -
+  -
     ins: G. Xie
     name: Guowu Xie
     organization: Facebook Inc.
@@ -69,17 +73,6 @@ client-server interactions that are initiated by Web clients.  This document
 describes a protocol that can provide many of the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available.
-
---- note_Note_to_Readers
-
-Discussion of this draft takes place on the WebTransport mailing list
-([webtransport@ietf.org](mailto:webtransport@ietf.org)), which is archived at
-[](https://mailarchive.ietf.org/arch/search/?email_list=webtransport).
-
-The repository tracking the issues for this draft can be found at
-[](https://github.com/ietf-wg-webtrans/draft-webtransport-http2). The web API
-draft corresponding to this document can be found at
-[](https://w3c.github.io/webtransport/).
 
 --- middle
 

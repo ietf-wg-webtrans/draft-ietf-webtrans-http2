@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-01T01:21:52.363873+00:00",
+  "timestamp": "2025-07-08T01:14:38.087661+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1822,7 +1822,7 @@
       "id": "I_kwDODnOl8850tSbm",
       "title": "Should H2 be permissive about flow control violations",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/94",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1834,8 +1834,8 @@
       ],
       "body": "H2 matches H3 in being permissive about flow control violations around the stream limit.\r\n\r\n> the asynchronous nature of the protocol\r\n\r\n> A server will only be unsure if it reduces the limit and the SETTINGS frame hasn't been acknowledged yet.  But then it is sure, because everything opened before the SETTINGS+ACK uses the larger limit and everything after uses the reduced limit...  So maybe we can completely rewrite this little bit.\r\n\r\n> _Originally posted by @martinthomson in https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/91#discussion_r1368470323_\r\n            ",
       "createdAt": "2023-10-23T21:10:08Z",
-      "updatedAt": "2025-06-10T23:58:43Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-07T23:06:24Z",
+      "closedAt": "2025-07-07T23:06:24Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -2663,6 +2663,26 @@
           "updatedAt": "2025-06-29T08:23:45Z"
         }
       ]
+    },
+    {
+      "number": 127,
+      "id": "I_kwDODnOl886_WYNZ",
+      "title": "Match WebTransport -> WT naming from HTTP/3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/127",
+      "state": "CLOSED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Match WebTransport -> WT naming from HTTP/3\n\nWe've been renaming many of the capsules/settings from \"WebTransport\" -> \"WT\" to make them a bit shorter. We should do that for H2 as well.",
+      "createdAt": "2025-07-07T21:39:03Z",
+      "updatedAt": "2025-07-07T23:09:01Z",
+      "closedAt": "2025-07-07T23:09:01Z",
+      "comments": []
     }
   ],
   "pulls": [
@@ -8407,6 +8427,183 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 128,
+      "id": "PR_kwDODnOl886d1Itv",
+      "title": "Be more strict about flow control violations for H2",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/128",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Be more strict about flow control violations for H2\r\n\r\nFixes #94",
+      "createdAt": "2025-07-07T21:51:44Z",
+      "updatedAt": "2025-07-07T23:06:27Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "c4c1730ec577ba43d0a36349e051ffca56cb599c",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/flow_control_violations",
+      "headRefOid": "5a77bd2778309b22dc058623d827af10d17656b4",
+      "closedAt": "2025-07-07T23:06:24Z",
+      "mergedAt": "2025-07-07T23:06:24Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "aff0814b5e755649ccfb4e04087d14fbd7e20bb4"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl886yitU0",
+          "commit": {
+            "abbreviatedOid": "f9e3d58"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-07T22:40:23Z",
+          "updatedAt": "2025-07-07T22:42:40Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Maybe `incoming WebTransport request stream`?",
+              "createdAt": "2025-07-07T22:40:24Z",
+              "updatedAt": "2025-07-07T22:42:40Z"
+            },
+            {
+              "originalPosition": 28,
+              "body": "This text was only moved, but why do we need to carve out reducing to 0?  Seems ok to me.",
+              "createdAt": "2025-07-07T22:41:15Z",
+              "updatedAt": "2025-07-07T22:42:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl886yi0G_",
+          "commit": {
+            "abbreviatedOid": "f9e3d58"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T22:53:28Z",
+          "updatedAt": "2025-07-07T22:53:29Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Nice, used `CONNECT stream` since that's the term we defined above for these",
+              "createdAt": "2025-07-07T22:53:29Z",
+              "updatedAt": "2025-07-07T22:53:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl886yi0PQ",
+          "commit": {
+            "abbreviatedOid": "f9e3d58"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-07T22:53:56Z",
+          "updatedAt": "2025-07-07T22:53:56Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "It's saying that you can't retroactively disable WebTransport support once you've advertised it, since \"0\" means no WebTransport at all",
+              "createdAt": "2025-07-07T22:53:56Z",
+              "updatedAt": "2025-07-07T22:53:57Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 129,
+      "id": "PR_kwDODnOl886d1MjU",
+      "title": "Rename WebTransport -> WT for SETTINGS",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/129",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Rename WebTransport -> WT for SETTINGS\r\n\r\nBased on top of https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/128, will rebase once that lands.\r\n\r\nThis is purely a find-and-replace + whitespace changes, the text itself should otherwise be identical.\r\n\r\nFixes #127\r\n\r\n",
+      "createdAt": "2025-07-07T22:02:10Z",
+      "updatedAt": "2025-07-07T23:09:03Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "aff0814b5e755649ccfb4e04087d14fbd7e20bb4",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/renaming",
+      "headRefOid": "a3e0507003bd22f9fbac76b390586bb3db53dace",
+      "closedAt": "2025-07-07T23:09:00Z",
+      "mergedAt": "2025-07-07T23:09:00Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "fa44e07e78beaa2fb835c6e11672884bc26b238b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl886yiugP",
+          "commit": {
+            "abbreviatedOid": "37157df"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-07T22:43:23Z",
+          "updatedAt": "2025-07-07T22:43:23Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 130,
+      "id": "PR_kwDODnOl886d15nP",
+      "title": "Fix metadata",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/130",
+      "state": "OPEN",
+      "author": "DavidSchinazi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-07T23:57:17Z",
+      "updatedAt": "2025-07-08T00:32:01Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "fa44e07e78beaa2fb835c6e11672884bc26b238b",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "fix_note_to_readers",
+      "headRefOid": "2e29c4628f77bf5672f7fe0a244cac3eb4f8ce12",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl886yjbzl",
+          "commit": {
+            "abbreviatedOid": "2e29c46"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-08T00:32:01Z",
+          "updatedAt": "2025-07-08T00:32:01Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }

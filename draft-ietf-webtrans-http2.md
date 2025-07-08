@@ -1037,6 +1037,23 @@ For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
 forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
 WT_STREAM capsule without error.
 
+# Requirements on TLS Usage
+
+Because TLS keying material exporters are only secure for authentication when
+they are uniquely bound to the TLS session {{!RFC7627}}, WebTransport requires
+either one of the following properties:
+
+* The TLS version in use is greater than or equal to 1.3 {{!TLS=RFC8446}}.
+
+* The TLS version in use is 1.2, and the extended master secret extension
+  {{RFC7627}} has been negotiated.
+
+Clients MUST NOT send WebTransport over HTTP/2 requests on connections that do
+not meet one of the two properties above. If a server receives a WebTransport
+over HTTP/2 request on a connection that meets neither of the above properties,
+the server MUST treat the request as malformed, as specified in {{Section 8.1.1
+of HTTP2}}.
+
 # Examples
 
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.

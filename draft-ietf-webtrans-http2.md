@@ -19,12 +19,12 @@ venue:
 keyword:
   - webtransport
 author:
- -
+  -
     ins: A. Frindell
     name: Alan Frindell
     organization: Facebook Inc.
     email: afrind@fb.com
- -
+  -
     ins: E. Kinnear
     name: Eric Kinnear
     org: Apple Inc.
@@ -32,7 +32,7 @@ author:
     city: Cupertino, California 95014
     country: United States of America
     email: ekinnear@apple.com
- -
+  -
     ins: T. Pauly
     name: Tommy Pauly
     org: Apple Inc.
@@ -40,17 +40,17 @@ author:
     city: Cupertino, California 95014
     country: United States of America
     email: tpauly@apple.com
- -
+  -
     ins: M. Thomson
     name: Martin Thomson
     org: Mozilla
     email: mt@lowentropy.net
- -
+  -
     ins: V. Vasiliev
     name: Victor Vasiliev
     organization: Google
     email: vasilvv@google.com
- -
+  -
     ins: G. Xie
     name: Guowu Xie
     organization: Facebook Inc.

@@ -504,6 +504,33 @@ to inform stream state transitions. Wherever QUIC relies on receiving an ack
 for a packet to transition between stream states, WebTransport performs that
 transition immediately.
 
+## Use of Keying Material Exporters
+
+WebTransport over HTTP/2 supports the use of TLS keying material exporters
+{{Section 7.5 of !TLS=RFC8446}}. Since the underlying HTTP/2 connection could be
+shared by multiple WebTransport sessions, WebTransport defines a mechanism for
+deriving a TLS exporter that separates keying material for different sessions.
+If the application requests an exporter for a given WebTransport session with a
+specified label and context, the resulting exporter SHALL be a TLS exporter as
+defined in {{Section 7.5 of TLS}} with the label set to
+"EXPORTER-WebTransport" and the context set to the serialization of the
+"WebTransport Exporter Context" struct as defined below.
+
+~~~
+WebTransport Exporter Context {
+  WebTransport Session ID (64),
+  WebTransport Application-Supplied Exporter Label Length (8),
+  WebTransport Application-Supplied Exporter Label (8..),
+  WebTransport Application-Supplied Exporter Context Length (8),
+  WebTransport Application-Supplied Exporter Context (..)
+}
+~~~
+{: #fig-wt-exporter-context title="WebTransport Exporter Context struct"}
+
+A TLS exporter API might permit the context field to be omitted.  In this case,
+as with TLS 1.3, the WebTransport Application-Supplied Exporter Context
+becomes zero-length if omitted.
+
 # WebTransport Capsules
 
 WebTransport capsules mirror their QUIC frame counterparts as closely as
@@ -1037,6 +1064,22 @@ For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
 forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
 WT_STREAM capsule without error.
 
+# Requirements on TLS Usage
+
+Because TLS keying material exporters are only secure for authentication when
+they are uniquely bound to the TLS session {{!RFC7627}}, WebTransport requires
+either one of the following conditions:
+
+* The TLS version in use is greater than or equal to 1.3 {{TLS}}.
+
+* The TLS version in use is 1.2, and the extended master secret extension
+  {{RFC7627}} has been negotiated.
+
+Clients MUST NOT send WebTransport over HTTP/2 requests on connections that do
+not meet one of the two conditions above. If a server receives a WebTransport
+over HTTP/2 request on a connection that meets neither, the server MUST treat
+the request as malformed, as specified in {{Section 8.1.1 of HTTP2}}.
+
 # Examples
 
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
@@ -1519,4 +1562,4 @@ Comments:
 
 Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto, and
 Valentin Pistol for their contributions in the design and implementation of
-this work.
+this work. The requirements on TLS usage were inspired by {{?RFC9729}}.

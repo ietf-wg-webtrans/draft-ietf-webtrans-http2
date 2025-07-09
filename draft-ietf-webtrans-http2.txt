@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 9 January 2026                                         T. Pauly
+Expires: 10 January 2026                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 9 January 2026                                         T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                             8 July 2025
+                                                             9 July 2025
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2026.
+   This Internet-Draft will expire on 10 January 2026.
 
 Copyright Notice
 
@@ -96,6 +96,7 @@ Table of Contents
    5.  WebTransport Features
      5.1.  Transport Properties
      5.2.  WebTransport Streams
+     5.3.  Use of Keying Material Exporters
    6.  WebTransport Capsules
      6.1.  PADDING Capsule
      6.2.  WT_RESET_STREAM Capsule
@@ -111,17 +112,18 @@ Table of Contents
      6.12. WT_CLOSE_SESSION Capsule
      6.13. WT_DRAIN_SESSION Capsule
      6.14. Capsule Ordering and Reliability
-   7.  Examples
-   8.  Considerations for Future Versions
-   9.  Security Considerations
-   10. IANA Considerations
-     10.1.  HTTP/2 SETTINGS Parameter Registration
-     10.2.  HTTP/2 Error Code Registration
-     10.3.  Capsule Types
-     10.4.  HTTP Header Field Name
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   7.  Requirements on TLS Usage
+   8.  Examples
+   9.  Considerations for Future Versions
+   10. Security Considerations
+   11. IANA Considerations
+     11.1.  HTTP/2 SETTINGS Parameter Registration
+     11.2.  HTTP/2 Error Code Registration
+     11.3.  Capsule Types
+     11.4.  HTTP Header Field Name
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Acknowledgments
    Index
    Authors' Addresses
@@ -438,7 +440,7 @@ Table of Contents
 4.3.1.  Flow Control SETTINGS
 
    Initial flow control limits can be exchanged via HTTP/2 SETTINGS
-   (Section 10.1) by providing non-zero values for
+   (Section 11.1) by providing non-zero values for
 
    *  WT_MAX_DATA via SETTINGS_WT_INITIAL_MAX_DATA
 
@@ -570,6 +572,33 @@ Table of Contents
    relies on receiving an ack for a packet to transition between stream
    states, WebTransport performs that transition immediately.
 
+5.3.  Use of Keying Material Exporters
+
+   WebTransport over HTTP/2 supports the use of TLS keying material
+   exporters Section 7.5 of [TLS].  Since the underlying HTTP/2
+   connection could be shared by multiple WebTransport sessions,
+   WebTransport defines a mechanism for deriving a TLS exporter that
+   separates keying material for different sessions.  If the application
+   requests an exporter for a given WebTransport session with a
+   specified label and context, the resulting exporter SHALL be a TLS
+   exporter as defined in Section 7.5 of [TLS] with the label set to
+   "EXPORTER-WebTransport" and the context set to the serialization of
+   the "WebTransport Exporter Context" struct as defined below.
+
+   WebTransport Exporter Context {
+     WebTransport Session ID (64),
+     WebTransport Application-Supplied Exporter Label Length (8),
+     WebTransport Application-Supplied Exporter Label (8..),
+     WebTransport Application-Supplied Exporter Context Length (8),
+     WebTransport Application-Supplied Exporter Context (..)
+   }
+
+               Figure 1: WebTransport Exporter Context struct
+
+   A TLS exporter API might permit the context field to be omitted.  In
+   this case, as with TLS 1.3, the WebTransport Application-Supplied
+   Exporter Context becomes zero-length if omitted.
+
 6.  WebTransport Capsules
 
    WebTransport capsules mirror their QUIC frame counterparts as closely
@@ -600,7 +629,7 @@ Table of Contents
      Padding (..),
    }
 
-                      Figure 1: PADDING Capsule Format
+                      Figure 2: PADDING Capsule Format
 
    The Padding field MUST be set to an all-zero sequence of bytes of any
    length as specified by the Length field.  A receiver is not obligated
@@ -636,7 +665,7 @@ Table of Contents
      Reliable Size (i),
    }
 
-                  Figure 2: WT_RESET_STREAM Capsule Format
+                  Figure 3: WT_RESET_STREAM Capsule Format
 
    The WT_RESET_STREAM capsule defines the following fields:
 
@@ -677,7 +706,7 @@ Table of Contents
      Application Protocol Error Code (i),
    }
 
-                  Figure 3: WT_STOP_SENDING Capsule Format
+                  Figure 4: WT_STOP_SENDING Capsule Format
 
    The WT_STOP_SENDING capsule defines the following fields:
 
@@ -712,7 +741,7 @@ Table of Contents
      Stream Data (..),
    }
 
-                     Figure 4: WT_STREAM Capsule Format
+                     Figure 5: WT_STREAM Capsule Format
 
    WT_STREAM capsules contain the following fields:
 
@@ -743,7 +772,7 @@ Table of Contents
      Maximum Data (i),
    }
 
-                    Figure 5: WT_MAX_DATA Capsule Format
+                    Figure 6: WT_MAX_DATA Capsule Format
 
    WT_MAX_DATA capsules contain the following field:
 
@@ -777,7 +806,7 @@ Table of Contents
      Maximum Stream Data (i),
    }
 
-                Figure 6: WT_MAX_STREAM_DATA Capsule Format
+                Figure 7: WT_MAX_STREAM_DATA Capsule Format
 
    WT_MAX_STREAM_DATA capsules contain the following fields:
 
@@ -832,7 +861,7 @@ Table of Contents
      Maximum Streams (i),
    }
 
-                  Figure 7: WT_MAX_STREAMS Capsule Format
+                  Figure 8: WT_MAX_STREAMS Capsule Format
 
    WT_MAX_STREAMS capsules contain the following field:
 
@@ -872,7 +901,7 @@ Table of Contents
      Maximum Data (i),
    }
 
-                  Figure 8: WT_DATA_BLOCKED Capsule Format
+                  Figure 9: WT_DATA_BLOCKED Capsule Format
 
    WT_DATA_BLOCKED capsules contain the following field:
 
@@ -899,7 +928,7 @@ Table of Contents
      Maximum Stream Data (i),
    }
 
-              Figure 9: WT_STREAM_DATA_BLOCKED Capsule Format
+              Figure 10: WT_STREAM_DATA_BLOCKED Capsule Format
 
    WT_STREAM_DATA_BLOCKED capsules contain the following fields:
 
@@ -942,7 +971,7 @@ Table of Contents
      Maximum Streams (i),
    }
 
-                Figure 10: WT_STREAMS_BLOCKED Capsule Format
+                Figure 11: WT_STREAMS_BLOCKED Capsule Format
 
    WT_STREAMS_BLOCKED capsules contain the following field:
 
@@ -968,7 +997,7 @@ Table of Contents
      HTTP Datagram Payload (..),
    }
 
-                     Figure 11: DATAGRAM Capsule Format
+                     Figure 12: DATAGRAM Capsule Format
 
    When used in WebTransport over HTTP/2, DATAGRAM capsules contain the
    following fields:
@@ -1013,7 +1042,7 @@ Table of Contents
      Application Error Message (..8192),
    }
 
-                 Figure 12: WT_CLOSE_SESSION Capsule Format
+                 Figure 13: WT_CLOSE_SESSION Capsule Format
 
    When used in WebTransport over HTTP/2, WT_CLOSE_SESSION capsules
    contain the following fields:
@@ -1050,7 +1079,7 @@ Table of Contents
      Length (i) = 0
    }
 
-                 Figure 13: WT_DRAIN_SESSION Capsule Format
+                 Figure 14: WT_DRAIN_SESSION Capsule Format
 
    After sending or receiving either a WT_DRAIN_SESSION capsule or
    HTTP/2 GOAWAY frame, an endpoint MAY continue using the session and
@@ -1076,7 +1105,25 @@ Table of Contents
    intermediary cannot forward a RESET_STREAM frame as a WT_RESET_STREAM
    capsule or a STREAM frame as a WT_STREAM capsule without error.
 
-7.  Examples
+7.  Requirements on TLS Usage
+
+   Because TLS keying material exporters are only secure for
+   authentication when they are uniquely bound to the TLS session
+   [RFC7627], WebTransport requires either one of the following
+   conditions:
+
+   *  The TLS version in use is greater than or equal to 1.3 [TLS].
+
+   *  The TLS version in use is 1.2, and the extended master secret
+      extension [RFC7627] has been negotiated.
+
+   Clients MUST NOT send WebTransport over HTTP/2 requests on
+   connections that do not meet one of the two conditions above.  If a
+   server receives a WebTransport over HTTP/2 request on a connection
+   that meets neither, the server MUST treat the request as malformed,
+   as specified in Section 8.1.1 of [HTTP2].
+
+8.  Examples
 
    An example of negotiating a WebTransport Stream on an HTTP/2
    connection follows.  This example is intended to closely follow the
@@ -1152,7 +1199,7 @@ WebTransport Data
                                     Stream ID = 1
                                     WebTransport Data
 
-8.  Considerations for Future Versions
+9.  Considerations for Future Versions
 
    Future versions of WebTransport that change the syntax of the CONNECT
    requests used to establish WebTransport sessions will need to modify
@@ -1162,12 +1209,12 @@ WebTransport Data
 
    Servers that support future incompatible versions of WebTransport
    signal that support by changing the codepoint used for the
-   SETTINGS_WT_MAX_SESSIONS parameter (see Section 10.1).  Clients can
+   SETTINGS_WT_MAX_SESSIONS parameter (see Section 11.1).  Clients can
    select the associated upgrade token, if applicable, to use when
    establishing a new session, ensuring that servers will always know
    the syntax in use for every incoming request.
 
-9.  Security Considerations
+10.  Security Considerations
 
    WebTransport over HTTP/2 satisfies all of the security requirements
    imposed by [OVERVIEW] on WebTransport protocols, thus providing a
@@ -1193,13 +1240,13 @@ WebTransport Data
    within connection gets a reasonable share of controlled resources;
    this applies both to sending data and to opening new streams.
 
-10.  IANA Considerations
+11.  IANA Considerations
 
-   This document registers new HTTP/2 settings (Section 10.1), HTTP/2
-   error codes (Section 10.2), new capsules (Section 10.3), and the
-   WebTransport-Init header field (Section 10.4).
+   This document registers new HTTP/2 settings (Section 11.1), HTTP/2
+   error codes (Section 11.2), new capsules (Section 11.3), and the
+   WebTransport-Init header field (Section 11.4).
 
-10.1.  HTTP/2 SETTINGS Parameter Registration
+11.1.  HTTP/2 SETTINGS Parameter Registration
 
    The following entries are added to the "HTTP/2 Settings" registry
    established by [HTTP2]:
@@ -1317,7 +1364,7 @@ WebTransport Data
 
    Specification:  This document
 
-10.2.  HTTP/2 Error Code Registration
+11.2.  HTTP/2 Error Code Registration
 
    The following entries are added to the "HTTP/2 Error Code" registry
    established by [HTTP2]:
@@ -1342,7 +1389,7 @@ WebTransport Data
 
    Reference:  Section 3.5
 
-10.3.  Capsule Types
+11.3.  Capsule Types
 
    The following entries are added to the "HTTP Capsule Types" registry
    established by [HTTP-DATAGRAM]:
@@ -1402,7 +1449,7 @@ WebTransport Data
       (mailto:webtransport@ietf.org)
    Notes:  None
 
-10.4.  HTTP Header Field Name
+11.4.  HTTP Header Field Name
 
    IANA will register the following entry in the "Hypertext Transfer
    Protocol (HTTP) Field Name Registry" maintained at
@@ -1419,9 +1466,9 @@ WebTransport Data
 
    Comments:  None
 
-11.  References
+12.  References
 
-11.1.  Normative References
+12.1.  Normative References
 
    [HTTP]     Fielding, R. T., Nottingham, M., and J. Reschke, "HTTP
               Semantics", Work in Progress, Internet-Draft, draft-ietf-
@@ -1469,6 +1516,12 @@ WebTransport Data
               RFC 7230, DOI 10.17487/RFC7230, June 2014,
               <https://www.rfc-editor.org/rfc/rfc7230>.
 
+   [RFC7627]  Bhargavan, K., Ed., Delignat-Lavaud, A., Pironti, A.,
+              Langley, A., and M. Ray, "Transport Layer Security (TLS)
+              Session Hash and Extended Master Secret Extension",
+              RFC 7627, DOI 10.17487/RFC7627, September 2015,
+              <https://www.rfc-editor.org/rfc/rfc7627>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
@@ -1502,6 +1555,10 @@ WebTransport Data
               <https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-
               semantics-19>.
 
+   [TLS]      Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
+              <https://www.rfc-editor.org/rfc/rfc8446>.
+
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
@@ -1509,7 +1566,7 @@ WebTransport Data
               <https://datatracker.ietf.org/doc/html/draft-ietf-
               webtrans-http3-13>.
 
-11.2.  Informative References
+12.2.  Informative References
 
    [DATAGRAM] Pauly, T., Kinnear, E., and D. Schinazi, "An Unreliable
               Datagram Extension to QUIC", RFC 9221,
@@ -1536,11 +1593,17 @@ WebTransport Data
               Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
               July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
 
+   [RFC9729]  Schinazi, D., Oliver, D., and J. Hoyland, "The Concealed
+              HTTP Authentication Scheme", RFC 9729,
+              DOI 10.17487/RFC9729, February 2025,
+              <https://www.rfc-editor.org/rfc/rfc9729>.
+
 Acknowledgments
 
    Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto,
    and Valentin Pistol for their contributions in the design and
-   implementation of this work.
+   implementation of this work.  The requirements on TLS usage were
+   inspired by [RFC9729].
 
 Index
 
@@ -1549,25 +1612,25 @@ Index
       P
 
          PADDING  Section 6.1, Paragraph 1; Section 6.1, Paragraph 2;
-            Section 10.3, Paragraph 3.4.1
+            Section 11.3, Paragraph 3.4.1
 
       S
 
          SETTINGS_WT_INITIAL_MAX_DATA  Section 4.3.1, Paragraph 2.1.1;
-            Section 6.5, Paragraph 7; Section 10.1, Paragraph 4;
-            Section 10.1, Paragraph 6.2.1
+            Section 6.5, Paragraph 7; Section 11.1, Paragraph 4;
+            Section 11.1, Paragraph 6.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI  Section 4.3.1,
-            Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 10.1,
-            Paragraph 10; Section 10.1, Paragraph 12.2.1
+            Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 11.1,
+            Paragraph 10; Section 11.1, Paragraph 12.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI  Section 4.3.1,
-            Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 10.1,
-            Paragraph 7; Section 10.1, Paragraph 9.2.1
+            Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 11.1,
+            Paragraph 7; Section 11.1, Paragraph 9.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI  Section 4.3.1, Paragraph
-            2.3.1; Section 6.7, Paragraph 9; Section 10.1, Paragraph 16;
-            Section 10.1, Paragraph 18.2.1
+            2.3.1; Section 6.7, Paragraph 9; Section 11.1, Paragraph 16;
+            Section 11.1, Paragraph 18.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_UNI  Section 4.3.1, Paragraph
-            2.3.1; Section 6.7, Paragraph 9; Section 10.1, Paragraph 13;
-            Section 10.1, Paragraph 15.2.1
+            2.3.1; Section 6.7, Paragraph 9; Section 11.1, Paragraph 13;
+            Section 11.1, Paragraph 15.2.1
 
       W
 
@@ -1577,33 +1640,33 @@ Index
          WT_MAX_DATA  Section 2, Paragraph 7; Section 4.3.1, Paragraph
             2.1.1; Section 4.4, Paragraph 1; Section 6.5, Paragraph 1;
             Section 6.5, Paragraph 3; Section 6.5, Paragraph 6;
-            Section 10.1, Paragraph 4
+            Section 11.1, Paragraph 4
          WT_MAX_STREAM_DATA  Section 2, Paragraph 7; Section 4.3.1,
             Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 6.6,
             Paragraph 1; Section 6.6, Paragraph 3; Section 6.6,
-            Paragraph 6; Section 6.6, Paragraph 8; Section 10.1,
-            Paragraph 7; Section 10.1, Paragraph 10; Section 10.3,
+            Paragraph 6; Section 6.6, Paragraph 8; Section 11.1,
+            Paragraph 7; Section 11.1, Paragraph 10; Section 11.3,
             Paragraph 11.4.1
          WT_MAX_STREAMS  Section 2, Paragraph 7; Section 4.2, Paragraph
             1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
             Section 6.7, Paragraph 1; Section 6.7, Paragraph 2;
             Section 6.7, Paragraph 4; Section 6.7, Paragraph 8;
-            Section 10.1, Paragraph 13; Section 10.1, Paragraph 16
+            Section 11.1, Paragraph 13; Section 11.1, Paragraph 16
          WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;
-            Section 6.14, Paragraph 3; Section 10.3, Paragraph 5.4.1
+            Section 6.14, Paragraph 3; Section 11.3, Paragraph 5.4.1
          WT_STOP_SENDING  Section 2, Paragraph 8; Section 6.3, Paragraph
             1; Section 6.3, Paragraph 3; Section 6.3, Paragraph 5;
-            Section 6.6, Paragraph 8; Section 10.3, Paragraph 7.4.1
+            Section 6.6, Paragraph 8; Section 11.3, Paragraph 7.4.1
          WT_STREAM  Section 2, Paragraph 6; Section 5.1, Paragraph 2;
             Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 7; Section 6.4, Paragraph 1;
             Section 6.4, Paragraph 2; Section 6.4, Paragraph 4;
             Section 6.4, Paragraph 5.4.1; Section 6.4, Paragraph 6;
             Section 6.5, Paragraph 5; Section 6.6, Paragraph 5;
-            Section 6.14, Paragraph 3; Section 7, Paragraph 3;
-            Section 10.3, Paragraph 9.4.1
+            Section 6.14, Paragraph 3; Section 8, Paragraph 3;
+            Section 11.3, Paragraph 9.4.1
          WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4,
             Paragraph 1; Section 6.9, Paragraph 1; Section 6.9,
             Paragraph 3; Section 6.9, Paragraph 5; Section 6.9,

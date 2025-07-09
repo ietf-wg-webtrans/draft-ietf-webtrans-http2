@@ -1563,4 +1563,4 @@ Comments:
 
 Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto, and
 Valentin Pistol for their contributions in the design and implementation of
-this work.
+this work. The requirements on TLS usage were inspired by {{?RFC9729}}.

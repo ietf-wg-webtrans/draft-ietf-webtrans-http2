@@ -507,7 +507,7 @@ transition immediately.
 ## Use of Keying Material Exporters
 
 WebTransport over HTTP/2 supports the use of TLS keying material exporters
-{{Section 7.5 of !TLS=RFC8446}}. Since the underlying HTTP/2 connection may be
+{{Section 7.5 of !TLS=RFC8446}}. Since the underlying HTTP/2 connection could be
 shared by multiple WebTransport sessions, WebTransport defines a mechanism for
 deriving a TLS exporter that separates keying material for different sessions.
 If the application requests an exporter for a given WebTransport session with a
@@ -1076,8 +1076,8 @@ either one of the following properties:
   {{RFC7627}} has been negotiated.
 
 Clients MUST NOT send WebTransport over HTTP/2 requests on connections that do
-not meet one of the two properties above. If a server receives a WebTransport
-over HTTP/2 request on a connection that meets neither of the above properties,
+not meet one of the two conditions above. If a server receives a WebTransport
+over HTTP/2 request on a connection that meets neither,
 the server MUST treat the request as malformed, as specified in {{Section 8.1.1
 of HTTP2}}.
 

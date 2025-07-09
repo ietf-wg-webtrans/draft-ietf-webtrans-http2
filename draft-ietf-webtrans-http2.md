@@ -1068,7 +1068,7 @@ WT_STREAM capsule without error.
 
 Because TLS keying material exporters are only secure for authentication when
 they are uniquely bound to the TLS session {{!RFC7627}}, WebTransport requires
-either one of the following properties:
+either one of the following conditions:
 
 * The TLS version in use is greater than or equal to 1.3 {{TLS}}.
 
@@ -1077,9 +1077,8 @@ either one of the following properties:
 
 Clients MUST NOT send WebTransport over HTTP/2 requests on connections that do
 not meet one of the two conditions above. If a server receives a WebTransport
-over HTTP/2 request on a connection that meets neither,
-the server MUST treat the request as malformed, as specified in {{Section 8.1.1
-of HTTP2}}.
+over HTTP/2 request on a connection that meets neither, the server MUST treat
+the request as malformed, as specified in {{Section 8.1.1 of HTTP2}}.
 
 # Examples
 

@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 9 January 2026                                         T. Pauly
+Expires: 10 January 2026                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 9 January 2026                                         T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                             8 July 2025
+                                                             9 July 2025
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2026.
+   This Internet-Draft will expire on 10 January 2026.
 
 Copyright Notice
 
@@ -96,6 +96,7 @@ Table of Contents
    5.  WebTransport Features
      5.1.  Transport Properties
      5.2.  WebTransport Streams
+     5.3.  Use of Keying Material Exporters
    6.  WebTransport Capsules
      6.1.  PADDING Capsule
      6.2.  WT_RESET_STREAM Capsule
@@ -571,6 +572,33 @@ Table of Contents
    relies on receiving an ack for a packet to transition between stream
    states, WebTransport performs that transition immediately.
 
+5.3.  Use of Keying Material Exporters
+
+   WebTransport over HTTP/2 supports the use of TLS keying material
+   exporters Section 7.5 of [TLS].  Since the underlying HTTP/2
+   connection may be shared by multiple WebTransport sessions,
+   WebTransport defines a mechanism for deriving a TLS exporter that
+   separates keying material for different sessions.  If the application
+   requests an exporter for a given WebTransport session with a
+   specified label and context, the resulting exporter SHALL be a TLS
+   exporter as defined in Section 7.5 of [TLS] with the label set to
+   "EXPORTER-WebTransport" and the context set to the serialization of
+   the "WebTransport Exporter Context" struct as defined below.
+
+   WebTransport Exporter Context {
+     WebTransport Session ID (64),
+     WebTransport Application-Supplied Exporter Label Length (8),
+     WebTransport Application-Supplied Exporter Label (8..),
+     WebTransport Application-Supplied Exporter Context Length (8),
+     WebTransport Application-Supplied Exporter Context (..)
+   }
+
+               Figure 1: WebTransport Exporter Context struct
+
+   A TLS exporter API might permit the context field to be omitted.  In
+   this case, as with TLS 1.3, the WebTransport Application-Supplied
+   Exporter Context becomes zero-length if omitted.
+
 6.  WebTransport Capsules
 
    WebTransport capsules mirror their QUIC frame counterparts as closely
@@ -601,7 +629,7 @@ Table of Contents
      Padding (..),
    }
 
-                      Figure 1: PADDING Capsule Format
+                      Figure 2: PADDING Capsule Format
 
    The Padding field MUST be set to an all-zero sequence of bytes of any
    length as specified by the Length field.  A receiver is not obligated
@@ -637,7 +665,7 @@ Table of Contents
      Reliable Size (i),
    }
 
-                  Figure 2: WT_RESET_STREAM Capsule Format
+                  Figure 3: WT_RESET_STREAM Capsule Format
 
    The WT_RESET_STREAM capsule defines the following fields:
 
@@ -678,7 +706,7 @@ Table of Contents
      Application Protocol Error Code (i),
    }
 
-                  Figure 3: WT_STOP_SENDING Capsule Format
+                  Figure 4: WT_STOP_SENDING Capsule Format
 
    The WT_STOP_SENDING capsule defines the following fields:
 
@@ -713,7 +741,7 @@ Table of Contents
      Stream Data (..),
    }
 
-                     Figure 4: WT_STREAM Capsule Format
+                     Figure 5: WT_STREAM Capsule Format
 
    WT_STREAM capsules contain the following fields:
 
@@ -744,7 +772,7 @@ Table of Contents
      Maximum Data (i),
    }
 
-                    Figure 5: WT_MAX_DATA Capsule Format
+                    Figure 6: WT_MAX_DATA Capsule Format
 
    WT_MAX_DATA capsules contain the following field:
 
@@ -778,7 +806,7 @@ Table of Contents
      Maximum Stream Data (i),
    }
 
-                Figure 6: WT_MAX_STREAM_DATA Capsule Format
+                Figure 7: WT_MAX_STREAM_DATA Capsule Format
 
    WT_MAX_STREAM_DATA capsules contain the following fields:
 
@@ -833,7 +861,7 @@ Table of Contents
      Maximum Streams (i),
    }
 
-                  Figure 7: WT_MAX_STREAMS Capsule Format
+                  Figure 8: WT_MAX_STREAMS Capsule Format
 
    WT_MAX_STREAMS capsules contain the following field:
 
@@ -873,7 +901,7 @@ Table of Contents
      Maximum Data (i),
    }
 
-                  Figure 8: WT_DATA_BLOCKED Capsule Format
+                  Figure 9: WT_DATA_BLOCKED Capsule Format
 
    WT_DATA_BLOCKED capsules contain the following field:
 
@@ -900,7 +928,7 @@ Table of Contents
      Maximum Stream Data (i),
    }
 
-              Figure 9: WT_STREAM_DATA_BLOCKED Capsule Format
+              Figure 10: WT_STREAM_DATA_BLOCKED Capsule Format
 
    WT_STREAM_DATA_BLOCKED capsules contain the following fields:
 
@@ -943,7 +971,7 @@ Table of Contents
      Maximum Streams (i),
    }
 
-                Figure 10: WT_STREAMS_BLOCKED Capsule Format
+                Figure 11: WT_STREAMS_BLOCKED Capsule Format
 
    WT_STREAMS_BLOCKED capsules contain the following field:
 
@@ -969,7 +997,7 @@ Table of Contents
      HTTP Datagram Payload (..),
    }
 
-                     Figure 11: DATAGRAM Capsule Format
+                     Figure 12: DATAGRAM Capsule Format
 
    When used in WebTransport over HTTP/2, DATAGRAM capsules contain the
    following fields:
@@ -1014,7 +1042,7 @@ Table of Contents
      Application Error Message (..8192),
    }
 
-                 Figure 12: WT_CLOSE_SESSION Capsule Format
+                 Figure 13: WT_CLOSE_SESSION Capsule Format
 
    When used in WebTransport over HTTP/2, WT_CLOSE_SESSION capsules
    contain the following fields:
@@ -1051,7 +1079,7 @@ Table of Contents
      Length (i) = 0
    }
 
-                 Figure 13: WT_DRAIN_SESSION Capsule Format
+                 Figure 14: WT_DRAIN_SESSION Capsule Format
 
    After sending or receiving either a WT_DRAIN_SESSION capsule or
    HTTP/2 GOAWAY frame, an endpoint MAY continue using the session and
@@ -1565,11 +1593,17 @@ WebTransport Data
               Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
               July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
 
+   [RFC9729]  Schinazi, D., Oliver, D., and J. Hoyland, "The Concealed
+              HTTP Authentication Scheme", RFC 9729,
+              DOI 10.17487/RFC9729, February 2025,
+              <https://www.rfc-editor.org/rfc/rfc9729>.
+
 Acknowledgments
 
    Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto,
    and Valentin Pistol for their contributions in the design and
-   implementation of this work.
+   implementation of this work.  The requirements on TLS usage were
+   inspired by [RFC9729].
 
 Index
 

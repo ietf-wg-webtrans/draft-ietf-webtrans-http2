@@ -1847,7 +1847,7 @@ transition immediately.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-use-of-keying-material-expo" class="section-name selfRef">Use of Keying Material Exporters</a>
         </h3>
 <p id="section-5.3-1">WebTransport over HTTP/2 supports the use of TLS keying material exporters
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#TLS" class="cite xref">TLS</a>]</span>. Since the underlying HTTP/2 connection may be
+<span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.5" class="relref">Section 7.5</a> of [<a href="#TLS" class="cite xref">TLS</a>]</span>. Since the underlying HTTP/2 connection could be
 shared by multiple WebTransport sessions, WebTransport defines a mechanism for
 deriving a TLS exporter that separates keying material for different sessions.
 If the application requests an exporter for a given WebTransport session with a
@@ -2546,8 +2546,8 @@ either one of the following properties:<a href="#section-7-1" class="pilcrow">¶
 </li>
       </ul>
 <p id="section-7-3">Clients MUST NOT send WebTransport over HTTP/2 requests on connections that do
-not meet one of the two properties above. If a server receives a WebTransport
-over HTTP/2 request on a connection that meets neither of the above properties,
+not meet one of the two conditions above. If a server receives a WebTransport
+over HTTP/2 request on a connection that meets neither,
 the server MUST treat the request as malformed, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.1.1" class="relref">Section 8.1.1</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>

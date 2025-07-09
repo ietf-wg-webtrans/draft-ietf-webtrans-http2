@@ -1110,7 +1110,7 @@ Table of Contents
    Because TLS keying material exporters are only secure for
    authentication when they are uniquely bound to the TLS session
    [RFC7627], WebTransport requires either one of the following
-   properties:
+   conditions:
 
    *  The TLS version in use is greater than or equal to 1.3 [TLS].
 

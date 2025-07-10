@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-08T01:14:38.087661+00:00",
+  "timestamp": "2025-07-10T01:15:18.914219+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1479,7 +1479,7 @@
       ],
       "body": "WebTransport over HTTP/2, as it's currently defined, is, at its core, a protocol that is semantically compatible with QUIC, but works over capsules (i.e. TLV over TCP).  This means that it might be useful outside of HTTP/2 context.\r\n\r\nThe main gotcha is, of course, that we do use settings and headers.  The way we use settings is an optimization that only makes sense for pooling; on the other hand, I don't think we can function without the headers.\r\n\r\nSome possible applications we may to consider / discuss:\r\n\r\n1. HTTP/1.1 should just work, since capsules were designed with H/1 support in mind.\r\n2. Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.",
       "createdAt": "2023-04-18T19:20:28Z",
-      "updatedAt": "2025-03-26T22:50:01Z",
+      "updatedAt": "2025-07-09T01:13:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -1516,6 +1516,20 @@
           "body": "The full-duplex streaming part would be useful to replace Chromium's IPC implementation of Native Messaging. That's what lead me here. I'm working on implementing a HTTP/2 WebTransport server in the browser using Direct Sockets `TCPServerSocket`. An outline of what HTTP/2 headers and \"capsules\" look like in plain text that I could possible translate to TypedArray's and ArrayBuffer's, et al., would be helpful.",
           "createdAt": "2025-03-26T22:50:00Z",
           "updatedAt": "2025-03-26T22:50:00Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Editor's meeting: \n\nAdd an appendix at the end that says: \n- This document is HTTP/2\n- The mechanisms described generally work in any version of HTTP (except for SETTINGS and Extended CONNECT)\n- Prefer the specific implementation for versions that have a better binding",
+          "createdAt": "2025-07-08T23:38:52Z",
+          "updatedAt": "2025-07-08T23:38:52Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "I've been working with `TCPServerSocket` in an Isolated Web App in Chrome browser. \n\nIt would be useful for WebTransport to be able to stream using WHATWG Streams over plain TCP to and from the `TCPServerSocket`, without TLS, for local streaming.",
+          "createdAt": "2025-07-09T01:13:14Z",
+          "updatedAt": "2025-07-09T01:13:14Z"
         }
       ]
     },
@@ -2287,19 +2301,19 @@
       "id": "I_kwDODnOl886NYFMy",
       "title": "Keying Material Exporters",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/113",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "lqf96",
       "authorAssociation": "NONE",
       "assignees": [
-        "vasilvv"
+        "DavidSchinazi"
       ],
       "labels": [
         "ready for PR"
       ],
       "body": "WebTransport over HTTP/2 should support keying material exporters, originally proposed in ietf-wg-webtrans/draft-ietf-webtrans-http3#116, since it's also based on TLS 1.3. Perhaps this can be done by simply copying [Section 4.7 of WebTransport over HTTP/3 Spec](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html#name-use-of-keying-material-expo) and making minimal adaptations.",
       "createdAt": "2024-06-25T07:22:31Z",
-      "updatedAt": "2025-03-05T00:40:10Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-09T16:25:19Z",
+      "closedAt": "2025-07-09T16:25:19Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -2321,6 +2335,13 @@
           "body": "Damn, I thought we'd already required the use of session hash in HTTP/2.  I guess we didn't.  This is the only reasonable thing to do if you use exporters, so \ud83d\udc4d from me.",
           "createdAt": "2024-08-21T02:47:20Z",
           "updatedAt": "2024-08-21T02:47:20Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "[Section 7 of RFC9729](https://www.rfc-editor.org/rfc/rfc9729.html#section-7) contains the right text to use",
+          "createdAt": "2025-07-08T23:42:01Z",
+          "updatedAt": "2025-07-08T23:42:01Z"
         }
       ]
     },
@@ -2542,7 +2563,7 @@
       "labels": [],
       "body": "In QUIC, we have the path MTU.  We don't have the same in h2, so DATAGRAM capsules can be any size.  That's not realistic, so I propose we use a setting to communicate a size limit.  There's a bunch of reasons that this is probably not good enough.  Mostly, there's no way to ensure that this value accurately reflects the minimum limit that applies to a chain of forwarding hops.  That means that an application that really cares will have to do its own probing of the path (and do so continuously, just like with PLPMTUD). But even if this is only used to cap the size to something that is moderately reasonable in terms of memory consumption at the consuming end, we win.\n\nSee #123.",
       "createdAt": "2025-04-23T00:21:36Z",
-      "updatedAt": "2025-06-11T00:04:54Z",
+      "updatedAt": "2025-07-09T22:07:53Z",
       "closedAt": "2025-06-11T00:04:54Z",
       "comments": [
         {
@@ -2635,15 +2656,22 @@
           "body": "Based on the discussion above, if we solve this we'll want to do it at the capsule layer, so it won't require changes in WebTransport. Based on that, closing this issue with no action.",
           "createdAt": "2025-06-11T00:04:54Z",
           "updatedAt": "2025-06-11T00:04:54Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I've filed this as https://github.com/DavidSchinazi/draft-schinazi-masque-9297bis/issues/2. We can continue the conversation there",
+          "createdAt": "2025-07-09T22:07:53Z",
+          "updatedAt": "2025-07-09T22:07:53Z"
         }
       ]
     },
     {
       "number": 126,
       "id": "I_kwDODnOl8869KTAD",
-      "title": "Check capsule length limits acrsoss H2 and H3",
+      "title": "Check capsule length limits across H2 and H3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/126",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "NONE",
       "assignees": [
@@ -2652,8 +2680,8 @@
       "labels": [],
       "body": "In https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/117 we changed text to cite the capsule definition in the WT/HTTP/3 spec. \n\nThis reminded me of an edge case with capsules where the capsule length might be longer than allowed by a stream. Creating this issue to task me to go away and ensure that there is text somewhere (maybe even the capsule protocol rfc itself) to covers this edge case.",
       "createdAt": "2025-06-24T23:36:04Z",
-      "updatedAt": "2025-06-29T08:23:45Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-09T22:07:26Z",
+      "closedAt": "2025-07-09T22:07:26Z",
       "comments": [
         {
           "author": "martenrichter",
@@ -2661,6 +2689,13 @@
           "body": "May be related, when implementing the http/2 capsule parser, I decided to close the connection if capsule sizes exceed a certain amount (control capsules lower than data carrying capsules), so that a malicious client can not consume too much memory on the server:\nhttps://github.com/fails-components/webtransport/blob/5c49b0f5801c6d8c06289cfb25046e409cb30919/main/lib/http2/node/capsuleparser.js#L109\n\nI am unsure if a mechanism or limit like this is necessary in the specification. (I related it to the window size).",
           "createdAt": "2025-06-29T08:23:45Z",
           "updatedAt": "2025-06-29T08:23:45Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I've filed this as https://github.com/DavidSchinazi/draft-schinazi-masque-9297bis/issues/3. Closing this issue here since it's not specific to WebTransport.",
+          "createdAt": "2025-07-09T22:07:26Z",
+          "updatedAt": "2025-07-09T22:07:26Z"
         }
       ]
     },
@@ -8570,24 +8605,26 @@
       "id": "PR_kwDODnOl886d15nP",
       "title": "Fix metadata",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/130",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "DavidSchinazi",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-07-07T23:57:17Z",
-      "updatedAt": "2025-07-08T00:32:01Z",
+      "updatedAt": "2025-07-08T01:53:16Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "fa44e07e78beaa2fb835c6e11672884bc26b238b",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "fix_note_to_readers",
       "headRefOid": "2e29c4628f77bf5672f7fe0a244cac3eb4f8ce12",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-07-08T01:53:01Z",
+      "mergedAt": "2025-07-08T01:53:01Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "310a90304110f378e18c8037f94c13b88728d60c"
+      },
       "comments": [],
       "reviews": [
         {
@@ -8601,6 +8638,132 @@
           "body": "",
           "createdAt": "2025-07-08T00:32:01Z",
           "updatedAt": "2025-07-08T00:32:01Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 131,
+      "id": "PR_kwDODnOl886eBuBe",
+      "title": "Add Key Exporters and associated TLS requirements",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/131",
+      "state": "MERGED",
+      "author": "DavidSchinazi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #113",
+      "createdAt": "2025-07-08T23:59:20Z",
+      "updatedAt": "2025-07-09T16:25:22Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "310a90304110f378e18c8037f94c13b88728d60c",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "safer_tls12",
+      "headRefOid": "18e14eebcda9c5c0886cb5a3844e51965e2a4e7e",
+      "closedAt": "2025-07-09T16:25:18Z",
+      "mergedAt": "2025-07-09T16:25:18Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "aaca56162a157b3504ec3d02604c9da30a478b17"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl886yx-AG",
+          "commit": {
+            "abbreviatedOid": "62a750b"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thank you!",
+          "createdAt": "2025-07-09T00:38:56Z",
+          "updatedAt": "2025-07-09T00:38:56Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl886yyAE5",
+          "commit": {
+            "abbreviatedOid": "62a750b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-09T00:47:16Z",
+          "updatedAt": "2025-07-09T00:49:06Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\n{{Section 7.5 of !TLS=RFC8446}}. Since the underlying HTTP/2 connection could be\n```",
+              "createdAt": "2025-07-09T00:47:16Z",
+              "updatedAt": "2025-07-09T00:49:06Z"
+            },
+            {
+              "originalPosition": 50,
+              "body": "```suggestion\nnot meet one of the two conditions above. If a server receives a WebTransport\n```",
+              "createdAt": "2025-07-09T00:48:05Z",
+              "updatedAt": "2025-07-09T00:49:06Z"
+            },
+            {
+              "originalPosition": 51,
+              "body": "```suggestion\nover HTTP/2 request on a connection that meets neither,\n```",
+              "createdAt": "2025-07-09T00:48:17Z",
+              "updatedAt": "2025-07-09T00:49:06Z"
+            },
+            {
+              "originalPosition": 63,
+              "body": "I'm not sure that you need to say that.  You could instead acknowledge yourself.",
+              "createdAt": "2025-07-09T00:49:00Z",
+              "updatedAt": "2025-07-09T00:49:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl886yyVmq",
+          "commit": {
+            "abbreviatedOid": "bb337d3"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-09T01:42:57Z",
+          "updatedAt": "2025-07-09T01:42:57Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "Well that would just be uncouth",
+              "createdAt": "2025-07-09T01:42:57Z",
+              "updatedAt": "2025-07-09T01:42:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl886yzHx3",
+          "commit": {
+            "abbreviatedOid": "18e14ee"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-09T02:15:06Z",
+          "updatedAt": "2025-07-09T02:15:06Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl886y8g3U",
+          "commit": {
+            "abbreviatedOid": "18e14ee"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-09T16:17:32Z",
+          "updatedAt": "2025-07-09T16:17:32Z",
           "comments": []
         }
       ]

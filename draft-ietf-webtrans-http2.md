@@ -1171,6 +1171,46 @@ parameter (see {{h2-settings}}).  Clients can select the associated upgrade
 token, if applicable, to use when establishing a new session, ensuring that
 servers will always know the syntax in use for every incoming request.
 
+# Use outside of HTTP/2
+
+## Other HTTP Versions
+
+While this draft defines WebTransport over HTTP/2, it is technically possible to use this protocol with other HTTP versions. This protocol MUST NOT be used within HTTP/3, as it would conflict with the protocol defined in {{WEBTRANSPORT-H3}}.
+
+Clients that execute untrusted application code, such as Web browsers, MUST
+NOT use this protocol over HTTP/1, as there is a potential that the receiving
+Web server does not understand the WebTransport protocol.  Other clients MAY
+use this protocol over HTTP/1 by specifying the token `webtransport` in the
+`Upgrade` header field.
+
+## Non-HTTP Protocols
+
+WebTransport over HTTP/2 relies on HTTP headers to convey parameters such as
+initial stream flow control windows.  This section defines a version of the
+prtocol that can be used to establish WebTransport sessions over arbitrary
+reliable ordered bytestreams (such as TCP connections and local IPC channels).
+
+When used over a non-HTTP transport, the stream SHALL start with a header
+block, followed by a sequence of HTTP capsules until the end of the session is
+reached.  The header block SHALL be formatted as follows:
+
+~~~
+Header Block {
+  Block Length in Bytes (i),
+  Header Block Entries (..),
+}
+Header Block Entry {
+  Header Field Name Length (i),
+  Header Field Name (..),
+  Header Field Value Length (i),
+  Header Field Value (..),
+}
+~~~
+{: #fig-header_block title="Header Block Used in non-HTTP Transport"}
+
+All of the header field names MUST be printable ASCII characters that are not
+upper-case.
+
 # Security Considerations
 
 WebTransport over HTTP/2 satisfies all of the security requirements imposed by

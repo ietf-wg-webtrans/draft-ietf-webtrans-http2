@@ -86,10 +86,11 @@ draft corresponding to this document can be found at
 # Introduction
 
 WebTransport {{OVERVIEW}} is designed to provide generic communication
-capabilities to Web clients that use HTTP/3 {{?HTTP3=I-D.ietf-quic-http}}.  The
-HTTP/3 WebTransport protocol {{WEBTRANSPORT-H3}} allows Web clients to use QUIC
-{{?QUIC=RFC9000}} features such as streams or datagrams {{DATAGRAM}}.
-However, there are some environments where QUIC cannot be deployed.
+capabilities to Web clients, especially those that use HTTP/3
+{{?HTTP3=I-D.ietf-quic-http}}.  The WebTransport over HTTP/3 protocol
+{{WEBTRANSPORT-H3}} allows Web clients to use QUIC {{?QUIC=RFC9000}} features
+such as streams or datagrams {{DATAGRAM}}.  However, there are some environments
+where QUIC cannot be deployed.
 
 This document defines a protocol that provides all of the core functions of
 WebTransport using HTTP semantics. This includes unidirectional streams,
@@ -1639,6 +1640,23 @@ Comments:
 : None
 
 --- back
+
+# Use In Other HTTP Versions
+
+This document specifies a protocol that provides WebTransport {{OVERVIEW}}
+functionality when transported using HTTP/2 {{HTTP2}}.  However, because the
+mechanisms defined in this document rely only on generic HTTP semantics, they
+enable many WebTransport capabilities when using any transport that provides a
+bidirectional stream of bytes, including other HTTP versions.
+
+Some HTTP versions do not provide SETTINGS or Extended Connect functionality, so
+additional work would be required to enable WebTransport to be negotiated when
+using those versions.  This document does not define those mappings, as HTTP/2
+{{HTTP2}} is the current most common TCP-based fallback to HTTP/3.
+
+Where a more specific mapping is available, such as {{WEBTRANSPORT-H3}}, prefer
+that mapping to enable the highest fidelity representation of WebTransport
+capabilities, such as unreliable datagram transport.
 
 # Acknowledgments
 {:numbered="false"}

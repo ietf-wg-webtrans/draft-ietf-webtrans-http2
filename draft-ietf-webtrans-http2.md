@@ -1187,7 +1187,7 @@ use this protocol over HTTP/1 by specifying the token `webtransport` in the
 
 WebTransport over HTTP/2 relies on HTTP headers to convey parameters such as
 initial stream flow control windows.  This section defines a version of the
-prtocol that can be used to establish WebTransport sessions over arbitrary
+protocol that can be used to establish WebTransport sessions over any
 reliable ordered bytestreams (such as TCP connections and local IPC channels).
 
 When used over a non-HTTP transport, the stream SHALL start with a header

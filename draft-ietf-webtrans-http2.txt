@@ -745,7 +745,9 @@ Table of Contents
 
    WT_STREAM capsules contain the following fields:
 
-   Stream ID:  The stream ID for the stream.
+   Stream ID:  The stream ID for the stream.  The second least
+      significant bit of the Stream ID indicates whether the stream is
+      bidirectional or unidirectional, as described in Section 5.2.
 
    Stream Data:  Zero or more bytes of data for the stream.  Empty
       WT_STREAM capsules MUST NOT be used unless they open or close a

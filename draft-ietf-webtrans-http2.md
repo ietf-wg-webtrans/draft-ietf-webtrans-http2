@@ -1175,7 +1175,11 @@ servers will always know the syntax in use for every incoming request.
 
 ## Other HTTP Versions
 
-While this draft defines WebTransport over HTTP/2, it is technically possible to use this protocol with other HTTP versions. This protocol MUST NOT be used within HTTP/3, as it would conflict with the protocol defined in {{WEBTRANSPORT-H3}}.
+This document specifies a protocol that provides WebTransport {{OVERVIEW}}
+functionality when transported using HTTP/2 {{HTTP2}}.  Because the
+mechanisms defined in this document rely only on generic HTTP semantics, they
+enable many WebTransport capabilities when using any transport that provides a
+bidirectional stream of bytes, including other HTTP versions.  However, this protocol MUST NOT be used within HTTP/3, as the protocol defined in {{WEBTRANSPORT-H3}} provides a higher fidelity mapping to the underlying transport, for example unreliable datagram capabilities.
 
 Clients that execute untrusted application code, such as Web browsers, MUST
 NOT use this protocol over HTTP/1, as there is a potential that the receiving

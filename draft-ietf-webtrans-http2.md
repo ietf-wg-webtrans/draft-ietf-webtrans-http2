@@ -687,7 +687,7 @@ WT_STREAM capsules contain the following fields:
 
 Stream ID:
 : The stream ID for the stream.  Its second least significant bit indicates whether
-  the stream is bidirectional or unidirectional, as describe in {{webtransport-streams}}.
+  the stream is bidirectional or unidirectional, as described in {{webtransport-streams}}.
 
 Stream Data:
 : Zero or more bytes of data for the stream.  Empty WT_STREAM capsules MUST NOT

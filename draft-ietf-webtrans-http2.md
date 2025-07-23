@@ -552,7 +552,7 @@ against traffic analysis or for other reasons.
 Note that, when used with WebTransport over HTTP/2, the PADDING capsule exists
 alongside the ability to pad HTTP/2 frames ({{Section 10.7 of !RFC9113}}).
 HTTP/2 padding is hop-by-hop and can be modified by intermediaries, while the
-PADDING capsule traverses intermedaries. The PADDING capsule is also
+PADDING capsule traverses intermediaries. The PADDING capsule is also
 constrained to be no smaller than the capsule overhead itself.
 
 ~~~
@@ -727,7 +727,7 @@ lengths of Stream Data fields in WT_STREAM capsules MUST NOT exceed the value
 advertised by a receiver.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
-{{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume WT_MAX_DATA
+{{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_DATA
 capsules for flow control purposes and MUST generate and send appropriate flow
 control signals for their limits; see {{flow-control-intermediaries}}.
 
@@ -767,7 +767,7 @@ limit. The sum of the lengths of Stream Data fields in WT_STREAM capsules on
 the identified stream MUST NOT exceed the value advertised by a receiver.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
 WT_MAX_STREAM_DATA capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
@@ -825,7 +825,7 @@ Note that this limit includes streams that have been closed as well as those
 that are open.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
 WT_MAX_STREAMS capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits.
 
@@ -858,7 +858,7 @@ WT_DATA_BLOCKED capsules contain the following field:
      blocking occurred.
 
 The WT_DATA_BLOCKED capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
 WT_DATA_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
@@ -892,7 +892,7 @@ WT_STREAM_DATA_BLOCKED capsules contain the following fields:
      blocking occurred.
 
 The WT_STREAM_DATA_BLOCKED capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
 WT_STREAM_DATA_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits; see
 {{flow-control-intermediaries}}.
@@ -935,7 +935,7 @@ WT_STREAMS_BLOCKED capsules contain the following field:
      as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
 
 The WT_STREAMS_BLOCKED capsule defines special intermediary handling, as
-described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermedaries MUST consume
+described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
 WT_STREAMS_BLOCKED capsules for flow control purposes and MUST generate and
 send appropriate flow control signals for their limits.
 

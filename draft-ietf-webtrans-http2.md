@@ -1171,7 +1171,7 @@ parameter (see {{h2-settings}}).  Clients can select the associated upgrade
 token, if applicable, to use when establishing a new session, ensuring that
 servers will always know the syntax in use for every incoming request.
 
-# Use outside of HTTP/2
+# Use Outside of HTTP/2
 
 ## Other HTTP Versions
 

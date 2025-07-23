@@ -1184,7 +1184,7 @@ bidirectional stream of bytes, including other HTTP versions.  However, this pro
 Clients that execute untrusted application code, such as Web browsers, MUST
 NOT use this protocol over HTTP/1, as there is a potential that the receiving
 Web server does not understand the WebTransport protocol.  Other clients MAY
-use this protocol over HTTP/1 by specifying the token `webtransport` in the
+use this protocol over HTTP/1 by specifying the token `webtransport` as the value for the
 `Upgrade` header field.
 
 ## Non-HTTP Protocols

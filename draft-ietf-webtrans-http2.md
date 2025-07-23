@@ -1192,11 +1192,11 @@ use this protocol over HTTP/1 by specifying the token `webtransport` in the
 WebTransport over HTTP/2 relies on HTTP headers to convey parameters such as
 initial stream flow control windows.  This section defines a version of the
 protocol that can be used to establish WebTransport sessions over any
-reliable ordered bytestreams (such as TCP connections and local IPC channels).
+reliable ordered bytestream, such as a TCP connection or a local IPC channel.
 
-When used over a non-HTTP transport, the stream SHALL start with a header
+When used over a non-HTTP transport, the stream MUST start with a header
 block, followed by a sequence of HTTP capsules until the end of the session is
-reached.  The header block SHALL be formatted as follows:
+reached.  The header block is formatted as follows:
 
 ~~~
 Header Block {

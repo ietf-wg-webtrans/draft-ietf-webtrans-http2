@@ -686,7 +686,7 @@ WT_STREAM Capsule {
 WT_STREAM capsules contain the following fields:
 
 Stream ID:
-: The stream ID for the stream.  Its second least significant bit indicates whether
+: The stream ID for the stream.  The second least significant bit of the Stream ID indicates whether
   the stream is bidirectional or unidirectional, as described in {{webtransport-streams}}.
 
 Stream Data:

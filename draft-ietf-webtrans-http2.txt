@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 10 January 2026                                        T. Pauly
+Expires: 24 January 2026                                        T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 10 January 2026                                        T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                             9 July 2025
+                                                            23 July 2025
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 January 2026.
+   This Internet-Draft will expire on 24 January 2026.
 
 Copyright Notice
 
@@ -620,7 +620,7 @@ Table of Contents
    capsule exists alongside the ability to pad HTTP/2 frames
    (Section 10.7 of [RFC9113]).  HTTP/2 padding is hop-by-hop and can be
    modified by intermediaries, while the PADDING capsule traverses
-   intermedaries.  The PADDING capsule is also constrained to be no
+   intermediaries.  The PADDING capsule is also constrained to be no
    smaller than the capsule overhead itself.
 
    PADDING Capsule {
@@ -785,7 +785,7 @@ Table of Contents
    NOT exceed the value advertised by a receiver.
 
    The WT_MAX_DATA capsule defines special intermediary handling, as
-   described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
+   described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
    consume WT_MAX_DATA capsules for flow control purposes and MUST
    generate and send appropriate flow control signals for their limits;
    see Section 4.4.
@@ -823,7 +823,7 @@ Table of Contents
    advertised by a receiver.
 
    The WT_MAX_STREAM_DATA capsule defines special intermediary handling,
-   as described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
+   as described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
    consume WT_MAX_STREAM_DATA capsules for flow control purposes and
    MUST generate and send appropriate flow control signals for their
    limits; see Section 4.4.
@@ -879,7 +879,7 @@ Table of Contents
    as those that are open.
 
    The WT_MAX_STREAMS capsule defines special intermediary handling, as
-   described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
+   described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
    consume WT_MAX_STREAMS capsules for flow control purposes and MUST
    generate and send appropriate flow control signals for their limits.
 
@@ -909,7 +909,7 @@ Table of Contents
       limit at which blocking occurred.
 
    The WT_DATA_BLOCKED capsule defines special intermediary handling, as
-   described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
+   described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
    consume WT_DATA_BLOCKED capsules for flow control purposes and MUST
    generate and send appropriate flow control signals for their limits;
    see Section 4.4.
@@ -940,7 +940,7 @@ Table of Contents
 
    The WT_STREAM_DATA_BLOCKED capsule defines special intermediary
    handling, as described in Section 3.2 of [HTTP-DATAGRAM].
-   Intermedaries MUST consume WT_STREAM_DATA_BLOCKED capsules for flow
+   Intermediaries MUST consume WT_STREAM_DATA_BLOCKED capsules for flow
    control purposes and MUST generate and send appropriate flow control
    signals for their limits; see Section 4.4.
 
@@ -981,7 +981,7 @@ Table of Contents
       IDs larger than 2^62-1.
 
    The WT_STREAMS_BLOCKED capsule defines special intermediary handling,
-   as described in Section 3.2 of [HTTP-DATAGRAM].  Intermedaries MUST
+   as described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
    consume WT_STREAMS_BLOCKED capsules for flow control purposes and
    MUST generate and send appropriate flow control signals for their
    limits.

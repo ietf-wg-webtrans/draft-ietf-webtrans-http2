@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-24T01:18:10.017031+00:00",
+  "timestamp": "2025-07-27T01:25:01.916296+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -8928,7 +8928,7 @@
       "labels": [],
       "body": "A strawman solution to #80.",
       "createdAt": "2025-07-23T08:15:00Z",
-      "updatedAt": "2025-07-24T00:33:29Z",
+      "updatedAt": "2025-07-24T14:21:52Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "aaca56162a157b3504ec3d02604c9da30a478b17",
@@ -9204,6 +9204,66 @@
               "body": "> What is a raw TCP socket server? Note that the text is about \"web servers\".\r\n\r\nThis https://wicg.github.io/direct-sockets/. It's already in the wild in Chromium-based browsers. ",
               "createdAt": "2025-07-24T00:33:29Z",
               "updatedAt": "2025-07-24T00:33:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl88614r07",
+          "commit": {
+            "abbreviatedOid": "5917d28"
+          },
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-24T12:49:49Z",
+          "updatedAt": "2025-07-24T12:49:49Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "That's an interesting use case but I don't think it affects the observation in this comment.",
+              "createdAt": "2025-07-24T12:49:49Z",
+              "updatedAt": "2025-07-24T12:49:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl886155ju",
+          "commit": {
+            "abbreviatedOid": "5917d28"
+          },
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-24T14:11:57Z",
+          "updatedAt": "2025-07-24T14:11:57Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "> That's an interesting use case but I don't think it affects the observation in this comment.\r\n\r\nSure it does. An HTTP/1.1 compliant server can do whatever it wants. It doesn't have to reject anything the controller tells it not not. An HTTP/1.1 server is just reading a stream of bytes. The server doesn't care what's in the bytes. The client might. ",
+              "createdAt": "2025-07-24T14:11:57Z",
+              "updatedAt": "2025-07-24T14:11:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl88616EvX",
+          "commit": {
+            "abbreviatedOid": "5917d28"
+          },
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-24T14:21:51Z",
+          "updatedAt": "2025-07-24T14:21:52Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "> That's an interesting use case but I don't think it affects the observation in this comment.\r\n\r\nFor example if I try to upload stream using the `duplex` with `fetch()` the request gets through to the raw TCP server. However, the client, Chrome, is expecting TLS handshake and HTTP/2 frames. So it's the client that does the rejecting, not the server.",
+              "createdAt": "2025-07-24T14:21:51Z",
+              "updatedAt": "2025-07-24T14:21:52Z"
             }
           ]
         }

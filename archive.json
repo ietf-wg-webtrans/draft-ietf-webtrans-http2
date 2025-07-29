@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-27T01:25:01.916296+00:00",
+  "timestamp": "2025-07-29T01:27:09.237718+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1480,7 +1480,7 @@
       ],
       "body": "WebTransport over HTTP/2, as it's currently defined, is, at its core, a protocol that is semantically compatible with QUIC, but works over capsules (i.e. TLV over TCP).  This means that it might be useful outside of HTTP/2 context.\r\n\r\nThe main gotcha is, of course, that we do use settings and headers.  The way we use settings is an optimization that only makes sense for pooling; on the other hand, I don't think we can function without the headers.\r\n\r\nSome possible applications we may to consider / discuss:\r\n\r\n1. HTTP/1.1 should just work, since capsules were designed with H/1 support in mind.\r\n2. Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.",
       "createdAt": "2023-04-18T19:20:28Z",
-      "updatedAt": "2025-07-24T01:13:30Z",
+      "updatedAt": "2025-07-27T17:02:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -1566,6 +1566,55 @@
           "body": "In theory, this can be implemented today, by just throwing the existing WebTransport definitions over WICG Direct Sockets `TCPServerSocket`, `UDPSocket`, and `TCPSocket` https://wicg.github.io/direct-sockets/. The infrastructure is already in place in Chromium Project.\n\nAs long as the Chromium folks are on board. \n\n```\ntry {\n  const serverCertificateHashes = [\n    {\n      algorithm: \"sha-256\",\n      value: Uint8Array.of(1,2,3,...)\n    }\n  ];\n  if (!/Deno|Chrome|Firefox/i.test(navigator.userAgent)) {\n    let { WebTransport, quicheLoaded } = await import(\"./node_modules/@fails-components/webtransport/lib/index.node.js\");\n    await quicheLoaded;\n    globalThis.WebTransport = WebTransport;\n  }\n  const client = new WebTransport(`https://0.0.0.0:8080`, {\n    // Make this part *optional*\n    serverCertificateHashes\n  });\n  await client.ready;\n  const encoder = new TextEncoder;\n  let controller;\n  const abortable = new AbortController;\n  const {\n    signal\n  } = abortable;\n  const { readable, writable } = await client.createBidirectionalStream();\n  let str = \"abcdefghijklmnopqrstuvwxyz\";\n  let data = encoder.encode(\"x\".repeat(1048576));\n  let header = new Uint8Array(Uint32Array.from({\n    length: 4\n  }, (_, index) => data.length >> index * 8 & 255));\n  let view = new DataView(header.buffer);\n  let outgoingTotalLength = view.getUint32(0, true);\n  console.log({ outgoingTotalLength });\n  let incomingTotalLength = 0;\n  const writer = writable.getWriter();\n  await writer.ready;\n  await writer.write(header).then(() => console.log(`Outgoing total length ${outgoingTotalLength} written.`));\n  await writer.ready;\n  await writer.write(data).then(() => console.log(`${data.length} bytes written.`)).catch((e) => console.log(e));\n  await writer.ready;\n  await writer.close();\n  const stream = await readable.pipeThrough(new TextDecoderStream).pipeTo(new WritableStream({\n    start(c) {\n      controller = c;\n    },\n    async write(value, c) {\n      console.log(incomingTotalLength += value.length);\n      if (incomingTotalLength === outgoingTotalLength) {\n        await writer.ready;\n        await writer.close({ closeCode: 5000, reason: \"Done streaming.\" });\n        await writer.closed;\n        abortable.abort(\"\");\n      }\n    },\n    close() {\n      console.log(\"WritableStream close\");\n    },\n    abort(reason) {\n      console.log({ reason });\n    }\n  }), { signal }).then(() => \"Done\").catch((e) => e.message);\n  if (!navigator.userAgent.includes(\"Deno\")) {\n    await Promise.allSettled([client.closed, stream]).then(console.log);\n  } else {\n    if (navigator.userAgent.includes(\"Deno\")) {\n      client.close();\n      await Promise.allSettled([client.closed, stream]).then(console.log);\n    }\n  }\n} catch (e) {\n  console.log(e);\n}\n\n```\n\n```\nconst socket = new TCPServerSocket(\"0.0.0.0\", {\n    localPort: 44818,\n    // EtherNet/IP\n  });\n\nconst { readable: server, localAddress, localPort } = await socket.opened;\n// ...\n```\n\nDone.",
           "createdAt": "2025-07-24T01:13:30Z",
           "updatedAt": "2025-07-24T01:13:30Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "@ianswett\nYou could use the tunneling over WebSocket\nhttps://martenrichter.github.io/draft-ietf-webtransport-websocket/draft-richter-webtransport-websocket.html\nbut then the loadbalancer should know this protocol or you have to use my polyfill that uses capsules over websocket.\nBesides, there should be almost no problem in transporting the original capsules over http/1.",
+          "createdAt": "2025-07-27T07:55:12Z",
+          "updatedAt": "2025-07-27T07:55:12Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "@martenrichter What is the practical use of \"capsules\" cf. just using the frames WebSocket already uses?",
+          "createdAt": "2025-07-27T14:37:58Z",
+          "updatedAt": "2025-07-27T14:37:58Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "Capsules are the main semantics of the web transport protocol for HTTP/2 and HTTP/3.",
+          "createdAt": "2025-07-27T15:17:53Z",
+          "updatedAt": "2025-07-27T15:18:03Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "> Capsules are the main semantics of the web transport protocol for HTTP/2 and HTTP/3.\n\nAlright. What is the practical usage though? \n\n\n\nThe way I see it, we should be able to use raw TCP or UDP or any other mechanism over the WebTransport API. \n\nAs long as we have WHATWG Streams and full-duplex capability we can use any  user-defined format we want to communicate between endpoints. ",
+          "createdAt": "2025-07-27T15:23:46Z",
+          "updatedAt": "2025-07-27T15:23:46Z"
+        },
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "You can have a shared code basis, and a load balancer can convert the capsules from one transport to another as the W3C protocol is carried by using the same semantics..",
+          "createdAt": "2025-07-27T15:40:18Z",
+          "updatedAt": "2025-07-27T15:40:18Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "Why pigeon-hole the API to capsules? You want to use capsules, somebody else wants to use the Native Messaging protocol. \n\nWe have an API that can do both, and other protocols that exist, or don't exist, yet.\n\nTo me it would be more inclusive to just define this thing being discussed as a generic API that can facilitate any means of signal communication using the WebTransport API. \n\nBasically, WICG Direct Sockets `TCPSocket` and `UDPSocket` and `TCPServerSocket` outside of an Isolated Web App, for the Web at large.\n\nThen we don't have to go back and forth about the semantics of capsules or headers and such.\n\nUsers do whatever they want, using the WebTranspost API as a means to send data to and fro however they want, user-defined.",
+          "createdAt": "2025-07-27T15:52:36Z",
+          "updatedAt": "2025-07-27T15:52:36Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "> I don't think we can function without the headers.\n\nI think we can function without headers.\n\n> Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.\n\nIsn't that `WebSocketStream` https://github.com/ricea/websocketstream-explainer?\n\n```\nstatic async hashWebSocketKey(secKeyWebSocket, writable) {\n    // Use Web Cryptography API crypto.subtle where defined\n    console.log(secKeyWebSocket, globalThis?.crypto?.subtle);\n    const encoder = new TextEncoder();\n    if (globalThis?.crypto?.subtle) {\n      const key = btoa(\n        [\n          ...new Uint8Array(\n            await crypto.subtle.digest(\n              \"SHA-1\",\n              encoder.encode(\n                `${secKeyWebSocket}${WebSocketConnection.KEY_SUFFIX}`,\n              ),\n            ),\n          ),\n        ].map((s) => String.fromCodePoint(s)).join(\"\"),\n      );\n      const header = `HTTP/1.1 101 Web Socket Protocol Handshake\\r\nUpgrade: WebSocket\\r\nConnection: Upgrade\\r\nsec-websocket-accept: ` + key + `\\r\n\\r\n`;\n      return writable instanceof WritableStream\n        ? (new Response(header)).body.pipeTo(writable, { preventClose: !0 })\n        : writable.write(encoder.encode(header));\n    } else {\n      // txiki.js does not support Web Cryptography API crypto.subtle\n      // Use txiki.js specific tjs:hashing or\n      // https://raw.githubusercontent.com/kawanet/sha1-uint8array/main/lib/sha1-uint8array.ts\n      const { createHash } = await import(\"./sha1-uint8array.min.js\");\n      const encoder = new TextEncoder();\n      const hash = createHash(\"sha1\").update(\n        `${secKeyWebSocket}${WebSocketConnection.KEY_SUFFIX}`,\n      ).digest();\n      const key = btoa(\n        String.fromCodePoint(...hash),\n      );\n      const header = \"HTTP/1.1 101 Web Socket Protocol Handshake\\r\\n\" +\n        \"Upgrade: WebSocket\\r\\n\" +\n        \"Connection: Upgrade\\r\\n\" +\n        \"Sec-Websocket-Accept: \" + key + \"\\r\\n\\r\\n\";\n      const encoded = encoder.encode(header);\n      return writable instanceof WritableStream\n        ? new Response(encode).body.pipeTo(writable, { preventClose: !0 })\n        : writable.write(encoded);\n    }\n  }\n``` \n",
+          "createdAt": "2025-07-27T17:02:28Z",
+          "updatedAt": "2025-07-27T17:02:28Z"
         }
       ]
     },
@@ -8928,7 +8977,7 @@
       "labels": [],
       "body": "A strawman solution to #80.",
       "createdAt": "2025-07-23T08:15:00Z",
-      "updatedAt": "2025-07-24T14:21:52Z",
+      "updatedAt": "2025-07-28T08:43:29Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "aaca56162a157b3504ec3d02604c9da30a478b17",
@@ -9264,6 +9313,26 @@
               "body": "> That's an interesting use case but I don't think it affects the observation in this comment.\r\n\r\nFor example if I try to upload stream using the `duplex` with `fetch()` the request gets through to the raw TCP server. However, the client, Chrome, is expecting TLS handshake and HTTP/2 frames. So it's the client that does the rejecting, not the server.",
               "createdAt": "2025-07-24T14:21:51Z",
               "updatedAt": "2025-07-24T14:21:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8862dzV8",
+          "commit": {
+            "abbreviatedOid": "5917d28"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-28T08:43:28Z",
+          "updatedAt": "2025-07-28T08:43:29Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "This seems like an incomplete specification of an HTTP-like thing.  Why?",
+              "createdAt": "2025-07-28T08:43:29Z",
+              "updatedAt": "2025-07-28T08:43:29Z"
             }
           ]
         }

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-29T01:27:09.237718+00:00",
+  "timestamp": "2025-07-31T01:19:28.011908+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -8977,7 +8977,7 @@
       "labels": [],
       "body": "A strawman solution to #80.",
       "createdAt": "2025-07-23T08:15:00Z",
-      "updatedAt": "2025-07-28T08:43:29Z",
+      "updatedAt": "2025-07-29T01:50:36Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "aaca56162a157b3504ec3d02604c9da30a478b17",
@@ -9333,6 +9333,46 @@
               "body": "This seems like an incomplete specification of an HTTP-like thing.  Why?",
               "createdAt": "2025-07-28T08:43:29Z",
               "updatedAt": "2025-07-28T08:43:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8862r24s",
+          "commit": {
+            "abbreviatedOid": "5917d28"
+          },
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-29T01:48:57Z",
+          "updatedAt": "2025-07-29T01:48:58Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "\r\n\r\n> This seems like an incomplete specification of an HTTP-like thing. Why?\r\n\r\nThere's no reason why the WebTransport API, specifically the WHATWG Streams implementations, can't be used for IPC, Unix domain sockets, Native Messaging.\r\n",
+              "createdAt": "2025-07-29T01:48:57Z",
+              "updatedAt": "2025-07-29T01:48:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl8862r3U0",
+          "commit": {
+            "abbreviatedOid": "5917d28"
+          },
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-29T01:50:36Z",
+          "updatedAt": "2025-07-29T01:50:36Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Raw TCP sockets, raw UDP sockets et al. The full-duplex streaming using WHATWG Streams parts is useful beyond TLS, HTTP/3 and QUIC.",
+              "createdAt": "2025-07-29T01:50:36Z",
+              "updatedAt": "2025-07-29T01:50:36Z"
             }
           ]
         }

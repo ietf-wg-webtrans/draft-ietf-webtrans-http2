@@ -124,7 +124,7 @@ the number of concurrent sessions the server is willing to receive. Note that
 the client does not need to send any value to indicate support for
 WebTransport; clients indicate support for WebTransport by using
 the "webtransport" upgrade token in CONNECT requests establishing WebTransport
-sessions (see {{Section 9.1 of WEBTRANSPORT-H3}}).
+sessions (see {{upgrade-token}}).
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -132,9 +132,9 @@ established. The stream that carries the CONNECT request is used to exchange
 bidirectional data for the session. This stream will be referred to as a
 *CONNECT stream*.  The stream ID of a CONNECT stream, which will be referred to
 as a *Session ID*, is used to uniquely identify a given WebTransport session
-within the connection.  WebTransport using HTTP/2 uses extended CONNECT with
-the same `webtransport` HTTP Upgrade Token as {{WEBTRANSPORT-H3}}.  This
-Upgrade Token uses the Capsule Protocol as defined in {{HTTP-DATAGRAM}}.
+within the connection.  WebTransport using HTTP/2 uses extended CONNECT with the
+`webtransport` HTTP Upgrade Token ({{upgrade-token}}).  This Upgrade Token uses
+the Capsule Protocol as defined in {{HTTP-DATAGRAM}}.
 
 After the session is established, endpoints exchange WebTransport messages using
 the Capsule Protocol on the bidirectional CONNECT stream, the "data stream" as
@@ -192,7 +192,7 @@ using the `https` URI scheme {{!RFC7230}}.
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
-`webtransport` ({{Section 7.1 of WEBTRANSPORT-H3}}). The `:scheme` field MUST be
+`webtransport` ({{upgrade-token}}). The `:scheme` field MUST be
 `https`. Both the `:authority` and the `:path` value MUST be set; those fields
 indicate the desired WebTransport server. In a Web context, the request MUST
 include an `Origin` header field {{!ORIGIN=RFC6454}} that includes the origin of
@@ -1159,9 +1159,28 @@ to sending data and to opening new streams.
 
 # IANA Considerations
 
-This document registers new HTTP/2 settings ({{h2-settings}}), HTTP/2 error
-codes ({{iana-h2-error}}), new capsules ({{iana-capsules}}), and the
-`WebTransport-Init` header field ({{iana-header}}).
+This document registers an upgrade token ({{upgrade-token}}), new HTTP/2
+settings ({{h2-settings}}), HTTP/2 error codes ({{iana-h2-error}}), new capsules
+({{iana-capsules}}), and the `WebTransport-Init` header field ({{iana-header}}).
+
+## Upgrade Token Registration {#upgrade-token}
+
+The following entry is added to the "Hypertext Transfer Protocol (HTTP) Upgrade
+Token Registry" registry established by Section 16.7 of [HTTP].
+
+The "webtransport" label identifies HTTP/2 used as a protocol for WebTransport:
+
+Value:
+
+: webtransport
+
+Description:
+
+: WebTransport over HTTP/2
+
+Reference:
+
+: This document
 
 ## HTTP/2 SETTINGS Parameter Registration {#h2-settings}
 

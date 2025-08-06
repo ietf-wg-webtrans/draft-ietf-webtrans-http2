@@ -552,8 +552,9 @@ against traffic analysis or for other reasons.
 Note that, when used with WebTransport over HTTP/2, the PADDING capsule exists
 alongside the ability to pad HTTP/2 frames ({{Section 10.7 of !RFC9113}}).
 HTTP/2 padding is hop-by-hop and can be modified by intermediaries, while the
-PADDING capsule traverses intermediaries. The PADDING capsule is also
-constrained to be no smaller than the capsule overhead itself.
+PADDING capsule traverses intermediaries.  The PADDING capsule cannot be smaller
+than its own header, which means that the minimum size of the capsule is two
+bytes: one byte for the Type and one byte to encode "0" for the Length.
 
 ~~~
 PADDING Capsule {

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-31T01:19:28.011908+00:00",
+  "timestamp": "2025-08-07T01:20:28.373152+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1480,7 +1480,7 @@
       ],
       "body": "WebTransport over HTTP/2, as it's currently defined, is, at its core, a protocol that is semantically compatible with QUIC, but works over capsules (i.e. TLV over TCP).  This means that it might be useful outside of HTTP/2 context.\r\n\r\nThe main gotcha is, of course, that we do use settings and headers.  The way we use settings is an optimization that only makes sense for pooling; on the other hand, I don't think we can function without the headers.\r\n\r\nSome possible applications we may to consider / discuss:\r\n\r\n1. HTTP/1.1 should just work, since capsules were designed with H/1 support in mind.\r\n2. Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.",
       "createdAt": "2023-04-18T19:20:28Z",
-      "updatedAt": "2025-07-27T17:02:28Z",
+      "updatedAt": "2025-08-06T13:42:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -1615,6 +1615,34 @@
           "body": "> I don't think we can function without the headers.\n\nI think we can function without headers.\n\n> Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.\n\nIsn't that `WebSocketStream` https://github.com/ricea/websocketstream-explainer?\n\n```\nstatic async hashWebSocketKey(secKeyWebSocket, writable) {\n    // Use Web Cryptography API crypto.subtle where defined\n    console.log(secKeyWebSocket, globalThis?.crypto?.subtle);\n    const encoder = new TextEncoder();\n    if (globalThis?.crypto?.subtle) {\n      const key = btoa(\n        [\n          ...new Uint8Array(\n            await crypto.subtle.digest(\n              \"SHA-1\",\n              encoder.encode(\n                `${secKeyWebSocket}${WebSocketConnection.KEY_SUFFIX}`,\n              ),\n            ),\n          ),\n        ].map((s) => String.fromCodePoint(s)).join(\"\"),\n      );\n      const header = `HTTP/1.1 101 Web Socket Protocol Handshake\\r\nUpgrade: WebSocket\\r\nConnection: Upgrade\\r\nsec-websocket-accept: ` + key + `\\r\n\\r\n`;\n      return writable instanceof WritableStream\n        ? (new Response(header)).body.pipeTo(writable, { preventClose: !0 })\n        : writable.write(encoder.encode(header));\n    } else {\n      // txiki.js does not support Web Cryptography API crypto.subtle\n      // Use txiki.js specific tjs:hashing or\n      // https://raw.githubusercontent.com/kawanet/sha1-uint8array/main/lib/sha1-uint8array.ts\n      const { createHash } = await import(\"./sha1-uint8array.min.js\");\n      const encoder = new TextEncoder();\n      const hash = createHash(\"sha1\").update(\n        `${secKeyWebSocket}${WebSocketConnection.KEY_SUFFIX}`,\n      ).digest();\n      const key = btoa(\n        String.fromCodePoint(...hash),\n      );\n      const header = \"HTTP/1.1 101 Web Socket Protocol Handshake\\r\\n\" +\n        \"Upgrade: WebSocket\\r\\n\" +\n        \"Connection: Upgrade\\r\\n\" +\n        \"Sec-Websocket-Accept: \" + key + \"\\r\\n\\r\\n\";\n      const encoded = encoder.encode(header);\n      return writable instanceof WritableStream\n        ? new Response(encode).body.pipeTo(writable, { preventClose: !0 })\n        : writable.write(encoded);\n    }\n  }\n``` \n",
           "createdAt": "2025-07-27T17:02:28Z",
           "updatedAt": "2025-07-27T17:02:28Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: this was discussed at IETF 123, see [minutes](https://datatracker.ietf.org/doc/minutes-123-webtrans-202507230930/). Consensus was that we should have a non-normative appendix to discuss use over streams, but we will not define how to do webtransport-over-h1 in the webtransport-over-h1 draft",
+          "createdAt": "2025-08-05T23:36:00Z",
+          "updatedAt": "2025-08-05T23:36:00Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> we will not define how to do webtransport-over-h1 in the webtransport-over-h1 draft\n\nin the _webtransport-over-h2(?)_ draft",
+          "createdAt": "2025-08-05T23:57:25Z",
+          "updatedAt": "2025-08-05T23:57:25Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "Interesting. \n\nThis issue is about WebTransport outside of HTTP/2, where HTTP/3 is the default, that leaves HTTP/1 as part of this issue by default, correct?\n\nA whole section can be dedicated to \"security concerns\" for full-disclosure. If I'm streaming between the browser and local applications, IoT, controlling local devices, et al., those at large \"security\" concerns on the Web are not applicable, even though I'm using a Web interface (browser) to make connections.\n\nIt's the API itself that is useful, Whether QUIC, TCP, et al., shouldn't really matter as long as those WHATWG Streams work similarly to the default HTTP/3. `WebSocketStream` on Chromium does kind of the same thing, without the stream of streams part, over HTTP/1.1. To some degree so does `Transfer-Encoding: chunked`. \n\nUsers can wrap their own, TLS implementations over servers and clients, or peers; for the \"security\" part. Built by default, though turn-offable by passing options, such as `new WebTransport(path, {...options, {transport: \"tcp\", \"tls\": false, localNetwork: true}})`. That's an *option* that won't hurt anything for any of the stakeholders. Thanks for your consideration.",
+          "createdAt": "2025-08-06T00:53:58Z",
+          "updatedAt": "2025-08-06T00:53:58Z"
+        },
+        {
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> we will not define how to do webtransport-over-h1 in the webtransport-over-h1 draft\n\nI don't believe there was a consensus to that effect.",
+          "createdAt": "2025-08-06T13:42:10Z",
+          "updatedAt": "2025-08-06T13:42:10Z"
         }
       ]
     },
@@ -2820,9 +2848,31 @@
       ],
       "body": "The document currently says:\n\n> The PADDING capsule is also constrained to be no smaller than the capsule overhead itself.\n\nI don't fully understand that sentence. What exactly is the capsule overhead? Maybe that could be clarified in the text.",
       "createdAt": "2025-07-23T08:57:01Z",
-      "updatedAt": "2025-07-23T09:36:45Z",
+      "updatedAt": "2025-08-06T01:52:09Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Maybe instead:\n\n> The PADDING capsule cannot be smaller than its own header, which means that the minimum size of the capsule is greater than one byte.",
+          "createdAt": "2025-08-05T23:43:10Z",
+          "updatedAt": "2025-08-05T23:43:10Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Assuming we count the type in the size of the capsule, I think it would be a minimum two bytes (so strictly greater than 1 byte), one byte for the type and one byte for the length, where the type is a minimum of one byte (when we're done) and the length is minimum one byte to encode \"0\".\n\n(References for later: [Capsule format](https://www.rfc-editor.org/rfc/rfc9297.html#section-3.2), [VLI encoding](https://www.rfc-editor.org/rfc/rfc9000.html#name-variable-length-integer-enc))",
+          "createdAt": "2025-08-06T01:48:37Z",
+          "updatedAt": "2025-08-06T01:52:09Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The PADDING capsule cannot be smaller than its own header, which means that the minimum size of the capsule is two bytes, not one.\n",
+          "createdAt": "2025-08-06T01:52:08Z",
+          "updatedAt": "2025-08-06T01:52:08Z"
+        }
+      ]
     },
     {
       "number": 136,
@@ -2840,9 +2890,17 @@
       ],
       "body": "How should keys other than u, bl, and br be treated in the WebTransport-Init header field? Should they be ignored or cause the entire request to be rejected?\n\nThe draft says\n\n> If any of the fields cannot be parsed correctly or do not have the correct type, the peer MUST reset the CONNECT stream.\n\nbut I'm unsure whether this covers unknown keys as well.",
       "createdAt": "2025-07-23T09:13:21Z",
-      "updatedAt": "2025-07-23T09:36:39Z",
+      "updatedAt": "2025-08-05T23:44:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Structured Fields say that you ignore unknown parameters\n\nhttps://httpwg.org/specs/rfc9651.html#error-handling",
+          "createdAt": "2025-08-05T23:44:26Z",
+          "updatedAt": "2025-08-05T23:44:26Z"
+        }
+      ]
     },
     {
       "number": 137,
@@ -2877,7 +2935,7 @@
       "id": "I_kwDODnOl887CDO_S",
       "title": "Reducing session limit",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/138",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2888,8 +2946,8 @@
       ],
       "body": "A WebTransport server can reduce the session limit (https://www.ietf.org/archive/id/draft-ietf-webtrans-http2-12.html#section-4.1-3). Is this communicated to the client? If so, could the text mention this?",
       "createdAt": "2025-07-23T09:26:47Z",
-      "updatedAt": "2025-07-23T09:43:26Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-05T23:44:30Z",
+      "closedAt": "2025-08-05T23:44:30Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -2897,6 +2955,13 @@
           "body": "This is communicated via SETTINGS updates in HTTP/2, the text should cover this in the prior paragraph: https://www.ietf.org/archive/id/draft-ietf-webtrans-http2-12.html#section-4.1-2\n\n> SETTINGS synchronization via acknowledgements in HTTP/2 enables both endpoints to agree on the current value of each setting ([Section 6.5.3](https://rfc-editor.org/rfc/rfc9113#section-6.5.3) of [[HTTP2](https://www.ietf.org/archive/id/draft-ietf-webtrans-http2-12.html#HTTP2)]). A WebTransport server enforces the session limit at the time a new session is opened by comparing the number of currently open WebTransport sessions against the currently acknowledged SETTINGS value for SETTINGS_WT_MAX_SESSIONS. A server that receives an incoming CONNECT stream that would cause it to exceed its session limit MUST reset that stream with the REFUSED_STREAM error code ([Section 8.7](https://rfc-editor.org/rfc/rfc9113#section-8.7) of [[HTTP2](https://www.ietf.org/archive/id/draft-ietf-webtrans-http2-12.html#HTTP2)]).\n\n> A WebTransport server that wishes to reduce the value of SETTINGS_WT_MAX_SESSIONS to a value that is below the current number of open sessions can either close sessions that exceed the new value or allow those sessions to complete. Endpoints MUST NOT reduce the value of SETTINGS_WT_MAX_SESSIONS to \"0\" after previously advertising a non-zero value.",
           "createdAt": "2025-07-23T09:35:43Z",
           "updatedAt": "2025-07-23T09:36:15Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Chair: closing this issue since the question has been answered",
+          "createdAt": "2025-08-05T23:41:33Z",
+          "updatedAt": "2025-08-05T23:41:33Z"
         }
       ]
     },
@@ -9500,6 +9565,72 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 140,
+      "id": "PR_kwDODnOl886iSMP7",
+      "title": "Split the upgrade token from h3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/140",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is the one that probably can be used in other HTTP versions, so it doesn't get a special suffix.  (Yes, that means that it could be used in HTTP/3 as well; that's a separate issue.)\r\n\r\nNo issue, see\r\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/pull/220 for details.",
+      "createdAt": "2025-08-06T00:01:25Z",
+      "updatedAt": "2025-08-06T01:02:36Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "09bcf79c13de2976fd9723ba78a56b458a3cf318",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "upgrade-token-split",
+      "headRefOid": "1099aed489396a48dac9b5774c3b98f84d2eb320",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl8864Lzba",
+          "commit": {
+            "abbreviatedOid": "1099aed"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-06T01:02:36Z",
+          "updatedAt": "2025-08-06T01:02:36Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 141,
+      "id": "PR_kwDODnOl886iSwoR",
+      "title": "Update text around PADDING minimum size",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/141",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update text around PADDING minimum size\n\nFixes #134",
+      "createdAt": "2025-08-06T01:54:11Z",
+      "updatedAt": "2025-08-06T01:54:12Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "09bcf79c13de2976fd9723ba78a56b458a3cf318",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ekinnear/issue134",
+      "headRefOid": "791586fe7d70282f02c69c79cbecba127541aa50",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }

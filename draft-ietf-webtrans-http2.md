@@ -384,9 +384,10 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 The `WebTransport-Init` HTTP header field can be used to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
 parameters.  The `WebTransport-Init` is a Dictionary Structured Field
-({{Section 3.2 of !RFC8941}}).  If any of the fields cannot be parsed correctly
-or do not have the correct type, the peer MUST reset the CONNECT stream.  The
-following keys are defined for the `WebTransport-Init` header field:
+({{Section 3.2 of !RFC8941}}).  If the `WebTransport-Init` field cannot be
+parsed correctly or does not have the correct type, the endpoint MUST reset the
+CONNECT stream.  The following keys are defined for the `WebTransport-Init`
+header field:
 
 `u`:
 : The initial flow control limit for unidirectional streams opened by the
@@ -400,6 +401,7 @@ following keys are defined for the `WebTransport-Init` header field:
 : The initial flow control limit for the bidirectional streams opened by the
   recipient of this header field.  MUST be an Integer.
 
+Unknown keys in the dictionary MUST be ignored.
 
 ## Flow Control and Intermediaries {#flow-control-intermediaries}
 

@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 24 January 2026                                        T. Pauly
+Expires: 27 February 2026                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 24 January 2026                                        T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                            23 July 2025
+                                                          26 August 2025
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 January 2026.
+   This Internet-Draft will expire on 27 February 2026.
 
 Copyright Notice
 
@@ -620,8 +620,10 @@ Table of Contents
    capsule exists alongside the ability to pad HTTP/2 frames
    (Section 10.7 of [RFC9113]).  HTTP/2 padding is hop-by-hop and can be
    modified by intermediaries, while the PADDING capsule traverses
-   intermediaries.  The PADDING capsule is also constrained to be no
-   smaller than the capsule overhead itself.
+   intermediaries.  The PADDING capsule cannot be smaller than its own
+   header, which means that the minimum size of the capsule is two
+   bytes: one byte for the Type and one byte to encode "0" for the
+   Length.
 
    PADDING Capsule {
      Type (i) = 0x190B4D38,

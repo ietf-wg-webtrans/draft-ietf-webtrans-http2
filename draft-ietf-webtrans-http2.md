@@ -385,7 +385,7 @@ The `WebTransport-Init` HTTP header field can be used to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
 parameters.  The `WebTransport-Init` is a Dictionary Structured Field ({{Section
 3.2 of !RFC8941}}).  If the `WebTransport-Init` field cannot be parsed
-correctly, or does not have the correct type, the endpoint MUST reject the
+correctly or does not have the correct type, the endpoint MUST reject the
 CONNECT request with a 4xx status code.  The following keys are defined for the
 `WebTransport-Init` header field:
 

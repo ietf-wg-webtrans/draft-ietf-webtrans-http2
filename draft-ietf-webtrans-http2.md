@@ -1177,6 +1177,50 @@ parameter (see {{h2-settings}}).  Clients can select the associated upgrade
 token, if applicable, to use when establishing a new session, ensuring that
 servers will always know the syntax in use for every incoming request.
 
+# Use Outside of HTTP/2
+
+## Other HTTP Versions
+
+This document specifies a protocol that provides WebTransport {{OVERVIEW}}
+functionality when transported using HTTP/2 {{HTTP2}}.  Because the
+mechanisms defined in this document rely only on generic HTTP semantics, they
+enable many WebTransport capabilities when using any transport that provides a
+bidirectional stream of bytes, including other HTTP versions.  However, this protocol MUST NOT be used within HTTP/3, as the protocol defined in {{WEBTRANSPORT-H3}} provides a higher fidelity mapping to the underlying transport, for example unreliable datagram capabilities.
+
+Clients that execute untrusted application code, such as Web browsers, MUST
+NOT use this protocol over HTTP/1, as there is a potential that the receiving
+Web server does not understand the WebTransport protocol.  Other clients MAY
+use this protocol over HTTP/1 by specifying the token `webtransport` as the value for the
+`Upgrade` header field.
+
+## Non-HTTP Protocols
+
+WebTransport over HTTP/2 relies on HTTP headers to convey parameters such as
+initial stream flow control windows.  This section defines a version of the
+protocol that can be used to establish WebTransport sessions over any
+reliable ordered bytestream, such as a TCP connection or a local IPC channel.
+
+When used over a non-HTTP transport, the stream MUST start with a header
+block, followed by a sequence of HTTP capsules until the end of the session is
+reached.  The header block is formatted as follows:
+
+~~~
+Header Block {
+  Block Length in Bytes (i),
+  Header Block Entries (..),
+}
+Header Block Entry {
+  Header Field Name Length (i),
+  Header Field Name (..),
+  Header Field Value Length (i),
+  Header Field Value (..),
+}
+~~~
+{: #fig-header_block title="Header Block Used in non-HTTP Transport"}
+
+All of the header field names MUST be printable ASCII characters that are not
+upper-case.
+
 # Security Considerations
 
 WebTransport over HTTP/2 satisfies all of the security requirements imposed by

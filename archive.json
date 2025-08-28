@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-07T01:20:28.373152+00:00",
+  "timestamp": "2025-08-28T01:07:10.408853+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2837,7 +2837,7 @@
       "id": "I_kwDODnOl887CC4OQ",
       "title": "PADDING capsule constraint",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/134",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2848,8 +2848,8 @@
       ],
       "body": "The document currently says:\n\n> The PADDING capsule is also constrained to be no smaller than the capsule overhead itself.\n\nI don't fully understand that sentence. What exactly is the capsule overhead? Maybe that could be clarified in the text.",
       "createdAt": "2025-07-23T08:57:01Z",
-      "updatedAt": "2025-08-06T01:52:09Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-26T23:43:58Z",
+      "closedAt": "2025-08-26T23:43:58Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -2879,7 +2879,7 @@
       "id": "I_kwDODnOl887CDEZu",
       "title": "Definition of WebTransport-Init header",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/136",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2890,8 +2890,8 @@
       ],
       "body": "How should keys other than u, bl, and br be treated in the WebTransport-Init header field? Should they be ignored or cause the entire request to be rejected?\n\nThe draft says\n\n> If any of the fields cannot be parsed correctly or do not have the correct type, the peer MUST reset the CONNECT stream.\n\nbut I'm unsure whether this covers unknown keys as well.",
       "createdAt": "2025-07-23T09:13:21Z",
-      "updatedAt": "2025-08-05T23:44:26Z",
-      "closedAt": null,
+      "updatedAt": "2025-08-26T23:51:59Z",
+      "closedAt": "2025-08-26T23:51:59Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -2978,6 +2978,22 @@
       "body": "Using the same Upgrade Token for two seemingly quite different protocols (depending on HTTP version) seems like a mistake.  Giving WT-H2 and WT-H3 separate Upgrade Tokens would avoid ambiguity and simplify the use of WebTransport inside backend infrastructure.",
       "createdAt": "2025-07-23T10:34:33Z",
       "updatedAt": "2025-07-23T10:46:46Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 143,
+      "id": "I_kwDODnOl887IHpI1",
+      "title": "WT_MAX_SESSIONS setting",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/143",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Do we even really need this?\n\nA WT session is just a request/response/whatever stream.  There isn't much point in having this setting really.  The concurrent stream limit in HTTP/2 might be enough.",
+      "createdAt": "2025-08-26T23:38:09Z",
+      "updatedAt": "2025-08-26T23:38:09Z",
       "closedAt": null,
       "comments": []
     }
@@ -9578,13 +9594,13 @@
       "labels": [],
       "body": "This is the one that probably can be used in other HTTP versions, so it doesn't get a special suffix.  (Yes, that means that it could be used in HTTP/3 as well; that's a separate issue.)\r\n\r\nNo issue, see\r\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/pull/220 for details.",
       "createdAt": "2025-08-06T00:01:25Z",
-      "updatedAt": "2025-08-06T01:02:36Z",
+      "updatedAt": "2025-08-26T22:51:06Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "09bcf79c13de2976fd9723ba78a56b458a3cf318",
       "headRepository": "martinthomson/draft-webtransport-http2",
       "headRefName": "upgrade-token-split",
-      "headRefOid": "1099aed489396a48dac9b5774c3b98f84d2eb320",
+      "headRefOid": "922a86eff3e94e3ff27d98217e00679b8a84e1f5",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -9611,26 +9627,117 @@
       "id": "PR_kwDODnOl886iSwoR",
       "title": "Update text around PADDING minimum size",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/141",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Update text around PADDING minimum size\n\nFixes #134",
       "createdAt": "2025-08-06T01:54:11Z",
-      "updatedAt": "2025-08-06T01:54:12Z",
+      "updatedAt": "2025-08-26T23:44:02Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "09bcf79c13de2976fd9723ba78a56b458a3cf318",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "ekinnear/issue134",
       "headRefOid": "791586fe7d70282f02c69c79cbecba127541aa50",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-08-26T23:43:57Z",
+      "mergedAt": "2025-08-26T23:43:57Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "9b44ff61c8a37d04587fc0acebfc2741ca3e9e7e"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl8868NbC8",
+          "commit": {
+            "abbreviatedOid": "791586f"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-26T23:32:43Z",
+          "updatedAt": "2025-08-26T23:32:43Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 142,
+      "id": "PR_kwDODnOl886lgC3c",
+      "title": "Add handling for unknown keys in the WebTransport-Init dictionary",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/142",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add handling for unknown keys in the WebTransport-Init dictionary\r\n\r\nFixes #136",
+      "createdAt": "2025-08-26T23:02:16Z",
+      "updatedAt": "2025-08-26T23:52:02Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "09bcf79c13de2976fd9723ba78a56b458a3cf318",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/unknown_keys",
+      "headRefOid": "95e60de832bce9e21bbb42b3a38cc433895ec89a",
+      "closedAt": "2025-08-26T23:51:59Z",
+      "mergedAt": "2025-08-26T23:51:59Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "3d8f3fd3c9ca2e7a0e926c8cab9f763bdd1ceb54"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl8868NXoK",
+          "commit": {
+            "abbreviatedOid": "d37d461"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-26T23:26:08Z",
+          "updatedAt": "2025-08-26T23:26:08Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl8868NdR3",
+          "commit": {
+            "abbreviatedOid": "d37d461"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-08-26T23:37:52Z",
+          "updatedAt": "2025-08-26T23:37:52Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl8868NjXu",
+          "commit": {
+            "abbreviatedOid": "6a6651b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-08-26T23:51:09Z",
+          "updatedAt": "2025-08-26T23:51:09Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\r\ncorrectly or does not have the correct type, the endpoint MUST reject the\r\n```",
+              "createdAt": "2025-08-26T23:51:09Z",
+              "updatedAt": "2025-08-26T23:51:09Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

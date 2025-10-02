@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-28T01:07:10.408853+00:00",
+  "timestamp": "2025-10-02T01:04:40.343434+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2994,6 +2994,22 @@
       "body": "Do we even really need this?\n\nA WT session is just a request/response/whatever stream.  There isn't much point in having this setting really.  The concurrent stream limit in HTTP/2 might be enough.",
       "createdAt": "2025-08-26T23:38:09Z",
       "updatedAt": "2025-08-26T23:38:09Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 144,
+      "id": "I_kwDODnOl887O6b3c",
+      "title": "Enforcing Consecutively Increasing Stream IDs",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/144",
+      "state": "OPEN",
+      "author": "hanidamlaj",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Given that WebTransport sessions in http/2 are multiplexed over a single http/2 stream, should we enforce a strict ordering of consecutively increasing Stream IDs?\n\ni.e. if client initiates its first bidi stream (0x00), the next client bidi stream **must** be 0x04 (otherwise we should terminate the WebTransport session w/ a connection-level error)",
+      "createdAt": "2025-09-30T23:48:37Z",
+      "updatedAt": "2025-09-30T23:48:37Z",
       "closedAt": null,
       "comments": []
     }

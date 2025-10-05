@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-02T01:04:40.343434+00:00",
+  "timestamp": "2025-10-05T01:12:18.837278+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3009,9 +3009,72 @@
       "labels": [],
       "body": "Given that WebTransport sessions in http/2 are multiplexed over a single http/2 stream, should we enforce a strict ordering of consecutively increasing Stream IDs?\n\ni.e. if client initiates its first bidi stream (0x00), the next client bidi stream **must** be 0x04 (otherwise we should terminate the WebTransport session w/ a connection-level error)",
       "createdAt": "2025-09-30T23:48:37Z",
-      "updatedAt": "2025-09-30T23:48:37Z",
+      "updatedAt": "2025-10-04T08:25:36Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There's a good reason not to do this.\n\nConsider the case where you have two concurrent pieces of code that each do something like:\n\n```\nlet s = session.makeStream();\ns.send(data);\n```\n\nAs these are concurrent, it's entirely possible that the two streams are created in one order (which requires access to a lock). but the first data that is sent on the streams is in the opposite order.  \n\nThat is, despite stream creation being strictly ordered, we cannot guarantee that the first bytes sent on a stream will follow that order.\n\nI suggest that we either do nothing, or make the above observation in explaining how stream frames can still appear out of order.",
+          "createdAt": "2025-10-04T08:25:36Z",
+          "updatedAt": "2025-10-04T08:25:36Z"
+        }
+      ]
+    },
+    {
+      "number": 145,
+      "id": "I_kwDODnOl887PKsDf",
+      "title": "Clarify HTTP/2 stream termination upon WebTransport session termination",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/145",
+      "state": "OPEN",
+      "author": "AnkshitJain",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "[Section 3.5](https://www.ietf.org/archive/id/draft-ietf-webtrans-http2-12.html#name-session-termination-and-err) of the WebTransport over HTTP/2 draft 12 does not talk about how the stream should be closed (with `END_STREAM` or `RST_STREAM`) after sending a `WT_CLOSE_SESSION` capsule.\n\nMeanwhile, [Section 6](https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-13.html#name-session-termination) of the WebTransport over HTTP/3 draft 13 specifies stream should be closed cleanly after sending a `WT_CLOSE_SESSION` capsule.\n\n> An endpoint that sends a WT_CLOSE_SESSION capsule MUST immediately send a FIN on the CONNECT Stream. The endpoint MAY also send a STOP_SENDING with error code WT_SESSION_GONE to indicate it is no longer reading from the CONNECT stream.\n\nCan we clarify the behavior for WebTransport over HTTP/2 after sending a `WT_CLOSE_SESSION` capsule?",
+      "createdAt": "2025-10-02T01:40:02Z",
+      "updatedAt": "2025-10-04T08:28:48Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On many levels, the answer to this question doesn't matter.  On an ordered transport, an abortive close and a final close have no functional impact.  (In comparison, on a transport where retransmission is necessary, an abortive close might lead to some stream data being lost.)\n\nHowever, I would suggest that a closed session should result in a normal stream closure.  An abortive close is only appropriate if the intent is to allow the receiver to not deliver some amount of data to the application.  And for this protocol, we are want the session to be delivered reliably.",
+          "createdAt": "2025-10-04T08:28:48Z",
+          "updatedAt": "2025-10-04T08:28:48Z"
+        }
+      ]
+    },
+    {
+      "number": 146,
+      "id": "I_kwDODnOl887PKvtF",
+      "title": "Should WebTransport streams send WT_RESET_STREAM after receiving WT_STOP_SENDING?",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/146",
+      "state": "OPEN",
+      "author": "AnkshitJain",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "[QUIC RFC](https://datatracker.ietf.org/doc/html/rfc9000#name-solicited-state-transitions) suggests that a stream should send a `RESET_STREAM` frame upon receiving a `STOP_SENDING` frame.\n\n> A STOP_SENDING frame requests that the receiving endpoint send a RESET_STREAM frame. An endpoint that receives a STOP_SENDING frame MUST send a RESET_STREAM frame if the stream is in the \"Ready\" or \"Send\" state. If the stream is in the \"Data Sent\" state, the endpoint MAY defer sending the RESET_STREAM frame until the packets containing outstanding data are acknowledged or declared lost. If any outstanding data is declared lost, the endpoint SHOULD send a RESET_STREAM frame instead of retransmitting the data.\n\nShould WebTransport streams over HTTP/2 have a similar behavior? \nAdditionally, can we add state transition diagrams for WebTransport over HTTP/2 streams, similar to the ones found in the QUIC RFC? ",
+      "createdAt": "2025-10-02T01:52:02Z",
+      "updatedAt": "2025-10-04T08:31:13Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we do want to retain this feature of the QUIC stream state machine.",
+          "createdAt": "2025-10-02T16:01:38Z",
+          "updatedAt": "2025-10-02T16:01:38Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I agree.  Is the only way that a receiver can cause the stream toward it to stop.  \n\nWe do need to define this expected behavior, rather than rely on implicit specification.",
+          "createdAt": "2025-10-04T08:31:13Z",
+          "updatedAt": "2025-10-04T08:31:13Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -9754,6 +9817,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 147,
+      "id": "PR_kwDODnOl886sE5aX",
+      "title": "Point to how STOP_SENDING works",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/147",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #146.",
+      "createdAt": "2025-10-04T08:37:37Z",
+      "updatedAt": "2025-10-04T08:37:38Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "3d8f3fd3c9ca2e7a0e926c8cab9f763bdd1ceb54",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "stop-sending",
+      "headRefOid": "df5f80572b2d0a614e930d599118065e7a92830a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }

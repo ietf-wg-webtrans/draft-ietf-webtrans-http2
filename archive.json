@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-05T01:12:18.837278+00:00",
+  "timestamp": "2025-10-07T01:05:47.578079+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3002,15 +3002,15 @@
       "id": "I_kwDODnOl887O6b3c",
       "title": "Enforcing Consecutively Increasing Stream IDs",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/144",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "hanidamlaj",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Given that WebTransport sessions in http/2 are multiplexed over a single http/2 stream, should we enforce a strict ordering of consecutively increasing Stream IDs?\n\ni.e. if client initiates its first bidi stream (0x00), the next client bidi stream **must** be 0x04 (otherwise we should terminate the WebTransport session w/ a connection-level error)",
       "createdAt": "2025-09-30T23:48:37Z",
-      "updatedAt": "2025-10-04T08:25:36Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-05T17:34:53Z",
+      "closedAt": "2025-10-05T17:34:53Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -3018,6 +3018,13 @@
           "body": "There's a good reason not to do this.\n\nConsider the case where you have two concurrent pieces of code that each do something like:\n\n```\nlet s = session.makeStream();\ns.send(data);\n```\n\nAs these are concurrent, it's entirely possible that the two streams are created in one order (which requires access to a lock). but the first data that is sent on the streams is in the opposite order.  \n\nThat is, despite stream creation being strictly ordered, we cannot guarantee that the first bytes sent on a stream will follow that order.\n\nI suggest that we either do nothing, or make the above observation in explaining how stream frames can still appear out of order.",
           "createdAt": "2025-10-04T08:25:36Z",
           "updatedAt": "2025-10-04T08:25:36Z"
+        },
+        {
+          "author": "hanidamlaj",
+          "authorAssociation": "NONE",
+          "body": "Ah thanks a bunch for the explanation Martin! That makes sense, closing the issue",
+          "createdAt": "2025-10-05T17:34:53Z",
+          "updatedAt": "2025-10-05T17:34:53Z"
         }
       ]
     },

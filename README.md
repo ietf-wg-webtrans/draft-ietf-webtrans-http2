@@ -4,16 +4,16 @@
 
 This is the working area for the IETF [WEBTRANS Working Group](https://datatracker.ietf.org/group/webtrans/documents/) Internet-Draft, "WebTransport over HTTP/2".
 
-* [Editor's Copy](https://ekinnear.github.io/draft-ietf-webtrans-http2/#go.draft-ietf-webtrans-http2.html)
+* [Editor's Copy](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/#go.draft-ietf-webtrans-http2.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-webtrans-http2)
 * [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2)
-* [Compare Editor's Copy to Working Group Draft](https://ekinnear.github.io/draft-ietf-webtrans-http2/#go.draft-ietf-webtrans-http2.diff)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/#go.draft-ietf-webtrans-http2.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/ekinnear/draft-ietf-webtrans-http2/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/blob/main/CONTRIBUTING.md).
 
 The contributing file also has tips on how to make contributions, if you
 don't already know how to do that.

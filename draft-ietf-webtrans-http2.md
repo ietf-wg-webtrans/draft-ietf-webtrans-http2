@@ -110,14 +110,12 @@ can be accessed using HTTP/2 and this protocol.
 WebTransport servers are identified by an HTTPS URI as defined in {{Section
 4.2.2 of HTTP}}.
 
-When an HTTP/2 connection is established, the server sends a
-SETTINGS_WT_MAX_SESSIONS setting with a value greater than "0" to indicate that
-it supports WebTransport over HTTP/2. The value of the setting is the number of
-concurrent sessions the server is willing to receive. Note that the client does
-not need to send any value to indicate support for WebTransport; clients
-indicate support for WebTransport by using the "webtransport" upgrade token in
-CONNECT requests establishing WebTransport sessions ({{Section 9.1 of
-WEBTRANSPORT-H3}}).
+When an HTTP/2 connection is established, the server sends a SETTINGS_WT_ENABLED
+setting with a value of "1" to indicate that it supports WebTransport over
+HTTP/2.  Note that the client does not need to send any value to indicate
+support for WebTransport; clients indicate support for WebTransport by using the
+"webtransport" upgrade token in CONNECT requests establishing WebTransport
+sessions ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
 A client initiates a WebTransport session by sending an extended CONNECT request
 {{!RFC8441}}. If the server accepts the request, a WebTransport session is
@@ -165,18 +163,13 @@ A WebTransport session is a communication context between a client and server
 
 ## Establishing a WebTransport-Capable HTTP/2 Connection
 
-In order to indicate support for WebTransport, the server MUST send a
-SETTINGS_WT_MAX_SESSIONS value greater than "0" in its SETTINGS frame.  The
-client MUST NOT send a WebTransport request until it has received the setting
-indicating WebTransport support from the server.
-
-## Extended CONNECT in HTTP/2
-
 {{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. A server supporting WebTransport
-needs to send both the SETTINGS_WT_MAX_SESSIONS setting with a value greater
-than "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1"
-for WebTransport to be enabled.
+SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  In order to indicate support for
+WebTransport, the server MUST send the SETTINGS_ENABLE_CONNECT_PROTOCOL setting
+with a value of "1" and the SETTINGS_WT_ENABLED setting with a value of "1" for
+WebTransport to be enabled.  The client MUST NOT send a WebTransport request
+until it has received the setting indicating WebTransport support from the
+server.
 
 ## Creating a New Session
 
@@ -269,7 +262,7 @@ response to stream errors; see {{Section 5.4 of HTTP2}}.
 # Flow Control
 
 Flow control governs the amount of resources that can be consumed or data that
-can be sent. WebTransport over HTTP/2 allows a server to limit the number of
+can be sent.  WebTransport over HTTP/2 allows a server to limit the number of
 sessions that a client can create on a single connection; see
 {{flow-control-limit-sessions}}.
 
@@ -298,30 +291,11 @@ defines the final two.
 
 ## Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
 
-This document defines a SETTINGS_WT_MAX_SESSIONS parameter that allows the
-server to limit the maximum number of concurrent WebTransport sessions on a
-single HTTP/2 connection.  The client MUST NOT open more concurrent sessions
-than indicated by the server SETTINGS parameters.
-
-SETTINGS synchronization via acknowledgements in HTTP/2 enables both endpoints
-to agree on the current value of each setting ({{Section 6.5.3 of HTTP2}}).  A
-WebTransport server enforces the session limit at the time a new session is
-opened by comparing the number of currently open WebTransport sessions against
-the currently acknowledged SETTINGS value for SETTINGS_WT_MAX_SESSIONS.  A
-server that receives an incoming CONNECT stream that would cause it to exceed its
-session limit MUST reset that stream with the `REFUSED_STREAM` error code
-({{Section 8.7 of HTTP2}}).
-
-A WebTransport server that wishes to reduce the value of
-SETTINGS_WT_MAX_SESSIONS to a value that is below the current number of open
-sessions can either close sessions that exceed the new value or allow those
-sessions to complete. Endpoints MUST NOT reduce the value of
-SETTINGS_WT_MAX_SESSIONS to "0" after previously advertising a non-zero value.
-
-Just like other HTTP requests, WebTransport sessions, and data sent on those
-sessions, are counted against flow control limits.  Servers that wish to limit
-the rate of incoming requests on any particular session have multiple
-mechanisms:
+HTTP/2 defines a SETTINGS_MAX_CONCURRENT_STREAMS parameter {{Section 6.5.2 of
+HTTP2}} that allows the server to limit the maximum number of concurrent streams
+on a single HTTP/2 session, which also limits the number of WebTransport
+sessions on that connection.  Servers that wish to limit the rate of incoming
+WebTransport sessions on any particular HTTP/2 session have multiple mechanisms:
 
 * The `REFUSED_STREAM` error code defined in {{Section 8.7 of HTTP2}}
   indicates to the receiving HTTP/2 stack that the request was not processed in
@@ -1100,7 +1074,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_WT_MAX_SESSIONS = 100
+                                    SETTINGS_WT_ENABLED = 1
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1138,7 +1112,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_WT_MAX_SESSIONS = 100
+                                    SETTINGS_WT_ENABLED = 1
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1173,10 +1147,10 @@ used to identify WebTransport, allowing servers to offer multiple versions
 simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
 Servers that support future incompatible versions of WebTransport signal that
-support by changing the codepoint used for the SETTINGS_WT_MAX_SESSIONS
-parameter (see {{h2-settings}}).  Clients can select the associated upgrade
-token, if applicable, to use when establishing a new session, ensuring that
-servers will always know the syntax in use for every incoming request.
+support by changing the codepoint used for the SETTINGS_WT_ENABLED parameter
+(see {{h2-settings}}).  Clients can select the associated upgrade token, if
+applicable, to use when establishing a new session, ensuring that servers will
+always know the syntax in use for every incoming request.
 
 # Security Considerations
 
@@ -1212,17 +1186,16 @@ codes ({{iana-h2-error}}), new capsules ({{iana-capsules}}), and the
 The following entries are added to the "HTTP/2 Settings" registry established by
 {{HTTP2}}:
 
-{: anchor="SETTINGS_WT_MAX_SESSIONS"}
+{: anchor="SETTINGS_WT_ENABLED"}
 
-The SETTINGS_WT_MAX_SESSIONS parameter indicates that the specified HTTP/2
-connection is WebTransport-capable and the number of concurrent sessions an
-endpoint is willing to receive.  The default value for the
-SETTINGS_WT_MAX_SESSIONS parameter is "0", meaning that the endpoint is not
-willing to receive any WebTransport sessions.
+The SETTINGS_WT_ENABLED parameter indicates if the specified HTTP/2 connection
+is WebTransport-capable.  The default value for the SETTINGS_WT_ENABLED
+parameter is "0", meaning that the endpoint does not support WebTransport.  A
+value of "1" indicates that the sender supports WebTransport.
 
 Setting Name:
 
-: WEBTRANSPORT_MAX_SESSIONS
+: SETTINGS_WT_ENABLED
 
 Value:
 

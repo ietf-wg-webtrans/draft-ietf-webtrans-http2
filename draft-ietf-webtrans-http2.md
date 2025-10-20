@@ -1024,7 +1024,7 @@ An endpoint that sends a WT_CLOSE_SESSION capsule MUST then half-close the
 stream by sending an HTTP/2 frame with the END_STREAM flag set ({{Section 5.1 of
 HTTP2}}).  The recipient MUST close the stream upon receipt of the capsule by
 replying with an HTTP/2 frame with the END_STREAM flag set; note that it does
-not need to contain a WT_CLOSE_SESSION capsule in response.
+not need to send a WT_CLOSE_SESSION capsule in response.
 
 Cleanly terminating a WebTransport session without a WT_CLOSE_SESSION capsule
 is semantically equivalent to terminating it with a WT_CLOSE_SESSION capsule

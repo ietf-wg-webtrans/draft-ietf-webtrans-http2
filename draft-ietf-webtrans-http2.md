@@ -468,13 +468,9 @@ Unreliable Delivery:
 
 Pooling:
 
-: WebTransport over HTTP/2 provides optional support for pooling.  Every
+: WebTransport over HTTP/2 provides support for pooling.  Every
   WebTransport session is an independent HTTP/2 stream and does not compete with
-  other pooled WebTransport sessions for per-stream resources.  However,
-  endpoints can use the SETTINGS_WT_MAX_SESSIONS setting to limit the maximum
-  number of WebTransport sessions the peer can open, and they can prevent
-  pooling by sending SETTINGS_WT_MAX_SESSIONS with a value of "1"
-  ({{flow-control-limit-sessions}}).
+  other pooled WebTransport sessions for per-stream resources.
 
 Stream Independence:
 

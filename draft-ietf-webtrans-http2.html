@@ -1784,29 +1784,26 @@ all data arriving in <span id="iref-wt_stream-25" class="iref"></span><a href="#
 <p id="section-5.1-3">Below are details about support in WebTransport over HTTP/2 for the properties
 defined by the WebTransport framework.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.1-4">
-          <dt id="section-5.1-4.1">Stream Independence:</dt>
+          <dt id="section-5.1-4.1">Unreliable Delivery:</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-4.2">
-            <p id="section-5.1-4.2.1">WebTransport over HTTP/2 does not support stream independence, as HTTP/2
-inherently has head-of-line blocking.<a href="#section-5.1-4.2.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-4.3">Partial Reliability:</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-4.4">
-            <p id="section-5.1-4.4.1">WebTransport over HTTP/2 does not support partial reliability, as HTTP/2
+            <p id="section-5.1-4.2.1">WebTransport over HTTP/2 does not support unreliable delivery, as HTTP/2
 retransmits any lost data. This means that any datagrams sent via
 WebTransport over HTTP/2 will be retransmitted regardless of the preference
 of the application. The receiver is permitted to drop them, however, if it is
-unable to buffer them.<a href="#section-5.1-4.4.1" class="pilcrow">¶</a></p>
+unable to buffer them.<a href="#section-5.1-4.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-5.1-4.5">Pooling Support:</dt>
+<dt id="section-5.1-4.3">Pooling:</dt>
+          <dd style="margin-left: 1.5em" id="section-5.1-4.4">
+            <p id="section-5.1-4.4.1">WebTransport over HTTP/2 provides support for pooling.  Every
+WebTransport session is an independent HTTP/2 stream and does not compete with
+other pooled WebTransport sessions for per-stream resources.<a href="#section-5.1-4.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-5.1-4.5">Stream Independence:</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-4.6">
-            <p id="section-5.1-4.6.1">WebTransport over HTTP/2 supports pooling, as multiple transports using
-WebTransport over HTTP/2 may share the same underlying HTTP/2 connection and
-therefore share a congestion controller and other transport context. Note
-that WebTransport streams over HTTP/2 are contained within a single HTTP/2
-stream and do not compete with other pooled WebTransport sessions for
-per-stream resources.<a href="#section-5.1-4.6.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-4.6.1">WebTransport over HTTP/2 does not support stream independence, as HTTP/2
+inherently has head-of-line blocking.<a href="#section-5.1-4.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-5.1-4.7">Connection Mobility:</dt>

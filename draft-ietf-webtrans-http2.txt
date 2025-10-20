@@ -724,6 +724,11 @@ Table of Contents
       containing the application-specified reason the sender is ignoring
       the stream.
 
+   As defined in Section 3.5 of [RFC9000], the recipient of a
+   WT_STOP_SENDING capsule sends a WT_RESET_STREAM capsule in response,
+   including the same error code, if the stream is the "Ready" or "Send"
+   state.
+
    A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the
    same stream.  While QUIC permits redundant STOP_SENDING frames, the
    ordering guarantee in HTTP/2 makes this unnecessary.  A stream error
@@ -1664,10 +1669,12 @@ Index
          WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;
-            Section 6.14, Paragraph 3; Section 11.3, Paragraph 5.4.1
+            Section 6.3, Paragraph 5; Section 6.14, Paragraph 3;
+            Section 11.3, Paragraph 5.4.1
          WT_STOP_SENDING  Section 2, Paragraph 8; Section 6.3, Paragraph
             1; Section 6.3, Paragraph 3; Section 6.3, Paragraph 5;
-            Section 6.6, Paragraph 8; Section 11.3, Paragraph 7.4.1
+            Section 6.3, Paragraph 6; Section 6.6, Paragraph 8;
+            Section 11.3, Paragraph 7.4.1
          WT_STREAM  Section 2, Paragraph 6; Section 5.1, Paragraph 2;
             Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 7; Section 6.4, Paragraph 1;

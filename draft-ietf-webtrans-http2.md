@@ -229,7 +229,7 @@ optional explanatory message.
 An endpoint can terminate a session without sending a WT_CLOSE_SESSION capsule
 by closing the HTTP/2 stream.
 
-A stream that is reset terminates the session without providing an
+An HTTP/2 stream that is reset terminates the session without providing an
 application-level signal, though there will be an HTTP/2 error code.
 
 This document reserves the following HTTP/2 error codes for use with reporting
@@ -242,7 +242,7 @@ WEBTRANSPORT_ERROR (0xTBD):
 WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):
 : A stream-related capsule identified a stream that was in an invalid state.
 
-Prior terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
+Prior to terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
 application-specified error code MAY be sent.
 
 Session errors do not necessarily result in any change of HTTP/2 connection
@@ -958,9 +958,9 @@ WebTransport over HTTP/2 uses the WT_CLOSE_SESSION capsule defined in
 {{Section 5 of WEBTRANSPORT-H3}} to terminate a WebTransport session with an
 application error code and message.
 
-WebTransport sessions can be terminated by optionally sending a
-WT_CLOSE_SESSION capsule and then by closing the HTTP/2 stream associated
-with the session (see {{errors}}).
+WebTransport sessions can be terminated by optionally sending a WT_CLOSE_SESSION
+capsule and then by closing the HTTP/2 stream associated with the session (see
+{{errors}}).
 
 ~~~
 WT_CLOSE_SESSION Capsule {
@@ -985,8 +985,11 @@ following fields:
     connection.  The message takes up the remainder of the capsule, and its
     length MUST NOT exceed 1024 bytes.
 
-An endpoint that sends a WT_CLOSE_SESSION capsule MUST then close the stream.
-The recipient MUST close the stream upon receipt of the capsule.
+An endpoint that sends a WT_CLOSE_SESSION capsule MUST then half-close the
+stream by sending an HTTP/2 frame with the END_STREAM flag set ({{Section 5.1 of
+HTTP2}}).  The recipient MUST close the stream upon receipt of the capsule by
+replying with an HTTP/2 frame with the END_STREAM flag set; note that it does
+not need to send a WT_CLOSE_SESSION capsule in response.
 
 Cleanly terminating a WebTransport session without a WT_CLOSE_SESSION capsule
 is semantically equivalent to terminating it with a WT_CLOSE_SESSION capsule

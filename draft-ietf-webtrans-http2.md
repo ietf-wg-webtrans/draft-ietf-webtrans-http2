@@ -659,6 +659,10 @@ The WT_STOP_SENDING capsule defines the following fields:
    : A variable-length integer containing the application-specified reason the
      sender is ignoring the stream.
 
+As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
+capsule sends a WT_RESET_STREAM capsule in response, including the same error
+code, if the stream is the "Ready" or "Send" state.
+
 A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
 HTTP/2 makes this unnecessary.  A [stream error](#errors) of type

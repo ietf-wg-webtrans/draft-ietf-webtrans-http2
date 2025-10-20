@@ -458,27 +458,28 @@ all data arriving in WT_STREAM capsules is contiguous and in order.
 Below are details about support in WebTransport over HTTP/2 for the properties
 defined by the WebTransport framework.
 
-Stream Independence:
+Unreliable Delivery:
 
-: WebTransport over HTTP/2 does not support stream independence, as HTTP/2
-  inherently has head-of-line blocking.
-
-Partial Reliability:
-
-: WebTransport over HTTP/2 does not support partial reliability, as HTTP/2
+: WebTransport over HTTP/2 does not support unreliable delivery, as HTTP/2
   retransmits any lost data. This means that any datagrams sent via
   WebTransport over HTTP/2 will be retransmitted regardless of the preference
   of the application. The receiver is permitted to drop them, however, if it is
   unable to buffer them.
 
-Pooling Support:
+Pooling:
 
-: WebTransport over HTTP/2 supports pooling, as multiple transports using
-  WebTransport over HTTP/2 may share the same underlying HTTP/2 connection and
-  therefore share a congestion controller and other transport context. Note
-  that WebTransport streams over HTTP/2 are contained within a single HTTP/2
-  stream and do not compete with other pooled WebTransport sessions for
-  per-stream resources.
+: WebTransport over HTTP/2 provides optional support for pooling.  Every
+  WebTransport session is an independent HTTP/2 stream and does not compete with
+  other pooled WebTransport sessions for per-stream resources.  However,
+  endpoints can use the SETTINGS_WT_MAX_SESSIONS setting to limit the maximum
+  number of WebTransport sessions the peer can open, and they can prevent
+  pooling by sending SETTINGS_WT_MAX_SESSIONS with a value of "1"
+  ({{flow-control-limit-sessions}}).
+
+Stream Independence:
+
+: WebTransport over HTTP/2 does not support stream independence, as HTTP/2
+  inherently has head-of-line blocking.
 
 Connection Mobility:
 

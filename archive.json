@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-07T01:05:47.578079+00:00",
+  "timestamp": "2025-10-21T01:09:43.209498+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2986,16 +2986,33 @@
       "id": "I_kwDODnOl887IHpI1",
       "title": "WT_MAX_SESSIONS setting",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/143",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "ekinnear"
+      ],
       "labels": [],
       "body": "Do we even really need this?\n\nA WT session is just a request/response/whatever stream.  There isn't much point in having this setting really.  The concurrent stream limit in HTTP/2 might be enough.",
       "createdAt": "2025-08-26T23:38:09Z",
-      "updatedAt": "2025-08-26T23:38:09Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-10-20T23:47:14Z",
+      "closedAt": "2025-10-20T23:47:14Z",
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "IIRC, this came about to allow an endpoint to \"reserve\" space for non-WebTransport streams, for example setting `WT_MAX_SESSIONS` to 90 when `SETTINGS_MAX_CONCURRENT_STREAMS` is 100 would ensure that there are always at least 10 streams available for non-WebTransport traffic.\n\nIf we don't think that's useful, it's easy enough to remove.",
+          "createdAt": "2025-10-20T07:04:52Z",
+          "updatedAt": "2025-10-20T07:04:52Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This does raise an interesting issue: \n\n> Servers that support future incompatible versions of WebTransport signal that\nsupport by changing the codepoint used for the SETTINGS_WT_MAX_SESSIONS\nparameter (see {{h2-settings}}).  Clients can select the associated upgrade\ntoken, if applicable, to use when establishing a new session, ensuring that\nservers will always know the syntax in use for every incoming request.\n\n\nIn addition to overloading the setting to know if a server is likely to support WebTransport without having to try sending a CONNECT request with `webtransport` as the upgrade token, we also used this codepoint to allow us to easily handle future incompatible version changes.",
+          "createdAt": "2025-10-20T07:22:11Z",
+          "updatedAt": "2025-10-20T07:46:50Z"
+        }
+      ]
     },
     {
       "number": 144,
@@ -3033,15 +3050,17 @@
       "id": "I_kwDODnOl887PKsDf",
       "title": "Clarify HTTP/2 stream termination upon WebTransport session termination",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/145",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "ekinnear"
+      ],
       "labels": [],
       "body": "[Section 3.5](https://www.ietf.org/archive/id/draft-ietf-webtrans-http2-12.html#name-session-termination-and-err) of the WebTransport over HTTP/2 draft 12 does not talk about how the stream should be closed (with `END_STREAM` or `RST_STREAM`) after sending a `WT_CLOSE_SESSION` capsule.\n\nMeanwhile, [Section 6](https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-13.html#name-session-termination) of the WebTransport over HTTP/3 draft 13 specifies stream should be closed cleanly after sending a `WT_CLOSE_SESSION` capsule.\n\n> An endpoint that sends a WT_CLOSE_SESSION capsule MUST immediately send a FIN on the CONNECT Stream. The endpoint MAY also send a STOP_SENDING with error code WT_SESSION_GONE to indicate it is no longer reading from the CONNECT stream.\n\nCan we clarify the behavior for WebTransport over HTTP/2 after sending a `WT_CLOSE_SESSION` capsule?",
       "createdAt": "2025-10-02T01:40:02Z",
-      "updatedAt": "2025-10-04T08:28:48Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T23:52:19Z",
+      "closedAt": "2025-10-20T23:52:19Z",
       "comments": [
         {
           "author": "martinthomson",
@@ -3049,6 +3068,20 @@
           "body": "On many levels, the answer to this question doesn't matter.  On an ordered transport, an abortive close and a final close have no functional impact.  (In comparison, on a transport where retransmission is necessary, an abortive close might lead to some stream data being lost.)\n\nHowever, I would suggest that a closed session should result in a normal stream closure.  An abortive close is only appropriate if the intent is to allow the receiver to not deliver some amount of data to the application.  And for this protocol, we are want the session to be delivered reliably.",
           "createdAt": "2025-10-04T08:28:48Z",
           "updatedAt": "2025-10-04T08:28:48Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> On an ordered transport, an abortive close and a final close have no functional impact.\n\nDoesn't it also have implications for the reverse direction (i.e. the remote peer cannot send you anything back if you send a RST_STREAM vs. END_STREAM just half-closes the WT session)?\n\n> However, I would suggest that a closed session should result in a normal stream closure.\n\nIn this case, I don't think we have anything we want the remote peer to send back, but I agree that a normal stream closure seems better.",
+          "createdAt": "2025-10-20T08:34:31Z",
+          "updatedAt": "2025-10-20T08:34:31Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Interested in thoughts on the \"half-close and then echo\" approach in #150. It is the more \"normal\" stream closure route, but it potentially does require the recipient of a WT_CLOSE_SESSION capsule to generate a frame in response that it wouldn't otherwise need to. (Practically, it's going to need to send a TCP ACK, so it's not like we can avoid the entire packet.)",
+          "createdAt": "2025-10-20T08:44:24Z",
+          "updatedAt": "2025-10-20T08:44:24Z"
         }
       ]
     },
@@ -3057,15 +3090,15 @@
       "id": "I_kwDODnOl887PKvtF",
       "title": "Should WebTransport streams send WT_RESET_STREAM after receiving WT_STOP_SENDING?",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/146",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "[QUIC RFC](https://datatracker.ietf.org/doc/html/rfc9000#name-solicited-state-transitions) suggests that a stream should send a `RESET_STREAM` frame upon receiving a `STOP_SENDING` frame.\n\n> A STOP_SENDING frame requests that the receiving endpoint send a RESET_STREAM frame. An endpoint that receives a STOP_SENDING frame MUST send a RESET_STREAM frame if the stream is in the \"Ready\" or \"Send\" state. If the stream is in the \"Data Sent\" state, the endpoint MAY defer sending the RESET_STREAM frame until the packets containing outstanding data are acknowledged or declared lost. If any outstanding data is declared lost, the endpoint SHOULD send a RESET_STREAM frame instead of retransmitting the data.\n\nShould WebTransport streams over HTTP/2 have a similar behavior? \nAdditionally, can we add state transition diagrams for WebTransport over HTTP/2 streams, similar to the ones found in the QUIC RFC? ",
       "createdAt": "2025-10-02T01:52:02Z",
-      "updatedAt": "2025-10-04T08:31:13Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T08:46:15Z",
+      "closedAt": "2025-10-20T08:46:15Z",
       "comments": [
         {
           "author": "afrind",
@@ -3082,6 +3115,24 @@
           "updatedAt": "2025-10-04T08:31:13Z"
         }
       ]
+    },
+    {
+      "number": 151,
+      "id": "I_kwDODnOl887SgdtR",
+      "title": "Update HTTP/2 to reference transport properties from the overview",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/151",
+      "state": "CLOSED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [],
+      "body": "> Bringing the two properties that we still define in the overview to H3 for now. \n\n _Originally posted by @ekinnear in [#217](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/217#issuecomment-3421224941)_",
+      "createdAt": "2025-10-20T09:31:03Z",
+      "updatedAt": "2025-10-20T23:21:10Z",
+      "closedAt": "2025-10-20T23:21:10Z",
+      "comments": []
     }
   ],
   "pulls": [
@@ -9830,26 +9881,268 @@
       "id": "PR_kwDODnOl886sE5aX",
       "title": "Point to how STOP_SENDING works",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/147",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #146.",
       "createdAt": "2025-10-04T08:37:37Z",
-      "updatedAt": "2025-10-04T08:37:38Z",
+      "updatedAt": "2025-10-20T08:46:20Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "3d8f3fd3c9ca2e7a0e926c8cab9f763bdd1ceb54",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "stop-sending",
       "headRefOid": "df5f80572b2d0a614e930d599118065e7a92830a",
+      "closedAt": "2025-10-20T08:46:14Z",
+      "mergedAt": "2025-10-20T08:46:14Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "ac2d6a6d11538f83fe051cb60571e2024fbd4485"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887IATzZ",
+          "commit": {
+            "abbreviatedOid": "df5f805"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-20T08:45:55Z",
+          "updatedAt": "2025-10-20T08:45:55Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 148,
+      "id": "PR_kwDODnOl886uk2H6",
+      "title": "Remove SETTINGS_WT_MAX_SESSIONS entirely",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/148",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Remove SETTINGS_WT_MAX_SESSIONS entirely.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/149 for a version that replaces it with SETTINGS_WT_ENABLED.\r\n\r\nFixes #143 ",
+      "createdAt": "2025-10-20T07:35:37Z",
+      "updatedAt": "2025-10-20T23:47:20Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "bf965cae4e7465838624b59ea3334babc54f3f97",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/remove_wt_max_sessions",
+      "headRefOid": "1b07751fd45d15c3488610cf94124ac2a0d8b708",
+      "closedAt": "2025-10-20T23:47:13Z",
+      "mergedAt": "2025-10-20T23:47:13Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "889a55db8f3b22f0bdec323000cd2d26e2b72766"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887IAGuW",
+          "commit": {
+            "abbreviatedOid": "1b07751"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": " I have to say, this seems pretty compelling.  With extended connect, you have everything you need.",
+          "createdAt": "2025-10-20T08:30:18Z",
+          "updatedAt": "2025-10-20T08:30:18Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 149,
+      "id": "PR_kwDODnOl886uk2QV",
+      "title": "Replace SETTINGS_WT_MAX_SESSIONS with SETTINGS_WT_ENABLED",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/149",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Replace SETTINGS_WT_MAX_SESSIONS with SETTINGS_WT_ENABLED\r\n\r\nThis preserves the ability to: \r\n- Know ahead of time that the server is likely to support WebTransport if you were to use the `webtransport` upgrade token, rather than just supporting Extended CONNECT and `websocket`, for example.\r\n- Change the codepoint for SETTINGS_WT_ENABLED for future versions\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/148 for a version that removes the setting entirely.\r\n\r\nFixes #143",
+      "createdAt": "2025-10-20T07:35:52Z",
+      "updatedAt": "2025-10-20T23:46:00Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "bf965cae4e7465838624b59ea3334babc54f3f97",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/replace_wt_max_sessions_with_supports_wt",
+      "headRefOid": "576dce35330e7878ed2d8296574747de09591017",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 150,
+      "id": "PR_kwDODnOl886ulduN",
+      "title": "Be more explicit about session closure as it relates to HTTP/2 mechanisms",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/150",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Be more explicit about session closure as it relates to HTTP/2 mechanisms\r\n\r\nInterested in discussion, probably on the issue.\r\n\r\nCloses #145.",
+      "createdAt": "2025-10-20T08:42:47Z",
+      "updatedAt": "2025-10-20T23:52:21Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "bf965cae4e7465838624b59ea3334babc54f3f97",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/stream_closure",
+      "headRefOid": "28643d2e3dee0acff56e79d3d28395916223acff",
+      "closedAt": "2025-10-20T23:52:18Z",
+      "mergedAt": "2025-10-20T23:52:18Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "9ab3c90be8fba6b93a9b152105e40737e1d8c666"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887IAR8b",
+          "commit": {
+            "abbreviatedOid": "d38bbfb"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T08:43:39Z",
+          "updatedAt": "2025-10-20T08:43:40Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Does the recipient also send WT_CLOSE_SESSION?",
+              "createdAt": "2025-10-20T08:43:40Z",
+              "updatedAt": "2025-10-20T08:43:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887IJnoZ",
+          "commit": {
+            "abbreviatedOid": "d38bbfb"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T21:19:00Z",
+          "updatedAt": "2025-10-20T21:19:00Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "I was thinking no, since I'd expect a significant portion of the error codes sent to be \"you told me you were going away, so I said okay sure\". Can clarify, though",
+              "createdAt": "2025-10-20T21:19:00Z",
+              "updatedAt": "2025-10-20T21:19:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887IJqlg",
+          "commit": {
+            "abbreviatedOid": "d38bbfb"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T21:22:45Z",
+          "updatedAt": "2025-10-20T21:22:45Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Added a note in 8b7cb1da74ab74e9ede04809c191322f0cf11d28",
+              "createdAt": "2025-10-20T21:22:45Z",
+              "updatedAt": "2025-10-20T21:22:45Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 152,
+      "id": "PR_kwDODnOl886umEMs",
+      "title": "Editorial updates to transport properties to match overview and HTTP/3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/152",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #151 ",
+      "createdAt": "2025-10-20T09:38:24Z",
+      "updatedAt": "2025-10-20T23:21:12Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "95fd1c3f06332e952a81ad3a436e283d08c04e08",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/transport_properties",
+      "headRefOid": "9f50c37ea3a88c2fd3f7852d40df5a48b16404b8",
+      "closedAt": "2025-10-20T23:21:09Z",
+      "mergedAt": "2025-10-20T23:21:09Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "df50a2b897734e07901bf3d2238e8c5641320ef7"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887IJTkl",
+          "commit": {
+            "abbreviatedOid": "e59ebd3"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-20T20:48:25Z",
+          "updatedAt": "2025-10-20T20:48:34Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\n: WebTransport over HTTP/2 provides support for pooling.  Every\r\n  WebTransport session is an independent HTTP/2 stream and does not compete with\r\n  other pooled WebTransport sessions for per-stream resources.\r\n```\r\n\r\nIn light of #148 (my preference) or #149.  This might be the answer.\r\n\r\n",
+              "createdAt": "2025-10-20T20:48:26Z",
+              "updatedAt": "2025-10-20T20:48:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887IJsN5",
+          "commit": {
+            "abbreviatedOid": "e59ebd3"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T21:26:00Z",
+          "updatedAt": "2025-10-20T21:26:00Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "I suppose they can still prevent pooling in that case by rejecting all incoming sessions after the first one. But yeah, I'm not sure that's super necessary in the transport properties description.",
+              "createdAt": "2025-10-20T21:26:00Z",
+              "updatedAt": "2025-10-20T21:26:00Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

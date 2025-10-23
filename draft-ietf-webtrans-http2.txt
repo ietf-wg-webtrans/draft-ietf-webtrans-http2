@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 23 April 2026                                          T. Pauly
+Expires: 26 April 2026                                          T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 23 April 2026                                          T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                         20 October 2025
+                                                         23 October 2025
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2026.
+   This Internet-Draft will expire on 26 April 2026.
 
 Copyright Notice
 
@@ -754,7 +754,15 @@ Table of Contents
 
    All data sent in WT_STREAM capsules counts toward this limit.  The
    sum of the lengths of Stream Data fields in WT_STREAM capsules MUST
-   NOT exceed the value advertised by a receiver.
+   NOT exceed the value advertised by a receiver.  If an endpoint
+   receives an incoming WT_STREAM capsule with Stream Data in excess of
+   this limit, it MUST close the WebTransport session with a
+   WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+   If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data
+   value less than a previously received value, it MUST close the
+   WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session
+   error.
 
    The WT_MAX_DATA capsule defines special intermediary handling, as
    described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -792,7 +800,15 @@ Table of Contents
    All data sent in WT_STREAM capsules for the identified stream counts
    toward this limit.  The sum of the lengths of Stream Data fields in
    WT_STREAM capsules on the identified stream MUST NOT exceed the value
-   advertised by a receiver.
+   advertised by a receiver.  If an endpoint receives an incoming
+   WT_STREAM capsule with Stream Data in excess of this limit, it MUST
+   close the WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
+   session error.
+
+   If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum
+   Stream Data value less than a previously received value, it MUST
+   close the WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
+   session error.
 
    The WT_MAX_STREAM_DATA capsule defines special intermediary handling,
    as described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -849,6 +865,15 @@ Table of Contents
 
    Note that this limit includes streams that have been closed as well
    as those that are open.
+
+   If an endpoint receives an incoming stream that would exceed the
+   advertised Maximum Streams value, it MUST close the WebTransport
+   session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+   If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum
+   Streams value less than a previously received value, it MUST close
+   the WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
+   session error.
 
    The WT_MAX_STREAMS capsule defines special intermediary handling, as
    described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -1341,6 +1366,16 @@ WebTransport Data
 
    Reference:  Section 3.4
 
+   For WEBTRANSPORT_FLOW_CONTROL_ERROR:
+
+   Code:  0xTBD
+
+   Name:  WEBTRANSPORT_FLOW_CONTROL_ERROR
+
+   Description:  A flow control error occurred
+
+   Reference:  Section 3.4
+
 11.3.  Capsule Types
 
    The following entries are added to the "HTTP Capsule Types" registry
@@ -1514,9 +1549,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-13, 7 July 2025,
+              ietf-webtrans-http3-14, 20 October 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-13>.
+              webtrans-http3-14>.
 
 12.2.  Informative References
 
@@ -1569,20 +1604,20 @@ Index
       S
 
          SETTINGS_WT_INITIAL_MAX_DATA  Section 4.3.1, Paragraph 2.1.1;
-            Section 6.5, Paragraph 7; Section 11.1, Paragraph 2;
+            Section 6.5, Paragraph 8; Section 11.1, Paragraph 2;
             Section 11.1, Paragraph 4.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI  Section 4.3.1,
-            Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 11.1,
+            Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.1,
             Paragraph 8; Section 11.1, Paragraph 10.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI  Section 4.3.1,
-            Paragraph 2.2.1; Section 6.6, Paragraph 7; Section 11.1,
+            Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.1,
             Paragraph 5; Section 11.1, Paragraph 7.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI  Section 4.3.1, Paragraph
-            2.3.1; Section 6.7, Paragraph 9; Section 11.1, Paragraph 14;
-            Section 11.1, Paragraph 16.2.1
+            2.3.1; Section 6.7, Paragraph 11; Section 11.1, Paragraph
+            14; Section 11.1, Paragraph 16.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_UNI  Section 4.3.1, Paragraph
-            2.3.1; Section 6.7, Paragraph 9; Section 11.1, Paragraph 11;
-            Section 11.1, Paragraph 13.2.1
+            2.3.1; Section 6.7, Paragraph 11; Section 11.1, Paragraph
+            11; Section 11.1, Paragraph 13.2.1
 
       W
 
@@ -1592,18 +1627,19 @@ Index
          WT_MAX_DATA  Section 2, Paragraph 6; Section 4.3.1, Paragraph
             2.1.1; Section 4.4, Paragraph 1; Section 6.5, Paragraph 1;
             Section 6.5, Paragraph 3; Section 6.5, Paragraph 6;
-            Section 11.1, Paragraph 2
+            Section 6.5, Paragraph 7; Section 11.1, Paragraph 2
          WT_MAX_STREAM_DATA  Section 2, Paragraph 6; Section 4.3.1,
             Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 6.6,
             Paragraph 1; Section 6.6, Paragraph 3; Section 6.6,
-            Paragraph 6; Section 6.6, Paragraph 8; Section 11.1,
-            Paragraph 5; Section 11.1, Paragraph 8; Section 11.3,
-            Paragraph 11.4.1
+            Paragraph 6; Section 6.6, Paragraph 7; Section 6.6,
+            Paragraph 9; Section 11.1, Paragraph 5; Section 11.1,
+            Paragraph 8; Section 11.3, Paragraph 11.4.1
          WT_MAX_STREAMS  Section 2, Paragraph 6; Section 4.2, Paragraph
             1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
             Section 6.7, Paragraph 1; Section 6.7, Paragraph 2;
-            Section 6.7, Paragraph 4; Section 6.7, Paragraph 8;
-            Section 11.1, Paragraph 11; Section 11.1, Paragraph 14
+            Section 6.7, Paragraph 4; Section 6.7, Paragraph 9;
+            Section 6.7, Paragraph 10; Section 11.1, Paragraph 11;
+            Section 11.1, Paragraph 14
          WT_RESET_STREAM  Section 2, Paragraph 7; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;
@@ -1611,7 +1647,7 @@ Index
             Section 11.3, Paragraph 5.4.1
          WT_STOP_SENDING  Section 2, Paragraph 7; Section 6.3, Paragraph
             1; Section 6.3, Paragraph 3; Section 6.3, Paragraph 5;
-            Section 6.3, Paragraph 6; Section 6.6, Paragraph 8;
+            Section 6.3, Paragraph 6; Section 6.6, Paragraph 9;
             Section 11.3, Paragraph 7.4.1
          WT_STREAM  Section 2, Paragraph 5; Section 5.1, Paragraph 2;
             Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;

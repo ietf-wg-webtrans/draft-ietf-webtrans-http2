@@ -693,9 +693,15 @@ WT_MAX_DATA capsules contain the following field:
    : A variable-length integer indicating the maximum amount of data that can be
      sent on the entire connection, in units of bytes.
 
-All data sent in WT_STREAM capsules counts toward this limit. The sum of the
+All data sent in WT_STREAM capsules counts toward this limit.  The sum of the
 lengths of Stream Data fields in WT_STREAM capsules MUST NOT exceed the value
-advertised by a receiver.
+advertised by a receiver.  If an endpoint receives an incoming WT_STREAM capsule
+with Stream Data in excess of this limit, it MUST close the WebTransport session
+with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less
+than a previously received value, it MUST close the WebTransport session with
+the WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_DATA
@@ -734,8 +740,15 @@ WT_MAX_STREAM_DATA capsules contain the following fields:
      sent on the identified stream, in units of bytes.
 
 All data sent in WT_STREAM capsules for the identified stream counts toward this
-limit. The sum of the lengths of Stream Data fields in WT_STREAM capsules on
-the identified stream MUST NOT exceed the value advertised by a receiver.
+limit.  The sum of the lengths of Stream Data fields in WT_STREAM capsules on
+the identified stream MUST NOT exceed the value advertised by a receiver.  If an
+endpoint receives an incoming WT_STREAM capsule with Stream Data in excess of
+this limit, it MUST close the WebTransport session with a
+WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data
+value less than a previously received value, it MUST close the WebTransport
+session with the WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -794,6 +807,14 @@ stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream
 
 Note that this limit includes streams that have been closed as well as those
 that are open.
+
+If an endpoint receives an incoming stream that would exceed the advertised
+Maximum Streams value, it MUST close the WebTransport session with a
+WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams
+value less than a previously received value, it MUST close the WebTransport
+session with the WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -1346,6 +1367,21 @@ Name:
 
 Description:
 : Unexpected WebTransport stream-related capsule received
+
+Reference:
+: {{errors}}
+
+
+For WEBTRANSPORT_FLOW_CONTROL_ERROR:
+
+Code:
+: 0xTBD
+
+Name:
+: WEBTRANSPORT_FLOW_CONTROL_ERROR
+
+Description:
+: A flow control error occurred
 
 Reference:
 : {{errors}}

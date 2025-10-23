@@ -701,7 +701,7 @@ with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less
 than a previously received value, it MUST close the WebTransport session with
-the WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_DATA
@@ -748,7 +748,7 @@ WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data
 value less than a previously received value, it MUST close the WebTransport
-session with the WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -814,7 +814,7 @@ WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams
 value less than a previously received value, it MUST close the WebTransport
-session with the WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-23T01:08:50.907024+00:00",
+  "timestamp": "2025-10-26T01:13:38.956911+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3139,15 +3139,17 @@
       "id": "I_kwDODnOl887TKqYP",
       "title": "Add error handling for when flow control is violated",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/153",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "ekinnear"
+      ],
       "labels": [],
       "body": "Add error handling for when flow control is violated\n\n",
       "createdAt": "2025-10-23T01:01:09Z",
-      "updatedAt": "2025-10-23T01:01:19Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-23T01:38:57Z",
+      "closedAt": "2025-10-23T01:38:57Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -3155,6 +3157,30 @@
           "body": "Similar to https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/234\n",
           "createdAt": "2025-10-23T01:01:19Z",
           "updatedAt": "2025-10-23T01:01:19Z"
+        }
+      ]
+    },
+    {
+      "number": 155,
+      "id": "I_kwDODnOl887TL7K4",
+      "title": "HTTP SETTINGS parity with QUIC for initial flow control",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/155",
+      "state": "OPEN",
+      "author": "AnkshitJain",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "1. QUIC has the following 6 transport parameters defined for initial flow control values: \n- initial_max_data\n- initial_max_stream_data_bidi_local\n- initial_max_stream_data_bidi_remote\n- initial_max_stream_data_uni\n- initial_max_streams_bidi\n- initial_max_streams_uni\n\nBut WebTransport only defines 5: \n- SETTINGS_WT_INITIAL_MAX_DATA\n- SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI \n- SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI\n- SETTINGS_WT_INITIAL_MAX_STREAMS_UNI\n- SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI\n\nDo we need the distinction added by `initial_max_stream_data_bidi_local` and `initial_max_stream_data_bidi_remote` as compared to a single `SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI` in WebTransport?\n\n\n2. `WebTransport-Init` on the other hand has only 3 parameters: `u`, `bl`, `br`. So it seems to make the above distinction, but then skips parameters for session max data and stream limits. Should this header have the same values as SETTINGS? \n\n3. `WebTransport-Init` is not defined for WebTransport over HTTP/3. Should it be added (with the applicable values)?",
+      "createdAt": "2025-10-23T04:42:28Z",
+      "updatedAt": "2025-10-24T05:46:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "AnkshitJain",
+          "authorAssociation": "NONE",
+          "body": "On a similar note, a HTTP/2 peer can send more than one SETTINGS frame on a connection. Can we add some text to specify how to handle these values, if updated, in subsequent SETTINGS frames?",
+          "createdAt": "2025-10-24T05:46:33Z",
+          "updatedAt": "2025-10-24T05:46:33Z"
         }
       ]
     }
@@ -10165,6 +10191,48 @@
               "updatedAt": "2025-10-20T21:26:00Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 154,
+      "id": "PR_kwDODnOl886vK7ic",
+      "title": "Add error handling for flow control violations",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/154",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add error handling for flow control violations\r\n\r\nFixes #153",
+      "createdAt": "2025-10-23T01:14:19Z",
+      "updatedAt": "2025-10-23T01:38:58Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9ab3c90be8fba6b93a9b152105e40737e1d8c666",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/flow_control_errors",
+      "headRefOid": "9345cfea3afd0597215d911fa1c4ab43529e7b92",
+      "closedAt": "2025-10-23T01:38:56Z",
+      "mergedAt": "2025-10-23T01:38:56Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "f24743f1886c1e643ebd2935ea76eb639975fada"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887Iv49V",
+          "commit": {
+            "abbreviatedOid": "9345cfe"
+          },
+          "author": "AnkshitJain",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-23T01:38:35Z",
+          "updatedAt": "2025-10-23T01:38:35Z",
+          "comments": []
         }
       ]
     }

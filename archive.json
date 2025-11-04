@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-26T01:13:38.956911+00:00",
+  "timestamp": "2025-11-04T01:10:20.550807+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3183,6 +3183,77 @@
           "updatedAt": "2025-10-24T05:46:33Z"
         }
       ]
+    },
+    {
+      "number": 156,
+      "id": "I_kwDODnOl887Vh53l",
+      "title": "Handling SETTINGS updates",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/156",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "HTTP/2 allows SETTINGS to be [updated](https://httpwg.org/specs/rfc9113.html#rfc.section.6.5.3).\n\nWe define a number of \"initial\" flow control values in SETTINGS. \n\nIf you imagine a scenario where all initial values are 10, but then a SETTINGS update is sent that changes them to 20, do: \n\n- Existing sessions change? \n- New sessions change? \n\nWe can take a few approaches: \n\n1. All existing and new sessions suddenly update to the new values. \n2. All existing and new sessions update to the new values if they haven't seen any WT_* flow control capsules.\n3. New sessions use the new values.\n\nI think the original intent was (3).\n\nThere's some complexity inherent there, since if we allow the updates to reduce values for new sessions, you may have had an incoming CONNECT request _and_ additional new streams for that session in-flight at the moment you sent the updated SETTINGS. You cannot enforce those new values until you receive the SETTINGS ACK.\n\nIf we wanted to avoid requiring tracking the SETTINGS ACK, we could also mandate that you cannot ever reduce the WT values in SETTINGS (which conveniently means you can't update to say you don't support WT).",
+      "createdAt": "2025-11-03T14:55:35Z",
+      "updatedAt": "2025-11-03T15:32:58Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We previously said:\n> Endpoints MUST NOT reduce the value of SETTINGS_WT_MAX_SESSIONS to \"0\" after previously advertising a non-zero value.\n\nThis issue is mostly confirming that's the approach we want vs. disallowing reduced values in updates if we wanted to take that approach.",
+          "createdAt": "2025-11-03T14:58:42Z",
+          "updatedAt": "2025-11-03T15:03:06Z"
+        },
+        {
+          "author": "LPardue",
+          "authorAssociation": "NONE",
+          "body": "H2's extant setting for initial window size permits changes and has to dedicate a chunk of text to explaining how to do with it; see https://www.rfc-editor.org/rfc/rfc9113.html#section-6.9.2. From recollection, implementers don't particularly like handling this capability. \n\nWearing no hats, I'm more supportive of the simplest option that sounds like 3",
+          "createdAt": "2025-11-03T15:32:57Z",
+          "updatedAt": "2025-11-03T15:32:57Z"
+        }
+      ]
+    },
+    {
+      "number": 157,
+      "id": "I_kwDODnOl887VjeW6",
+      "title": "WebTransport streams and http/2 settings interaction",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/157",
+      "state": "CLOSED",
+      "author": "hanidamlaj",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "A very contrived example/scenario:\n\n1. Client has received  `SETTINGS_ENABLE_CONNECT_PROTOCOL=1` &  `SETTINGS_WT_INITIAL_MAX_STREAMS_UNI=1` in the connection preface http/2 settings frame.\n\n2. Client sends an http/2 WebTransport CONNECT request, and immediately sends (prior to 2xx from server) an empty `WT_STREAM` capsule for 0x02 (first client unidirectional stream) \u2013 the client will assume the default for peer's `SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI=0`\n\n3. Client subsequently receives an another separate http/2 settings frame `SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI=65535` (inflight when sending http/2 WebTransport CONNECT request)\n\n4. The client and server may have differing viewpoints on the available flow control \u2013 the client will assume 0 bytes and server might assume 64KiB",
+      "createdAt": "2025-11-03T16:35:37Z",
+      "updatedAt": "2025-11-03T18:00:27Z",
+      "closedAt": "2025-11-03T18:00:27Z",
+      "comments": [
+        {
+          "author": "hanidamlaj",
+          "authorAssociation": "NONE",
+          "body": "this issue was a result of offline discussions at ietf124 \u2013 pretty much duplicate a of https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/156",
+          "createdAt": "2025-11-03T18:00:27Z",
+          "updatedAt": "2025-11-03T18:00:27Z"
+        }
+      ]
+    },
+    {
+      "number": 158,
+      "id": "I_kwDODnOl887VkAfA",
+      "title": "Early IANA review summary",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/158",
+      "state": "OPEN",
+      "author": "LPardue",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "IANA performed an early review of the draft, to summarize some of the points\n\n1. Section 11.1 - Please use the field names used in the HTTP/2 settings registry. \"Code\" instead of \"Value\", \"Initial Value\" instead of \"Default\"\n2. Section 11.4 - the \"template\" field has been removed from the HTTP Field names registry and a \"Structured List\" field has been added",
+      "createdAt": "2025-11-03T17:12:47Z",
+      "updatedAt": "2025-11-03T17:12:47Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [

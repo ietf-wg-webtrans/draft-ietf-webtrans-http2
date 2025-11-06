@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-04T01:10:20.550807+00:00",
+  "timestamp": "2025-11-06T01:11:18.377386+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3196,7 +3196,7 @@
       "labels": [],
       "body": "HTTP/2 allows SETTINGS to be [updated](https://httpwg.org/specs/rfc9113.html#rfc.section.6.5.3).\n\nWe define a number of \"initial\" flow control values in SETTINGS. \n\nIf you imagine a scenario where all initial values are 10, but then a SETTINGS update is sent that changes them to 20, do: \n\n- Existing sessions change? \n- New sessions change? \n\nWe can take a few approaches: \n\n1. All existing and new sessions suddenly update to the new values. \n2. All existing and new sessions update to the new values if they haven't seen any WT_* flow control capsules.\n3. New sessions use the new values.\n\nI think the original intent was (3).\n\nThere's some complexity inherent there, since if we allow the updates to reduce values for new sessions, you may have had an incoming CONNECT request _and_ additional new streams for that session in-flight at the moment you sent the updated SETTINGS. You cannot enforce those new values until you receive the SETTINGS ACK.\n\nIf we wanted to avoid requiring tracking the SETTINGS ACK, we could also mandate that you cannot ever reduce the WT values in SETTINGS (which conveniently means you can't update to say you don't support WT).",
       "createdAt": "2025-11-03T14:55:35Z",
-      "updatedAt": "2025-11-03T15:32:58Z",
+      "updatedAt": "2025-11-04T17:08:33Z",
       "closedAt": null,
       "comments": [
         {
@@ -3212,6 +3212,20 @@
           "body": "H2's extant setting for initial window size permits changes and has to dedicate a chunk of text to explaining how to do with it; see https://www.rfc-editor.org/rfc/rfc9113.html#section-6.9.2. From recollection, implementers don't particularly like handling this capability. \n\nWearing no hats, I'm more supportive of the simplest option that sounds like 3",
           "createdAt": "2025-11-03T15:32:57Z",
           "updatedAt": "2025-11-03T15:32:57Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What Lucas said.  I would say that changing `SETTINGS_WT_MAX_SESSIONS` is valid.  That potentially creates a race condition in implementations, because the propagation of settings changes might not be something that is done often, but I don't think that we need to worry about that.  (It's another reason to remove that setting, I'd argue)",
+          "createdAt": "2025-11-04T17:05:56Z",
+          "updatedAt": "2025-11-04T17:05:56Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yeah, we removed `SETTINGS_WT_MAX_SESSIONS` itself, so that part is sorted out. \n\nFrom IETF 124: \n- All the other SETTINGS can be changed, latest acknowledged values being stamped on new sessions is the best practice, we should align with that.",
+          "createdAt": "2025-11-04T17:08:33Z",
+          "updatedAt": "2025-11-04T17:08:33Z"
         }
       ]
     },

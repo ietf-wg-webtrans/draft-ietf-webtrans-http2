@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-06T01:11:18.377386+00:00",
+  "timestamp": "2025-11-09T01:14:10.660780+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3266,6 +3266,22 @@
       "body": "IANA performed an early review of the draft, to summarize some of the points\n\n1. Section 11.1 - Please use the field names used in the HTTP/2 settings registry. \"Code\" instead of \"Value\", \"Initial Value\" instead of \"Default\"\n2. Section 11.4 - the \"template\" field has been removed from the HTTP Field names registry and a \"Structured List\" field has been added",
       "createdAt": "2025-11-03T17:12:47Z",
       "updatedAt": "2025-11-03T17:12:47Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 159,
+      "id": "I_kwDODnOl887WarIe",
+      "title": "MaxStreams interaction with out of order streams",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/159",
+      "state": "OPEN",
+      "author": "hanidamlaj",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "If a client advertises to the server `SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI = 1`  and the server opens stream 0x05 first (second server-initiated bidirectional stream), should we treat this as an error?",
+      "createdAt": "2025-11-06T19:36:25Z",
+      "updatedAt": "2025-11-07T14:59:51Z",
       "closedAt": null,
       "comments": []
     }

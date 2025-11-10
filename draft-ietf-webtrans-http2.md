@@ -1224,7 +1224,7 @@ Specification:
 
 The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the initial
 value for the stream data limit for incoming unidirectional streams, otherwise
-communicated by the WT_MAX_STREAM_DATA capsule({{WT_MAX_STREAM_DATA}}).  The
+communicated by the WT_MAX_STREAM_DATA capsule ({{WT_MAX_STREAM_DATA}}).  The
 default value for the SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0",
 indicating that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each
 stream within each individual WebTransport session before its peer is allowed

@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 26 April 2026                                          T. Pauly
+Expires: 14 May 2026                                            T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 26 April 2026                                          T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                         23 October 2025
+                                                        10 November 2025
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 April 2026.
+   This Internet-Draft will expire on 14 May 2026.
 
 Copyright Notice
 
@@ -1263,8 +1263,8 @@ WebTransport Data
 
    The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the
    initial value for the stream data limit for incoming unidirectional
-   streams, otherwise communicated by the WT_MAX_STREAM_DATA
-   capsule(Section 6.6).  The default value for the
+   streams, otherwise communicated by the WT_MAX_STREAM_DATA capsule
+   (Section 6.6).  The default value for the
    SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0", indicating
    that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each
    stream within each individual WebTransport session before its peer is

@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-09T01:14:10.660780+00:00",
+  "timestamp": "2025-11-27T01:10:40.632910+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3282,6 +3282,22 @@
       "body": "If a client advertises to the server `SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI = 1`  and the server opens stream 0x05 first (second server-initiated bidirectional stream), should we treat this as an error?",
       "createdAt": "2025-11-06T19:36:25Z",
       "updatedAt": "2025-11-07T14:59:51Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 160,
+      "id": "I_kwDODnOl887asZTy",
+      "title": "Handling error codes beyond UINT32_MAX",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/160",
+      "state": "OPEN",
+      "author": "AnkshitJain",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "WebTransport over HTTP/3 has an [error code space](https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-14.html#section-4.4) of 32-bit unsigned integers as the error codes are mapped.\n```\nWebTransport application errors for streams are limited to an unsigned 32-bit integer, assuming values between 0x00000000 and 0xffffffff.\n```\n\nThis limit does not seem to apply to WebTransport over HTTP/2.\n\n[W3C](https://www.w3.org/TR/webtransport/#web-transport-error-interface) defines `streamErrorCode` in `WebTransportError` which is 32 bits in size. \n\nCan we add text to clarify how a WebTransport over HTTP/2 implementation handles error code values beyond UINT32_MAX? \n",
+      "createdAt": "2025-11-26T21:20:27Z",
+      "updatedAt": "2025-11-26T21:20:27Z",
       "closedAt": null,
       "comments": []
     }

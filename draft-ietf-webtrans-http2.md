@@ -164,18 +164,10 @@ A WebTransport session is a communication context between a client and server
 
 ## Establishing a WebTransport-Capable HTTP/2 Connection
 
-In order to indicate support for WebTransport, the server MUST send a
-SETTINGS_WT_MAX_SESSIONS value greater than "0" in its SETTINGS frame.  The
-client MUST NOT send a WebTransport request until it has received the setting
-indicating WebTransport support from the server.
-
-## Extended CONNECT in HTTP/2
-
-{{!RFC8441}} defines an extended CONNECT method in {{features}}, enabled by the
-SETTINGS_ENABLE_CONNECT_PROTOCOL parameter. A server supporting WebTransport
-needs to send both the SETTINGS_WT_MAX_SESSIONS setting with a value greater
-than "0" and the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1"
-for WebTransport to be enabled.
+In order to indicate potential support for WebTransport, the server MUST send the
+SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1" in its SETTINGS
+frame.  The client MUST NOT send a WebTransport request until it has received
+the setting indicating extended CONNECT support from the server.
 
 ## Creating a New Session
 
@@ -245,7 +237,7 @@ optional explanatory message.
 An endpoint can terminate a session without sending a WT_CLOSE_SESSION capsule
 by closing the HTTP/2 stream.
 
-A stream that is reset terminates the session without providing an
+An HTTP/2 stream that is reset terminates the session without providing an
 application-level signal, though there will be an HTTP/2 error code.
 
 This document reserves the following HTTP/2 error codes for use with reporting
@@ -258,7 +250,7 @@ WEBTRANSPORT_ERROR (0xTBD):
 WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):
 : A stream-related capsule identified a stream that was in an invalid state.
 
-Prior terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
+Prior to terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
 application-specified error code MAY be sent.
 
 Session errors do not necessarily result in any change of HTTP/2 connection
@@ -268,7 +260,7 @@ response to stream errors; see {{Section 5.4 of HTTP2}}.
 # Flow Control
 
 Flow control governs the amount of resources that can be consumed or data that
-can be sent. WebTransport over HTTP/2 allows a server to limit the number of
+can be sent.  WebTransport over HTTP/2 allows a server to limit the number of
 sessions that a client can create on a single connection; see
 {{flow-control-limit-sessions}}.
 
@@ -297,30 +289,11 @@ defines the final two.
 
 ## Limiting the Number of Simultaneous Sessions {#flow-control-limit-sessions}
 
-This document defines a SETTINGS_WT_MAX_SESSIONS parameter that allows the
-server to limit the maximum number of concurrent WebTransport sessions on a
-single HTTP/2 connection.  The client MUST NOT open more concurrent sessions
-than indicated by the server SETTINGS parameters.
-
-SETTINGS synchronization via acknowledgements in HTTP/2 enables both endpoints
-to agree on the current value of each setting ({{Section 6.5.3 of HTTP2}}).  A
-WebTransport server enforces the session limit at the time a new session is
-opened by comparing the number of currently open WebTransport sessions against
-the currently acknowledged SETTINGS value for SETTINGS_WT_MAX_SESSIONS.  A
-server that receives an incoming CONNECT stream that would cause it to exceed its
-session limit MUST reset that stream with the `REFUSED_STREAM` error code
-({{Section 8.7 of HTTP2}}).
-
-A WebTransport server that wishes to reduce the value of
-SETTINGS_WT_MAX_SESSIONS to a value that is below the current number of open
-sessions can either close sessions that exceed the new value or allow those
-sessions to complete. Endpoints MUST NOT reduce the value of
-SETTINGS_WT_MAX_SESSIONS to "0" after previously advertising a non-zero value.
-
-Just like other HTTP requests, WebTransport sessions, and data sent on those
-sessions, are counted against flow control limits.  Servers that wish to limit
-the rate of incoming requests on any particular session have multiple
-mechanisms:
+HTTP/2 defines a SETTINGS_MAX_CONCURRENT_STREAMS parameter {{Section 6.5.2 of
+HTTP2}} that allows the server to limit the maximum number of concurrent streams
+on a single HTTP/2 session, which also limits the number of WebTransport
+sessions on that connection.  Servers that wish to limit the rate of incoming
+WebTransport sessions on any particular HTTP/2 session have multiple mechanisms:
 
 * The `REFUSED_STREAM` error code defined in {{Section 8.7 of HTTP2}}
   indicates to the receiving HTTP/2 stack that the request was not processed in
@@ -382,10 +355,11 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 
 The `WebTransport-Init` HTTP header field can be used to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
-parameters.  The `WebTransport-Init` is a Dictionary Structured Field
-({{Section 3.2 of !RFC8941}}).  If any of the fields cannot be parsed correctly
-or do not have the correct type, the peer MUST reset the CONNECT stream.  The
-following keys are defined for the `WebTransport-Init` header field:
+parameters.  The `WebTransport-Init` is a Dictionary Structured Field ({{Section
+3.2 of !RFC8941}}).  If the `WebTransport-Init` field cannot be parsed
+correctly or does not have the correct type, the endpoint MUST reject the
+CONNECT request with a 4xx status code.  The following keys are defined for the
+`WebTransport-Init` header field:
 
 `u`:
 : The initial flow control limit for unidirectional streams opened by the
@@ -399,6 +373,9 @@ following keys are defined for the `WebTransport-Init` header field:
 : The initial flow control limit for the bidirectional streams opened by the
   recipient of this header field.  MUST be an Integer.
 
+If any of these keys are present but contain invalid values, the endpoint MUST
+reject the CONNECT request with a 4xx status code.  Unknown keys and parameters
+in the dictionary MUST be ignored.
 
 ## Flow Control and Intermediaries {#flow-control-intermediaries}
 
@@ -453,27 +430,24 @@ all data arriving in WT_STREAM capsules is contiguous and in order.
 Below are details about support in WebTransport over HTTP/2 for the properties
 defined by the WebTransport framework.
 
-Stream Independence:
+Unreliable Delivery:
 
-: WebTransport over HTTP/2 does not support stream independence, as HTTP/2
-  inherently has head-of-line blocking.
-
-Partial Reliability:
-
-: WebTransport over HTTP/2 does not support partial reliability, as HTTP/2
+: WebTransport over HTTP/2 does not support unreliable delivery, as HTTP/2
   retransmits any lost data. This means that any datagrams sent via
   WebTransport over HTTP/2 will be retransmitted regardless of the preference
   of the application. The receiver is permitted to drop them, however, if it is
   unable to buffer them.
 
-Pooling Support:
+Pooling:
 
-: WebTransport over HTTP/2 supports pooling, as multiple transports using
-  WebTransport over HTTP/2 may share the same underlying HTTP/2 connection and
-  therefore share a congestion controller and other transport context. Note
-  that WebTransport streams over HTTP/2 are contained within a single HTTP/2
-  stream and do not compete with other pooled WebTransport sessions for
-  per-stream resources.
+: WebTransport over HTTP/2 provides support for pooling.  Every
+  WebTransport session is an independent HTTP/2 stream and does not compete with
+  other pooled WebTransport sessions for per-stream resources.
+
+Stream Independence:
+
+: WebTransport over HTTP/2 does not support stream independence, as HTTP/2
+  inherently has head-of-line blocking.
 
 Connection Mobility:
 
@@ -551,8 +525,9 @@ against traffic analysis or for other reasons.
 Note that, when used with WebTransport over HTTP/2, the PADDING capsule exists
 alongside the ability to pad HTTP/2 frames ({{Section 10.7 of !RFC9113}}).
 HTTP/2 padding is hop-by-hop and can be modified by intermediaries, while the
-PADDING capsule traverses intermediaries. The PADDING capsule is also
-constrained to be no smaller than the capsule overhead itself.
+PADDING capsule traverses intermediaries.  The PADDING capsule cannot be smaller
+than its own header, which means that the minimum size of the capsule is two
+bytes: one byte for the Type and one byte to encode "0" for the Length.
 
 ~~~
 PADDING Capsule {
@@ -653,6 +628,10 @@ The WT_STOP_SENDING capsule defines the following fields:
    : A variable-length integer containing the application-specified reason the
      sender is ignoring the stream.
 
+As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
+capsule sends a WT_RESET_STREAM capsule in response, including the same error
+code, if the stream is the "Ready" or "Send" state.
+
 A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
 HTTP/2 makes this unnecessary.  A [stream error](#errors) of type
@@ -722,9 +701,15 @@ WT_MAX_DATA capsules contain the following field:
    : A variable-length integer indicating the maximum amount of data that can be
      sent on the entire connection, in units of bytes.
 
-All data sent in WT_STREAM capsules counts toward this limit. The sum of the
+All data sent in WT_STREAM capsules counts toward this limit.  The sum of the
 lengths of Stream Data fields in WT_STREAM capsules MUST NOT exceed the value
-advertised by a receiver.
+advertised by a receiver.  If an endpoint receives an incoming WT_STREAM capsule
+with Stream Data in excess of this limit, it MUST close the WebTransport session
+with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less
+than a previously received value, it MUST close the WebTransport session with
+a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_DATA
@@ -763,8 +748,15 @@ WT_MAX_STREAM_DATA capsules contain the following fields:
      sent on the identified stream, in units of bytes.
 
 All data sent in WT_STREAM capsules for the identified stream counts toward this
-limit. The sum of the lengths of Stream Data fields in WT_STREAM capsules on
-the identified stream MUST NOT exceed the value advertised by a receiver.
+limit.  The sum of the lengths of Stream Data fields in WT_STREAM capsules on
+the identified stream MUST NOT exceed the value advertised by a receiver.  If an
+endpoint receives an incoming WT_STREAM capsule with Stream Data in excess of
+this limit, it MUST close the WebTransport session with a
+WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data
+value less than a previously received value, it MUST close the WebTransport
+session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -823,6 +815,14 @@ stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream
 
 Note that this limit includes streams that have been closed as well as those
 that are open.
+
+If an endpoint receives an incoming stream that would exceed the advertised
+Maximum Streams value, it MUST close the WebTransport session with a
+WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+
+If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams
+value less than a previously received value, it MUST close the WebTransport
+session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -987,9 +987,9 @@ WebTransport over HTTP/2 uses the WT_CLOSE_SESSION capsule defined in
 {{Section 5 of WEBTRANSPORT-H3}} to terminate a WebTransport session with an
 application error code and message.
 
-WebTransport sessions can be terminated by optionally sending a
-WT_CLOSE_SESSION capsule and then by closing the HTTP/2 stream associated
-with the session (see {{errors}}).
+WebTransport sessions can be terminated by optionally sending a WT_CLOSE_SESSION
+capsule and then by closing the HTTP/2 stream associated with the session (see
+{{errors}}).
 
 ~~~
 WT_CLOSE_SESSION Capsule {
@@ -1014,8 +1014,11 @@ following fields:
     connection.  The message takes up the remainder of the capsule, and its
     length MUST NOT exceed 1024 bytes.
 
-An endpoint that sends a WT_CLOSE_SESSION capsule MUST then close the stream.
-The recipient MUST close the stream upon receipt of the capsule.
+An endpoint that sends a WT_CLOSE_SESSION capsule MUST then half-close the
+stream by sending an HTTP/2 frame with the END_STREAM flag set ({{Section 5.1 of
+HTTP2}}).  The recipient MUST close the stream upon receipt of the capsule by
+replying with an HTTP/2 frame with the END_STREAM flag set; note that it does
+not need to send a WT_CLOSE_SESSION capsule in response.
 
 Cleanly terminating a WebTransport session without a WT_CLOSE_SESSION capsule
 is semantically equivalent to terminating it with a WT_CLOSE_SESSION capsule
@@ -1093,7 +1096,6 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_WT_MAX_SESSIONS = 100
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1131,7 +1133,6 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
-                                    SETTINGS_WT_MAX_SESSIONS = 100
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1164,12 +1165,6 @@ Future versions of WebTransport that change the syntax of the CONNECT requests
 used to establish WebTransport sessions will need to modify the upgrade token
 used to identify WebTransport, allowing servers to offer multiple versions
 simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
-
-Servers that support future incompatible versions of WebTransport signal that
-support by changing the codepoint used for the SETTINGS_WT_MAX_SESSIONS
-parameter (see {{h2-settings}}).  Clients can select the associated upgrade
-token, if applicable, to use when establishing a new session, ensuring that
-servers will always know the syntax in use for every incoming request.
 
 # Security Considerations
 
@@ -1224,30 +1219,6 @@ Reference:
 The following entries are added to the "HTTP/2 Settings" registry established by
 {{HTTP2}}:
 
-{: anchor="SETTINGS_WT_MAX_SESSIONS"}
-
-The SETTINGS_WT_MAX_SESSIONS parameter indicates that the specified HTTP/2
-connection is WebTransport-capable and the number of concurrent sessions an
-endpoint is willing to receive.  The default value for the
-SETTINGS_WT_MAX_SESSIONS parameter is "0", meaning that the endpoint is not
-willing to receive any WebTransport sessions.
-
-Setting Name:
-
-: WEBTRANSPORT_MAX_SESSIONS
-
-Value:
-
-: 0x2b60
-
-Default:
-
-: 0
-
-Specification:
-
-: This document
-
 {: anchor="SETTINGS_WT_INITIAL_MAX_DATA"}
 
 The SETTINGS_WT_INITIAL_MAX_DATA parameter indicates the initial value for the
@@ -1280,7 +1251,7 @@ Specification:
 
 The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter indicates the initial
 value for the stream data limit for incoming unidirectional streams, otherwise
-communicated by the WT_MAX_STREAM_DATA capsule({{WT_MAX_STREAM_DATA}}).  The
+communicated by the WT_MAX_STREAM_DATA capsule ({{WT_MAX_STREAM_DATA}}).  The
 default value for the SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI parameter is "0",
 indicating that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each
 stream within each individual WebTransport session before its peer is allowed
@@ -1423,6 +1394,21 @@ Name:
 
 Description:
 : Unexpected WebTransport stream-related capsule received
+
+Reference:
+: {{errors}}
+
+
+For WEBTRANSPORT_FLOW_CONTROL_ERROR:
+
+Code:
+: 0xTBD
+
+Name:
+: WEBTRANSPORT_FLOW_CONTROL_ERROR
+
+Description:
+: A flow control error occurred
 
 Reference:
 : {{errors}}

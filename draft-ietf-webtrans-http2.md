@@ -816,6 +816,15 @@ If an endpoint receives an incoming stream that would exceed the advertised
 Maximum Streams value, it MUST close the WebTransport session with a
 WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
+Note that, like QUIC stream IDs, WebTransport stream IDs cannot be skipped.
+Opening a stream with a given ID implicitly opens all streams of the same type
+and direction with lower stream IDs.  For example, if the client's bidirectional
+stream limit is 3 and the server opens stream ID 15 (the fourth server-initiated
+bidirectional stream), this implicitly counts stream IDs 3, 7, 11, and 15
+against the limit, which would violate the limit of 3.  An endpoint that
+receives such a stream would close the WebTransport session with a
+WEBTRANSPORT_FLOW_CONTROL_ERROR error.
+
 If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams value
 less than a previously received value, it MUST close the WebTransport session
 with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.

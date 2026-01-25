@@ -1181,6 +1181,27 @@ SHOULD implement a fairness scheme that ensures that each transport within
 connection gets a reasonable share of controlled resources; this applies both
 to sending data and to opening new streams.
 
+An application could attempt to exhaust resources by opening too many
+WebTransport sessions at once.  In cases when the application is untrusted, a
+WebTransport client SHOULD limit the number of outgoing sessions it will open.
+
+Note that the security considerations of HTTP/2 {{HTTP2}} apply to WebTransport
+over HTTP/2.  In particular, the denial-of-service considerations in
+{{Section 10.5 of HTTP2}} are relevant.  WebTransport extends HTTP/2 with
+additional features that have legitimate uses but can become a burden when they
+are used unnecessarily or to excess.
+
+Once a WebTransport session is established on an HTTP/2 stream, there are new
+interaction modes that permit either endpoint to send WebTransport streams and
+datagrams to its peer.  This is particularly novel for clients, which previously
+had limited exposure to unsolicited server-initiated traffic beyond server push
+(see {{Section 8.4 of HTTP2}}).  An endpoint that does not monitor use of these
+features exposes itself to a risk of denial-of-service attack.  Implementations
+track the use of WebTransport features, such as the number of incoming streams
+and datagrams, and set limits on their use as described in {{flow-control}}.  An
+endpoint MAY treat activity that is suspicious as a stream error or choose to
+close the connection.
+
 # IANA Considerations
 
 This document registers new HTTP/2 settings ({{h2-settings}}), HTTP/2 error

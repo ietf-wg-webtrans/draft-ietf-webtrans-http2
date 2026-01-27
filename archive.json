@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-27T01:10:40.632910+00:00",
+  "timestamp": "2026-01-27T01:23:45.047232+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3168,11 +3168,13 @@
       "state": "OPEN",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "ekinnear"
+      ],
       "labels": [],
       "body": "1. QUIC has the following 6 transport parameters defined for initial flow control values: \n- initial_max_data\n- initial_max_stream_data_bidi_local\n- initial_max_stream_data_bidi_remote\n- initial_max_stream_data_uni\n- initial_max_streams_bidi\n- initial_max_streams_uni\n\nBut WebTransport only defines 5: \n- SETTINGS_WT_INITIAL_MAX_DATA\n- SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI \n- SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI\n- SETTINGS_WT_INITIAL_MAX_STREAMS_UNI\n- SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI\n\nDo we need the distinction added by `initial_max_stream_data_bidi_local` and `initial_max_stream_data_bidi_remote` as compared to a single `SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI` in WebTransport?\n\n\n2. `WebTransport-Init` on the other hand has only 3 parameters: `u`, `bl`, `br`. So it seems to make the above distinction, but then skips parameters for session max data and stream limits. Should this header have the same values as SETTINGS? \n\n3. `WebTransport-Init` is not defined for WebTransport over HTTP/3. Should it be added (with the applicable values)?",
       "createdAt": "2025-10-23T04:42:28Z",
-      "updatedAt": "2025-10-24T05:46:33Z",
+      "updatedAt": "2026-01-25T12:10:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -3277,11 +3279,15 @@
       "state": "OPEN",
       "author": "hanidamlaj",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
       "body": "If a client advertises to the server `SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI = 1`  and the server opens stream 0x05 first (second server-initiated bidirectional stream), should we treat this as an error?",
       "createdAt": "2025-11-06T19:36:25Z",
-      "updatedAt": "2025-11-07T14:59:51Z",
+      "updatedAt": "2026-01-25T12:06:04Z",
       "closedAt": null,
       "comments": []
     },
@@ -3300,6 +3306,50 @@
       "updatedAt": "2025-11-26T21:20:27Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 161,
+      "id": "I_kwDODnOl887lpk16",
+      "title": "Update DoS considerations to match HTTP/3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/161",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
+      "body": "From: https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/222\n\n> The security considerations in this doc reference the Overview security considerations but that doesn't really talk about DoS. The security considerations in HTTP/3 still apply to WebTransport and stating that explicitly doesn't really hurt, so maybe think about doing that as a mininimum\n> \n> In the context of this issue though, I wonder if the DoS considerations in https://datatracker.ietf.org/doc/html/rfc9114#section-10.5 need some augmentation to make implementers defensive to the new interaction modes. This doc starts on that path by stating:\n> \n> An application could attempt to exhaust resources by opening too many WebTransport sessions at once. In cases when the application is untrusted, the WebTransport client SHOULD limit the number of outgoing sessions it will open.\n> However, I think there are more cases that need highlighting - its now possible for either side to bombard each other with streams and datagrams related to a session. This is somewhat novel for the client, who previously had some limits on server push as described in https://datatracker.ietf.org/doc/html/rfc9114#section-10.5-2\n> \n> We probably also want the \"catch all statement\" to make it clear to implementers that the buck stops with them, both HTTP/2 and HTTP/3 include a statement along the lines of \"webtransport features have legitimate uses but they can become a burden when they are used unnecessarily or to excess. An endpoint that doesn't monitor use of these features exposes itself to a risk of denial of service. Implementations SHOULD track the use of these features and set limits on their use. An endpoint MAY treat activity that is suspicious as a connection erro of type [ENHANCE_YOUR_CALM/H3_EXCESSIVE_LOAD].\"\n\nMany of these apply equally to HTTP/2 as well, we should have similar text.",
+      "createdAt": "2026-01-25T08:51:06Z",
+      "updatedAt": "2026-01-25T11:54:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 164,
+      "id": "I_kwDODnOl887lqlxH",
+      "title": "Remove WT_MAX_SESSIONS from H2 as well?",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/164",
+      "state": "CLOSED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Remove WT_MAX_SESSIONS from H2 as well?\n\n- Change to WT_ENABLED\n- Suggest using the RateLimit header field\n- Servers can just reject CONNECT requests whenever they feel like",
+      "createdAt": "2026-01-25T12:08:21Z",
+      "updatedAt": "2026-01-25T12:09:31Z",
+      "closedAt": "2026-01-25T12:09:31Z",
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done in #148 ",
+          "createdAt": "2026-01-25T12:09:31Z",
+          "updatedAt": "2026-01-25T12:09:31Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -9891,24 +9941,26 @@
       "id": "PR_kwDODnOl886iSMP7",
       "title": "Split the upgrade token from h3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/140",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This is the one that probably can be used in other HTTP versions, so it doesn't get a special suffix.  (Yes, that means that it could be used in HTTP/3 as well; that's a separate issue.)\r\n\r\nNo issue, see\r\nhttps://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/pull/220 for details.",
       "createdAt": "2025-08-06T00:01:25Z",
-      "updatedAt": "2025-08-26T22:51:06Z",
+      "updatedAt": "2026-01-25T12:08:31Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
-      "baseRefOid": "09bcf79c13de2976fd9723ba78a56b458a3cf318",
+      "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
       "headRepository": "martinthomson/draft-webtransport-http2",
       "headRefName": "upgrade-token-split",
-      "headRefOid": "922a86eff3e94e3ff27d98217e00679b8a84e1f5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "0da08a40818399ba7e62fce6c069170c93ac65e7",
+      "closedAt": "2026-01-25T12:08:31Z",
+      "mergedAt": "2026-01-25T12:08:31Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "5eb11d7300cde570ad2f349181e5472d6cc7177f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10132,25 +10184,33 @@
       "id": "PR_kwDODnOl886uk2QV",
       "title": "Replace SETTINGS_WT_MAX_SESSIONS with SETTINGS_WT_ENABLED",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/149",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Replace SETTINGS_WT_MAX_SESSIONS with SETTINGS_WT_ENABLED\r\n\r\nThis preserves the ability to: \r\n- Know ahead of time that the server is likely to support WebTransport if you were to use the `webtransport` upgrade token, rather than just supporting Extended CONNECT and `websocket`, for example.\r\n- Change the codepoint for SETTINGS_WT_ENABLED for future versions\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/148 for a version that removes the setting entirely.\r\n\r\nFixes #143",
       "createdAt": "2025-10-20T07:35:52Z",
-      "updatedAt": "2025-10-20T23:46:00Z",
+      "updatedAt": "2026-01-25T12:09:51Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "bf965cae4e7465838624b59ea3334babc54f3f97",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/replace_wt_max_sessions_with_supports_wt",
       "headRefOid": "576dce35330e7878ed2d8296574747de09591017",
-      "closedAt": null,
+      "closedAt": "2026-01-25T12:09:51Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Took #148 instead.",
+          "createdAt": "2026-01-25T12:09:51Z",
+          "updatedAt": "2026-01-25T12:09:51Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -10352,6 +10412,58 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 162,
+      "id": "PR_kwDODnOl886_Nv0p",
+      "title": "Update security considerations",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/162",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update security considerations to match those suggested for HTTP/3.\r\nFixes #161",
+      "createdAt": "2026-01-25T09:02:11Z",
+      "updatedAt": "2026-01-25T09:02:12Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/update_security_considerations",
+      "headRefOid": "b7a1c820dde7c36b45eca9e3879621e5ec974610",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 163,
+      "id": "PR_kwDODnOl886_OhuM",
+      "title": "Add an example for MAX_STREAMS and stream ordering",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/163",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add an example for MAX_STREAMS and stream ordering\r\nFixes #159",
+      "createdAt": "2026-01-25T12:05:53Z",
+      "updatedAt": "2026-01-25T12:05:54Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/max_streams_example",
+      "headRefOid": "d7c52fce28d30d6fb97267ffcd6fcafbe222682e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }

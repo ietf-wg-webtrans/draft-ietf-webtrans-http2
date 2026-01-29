@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-27T01:23:45.047232+00:00",
+  "timestamp": "2026-01-29T01:40:14.716580+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -10425,7 +10425,7 @@
       "labels": [],
       "body": "Update security considerations to match those suggested for HTTP/3.\r\nFixes #161",
       "createdAt": "2026-01-25T09:02:11Z",
-      "updatedAt": "2026-01-25T09:02:12Z",
+      "updatedAt": "2026-01-27T04:16:09Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
@@ -10437,7 +10437,28 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887dEzrJ",
+          "commit": {
+            "abbreviatedOid": "b7a1c82"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-01-27T04:16:08Z",
+          "updatedAt": "2026-01-27T04:16:09Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Is this really true?  Everything in h2 webtransport is confined to a single stream.  So I think this paragraph might be adjusted relative to the h3 text.",
+              "createdAt": "2026-01-27T04:16:09Z",
+              "updatedAt": "2026-01-27T04:16:09Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 163,
@@ -10451,7 +10472,7 @@
       "labels": [],
       "body": "Add an example for MAX_STREAMS and stream ordering\r\nFixes #159",
       "createdAt": "2026-01-25T12:05:53Z",
-      "updatedAt": "2026-01-25T12:05:54Z",
+      "updatedAt": "2026-01-27T05:27:41Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
@@ -10462,8 +10483,30 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Approval remains, but there's an interesting question regarding why this is necessary when the underlying transport is ordered.\r\n\r\nI think that the reason is that stream 3 might be created (and an ID handed to the application), but stream 15 might be the one that is written to first.  That means that stream 15 is the one that first appears on the wire.  The same is already true for HTTP/2 streams natively, so the concept shouldn't be too hard to understand.\r\n\r\nIs it worth adding that tiny bit of explanation?",
+          "createdAt": "2026-01-27T05:27:41Z",
+          "updatedAt": "2026-01-27T05:27:41Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887dFYlS",
+          "commit": {
+            "abbreviatedOid": "d7c52fc"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-01-27T05:25:24Z",
+          "updatedAt": "2026-01-27T05:25:24Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }

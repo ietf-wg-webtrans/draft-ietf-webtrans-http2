@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-03T01:46:05.828918+00:00",
+  "timestamp": "2026-02-10T01:59:34.335715+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -10149,7 +10149,7 @@
       "labels": [],
       "body": "Remove SETTINGS_WT_MAX_SESSIONS entirely.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/149 for a version that replaces it with SETTINGS_WT_ENABLED.\r\n\r\nFixes #143 ",
       "createdAt": "2025-10-20T07:35:37Z",
-      "updatedAt": "2026-02-01T15:38:04Z",
+      "updatedAt": "2026-02-08T08:05:05Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "bf965cae4e7465838624b59ea3334babc54f3f97",
@@ -10166,9 +10166,9 @@
         {
           "author": "martenrichter",
           "authorAssociation": "NONE",
-          "body": "I actually do not understand it, but current main still has:\r\n\r\n\r\n> When an HTTP/2 connection is established, the server sends a SETTINGS_WT_MAX_SESSIONS setting with a value greater than \"0\" to indicate that it supports WebTransport over HTTP/2. The value of the setting is the number of concurrent sessions the server is willing to receive. Note that the client does not need to send any value to indicate support for WebTransport; clients indicate support for WebTransport by using the \"webtransport\" upgrade token in CONNECT requests establishing WebTransport sessions (see {{upgrade-token}}).\r\n\r\nbut this PR is merged?\r\n",
+          "body": "I actually do not understand it, as current main still has:\r\n\r\n\r\n> When an HTTP/2 connection is established, the server sends a SETTINGS_WT_MAX_SESSIONS setting with a value greater than \"0\" to indicate that it supports WebTransport over HTTP/2. The value of the setting is the number of concurrent sessions the server is willing to receive. Note that the client does not need to send any value to indicate support for WebTransport; clients indicate support for WebTransport by using the \"webtransport\" upgrade token in CONNECT requests establishing WebTransport sessions (see {{upgrade-token}}).\r\n\r\nbut the changes of this PR are merged?\r\n",
           "createdAt": "2026-02-01T15:36:53Z",
-          "updatedAt": "2026-02-01T15:38:04Z"
+          "updatedAt": "2026-02-08T08:05:05Z"
         }
       ],
       "reviews": [

@@ -350,6 +350,14 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 * WT_MAX_STREAMS via SETTINGS_WT_INITIAL_MAX_STREAMS_UNI and
   SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
 
+WebTransport SETTINGS can be updated during the lifetime of the HTTP/2
+connection.  Updated values take effect for new sessions once they have been
+acknowledged by the peer, as described in {{Section 6.5.3 of HTTP2}}.  The
+initial flow control limits for a new session are determined by the most
+recently acknowledged SETTINGS values at the time the session is created.
+Sessions that are already established are not affected by changes to these
+SETTINGS, and their limits can only be updated using the corresponding flow
+control capsules.
 
 ### Flow Control Header Field {#flow-control-header}
 

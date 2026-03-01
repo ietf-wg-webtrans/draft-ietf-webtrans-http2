@@ -181,7 +181,6 @@ using the `https` URI scheme ({{Section 4.2.2 of HTTP}}).
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
-
 `webtransport` ({{upgrade-token}}). The `:scheme` field MUST be `https`. Both
 the `:authority` and the `:path` value MUST be set; those fields indicate the
 desired WebTransport server. In a Web context, the request MUST include an 

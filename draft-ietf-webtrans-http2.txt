@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 29 July 2026                                           T. Pauly
+Expires: 2 September 2026                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 29 July 2026                                           T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                         25 January 2026
+                                                            1 March 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 July 2026.
+   This Internet-Draft will expire on 2 September 2026.
 
 Copyright Notice
 
@@ -235,7 +235,7 @@ Table of Contents
 3.2.  Creating a New Session
 
    As WebTransport sessions are established over HTTP, they are
-   identified using the https URI scheme [RFC7230].
+   identified using the https URI scheme (Section 4.2.2 of [HTTP]).
 
    In order to create a new WebTransport session, a client can send an
    HTTP CONNECT request.  The :protocol pseudo-header field ([RFC8441])
@@ -289,9 +289,9 @@ Table of Contents
 
 3.4.  Session Termination and Error Handling
 
-   An WebTransport session over HTTP/2 is terminated when either
-   endpoint closes the stream associated with the CONNECT request that
-   initiated the session.
+   A WebTransport session over HTTP/2 is terminated when either endpoint
+   closes the stream associated with the CONNECT request that initiated
+   the session.
 
    Prior to closing the stream associated with the CONNECT request,
    either endpoint can send a WT_CLOSE_SESSION capsule with an
@@ -1523,11 +1523,6 @@ WebTransport Data
    [RFC6585]  Nottingham, M. and R. Fielding, "Additional HTTP Status
               Codes", RFC 6585, DOI 10.17487/RFC6585, April 2012,
               <https://www.rfc-editor.org/rfc/rfc6585>.
-
-   [RFC7230]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
-              Protocol (HTTP/1.1): Message Syntax and Routing",
-              RFC 7230, DOI 10.17487/RFC7230, June 2014,
-              <https://www.rfc-editor.org/rfc/rfc7230>.
 
    [RFC7627]  Bhargavan, K., Ed., Delignat-Lavaud, A., Pironti, A.,
               Langley, A., and M. Ray, "Transport Layer Security (TLS)

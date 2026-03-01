@@ -938,8 +938,7 @@ used to indicate reaching the unidirectional stream limit.
 
 A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that
 a new stream was needed and the stream limit prevented the creation of the
-stream.  A
-sender is not required to send WT_STREAMS_BLOCKED capsules, however
+stream.  A sender is not required to send WT_STREAMS_BLOCKED capsules, however
 WT_STREAMS_BLOCKED capsules can be used as input to tuning of flow control
 algorithms and for debugging purposes.
 

@@ -172,7 +172,7 @@ the setting indicating extended CONNECT support from the server.
 ## Creating a New Session
 
 As WebTransport sessions are established over HTTP, they are identified
-using the `https` URI scheme {{!RFC7230}}.
+using the `https` URI scheme ({{Section 4.2.2 of HTTP}}).
 
 In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
@@ -222,7 +222,7 @@ of WEBTRANSPORT-H3}}.
 
 ## Session Termination and Error Handling {#errors}
 
-An WebTransport session over HTTP/2 is terminated when either endpoint closes
+A WebTransport session over HTTP/2 is terminated when either endpoint closes
 the stream associated with the CONNECT request that initiated the session.
 
 Prior to closing the stream associated with the CONNECT request, either

@@ -59,12 +59,18 @@ author:
 normative:
   OVERVIEW: I-D.ietf-webtrans-overview
   WEBTRANSPORT-H3: I-D.ietf-webtrans-http3
-  HTTP: I-D.ietf-httpbis-semantics
+  HTTP: RFC9110
   HTTP-DATAGRAM: RFC9297
   HTTP2: RFC9113
+  ORIGIN: RFC6454
+  PARTIAL-RESET: I-D.ietf-quic-reliable-stream-reset
+  TLS: RFC8446
 
 informative:
   DATAGRAM: RFC9221
+  HTTP3: RFC9114
+  QUIC: RFC9000
+  MPTCP: RFC6824
 
 --- abstract
 
@@ -79,10 +85,10 @@ protocol is not available.
 # Introduction
 
 WebTransport {{OVERVIEW}} is designed to provide generic communication
-capabilities to Web clients that use HTTP/3 {{?HTTP3=I-D.ietf-quic-http}}.  The
-HTTP/3 WebTransport protocol {{WEBTRANSPORT-H3}} allows Web clients to use QUIC
-{{?QUIC=RFC9000}} features such as streams or datagrams {{DATAGRAM}}.
-However, there are some environments where QUIC cannot be deployed.
+capabilities to Web clients that use HTTP/3 {{HTTP3}}.  The HTTP/3 WebTransport
+protocol {{WEBTRANSPORT-H3}} allows Web clients to use QUIC {{QUIC}} features
+such as streams or datagrams {{DATAGRAM}}.  However, there are some
+environments where QUIC cannot be deployed.
 
 This document defines a protocol that provides all of the core functions of
 WebTransport using HTTP semantics. This includes unidirectional streams,
@@ -179,15 +185,15 @@ request. The `:protocol` pseudo-header field ({{!RFC8441}}) MUST be set to
 `webtransport` ({{upgrade-token}}). The `:scheme` field MUST be
 `https`. Both the `:authority` and the `:path` value MUST be set; those fields
 indicate the desired WebTransport server. In a Web context, the request MUST
-include an `Origin` header field {{!ORIGIN=RFC6454}} that includes the origin of
-the site that requested the creation of the session.
+include an `Origin` header field {{ORIGIN}} that includes the origin of the
+site that requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
 `webtransport`, the HTTP server checks if the identified resource supports
 WebTransport sessions. If the resource does not, the server SHOULD reply with
-status code 406 ({{Section 15.5.7 of !RFC9110}}). If it does, it MAY accept the
+status code 406 ({{Section 15.5.7 of HTTP}}). If it does, it MAY accept the
 session by replying with a 2xx series status code, as defined in {{Section 15.3
-of !SEMANTICS=I-D.ietf-httpbis-semantics}}. The WebTransport server MUST verify
+of HTTP}}. The WebTransport server MUST verify
 the `Origin` header to ensure that the specified origin is allowed to access
 the server in question.
 
@@ -453,7 +459,7 @@ Connection Mobility:
 
 : WebTransport over HTTP/2 does not support connection mobility, unless an
   underlying transport protocol that supports multipath or migration, such as
-  MPTCP {{?MPTCP=RFC6824}}, is used underneath HTTP/2 and TLS. Without such
+  MPTCP {{MPTCP}}, is used underneath HTTP/2 and TLS. Without such
   support, WebTransport over HTTP/2 connections cannot survive network
   transitions.
 
@@ -480,7 +486,7 @@ transition immediately.
 ## Use of Keying Material Exporters
 
 WebTransport over HTTP/2 supports the use of TLS keying material exporters
-{{Section 7.5 of !TLS=RFC8446}}. Since the underlying HTTP/2 connection could be
+{{Section 7.5 of TLS}}. Since the underlying HTTP/2 connection could be
 shared by multiple WebTransport sessions, WebTransport defines a mechanism for
 deriving a TLS exporter that separates keying material for different sessions.
 If the application requests an exporter for a given WebTransport session with a
@@ -556,11 +562,11 @@ capsule can discard any data in excess of the Reliable Size indicated, even if
 that data was already received.
 
 The WT_RESET_STREAM capsule follows the design of the QUIC RESET_STREAM_AT frame
-{{!PARTIAL-RESET=I-D.ietf-quic-reliable-stream-reset}}.  Consequently, it
-includes a Reliable Size field.  A WT_RESET_STREAM capsule MUST be sent after
-WT_STREAM capsules that include an amount of data equal to or in excess of the
-value in the Reliable Size field.  A receiver MUST treat the receipt of a
-WT_RESET_STREAM with a Reliable Size smaller than the number of bytes it has
+{{PARTIAL-RESET}}.  Consequently, it includes a Reliable Size field.  A
+WT_RESET_STREAM capsule MUST be sent after WT_STREAM capsules that include an
+amount of data equal to or in excess of the value in the Reliable Size field.  A
+receiver MUST treat the receipt of a WT_RESET_STREAM with a Reliable Size
+smaller than the number of bytes it has
 received on the stream as a session error.
 
 ~~~

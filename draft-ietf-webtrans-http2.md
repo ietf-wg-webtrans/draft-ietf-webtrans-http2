@@ -383,6 +383,13 @@ these capsules define special intermediary handling as described in
 control capsules" are WT_MAX_DATA, WT_MAX_STREAM_DATA, WT_MAX_STREAMS,
 WT_DATA_BLOCKED, WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED.
 
+An endpoint MUST NOT wait for a WT_DATA_BLOCKED, WT_STREAM_DATA_BLOCKED, or
+WT_STREAMS_BLOCKED capsule before sending a WT_MAX_DATA, WT_MAX_STREAM_DATA,
+or WT_MAX_STREAMS capsule; doing so could result in the sender being blocked
+for at least an entire round trip.  Endpoints SHOULD send flow control credit
+as they consume data or close streams (similar to the mechanism used in QUIC,
+see {{Section 4.2 of !RFC9000}}).
+
 Because flow control in WebTransport is hop-by-hop and does not provide an
 end-to-end signal, intermediaries MUST consume flow control signals and express
 their own flow control limits to the next hop. The intermediary can send these
@@ -846,10 +853,11 @@ SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI.
 
 *[WT_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41)
-({{Section 5.6.4 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable
-to do so due to WebTransport session-level flow control.  WT_DATA_BLOCKED
-capsules can be used as input to tuning of flow control algorithms.
+A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41) ({{Section
+5.6.4 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable to do so
+due to WebTransport session-level flow control.  A sender is not required to
+send WT_DATA_BLOCKED capsules, however WT_DATA_BLOCKED capsules can be used as
+input to tuning of flow control algorithms and for debugging purposes.
 
 ~~~
 WT_DATA_BLOCKED Capsule {
@@ -877,8 +885,13 @@ appropriate flow control signals for their limits; see
 *[WT_STREAM_DATA_BLOCKED]: #
 
 A sender SHOULD send a WT_STREAM_DATA_BLOCKED capsule (type=0x190B4D42) when it
-wishes to send data but is unable to do so due to stream-level flow control.
-This capsule is analogous to WT_DATA_BLOCKED.
+wishes to send data but is unable to do so due to stream-level flow control.  A
+sender is not required to send WT_STREAM_DATA_BLOCKED capsules, however
+WT_STREAM_DATA_BLOCKED capsules can be used as input to tuning of flow control
+algorithms and for debugging purposes.
+
+This capsule is analogous to WT_DATA_BLOCKED ({{WT_DATA_BLOCKED}}), but for
+stream-level data limits instead of session-level data limits.
 
 ~~~
 WT_STREAM_DATA_BLOCKED Capsule {
@@ -925,7 +938,10 @@ used to indicate reaching the unidirectional stream limit.
 
 A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that
 a new stream was needed and the stream limit prevented the creation of the
-stream.
+stream.  A
+sender is not required to send WT_STREAMS_BLOCKED capsules, however
+WT_STREAMS_BLOCKED capsules can be used as input to tuning of flow control
+algorithms and for debugging purposes.
 
 ~~~
 WT_STREAMS_BLOCKED Capsule {

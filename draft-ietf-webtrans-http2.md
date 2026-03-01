@@ -582,7 +582,9 @@ The WT_RESET_STREAM capsule defines the following fields:
 
    Application Protocol Error Code:
    : A variable-length integer containing the application protocol error code
-     that indicates why the stream is being closed.
+     that indicates why the stream is being closed.  This value MUST NOT exceed
+     0xffffffff; values larger than this MUST be treated as a session error of
+     type WEBTRANSPORT_ERROR.
 
    Reliable Size:
    : A variable-length integer indicating the amount of data that needs to be
@@ -626,7 +628,9 @@ The WT_STOP_SENDING capsule defines the following fields:
 
    Application Protocol Error Code:
    : A variable-length integer containing the application-specified reason the
-     sender is ignoring the stream.
+     sender is ignoring the stream.  This value MUST NOT exceed 0xffffffff;
+     values larger than this MUST be treated as a session error of type
+     WEBTRANSPORT_ERROR.
 
 As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
 capsule sends a WT_RESET_STREAM capsule in response, including the same error

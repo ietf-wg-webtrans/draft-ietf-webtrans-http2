@@ -1344,7 +1344,7 @@ Setting Name:
 
 Code:
 
-: 0x2b64
+: 0x2b66
 
 Initial Value:
 
@@ -1373,7 +1373,7 @@ Setting Name:
 
 Code:
 
-: 0x2b65
+: 0x2b64
 
 Initial Value:
 
@@ -1402,7 +1402,7 @@ Setting Name:
 
 Code:
 
-: 0x2b66
+: 0x2b65
 
 Initial Value:
 

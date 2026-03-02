@@ -1585,6 +1585,37 @@ Comments:
 
 --- back
 
+# Use with Other HTTP Versions
+
+While this document defines WebTransport negotiation and session establishment
+in terms of HTTP/2, the capsule-based mechanisms described here rely on generic
+HTTP semantics and the Capsule Protocol {{HTTP-DATAGRAM}}, and can generally be
+used over any HTTP version that supports these features.
+
+The primary HTTP-version-specific aspects of this protocol are the use of
+Extended CONNECT for session establishment and the use of HTTP SETTINGS for
+exchanging initial flow control limits ({{flow-control-settings}}).
+
+Extended CONNECT is defined for HTTP/2 in {{!RFC8441}} and for HTTP/3 in
+{{?RFC9220}}.  Other HTTP versions that support Extended CONNECT can use the
+"webtransport" upgrade token ({{upgrade-token}}) to establish capsule-based
+WebTransport sessions.
+
+The flow control SETTINGS defined in this document use the same codepoints
+across HTTP versions, but their behavior differs.  HTTP/2 allows SETTINGS to be
+updated during the lifetime of a connection with acknowledgment-based
+synchronization, while HTTP/3 SETTINGS are sent only once and are fixed for the
+connection lifetime.  The `WebTransport-Init` header field
+({{flow-control-header}}) can be used to provide per-session initial flow
+control limits regardless of HTTP version.
+
+When a version-specific WebTransport protocol exists for a given HTTP version,
+endpoints SHOULD prefer it over the capsule-based protocol defined here.  For
+example, WebTransport over HTTP/3 {{WEBTRANSPORT-H3}} provides stream
+independence and unreliable datagram delivery by using native QUIC streams and
+datagrams, which are not available when using the capsule-based protocol over a
+single HTTP/3 stream.
+
 # Acknowledgments
 {:numbered="false"}
 

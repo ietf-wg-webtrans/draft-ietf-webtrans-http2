@@ -853,11 +853,12 @@ SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI.
 
 *[WT_DATA_BLOCKED]: #
 
-A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41) ({{Section
-5.6.4 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable to do so
-due to WebTransport session-level flow control.  A sender is not required to
-send WT_DATA_BLOCKED capsules, however WT_DATA_BLOCKED capsules can be used as
-input to tuning of flow control algorithms and for debugging purposes.
+A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41)
+({{Section 5.6.4 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable
+to do so due to WebTransport session-level flow control.  A sender is not
+required to send WT_DATA_BLOCKED capsules, however WT_DATA_BLOCKED capsules can
+be used as input to tuning of flow control algorithms and for debugging
+purposes.
 
 ~~~
 WT_DATA_BLOCKED Capsule {
@@ -933,8 +934,8 @@ A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x190B4D43 or
 0x190B4D44) ({{Section 5.4.2 of WEBTRANSPORT-H3}}) when it wishes to open a
 stream but is unable to do so due to the maximum stream limit set by its peer.
 A WT_STREAMS_BLOCKED capsule of type 0x190B4D43 is used to indicate reaching the
-bidirectional stream limit, and a STREAMS_BLOCKED capsule of type 0x190B4D44 is
-used to indicate reaching the unidirectional stream limit.
+bidirectional stream limit, and a WT_STREAMS_BLOCKED capsule of type 0x190B4D44
+is used to indicate reaching the unidirectional stream limit.
 
 A WT_STREAMS_BLOCKED capsule does not open the stream, but informs the peer that
 a new stream was needed and the stream limit prevented the creation of the

@@ -1355,10 +1355,10 @@ protocol is not available.<a href="#section-abstract-1" class="pilcrow">¶</a></
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">WebTransport <span>[<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span> is designed to provide generic communication
-capabilities to Web clients that use HTTP/3 <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span>.  The
-HTTP/3 WebTransport protocol <span>[<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> allows Web clients to use QUIC
-<span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> features such as streams or datagrams <span>[<a href="#DATAGRAM" class="cite xref">DATAGRAM</a>]</span>.  However,
-there are some environments where QUIC cannot be deployed.<a href="#section-1-1" class="pilcrow">¶</a></p>
+capabilities to Web clients that use HTTP/3 <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span>.  The HTTP/3 WebTransport
+protocol <span>[<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> allows Web clients to use QUIC <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span> features
+such as streams or datagrams <span>[<a href="#DATAGRAM" class="cite xref">DATAGRAM</a>]</span>.  However, there are some
+environments where QUIC cannot be deployed.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This document defines a protocol that provides all of the core functions of
 WebTransport using HTTP semantics. This includes unidirectional streams,
 bidirectional streams, and datagrams.<a href="#section-1-2" class="pilcrow">¶</a></p>
@@ -1389,7 +1389,7 @@ can be accessed using HTTP/2 and this protocol.<a href="#section-1.1-2" class="p
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-protocol-overview" class="section-name selfRef">Protocol Overview</a>
       </h2>
 <p id="section-2-1">WebTransport servers are identified by an HTTPS URI as defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19#section-4.2.2" class="relref">Section 4.2.2</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<span><a href="https://rfc-editor.org/rfc/rfc9110#section-4.2.2" class="relref">Section 4.2.2</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">When an HTTP/2 connection is established, the server sends a
 SETTINGS_WT_MAX_SESSIONS setting with a value greater than "0" to indicate that
 it supports WebTransport over HTTP/2. The value of the setting is the number of
@@ -1454,22 +1454,22 @@ the setting indicating extended CONNECT support from the server.<a href="#sectio
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-creating-a-new-session" class="section-name selfRef">Creating a New Session</a>
         </h3>
 <p id="section-3.2-1">As WebTransport sessions are established over HTTP, they are identified
-using the <code>https</code> URI scheme (<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19#section-4.2.2" class="relref">Section 4.2.2</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>).<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+using the <code>https</code> URI scheme (<span><a href="https://rfc-editor.org/rfc/rfc9110#section-4.2.2" class="relref">Section 4.2.2</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>).<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">In order to create a new WebTransport session, a client can send an HTTP CONNECT
 request. The <code>:protocol</code> pseudo-header field (<span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>) MUST be set to
 <code>webtransport</code> (<a href="#upgrade-token" class="auto internal xref">Section 11.1</a>). The <code>:scheme</code> field MUST be <code>https</code>. Both
 the <code>:authority</code> and the <code>:path</code> value MUST be set; those fields indicate the
 desired WebTransport server. In a Web context, the request MUST include an
-<code>Origin</code> header field <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> that includes the origin of the site
-that requested the creation of the session.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<code>Origin</code> header field <span>[<a href="#ORIGIN" class="cite xref">ORIGIN</a>]</span> that includes the origin of the site that
+requested the creation of the session.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">Upon receiving an extended CONNECT request with a <code>:protocol</code> field set to
 <code>webtransport</code>, the HTTP server checks if the identified resource supports
 WebTransport sessions. If the resource does not, the server SHOULD reply with
-status code 406 (<span><a href="https://rfc-editor.org/rfc/rfc9110#section-15.5.7" class="relref">Section 15.5.7</a> of [<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>). If it does, it MAY accept the
+status code 406 (<span><a href="https://rfc-editor.org/rfc/rfc9110#section-15.5.7" class="relref">Section 15.5.7</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>). If it does, it MAY accept the
 session by replying with a 2xx series status code, as defined in
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19#section-15.3" class="relref">Section 15.3</a> of [<a href="#SEMANTICS" class="cite xref">SEMANTICS</a>]</span>. The WebTransport
-server MUST verify the <code>Origin</code> header to ensure that the specified origin is
-allowed to access the server in question.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<span><a href="https://rfc-editor.org/rfc/rfc9110#section-15.3" class="relref">Section 15.3</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>. The WebTransport server MUST verify the <code>Origin</code>
+header to ensure that the specified origin is allowed to access the server
+in question.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <p id="section-3.2-4">A WebTransport session is established when the server sends a 2xx response. A
 server generates that response from the request header, not from the contents of
 the request. To enable clients to resend data when attempting to re-establish a
@@ -1911,11 +1911,11 @@ part of a WebTransport stream.<a href="#section-6.2-1" class="pilcrow">¶</a></p
 capsule can discard any data in excess of the Reliable Size indicated, even if
 that data was already received.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
 <p id="section-6.2-3">The <span id="iref-wt_reset_stream-35" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule follows the design of the QUIC RESET_STREAM_AT frame
-<span>[<a href="#PARTIAL-RESET" class="cite xref">PARTIAL-RESET</a>]</span>.  Consequently, it
-includes a Reliable Size field.  A <span id="iref-wt_reset_stream-36" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule MUST be sent after
-<span id="iref-wt_stream-37" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsules that include an amount of data equal to or in excess of the
-value in the Reliable Size field.  A receiver MUST treat the receipt of a
-<span id="iref-wt_reset_stream-38" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> with a Reliable Size smaller than the number of bytes it has
+<span>[<a href="#PARTIAL-RESET" class="cite xref">PARTIAL-RESET</a>]</span>.  Consequently, it includes a Reliable Size field.  A
+<span id="iref-wt_reset_stream-36" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule MUST be sent after <span id="iref-wt_stream-37" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsules that include an
+amount of data equal to or in excess of the value in the Reliable Size field.  A
+receiver MUST treat the receipt of a <span id="iref-wt_reset_stream-38" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> with a Reliable Size
+smaller than the number of bytes it has
 received on the stream as a session error.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
 <span id="name-wt_reset_stream-capsule-for"></span><div id="fig-wt_reset_stream">
 <figure id="figure-3">
@@ -3220,7 +3220,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dl class="references">
 <dt id="HTTP">[HTTP]</dt>
         <dd>
-<span class="refAuthor">Fielding, R. T.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">J. Reschke</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-semantics-19</span>, <time datetime="2021-09-12" class="refDate">12 September 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19</a>&gt;</span>. </dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="HTTP-DATAGRAM">[HTTP-DATAGRAM]</dt>
         <dd>
@@ -3270,17 +3270,9 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
         <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC9110">[RFC9110]</dt>
-        <dd>
-<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC9113">[RFC9113]</dt>
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="SEMANTICS">[SEMANTICS]</dt>
-        <dd>
-<span class="refAuthor">Fielding, R. T.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">J. Reschke</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-semantics-19</span>, <time datetime="2021-09-12" class="refDate">12 September 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-semantics-19</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="TLS">[TLS]</dt>
         <dd>
@@ -3305,7 +3297,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dd class="break"></dd>
 <dt id="HTTP3">[HTTP3]</dt>
         <dd>
-<span class="refAuthor">Bishop, M.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-http-34</span>, <time datetime="2021-02-02" class="refDate">2 February 2021</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34">https://datatracker.ietf.org/doc/html/draft-ietf-quic-http-34</a>&gt;</span>. </dd>
+<span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="MPTCP">[MPTCP]</dt>
         <dd>

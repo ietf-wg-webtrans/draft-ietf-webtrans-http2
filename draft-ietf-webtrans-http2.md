@@ -341,7 +341,8 @@ are greater than or equal to the values provided in the SETTINGS.
 
 *[SETTINGS_WT_INITIAL_MAX_DATA]: #
 *[SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI]: #
-*[SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI]: #
+*[SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL]: #
+*[SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE]: #
 *[SETTINGS_WT_INITIAL_MAX_STREAMS_UNI]: #
 *[SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI]: #
 
@@ -349,8 +350,9 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 ({{h2-settings}}) by providing non-zero values for
 
 * WT_MAX_DATA via SETTINGS_WT_INITIAL_MAX_DATA
-* WT_MAX_STREAM_DATA via SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI and
-  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
+* WT_MAX_STREAM_DATA via SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI,
+  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL, and
+  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE
 * WT_MAX_STREAMS via SETTINGS_WT_INITIAL_MAX_STREAMS_UNI and
   SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
 
@@ -792,8 +794,9 @@ appropriate flow control signals for their limits; see
 
 Initial values for this limit for unidirectional and bidirectional streams MAY
 be communicated by sending non-zero values for
-SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI and
-SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI,
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL, and
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE respectively.
 
 A WT_MAX_STREAM_DATA capsule MUST NOT be sent after a sender requests that a
 stream be closed with WT_STOP_SENDING.  While QUIC permits redundant
@@ -1344,27 +1347,57 @@ Specification:
 
 : This document
 
-{: anchor="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI"}
+{: anchor="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL"}
 
-The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the initial
-value for the stream data limit for incoming data on bidirectional streams,
-otherwise communicated by the WT_MAX_STREAM_DATA capsule
-({{WT_MAX_STREAM_DATA}}).  The default value for the
-SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating that the
-endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream within each
-individual WebTransport session before its peer is allowed to send any stream
-data on those streams.
+The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL parameter indicates the
+initial value for the stream data limit for incoming data on bidirectional
+streams initiated by the sender of this setting, otherwise communicated by the
+WT_MAX_STREAM_DATA capsule ({{WT_MAX_STREAM_DATA}}).  The default value for the
+SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL parameter is "0", indicating
+that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each stream
+within each individual WebTransport session before its peer is allowed to send
+any stream data on those streams.
 
 Note that this limit applies to all WebTransport streams on all sessions that
 use the HTTP/2 connection on which this SETTING is sent.
 
 Setting Name:
 
-: SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
+: SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL
 
 Code:
 
 : 0x2b63
+
+Initial Value:
+
+: 0
+
+Specification:
+
+: This document
+
+{: anchor="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE"}
+
+The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE parameter indicates the
+initial value for the stream data limit for incoming data on bidirectional
+streams initiated by the receiver of this setting, otherwise communicated by
+the WT_MAX_STREAM_DATA capsule ({{WT_MAX_STREAM_DATA}}).  The default value for
+the SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE parameter is "0",
+indicating that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each
+stream within each individual WebTransport session before its peer is allowed
+to send any stream data on those streams.
+
+Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.
+
+Setting Name:
+
+: SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE
+
+Code:
+
+: 0x2b66
 
 Initial Value:
 

@@ -2713,6 +2713,24 @@ up those resources can cause other transports to stall. The user agent thus
 SHOULD implement a fairness scheme that ensures that each transport within
 connection gets a reasonable share of controlled resources; this applies both to
 sending data and to opening new streams.<a href="#section-10-3" class="pilcrow">¶</a></p>
+<p id="section-10-4">An application could attempt to exhaust resources by opening too many
+WebTransport sessions at once.  In cases when the application is untrusted, a
+WebTransport client SHOULD limit the number of outgoing sessions it will open.<a href="#section-10-4" class="pilcrow">¶</a></p>
+<p id="section-10-5">Note that the security considerations of HTTP/2 <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span> apply to WebTransport
+over HTTP/2.  In particular, the denial-of-service considerations in
+<span><a href="https://rfc-editor.org/rfc/rfc9113#section-10.5" class="relref">Section 10.5</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span> are relevant.  WebTransport extends HTTP/2 with
+additional features that have legitimate uses but can become a burden when they
+are used unnecessarily or to excess.<a href="#section-10-5" class="pilcrow">¶</a></p>
+<p id="section-10-6">Once a WebTransport session is established on an HTTP/2 stream, there are new
+interaction modes that permit either endpoint to send WebTransport streams and
+datagrams to its peer.  This is particularly novel for clients, which previously
+had limited exposure to unsolicited server-initiated traffic beyond server push
+(see <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.4" class="relref">Section 8.4</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>).  An endpoint that does not monitor use of these
+features exposes itself to a risk of denial-of-service attack.  Implementations
+track the use of WebTransport features, such as the number of incoming streams
+and datagrams, and set limits on their use as described in <a href="#flow-control" class="auto internal xref">Section 4</a>.  An
+endpoint MAY treat activity that is suspicious as a stream error or choose to
+close the connection.<a href="#section-10-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">

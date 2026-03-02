@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 2 September 2026                                       T. Pauly
+Expires: 3 September 2026                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 2 September 2026                                       T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                            1 March 2026
+                                                            2 March 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2026.
+   This Internet-Draft will expire on 3 September 2026.
 
 Copyright Notice
 
@@ -1281,9 +1281,9 @@ WebTransport Data
 
    Setting Name:  SETTINGS_WT_INITIAL_MAX_DATA
 
-   Value:  0x2b61
+   Code:  0x2b61
 
-   Default:  0
+   Initial Value:  0
 
    Specification:  This document
 
@@ -1302,9 +1302,9 @@ WebTransport Data
 
    Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI
 
-   Value:  0x2b62
+   Code:  0x2b62
 
-   Default:  0
+   Initial Value:  0
 
    Specification:  This document
 
@@ -1323,9 +1323,9 @@ WebTransport Data
 
    Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
 
-   Value:  0x2b63
+   Code:  0x2b63
 
-   Default:  0
+   Initial Value:  0
 
    Specification:  This document
 
@@ -1342,9 +1342,9 @@ WebTransport Data
 
    Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAMS_UNI
 
-   Value:  0x2b64
+   Code:  0x2b64
 
-   Default:  0
+   Initial Value:  0
 
    Specification:  This document
 
@@ -1361,9 +1361,9 @@ WebTransport Data
 
    Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
 
-   Value:  0x2b65
+   Code:  0x2b65
 
-   Default:  0
+   Initial Value:  0
 
    Specification:  This document
 
@@ -1471,7 +1471,7 @@ WebTransport Data
 
    Field Name:  WebTransport-Init
 
-   Template:  None
+   Structured Type:  Dictionary
 
    Status:  permanent
 

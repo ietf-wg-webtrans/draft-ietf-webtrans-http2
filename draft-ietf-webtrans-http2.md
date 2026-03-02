@@ -1342,11 +1342,11 @@ Setting Name:
 
 : SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE
 
-Value:
+Code:
 
 : 0x2b64
 
-Default:
+Initial Value:
 
 : 0
 

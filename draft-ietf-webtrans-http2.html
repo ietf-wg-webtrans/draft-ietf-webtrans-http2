@@ -1337,13 +1337,16 @@ protocol is not available.<a href="#section-abstract-1" class="pilcrow">¶</a></
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-use-with-other-http-version" class="internal xref">Use with Other HTTP Versions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-index" class="internal xref">Index</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-index" class="internal xref">Index</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -3319,6 +3322,10 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
         <dd>
 <span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC9220">[RFC9220]</dt>
+        <dd>
+<span class="refAuthor">Hamilton, R.</span>, <span class="refTitle">"Bootstrapping WebSockets with HTTP/3"</span>, <span class="seriesInfo">RFC 9220</span>, <span class="seriesInfo">DOI 10.17487/RFC9220</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9220">https://www.rfc-editor.org/rfc/rfc9220</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC9729">[RFC9729]</dt>
       <dd>
 <span class="refAuthor">Schinazi, D.</span>, <span class="refAuthor">Oliver, D.</span>, and <span class="refAuthor">J. Hoyland</span>, <span class="refTitle">"The Concealed HTTP Authentication Scheme"</span>, <span class="seriesInfo">RFC 9729</span>, <span class="seriesInfo">DOI 10.17487/RFC9729</span>, <time datetime="2025-02" class="refDate">February 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9729">https://www.rfc-editor.org/rfc/rfc9729</a>&gt;</span>. </dd>
@@ -3328,126 +3335,157 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 </div>
 </section>
 </div>
-<div id="acknowledgments">
+<div id="use-with-other-http-versions">
 <section id="appendix-A">
+      <h2 id="name-use-with-other-http-version">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-use-with-other-http-version" class="section-name selfRef">Use with Other HTTP Versions</a>
+      </h2>
+<p id="appendix-A-1">While this document defines WebTransport negotiation and session establishment
+in terms of HTTP/2, the capsule-based mechanisms described here rely on generic
+HTTP semantics and the Capsule Protocol <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>, and can generally be
+used over any HTTP version that supports these features.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">The primary HTTP-version-specific aspects of this protocol are the use of
+Extended CONNECT for session establishment and the use of HTTP SETTINGS for
+exchanging initial flow control limits (<a href="#flow-control-settings" class="auto internal xref">Section 4.3.1</a>).<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-3">Extended CONNECT is defined for HTTP/2 in <span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span> and for HTTP/3 in
+<span>[<a href="#RFC9220" class="cite xref">RFC9220</a>]</span>.  Other HTTP versions that support Extended CONNECT can use the
+"webtransport" upgrade token (<a href="#upgrade-token" class="auto internal xref">Section 11.1</a>) to establish capsule-based
+WebTransport sessions.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">The flow control SETTINGS defined in this document use the same codepoints
+across HTTP versions, but their behavior differs.  HTTP/2 allows SETTINGS to be
+updated during the lifetime of a connection with acknowledgment-based
+synchronization, while HTTP/3 SETTINGS are sent only once and are fixed for the
+connection lifetime.  The <code>WebTransport-Init</code> header field
+(<a href="#flow-control-header" class="auto internal xref">Section 4.3.2</a>) can be used to provide per-session initial flow
+control limits regardless of HTTP version.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">When a version-specific WebTransport protocol exists for a given HTTP version,
+endpoints SHOULD prefer it over the capsule-based protocol defined here.  For
+example, WebTransport over HTTP/3 <span>[<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> provides stream
+independence and unreliable datagram delivery by using native QUIC streams and
+datagrams, which are not available when using the capsule-based protocol over a
+single HTTP/3 stream.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-B">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto, and
+<p id="appendix-B-1">Thanks to Anthony Chivetta, Eric Gorbaty, Ankshit Jain, Joshua Otto, and
 Valentin Pistol for their contributions in the design and implementation of this
-work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" class="cite xref">RFC9729</a>]</span>.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" class="cite xref">RFC9729</a>]</span>.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<section id="appendix-B">
+<section id="appendix-C">
       <h2 id="name-index">
 <a href="#name-index" class="section-name selfRef">Index</a>
       </h2>
 <div id="rfc.index.index">
-<p id="appendix-B-1">
+<p id="appendix-C-1">
         <a href="#rfc.index.u80" class="internal xref">P</a>
         <a href="#rfc.index.u83" class="internal xref">S</a>
-        <a href="#rfc.index.u87" class="internal xref">W</a><a href="#appendix-B-1" class="pilcrow">¶</a></p>
+        <a href="#rfc.index.u87" class="internal xref">W</a><a href="#appendix-C-1" class="pilcrow">¶</a></p>
 </div>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="appendix-B-2.1">
+<li class="normal ulEmpty" id="appendix-C-2.1">
           <div id="rfc.index.u80">
-<p id="appendix-B-2.1.1" class="keepWithNext">
-            <a href="#rfc.index.u80" class="internal xref">P</a><a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+<p id="appendix-C-2.1.1" class="keepWithNext">
+            <a href="#rfc.index.u80" class="internal xref">P</a><a href="#appendix-C-2.1.1" class="pilcrow">¶</a></p>
 </div>
 <ul class="compact normal ulEmpty">
-<li class="compact normal ulEmpty" id="appendix-B-2.1.2.1">
-              <span class="break"></span><dl class="dlCompact dlParallel" id="appendix-B-2.1.2.1.1">
-                <dt id="appendix-B-2.1.2.1.1.1">PADDING</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.1.2.1.1.2">
-                  <p id="appendix-B-2.1.2.1.1.2.1">
+<li class="compact normal ulEmpty" id="appendix-C-2.1.2.1">
+              <span class="break"></span><dl class="dlCompact dlParallel" id="appendix-C-2.1.2.1.1">
+                <dt id="appendix-C-2.1.2.1.1.1">PADDING</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.1.2.1.1.2">
+                  <p id="appendix-C-2.1.2.1.1.2.1">
                     <a href="#section-6.1-1" class="auto internal xref">Section 6.1, Paragraph 1</a>; 
 <a href="#section-6.1-2" class="auto internal xref">Section 6.1, Paragraph 2</a>; 
-<a href="#section-11.4-3.4.1" class="auto internal xref">Section 11.4, Paragraph 3.4.1</a><a href="#appendix-B-2.1.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#section-11.4-3.4.1" class="auto internal xref">Section 11.4, Paragraph 3.4.1</a><a href="#appendix-C-2.1.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>
 </li>
           </ul>
 </li>
-        <li class="normal ulEmpty" id="appendix-B-2.2">
+        <li class="normal ulEmpty" id="appendix-C-2.2">
           <div id="rfc.index.u83">
-<p id="appendix-B-2.2.1" class="keepWithNext">
-            <a href="#rfc.index.u83" class="internal xref">S</a><a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+<p id="appendix-C-2.2.1" class="keepWithNext">
+            <a href="#rfc.index.u83" class="internal xref">S</a><a href="#appendix-C-2.2.1" class="pilcrow">¶</a></p>
 </div>
 <ul class="compact normal ulEmpty">
-<li class="compact normal ulEmpty" id="appendix-B-2.2.2.1">
-              <span class="break"></span><dl class="dlCompact dlParallel" id="appendix-B-2.2.2.1.1">
-                <dt id="appendix-B-2.2.2.1.1.1">SETTINGS_WT_INITIAL_MAX_DATA</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.2">
-                  <p id="appendix-B-2.2.2.1.1.2.1">
+<li class="compact normal ulEmpty" id="appendix-C-2.2.2.1">
+              <span class="break"></span><dl class="dlCompact dlParallel" id="appendix-C-2.2.2.1.1">
+                <dt id="appendix-C-2.2.2.1.1.1">SETTINGS_WT_INITIAL_MAX_DATA</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.2.2.1.1.2">
+                  <p id="appendix-C-2.2.2.1.1.2.1">
                     <a href="#section-4.3.1-2.1.1" class="auto internal xref">Section 4.3.1, Paragraph 2.1.1</a>; 
 <a href="#section-6.5-8" class="auto internal xref">Section 6.5, Paragraph 8</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 2</a>; 
-<a href="#section-11.2-4.2.1" class="auto internal xref">Section 11.2, Paragraph 4.2.1</a><a href="#appendix-B-2.2.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#section-11.2-4.2.1" class="auto internal xref">Section 11.2, Paragraph 4.2.1</a><a href="#appendix-C-2.2.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.2.2.1.1.3">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.4">
-                  <p id="appendix-B-2.2.2.1.1.4.1">
+<dt id="appendix-C-2.2.2.1.1.3">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.2.2.1.1.4">
+                  <p id="appendix-C-2.2.2.1.1.4.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI" class="auto internal xref">Section 11.2, Paragraph 8</a>; 
-<a href="#section-11.2-10.2.1" class="auto internal xref">Section 11.2, Paragraph 10.2.1</a><a href="#appendix-B-2.2.2.1.1.4.1" class="pilcrow">¶</a></p>
+<a href="#section-11.2-10.2.1" class="auto internal xref">Section 11.2, Paragraph 10.2.1</a><a href="#appendix-C-2.2.2.1.1.4.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.2.2.1.1.5">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.6">
-                  <p id="appendix-B-2.2.2.1.1.6.1">
+<dt id="appendix-C-2.2.2.1.1.5">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.2.2.1.1.6">
+                  <p id="appendix-C-2.2.2.1.1.6.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 11.2, Paragraph 5</a>; 
-<a href="#section-11.2-7.2.1" class="auto internal xref">Section 11.2, Paragraph 7.2.1</a><a href="#appendix-B-2.2.2.1.1.6.1" class="pilcrow">¶</a></p>
+<a href="#section-11.2-7.2.1" class="auto internal xref">Section 11.2, Paragraph 7.2.1</a><a href="#appendix-C-2.2.2.1.1.6.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.2.2.1.1.7">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.8">
-                  <p id="appendix-B-2.2.2.1.1.8.1">
+<dt id="appendix-C-2.2.2.1.1.7">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.2.2.1.1.8">
+                  <p id="appendix-C-2.2.2.1.1.8.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-6.7-12" class="auto internal xref">Section 6.7, Paragraph 12</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 14</a>; 
-<a href="#section-11.2-16.2.1" class="auto internal xref">Section 11.2, Paragraph 16.2.1</a><a href="#appendix-B-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
+<a href="#section-11.2-16.2.1" class="auto internal xref">Section 11.2, Paragraph 16.2.1</a><a href="#appendix-C-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.2.2.1.1.9">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.10">
-                  <p id="appendix-B-2.2.2.1.1.10.1">
+<dt id="appendix-C-2.2.2.1.1.9">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.2.2.1.1.10">
+                  <p id="appendix-C-2.2.2.1.1.10.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-6.7-12" class="auto internal xref">Section 6.7, Paragraph 12</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 11</a>; 
-<a href="#section-11.2-13.2.1" class="auto internal xref">Section 11.2, Paragraph 13.2.1</a><a href="#appendix-B-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
+<a href="#section-11.2-13.2.1" class="auto internal xref">Section 11.2, Paragraph 13.2.1</a><a href="#appendix-C-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>
 </li>
           </ul>
 </li>
-        <li class="normal ulEmpty" id="appendix-B-2.3">
+        <li class="normal ulEmpty" id="appendix-C-2.3">
           <div id="rfc.index.u87">
-<p id="appendix-B-2.3.1" class="keepWithNext">
-            <a href="#rfc.index.u87" class="internal xref">W</a><a href="#appendix-B-2.3.1" class="pilcrow">¶</a></p>
+<p id="appendix-C-2.3.1" class="keepWithNext">
+            <a href="#rfc.index.u87" class="internal xref">W</a><a href="#appendix-C-2.3.1" class="pilcrow">¶</a></p>
 </div>
 <ul class="compact normal ulEmpty">
-<li class="compact normal ulEmpty" id="appendix-B-2.3.2.1">
-              <span class="break"></span><dl class="dlCompact dlParallel" id="appendix-B-2.3.2.1.1">
-                <dt id="appendix-B-2.3.2.1.1.1">WT_DATA_BLOCKED</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.2">
-                  <p id="appendix-B-2.3.2.1.1.2.1">
+<li class="compact normal ulEmpty" id="appendix-C-2.3.2.1">
+              <span class="break"></span><dl class="dlCompact dlParallel" id="appendix-C-2.3.2.1.1">
+                <dt id="appendix-C-2.3.2.1.1.1">WT_DATA_BLOCKED</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.2">
+                  <p id="appendix-C-2.3.2.1.1.2.1">
                     <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.8-1" class="auto internal xref">Section 6.8, Paragraph 1</a>; 
 <a href="#section-6.8-3" class="auto internal xref">Section 6.8, Paragraph 3</a>; 
 <a href="#section-6.8-5" class="auto internal xref">Section 6.8, Paragraph 5</a>; 
-<a href="#section-6.9-1" class="auto internal xref">Section 6.9, Paragraph 1</a><a href="#appendix-B-2.3.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#section-6.9-1" class="auto internal xref">Section 6.9, Paragraph 1</a><a href="#appendix-C-2.3.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.3">WT_MAX_DATA</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.4">
-                  <p id="appendix-B-2.3.2.1.1.4.1">
+<dt id="appendix-C-2.3.2.1.1.3">WT_MAX_DATA</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.4">
+                  <p id="appendix-C-2.3.2.1.1.4.1">
                     <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.3.1-2.1.1" class="auto internal xref">Section 4.3.1, Paragraph 2.1.1</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
@@ -3455,12 +3493,12 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.5-3" class="auto internal xref">Section 6.5, Paragraph 3</a>; 
 <a href="#section-6.5-6" class="auto internal xref">Section 6.5, Paragraph 6</a>; 
 <a href="#section-6.5-7" class="auto internal xref">Section 6.5, Paragraph 7</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 2</a><a href="#appendix-B-2.3.2.1.1.4.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 2</a><a href="#appendix-C-2.3.2.1.1.4.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.5">WT_MAX_STREAM_DATA</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.6">
-                  <p id="appendix-B-2.3.2.1.1.6.1">
+<dt id="appendix-C-2.3.2.1.1.5">WT_MAX_STREAM_DATA</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.6">
+                  <p id="appendix-C-2.3.2.1.1.6.1">
                     <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
@@ -3471,12 +3509,12 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.6-9" class="auto internal xref">Section 6.6, Paragraph 9</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 11.2, Paragraph 5</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI" class="auto internal xref">Section 11.2, Paragraph 8</a>; 
-<a href="#section-11.4-11.4.1" class="auto internal xref">Section 11.4, Paragraph 11.4.1</a><a href="#appendix-B-2.3.2.1.1.6.1" class="pilcrow">¶</a></p>
+<a href="#section-11.4-11.4.1" class="auto internal xref">Section 11.4, Paragraph 11.4.1</a><a href="#appendix-C-2.3.2.1.1.6.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.7">WT_MAX_STREAMS</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.8">
-                  <p id="appendix-B-2.3.2.1.1.8.1">
+<dt id="appendix-C-2.3.2.1.1.7">WT_MAX_STREAMS</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.8">
+                  <p id="appendix-C-2.3.2.1.1.8.1">
                     <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.2-1" class="auto internal xref">Section 4.2, Paragraph 1</a>; 
 <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
@@ -3487,12 +3525,12 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.7-10" class="auto internal xref">Section 6.7, Paragraph 10</a>; 
 <a href="#section-6.7-11" class="auto internal xref">Section 6.7, Paragraph 11</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 11</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 14</a><a href="#appendix-B-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 14</a><a href="#appendix-C-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.9">WT_RESET_STREAM</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.10">
-                  <p id="appendix-B-2.3.2.1.1.10.1">
+<dt id="appendix-C-2.3.2.1.1.9">WT_RESET_STREAM</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.10">
+                  <p id="appendix-C-2.3.2.1.1.10.1">
                     <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
 <a href="#section-6.2-1" class="auto internal xref">Section 6.2, Paragraph 1</a>; 
 <a href="#section-6.2-2" class="auto internal xref">Section 6.2, Paragraph 2</a>; 
@@ -3501,24 +3539,24 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.2-8" class="auto internal xref">Section 6.2, Paragraph 8</a>; 
 <a href="#section-6.3-5" class="auto internal xref">Section 6.3, Paragraph 5</a>; 
 <a href="#section-6.14-3" class="auto internal xref">Section 6.14, Paragraph 3</a>; 
-<a href="#section-11.4-5.4.1" class="auto internal xref">Section 11.4, Paragraph 5.4.1</a><a href="#appendix-B-2.3.2.1.1.10.1" class="pilcrow">¶</a></p>
+<a href="#section-11.4-5.4.1" class="auto internal xref">Section 11.4, Paragraph 5.4.1</a><a href="#appendix-C-2.3.2.1.1.10.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.11">WT_STOP_SENDING</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.12">
-                  <p id="appendix-B-2.3.2.1.1.12.1">
+<dt id="appendix-C-2.3.2.1.1.11">WT_STOP_SENDING</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.12">
+                  <p id="appendix-C-2.3.2.1.1.12.1">
                     <a href="#section-2-8" class="auto internal xref">Section 2, Paragraph 8</a>; 
 <a href="#section-6.3-1" class="auto internal xref">Section 6.3, Paragraph 1</a>; 
 <a href="#section-6.3-3" class="auto internal xref">Section 6.3, Paragraph 3</a>; 
 <a href="#section-6.3-5" class="auto internal xref">Section 6.3, Paragraph 5</a>; 
 <a href="#section-6.3-6" class="auto internal xref">Section 6.3, Paragraph 6</a>; 
 <a href="#section-6.6-9" class="auto internal xref">Section 6.6, Paragraph 9</a>; 
-<a href="#section-11.4-7.4.1" class="auto internal xref">Section 11.4, Paragraph 7.4.1</a><a href="#appendix-B-2.3.2.1.1.12.1" class="pilcrow">¶</a></p>
+<a href="#section-11.4-7.4.1" class="auto internal xref">Section 11.4, Paragraph 7.4.1</a><a href="#appendix-C-2.3.2.1.1.12.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.13">WT_STREAM</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.14">
-                  <p id="appendix-B-2.3.2.1.1.14.1">
+<dt id="appendix-C-2.3.2.1.1.13">WT_STREAM</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.14">
+                  <p id="appendix-C-2.3.2.1.1.14.1">
                     <a href="#section-2-6" class="auto internal xref">Section 2, Paragraph 6</a>; 
 <a href="#section-5.1-2" class="auto internal xref">Section 5.1, Paragraph 2</a>; 
 <a href="#section-6.2-2" class="auto internal xref">Section 6.2, Paragraph 2</a>; 
@@ -3533,29 +3571,29 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.6-5" class="auto internal xref">Section 6.6, Paragraph 5</a>; 
 <a href="#section-6.14-3" class="auto internal xref">Section 6.14, Paragraph 3</a>; 
 <a href="#section-8-3" class="auto internal xref">Section 8, Paragraph 3</a>; 
-<a href="#section-11.4-9.4.1" class="auto internal xref">Section 11.4, Paragraph 9.4.1</a><a href="#appendix-B-2.3.2.1.1.14.1" class="pilcrow">¶</a></p>
+<a href="#section-11.4-9.4.1" class="auto internal xref">Section 11.4, Paragraph 9.4.1</a><a href="#appendix-C-2.3.2.1.1.14.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.15">WT_STREAM_DATA_BLOCKED</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.16">
-                  <p id="appendix-B-2.3.2.1.1.16.1">
+<dt id="appendix-C-2.3.2.1.1.15">WT_STREAM_DATA_BLOCKED</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.16">
+                  <p id="appendix-C-2.3.2.1.1.16.1">
                     <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.9-1" class="auto internal xref">Section 6.9, Paragraph 1</a>; 
 <a href="#section-6.9-3" class="auto internal xref">Section 6.9, Paragraph 3</a>; 
 <a href="#section-6.9-5" class="auto internal xref">Section 6.9, Paragraph 5</a>; 
-<a href="#section-6.9-6" class="auto internal xref">Section 6.9, Paragraph 6</a><a href="#appendix-B-2.3.2.1.1.16.1" class="pilcrow">¶</a></p>
+<a href="#section-6.9-6" class="auto internal xref">Section 6.9, Paragraph 6</a><a href="#appendix-C-2.3.2.1.1.16.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
-<dt id="appendix-B-2.3.2.1.1.17">WT_STREAMS_BLOCKED</dt>
-                <dd style="margin-left: 1.5em" id="appendix-B-2.3.2.1.1.18">
-                  <p id="appendix-B-2.3.2.1.1.18.1">
+<dt id="appendix-C-2.3.2.1.1.17">WT_STREAMS_BLOCKED</dt>
+                <dd style="margin-left: 1.5em" id="appendix-C-2.3.2.1.1.18">
+                  <p id="appendix-C-2.3.2.1.1.18.1">
                     <a href="#section-2-7" class="auto internal xref">Section 2, Paragraph 7</a>; 
 <a href="#section-4.4-1" class="auto internal xref">Section 4.4, Paragraph 1</a>; 
 <a href="#section-6.10-1" class="auto internal xref">Section 6.10, Paragraph 1</a>; 
 <a href="#section-6.10-2" class="auto internal xref">Section 6.10, Paragraph 2</a>; 
 <a href="#section-6.10-4" class="auto internal xref">Section 6.10, Paragraph 4</a>; 
-<a href="#section-6.10-6" class="auto internal xref">Section 6.10, Paragraph 6</a><a href="#appendix-B-2.3.2.1.1.18.1" class="pilcrow">¶</a></p>
+<a href="#section-6.10-6" class="auto internal xref">Section 6.10, Paragraph 6</a><a href="#appendix-C-2.3.2.1.1.18.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>
@@ -3565,7 +3603,7 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
       </ul>
 </section>
 <div id="authors-addresses">
-<section id="appendix-C">
+<section id="appendix-D">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

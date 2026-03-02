@@ -124,6 +124,7 @@ Table of Contents
    12. References
      12.1.  Normative References
      12.2.  Informative References
+   Appendix A.  Use with Other HTTP Versions
    Acknowledgments
    Index
    Authors' Addresses
@@ -1610,10 +1611,47 @@ WebTransport Data
               Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
               July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
 
+   [RFC9220]  Hamilton, R., "Bootstrapping WebSockets with HTTP/3",
+              RFC 9220, DOI 10.17487/RFC9220, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9220>.
+
    [RFC9729]  Schinazi, D., Oliver, D., and J. Hoyland, "The Concealed
               HTTP Authentication Scheme", RFC 9729,
               DOI 10.17487/RFC9729, February 2025,
               <https://www.rfc-editor.org/rfc/rfc9729>.
+
+Appendix A.  Use with Other HTTP Versions
+
+   While this document defines WebTransport negotiation and session
+   establishment in terms of HTTP/2, the capsule-based mechanisms
+   described here rely on generic HTTP semantics and the Capsule
+   Protocol [HTTP-DATAGRAM], and can generally be used over any HTTP
+   version that supports these features.
+
+   The primary HTTP-version-specific aspects of this protocol are the
+   use of Extended CONNECT for session establishment and the use of HTTP
+   SETTINGS for exchanging initial flow control limits (Section 4.3.1).
+
+   Extended CONNECT is defined for HTTP/2 in [RFC8441] and for HTTP/3 in
+   [RFC9220].  Other HTTP versions that support Extended CONNECT can use
+   the "webtransport" upgrade token (Section 11.1) to establish capsule-
+   based WebTransport sessions.
+
+   The flow control SETTINGS defined in this document use the same
+   codepoints across HTTP versions, but their behavior differs.  HTTP/2
+   allows SETTINGS to be updated during the lifetime of a connection
+   with acknowledgment-based synchronization, while HTTP/3 SETTINGS are
+   sent only once and are fixed for the connection lifetime.  The
+   WebTransport-Init header field (Section 4.3.2) can be used to provide
+   per-session initial flow control limits regardless of HTTP version.
+
+   When a version-specific WebTransport protocol exists for a given HTTP
+   version, endpoints SHOULD prefer it over the capsule-based protocol
+   defined here.  For example, WebTransport over HTTP/3
+   [WEBTRANSPORT-H3] provides stream independence and unreliable
+   datagram delivery by using native QUIC streams and datagrams, which
+   are not available when using the capsule-based protocol over a single
+   HTTP/3 stream.
 
 Acknowledgments
 

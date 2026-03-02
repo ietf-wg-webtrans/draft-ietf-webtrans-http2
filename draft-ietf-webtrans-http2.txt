@@ -416,8 +416,9 @@ Table of Contents
 
    *  WT_MAX_DATA via SETTINGS_WT_INITIAL_MAX_DATA
 
-   *  WT_MAX_STREAM_DATA via SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI and
-      SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
+   *  WT_MAX_STREAM_DATA via SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI,
+      SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL, and
+      SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE
 
    *  WT_MAX_STREAMS via SETTINGS_WT_INITIAL_MAX_STREAMS_UNI and
       SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
@@ -855,8 +856,9 @@ Table of Contents
 
    Initial values for this limit for unidirectional and bidirectional
    streams MAY be communicated by sending non-zero values for
-   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI and
-   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI respectively.
+   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI,
+   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL, and
+   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE respectively.
 
    A WT_MAX_STREAM_DATA capsule MUST NOT be sent after a sender requests
    that a stream be closed with WT_STOP_SENDING.  While QUIC permits
@@ -1381,22 +1383,45 @@ WebTransport Data
 
    Specification:  This document
 
-   The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI parameter indicates the
-   initial value for the stream data limit for incoming data on
-   bidirectional streams, otherwise communicated by the
-   WT_MAX_STREAM_DATA capsule (Section 6.6).  The default value for the
-   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI parameter is "0", indicating
-   that the endpoint needs to send WT_MAX_STREAM_DATA capsules for each
-   stream within each individual WebTransport session before its peer is
-   allowed to send any stream data on those streams.
+   The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL parameter
+   indicates the initial value for the stream data limit for incoming
+   data on bidirectional streams initiated by the sender of this
+   setting, otherwise communicated by the WT_MAX_STREAM_DATA capsule
+   (Section 6.6).  The default value for the
+   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL parameter is "0",
+   indicating that the endpoint needs to send WT_MAX_STREAM_DATA
+   capsules for each stream within each individual WebTransport session
+   before its peer is allowed to send any stream data on those streams.
 
    Note that this limit applies to all WebTransport streams on all
    sessions that use the HTTP/2 connection on which this SETTING is
    sent.
 
-   Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
+   Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL
 
    Code:  0x2b63
+
+   Initial Value:  0
+
+   Specification:  This document
+
+   The SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE parameter
+   indicates the initial value for the stream data limit for incoming
+   data on bidirectional streams initiated by the receiver of this
+   setting, otherwise communicated by the WT_MAX_STREAM_DATA capsule
+   (Section 6.6).  The default value for the
+   SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE parameter is "0",
+   indicating that the endpoint needs to send WT_MAX_STREAM_DATA
+   capsules for each stream within each individual WebTransport session
+   before its peer is allowed to send any stream data on those streams.
+
+   Note that this limit applies to all WebTransport streams on all
+   sessions that use the HTTP/2 connection on which this SETTING is
+   sent.
+
+   Setting Name:  SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE
+
+   Code:  0x2b66
 
    Initial Value:  0
 
@@ -1722,18 +1747,21 @@ Index
          SETTINGS_WT_INITIAL_MAX_DATA  Section 4.3.1, Paragraph 2.1.1;
             Section 6.5, Paragraph 8; Section 11.2, Paragraph 2;
             Section 11.2, Paragraph 4.2.1
-         SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI  Section 4.3.1,
+         SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL  Section 4.3.1,
             Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.2,
             Paragraph 8; Section 11.2, Paragraph 10.2.1
+         SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE  Section 4.3.1,
+            Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.2,
+            Paragraph 11; Section 11.2, Paragraph 13.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI  Section 4.3.1,
             Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.2,
             Paragraph 5; Section 11.2, Paragraph 7.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI  Section 4.3.1, Paragraph
             2.3.1; Section 6.7, Paragraph 12; Section 11.2, Paragraph
-            14; Section 11.2, Paragraph 16.2.1
+            17; Section 11.2, Paragraph 19.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_UNI  Section 4.3.1, Paragraph
             2.3.1; Section 6.7, Paragraph 12; Section 11.2, Paragraph
-            11; Section 11.2, Paragraph 13.2.1
+            14; Section 11.2, Paragraph 16.2.1
 
       W
 
@@ -1751,14 +1779,14 @@ Index
             Paragraph 2; Section 6.6, Paragraph 1; Section 6.6,
             Paragraph 3; Section 6.6, Paragraph 6; Section 6.6,
             Paragraph 7; Section 6.6, Paragraph 9; Section 11.2,
-            Paragraph 5; Section 11.2, Paragraph 8; Section 11.4,
-            Paragraph 11.4.1
+            Paragraph 5; Section 11.2, Paragraph 8; Section 11.2,
+            Paragraph 11; Section 11.4, Paragraph 11.4.1
          WT_MAX_STREAMS  Section 2, Paragraph 7; Section 4.2, Paragraph
             1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
             Section 4.4, Paragraph 2; Section 6.7, Paragraph 1;
             Section 6.7, Paragraph 2; Section 6.7, Paragraph 4;
             Section 6.7, Paragraph 10; Section 6.7, Paragraph 11;
-            Section 11.2, Paragraph 11; Section 11.2, Paragraph 14
+            Section 11.2, Paragraph 14; Section 11.2, Paragraph 17
          WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;

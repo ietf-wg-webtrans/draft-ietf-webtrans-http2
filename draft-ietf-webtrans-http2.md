@@ -1231,11 +1231,11 @@ Setting Name:
 
 : SETTINGS_WT_INITIAL_MAX_DATA
 
-Value:
+Code:
 
 : 0x2b61
 
-Default:
+Initial Value:
 
 : 0
 
@@ -1260,11 +1260,11 @@ Setting Name:
 
 : SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI
 
-Value:
+Code:
 
 : 0x2b62
 
-Default:
+Initial Value:
 
 : 0
 
@@ -1290,11 +1290,11 @@ Setting Name:
 
 : SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI
 
-Value:
+Code:
 
 : 0x2b63
 
-Default:
+Initial Value:
 
 : 0
 
@@ -1319,11 +1319,11 @@ Setting Name:
 
 : SETTINGS_WT_INITIAL_MAX_STREAMS_UNI
 
-Value:
+Code:
 
 : 0x2b64
 
-Default:
+Initial Value:
 
 : 0
 
@@ -1348,11 +1348,11 @@ Setting Name:
 
 : SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI
 
-Value:
+Code:
 
 : 0x2b65
 
-Default:
+Initial Value:
 
 : 0
 
@@ -1544,8 +1544,8 @@ IANA will register the following entry in the "Hypertext Transfer Protocol
 Field Name:
 : WebTransport-Init
 
-Template:
-: None
+Structured Type:
+: Dictionary
 
 Status:
 : permanent

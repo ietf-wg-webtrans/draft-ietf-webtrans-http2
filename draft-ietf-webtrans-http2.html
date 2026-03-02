@@ -2228,16 +2228,28 @@ that are open.<a href="#section-6.7-7" class="pilcrow">¶</a></p>
 <p id="section-6.7-8">If an endpoint receives an incoming stream that would exceed the advertised
 Maximum Streams value, it MUST close the WebTransport session with a
 WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-8" class="pilcrow">¶</a></p>
-<p id="section-6.7-9">If an endpoint receives a <span id="iref-wt_max_streams-85" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule with a Maximum Streams value
+<p id="section-6.7-9">Note that, like QUIC stream IDs, WebTransport stream IDs cannot be skipped.
+Opening a stream with a given ID implicitly opens all streams of the same type
+and direction with lower stream IDs.  Even though WebTransport over HTTP/2 uses
+an ordered transport, an application can create a stream without immediately
+sending data on it. A higher-numbered stream might have data written to it
+first, causing it to appear at the peer before any data is sent on
+lower-numbered streams.  For example, if the client's bidirectional stream limit
+is 3 and the server opens stream ID 15 (the fourth server-initiated
+bidirectional stream), this implicitly counts stream IDs 3, 7, 11, and 15
+against the limit, which would violate the limit of 3.  An endpoint that
+receives such a stream would close the WebTransport session with a
+WEBTRANSPORT_FLOW_CONTROL_ERROR error.<a href="#section-6.7-9" class="pilcrow">¶</a></p>
+<p id="section-6.7-10">If an endpoint receives a <span id="iref-wt_max_streams-85" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule with a Maximum Streams value
 less than a previously received value, it MUST close the WebTransport session
-with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-9" class="pilcrow">¶</a></p>
-<p id="section-6.7-10">The <span id="iref-wt_max_streams-86" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule defines special intermediary handling, as described
+with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-10" class="pilcrow">¶</a></p>
+<p id="section-6.7-11">The <span id="iref-wt_max_streams-86" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule defines special intermediary handling, as described
 in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermediaries MUST consume <span id="iref-wt_max_streams-87" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a>
 capsules for flow control purposes and MUST generate and send appropriate flow
-control signals for their limits.<a href="#section-6.7-10" class="pilcrow">¶</a></p>
-<p id="section-6.7-11">Initial values for these limits MAY be communicated by sending non-zero values
+control signals for their limits.<a href="#section-6.7-11" class="pilcrow">¶</a></p>
+<p id="section-6.7-12">Initial values for these limits MAY be communicated by sending non-zero values
 for <span id="iref-settings_wt_initial_max_streams" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</a> and
-<span id="iref-settings_wt_initial_max_streams_" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a>.<a href="#section-6.7-11" class="pilcrow">¶</a></p>
+<span id="iref-settings_wt_initial_max_streams_" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a>.<a href="#section-6.7-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="WT_DATA_BLOCKED">
@@ -3396,7 +3408,7 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                 <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.8">
                   <p id="appendix-B-2.2.2.1.1.8.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
-<a href="#section-6.7-11" class="auto internal xref">Section 6.7, Paragraph 11</a>; 
+<a href="#section-6.7-12" class="auto internal xref">Section 6.7, Paragraph 12</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 14</a>; 
 <a href="#section-11.2-16.2.1" class="auto internal xref">Section 11.2, Paragraph 16.2.1</a><a href="#appendix-B-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
@@ -3405,7 +3417,7 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                 <dd style="margin-left: 1.5em" id="appendix-B-2.2.2.1.1.10">
                   <p id="appendix-B-2.2.2.1.1.10.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
-<a href="#section-6.7-11" class="auto internal xref">Section 6.7, Paragraph 11</a>; 
+<a href="#section-6.7-12" class="auto internal xref">Section 6.7, Paragraph 12</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 11</a>; 
 <a href="#section-11.2-13.2.1" class="auto internal xref">Section 11.2, Paragraph 13.2.1</a><a href="#appendix-B-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
 </dd>
@@ -3472,8 +3484,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.7-1" class="auto internal xref">Section 6.7, Paragraph 1</a>; 
 <a href="#section-6.7-2" class="auto internal xref">Section 6.7, Paragraph 2</a>; 
 <a href="#section-6.7-4" class="auto internal xref">Section 6.7, Paragraph 4</a>; 
-<a href="#section-6.7-9" class="auto internal xref">Section 6.7, Paragraph 9</a>; 
 <a href="#section-6.7-10" class="auto internal xref">Section 6.7, Paragraph 10</a>; 
+<a href="#section-6.7-11" class="auto internal xref">Section 6.7, Paragraph 11</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 11</a>; 
 <a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 14</a><a href="#appendix-B-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>

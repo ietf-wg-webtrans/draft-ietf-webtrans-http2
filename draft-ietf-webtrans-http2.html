@@ -1956,7 +1956,11 @@ stream being terminated.<a href="#section-6.2-6.2.1" class="pilcrow">¶</a></p>
 <dt id="section-6.2-6.3">Application Protocol Error Code:</dt>
           <dd style="margin-left: 1.5em" id="section-6.2-6.4">
             <p id="section-6.2-6.4.1">A variable-length integer containing the application protocol error code
-that indicates why the stream is being closed.<a href="#section-6.2-6.4.1" class="pilcrow">¶</a></p>
+that indicates why the stream is being closed.  WebTransport application
+error codes are constrained to an unsigned 32-bit range defined in
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-14#section-4.4" class="relref">Section 4.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.  This value MUST NOT exceed 0xffffffff,
+values larger than this MUST be treated as a session error of type
+WEBTRANSPORT_ERROR.<a href="#section-6.2-6.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-6.2-6.5">Reliable Size:</dt>
@@ -2013,7 +2017,11 @@ being ignored.<a href="#section-6.3-4.2.1" class="pilcrow">¶</a></p>
 <dt id="section-6.3-4.3">Application Protocol Error Code:</dt>
           <dd style="margin-left: 1.5em" id="section-6.3-4.4">
             <p id="section-6.3-4.4.1">A variable-length integer containing the application-specified reason the
-sender is ignoring the stream.<a href="#section-6.3-4.4.1" class="pilcrow">¶</a></p>
+sender is ignoring the stream.  WebTransport application error codes are
+constrained to an unsigned 32-bit range defined in
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-14#section-4.4" class="relref">Section 4.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.  This value MUST NOT exceed 0xffffffff,
+values larger than this MUST be treated as a session error of type
+WEBTRANSPORT_ERROR.<a href="#section-6.3-4.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>

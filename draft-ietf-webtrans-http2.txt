@@ -465,6 +465,14 @@ Table of Contents
    WT_MAX_STREAM_DATA, WT_MAX_STREAMS, WT_DATA_BLOCKED,
    WT_STREAM_DATA_BLOCKED, and WT_STREAMS_BLOCKED.
 
+   An endpoint MUST NOT wait for a WT_DATA_BLOCKED,
+   WT_STREAM_DATA_BLOCKED, or WT_STREAMS_BLOCKED capsule before sending
+   a WT_MAX_DATA, WT_MAX_STREAM_DATA, or WT_MAX_STREAMS capsule; doing
+   so could result in the sender being blocked for at least an entire
+   round trip.  Endpoints SHOULD send flow control credit as they
+   consume data or close streams (similar to the mechanism used in QUIC,
+   see Section 4.2 of [RFC9000]).
+
    Because flow control in WebTransport is hop-by-hop and does not
    provide an end-to-end signal, intermediaries MUST consume flow
    control signals and express their own flow control limits to the next
@@ -931,9 +939,10 @@ Table of Contents
 
    A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41)
    (Section 5.6.4 of [WEBTRANSPORT-H3]) when it wishes to send data but
-   is unable to do so due to WebTransport session-level flow control.
+   is unable to do so due to WebTransport session-level flow control.  A
+   sender is not required to send WT_DATA_BLOCKED capsules, however
    WT_DATA_BLOCKED capsules can be used as input to tuning of flow
-   control algorithms.
+   control algorithms and for debugging purposes.
 
    WT_DATA_BLOCKED Capsule {
      Type (i) = 0x190B4D41,
@@ -958,8 +967,13 @@ Table of Contents
 
    A sender SHOULD send a WT_STREAM_DATA_BLOCKED capsule
    (type=0x190B4D42) when it wishes to send data but is unable to do so
-   due to stream-level flow control.  This capsule is analogous to
-   WT_DATA_BLOCKED.
+   due to stream-level flow control.  A sender is not required to send
+   WT_STREAM_DATA_BLOCKED capsules, however WT_STREAM_DATA_BLOCKED
+   capsules can be used as input to tuning of flow control algorithms
+   and for debugging purposes.
+
+   This capsule is analogous to WT_DATA_BLOCKED (Section 6.8), but for
+   stream-level data limits instead of session-level data limits.
 
    WT_STREAM_DATA_BLOCKED Capsule {
      Type (i) = 0x190B4D42,
@@ -998,12 +1012,15 @@ Table of Contents
    open a stream but is unable to do so due to the maximum stream limit
    set by its peer.  A WT_STREAMS_BLOCKED capsule of type 0x190B4D43 is
    used to indicate reaching the bidirectional stream limit, and a
-   STREAMS_BLOCKED capsule of type 0x190B4D44 is used to indicate
+   WT_STREAMS_BLOCKED capsule of type 0x190B4D44 is used to indicate
    reaching the unidirectional stream limit.
 
    A WT_STREAMS_BLOCKED capsule does not open the stream, but informs
    the peer that a new stream was needed and the stream limit prevented
-   the creation of the stream.
+   the creation of the stream.  A sender is not required to send
+   WT_STREAMS_BLOCKED capsules, however WT_STREAMS_BLOCKED capsules can
+   be used as input to tuning of flow control algorithms and for
+   debugging purposes.
 
    WT_STREAMS_BLOCKED Capsule {
      Type (i) = 0x190B4D43..0x190B4D44,
@@ -1698,24 +1715,27 @@ Index
       W
 
          WT_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4, Paragraph
-            1; Section 6.8, Paragraph 1; Section 6.8, Paragraph 3;
-            Section 6.8, Paragraph 5; Section 6.9, Paragraph 1
+            1; Section 4.4, Paragraph 2; Section 6.8, Paragraph 1;
+            Section 6.8, Paragraph 3; Section 6.8, Paragraph 5;
+            Section 6.9, Paragraph 2
          WT_MAX_DATA  Section 2, Paragraph 7; Section 4.3.1, Paragraph
-            2.1.1; Section 4.4, Paragraph 1; Section 6.5, Paragraph 1;
-            Section 6.5, Paragraph 3; Section 6.5, Paragraph 6;
-            Section 6.5, Paragraph 7; Section 11.2, Paragraph 2
+            2.1.1; Section 4.4, Paragraph 1; Section 4.4, Paragraph 2;
+            Section 6.5, Paragraph 1; Section 6.5, Paragraph 3;
+            Section 6.5, Paragraph 6; Section 6.5, Paragraph 7;
+            Section 11.2, Paragraph 2
          WT_MAX_STREAM_DATA  Section 2, Paragraph 7; Section 4.3.1,
-            Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 6.6,
-            Paragraph 1; Section 6.6, Paragraph 3; Section 6.6,
-            Paragraph 6; Section 6.6, Paragraph 7; Section 6.6,
-            Paragraph 9; Section 11.2, Paragraph 5; Section 11.2,
-            Paragraph 8; Section 11.4, Paragraph 11.4.1
+            Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 4.4,
+            Paragraph 2; Section 6.6, Paragraph 1; Section 6.6,
+            Paragraph 3; Section 6.6, Paragraph 6; Section 6.6,
+            Paragraph 7; Section 6.6, Paragraph 9; Section 11.2,
+            Paragraph 5; Section 11.2, Paragraph 8; Section 11.4,
+            Paragraph 11.4.1
          WT_MAX_STREAMS  Section 2, Paragraph 7; Section 4.2, Paragraph
             1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
-            Section 6.7, Paragraph 1; Section 6.7, Paragraph 2;
-            Section 6.7, Paragraph 4; Section 6.7, Paragraph 10;
-            Section 6.7, Paragraph 11; Section 11.2, Paragraph 11;
-            Section 11.2, Paragraph 14
+            Section 4.4, Paragraph 2; Section 6.7, Paragraph 1;
+            Section 6.7, Paragraph 2; Section 6.7, Paragraph 4;
+            Section 6.7, Paragraph 10; Section 6.7, Paragraph 11;
+            Section 11.2, Paragraph 11; Section 11.2, Paragraph 14
          WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;
@@ -1734,13 +1754,13 @@ Index
             Section 6.14, Paragraph 3; Section 8, Paragraph 3;
             Section 11.4, Paragraph 9.4.1
          WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4,
-            Paragraph 1; Section 6.9, Paragraph 1; Section 6.9,
-            Paragraph 3; Section 6.9, Paragraph 5; Section 6.9,
-            Paragraph 6
+            Paragraph 1; Section 4.4, Paragraph 2; Section 6.9,
+            Paragraph 1; Section 6.9, Paragraph 4; Section 6.9,
+            Paragraph 6; Section 6.9, Paragraph 7
          WT_STREAMS_BLOCKED  Section 2, Paragraph 7; Section 4.4,
-            Paragraph 1; Section 6.10, Paragraph 1; Section 6.10,
-            Paragraph 2; Section 6.10, Paragraph 4; Section 6.10,
-            Paragraph 6
+            Paragraph 1; Section 4.4, Paragraph 2; Section 6.10,
+            Paragraph 1; Section 6.10, Paragraph 2; Section 6.10,
+            Paragraph 4; Section 6.10, Paragraph 6
 
 Authors' Addresses
 

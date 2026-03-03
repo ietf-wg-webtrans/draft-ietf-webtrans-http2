@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-24T01:44:15.047826+00:00",
+  "timestamp": "2026-03-03T01:46:41.220302+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1467,7 +1467,7 @@
       "id": "I_kwDODnOl885jwrAz",
       "title": "Discuss use outside of the context of HTTP/2",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/80",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "vasilvv",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1476,12 +1476,12 @@
       ],
       "labels": [
         "editorial",
-        "ready for PR"
+        "has pull request"
       ],
       "body": "WebTransport over HTTP/2, as it's currently defined, is, at its core, a protocol that is semantically compatible with QUIC, but works over capsules (i.e. TLV over TCP).  This means that it might be useful outside of HTTP/2 context.\r\n\r\nThe main gotcha is, of course, that we do use settings and headers.  The way we use settings is an optimization that only makes sense for pooling; on the other hand, I don't think we can function without the headers.\r\n\r\nSome possible applications we may to consider / discuss:\r\n\r\n1. HTTP/1.1 should just work, since capsules were designed with H/1 support in mind.\r\n2. Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.",
       "createdAt": "2023-04-18T19:20:28Z",
-      "updatedAt": "2025-08-06T13:42:10Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T20:21:34Z",
+      "closedAt": "2026-03-02T20:21:34Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -3165,17 +3165,19 @@
       "id": "I_kwDODnOl887TL7K4",
       "title": "HTTP SETTINGS parity with QUIC for initial flow control",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/155",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
       "assignees": [
         "ekinnear"
       ],
-      "labels": [],
+      "labels": [
+        "has pull request"
+      ],
       "body": "1. QUIC has the following 6 transport parameters defined for initial flow control values: \n- initial_max_data\n- initial_max_stream_data_bidi_local\n- initial_max_stream_data_bidi_remote\n- initial_max_stream_data_uni\n- initial_max_streams_bidi\n- initial_max_streams_uni\n\nBut WebTransport only defines 5: \n- SETTINGS_WT_INITIAL_MAX_DATA\n- SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI \n- SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI\n- SETTINGS_WT_INITIAL_MAX_STREAMS_UNI\n- SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI\n\nDo we need the distinction added by `initial_max_stream_data_bidi_local` and `initial_max_stream_data_bidi_remote` as compared to a single `SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI` in WebTransport?\n\n\n2. `WebTransport-Init` on the other hand has only 3 parameters: `u`, `bl`, `br`. So it seems to make the above distinction, but then skips parameters for session max data and stream limits. Should this header have the same values as SETTINGS? \n\n3. `WebTransport-Init` is not defined for WebTransport over HTTP/3. Should it be added (with the applicable values)?",
       "createdAt": "2025-10-23T04:42:28Z",
-      "updatedAt": "2026-01-25T12:10:57Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T23:11:51Z",
+      "closedAt": "2026-03-02T23:11:51Z",
       "comments": [
         {
           "author": "AnkshitJain",
@@ -3183,6 +3185,20 @@
           "body": "On a similar note, a HTTP/2 peer can send more than one SETTINGS frame on a connection. Can we add some text to specify how to handle these values, if updated, in subsequent SETTINGS frames?",
           "createdAt": "2025-10-24T05:46:33Z",
           "updatedAt": "2025-10-24T05:46:33Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> HTTP/2 peer can send more than one SETTINGS frame on a connection. Can we add some text to specify how to handle these values, if updated, in subsequent SETTINGS frames?\n\nI think that's https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/156",
+          "createdAt": "2026-03-01T08:14:02Z",
+          "updatedAt": "2026-03-01T08:14:02Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Using this issue to make the settings match the `Init` header. \n\nLet's use a separate one for H3.",
+          "createdAt": "2026-03-01T08:32:54Z",
+          "updatedAt": "2026-03-01T08:32:54Z"
         }
       ]
     },
@@ -3191,15 +3207,19 @@
       "id": "I_kwDODnOl887Vh53l",
       "title": "Handling SETTINGS updates",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/156",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
       "body": "HTTP/2 allows SETTINGS to be [updated](https://httpwg.org/specs/rfc9113.html#rfc.section.6.5.3).\n\nWe define a number of \"initial\" flow control values in SETTINGS. \n\nIf you imagine a scenario where all initial values are 10, but then a SETTINGS update is sent that changes them to 20, do: \n\n- Existing sessions change? \n- New sessions change? \n\nWe can take a few approaches: \n\n1. All existing and new sessions suddenly update to the new values. \n2. All existing and new sessions update to the new values if they haven't seen any WT_* flow control capsules.\n3. New sessions use the new values.\n\nI think the original intent was (3).\n\nThere's some complexity inherent there, since if we allow the updates to reduce values for new sessions, you may have had an incoming CONNECT request _and_ additional new streams for that session in-flight at the moment you sent the updated SETTINGS. You cannot enforce those new values until you receive the SETTINGS ACK.\n\nIf we wanted to avoid requiring tracking the SETTINGS ACK, we could also mandate that you cannot ever reduce the WT values in SETTINGS (which conveniently means you can't update to say you don't support WT).",
       "createdAt": "2025-11-03T14:55:35Z",
-      "updatedAt": "2025-11-04T17:08:33Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T11:06:12Z",
+      "closedAt": "2026-03-02T11:06:12Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -3260,15 +3280,19 @@
       "id": "I_kwDODnOl887VkAfA",
       "title": "Early IANA review summary",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/158",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "LPardue",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
       "body": "IANA performed an early review of the draft, to summarize some of the points\n\n1. Section 11.1 - Please use the field names used in the HTTP/2 settings registry. \"Code\" instead of \"Value\", \"Initial Value\" instead of \"Default\"\n2. Section 11.4 - the \"template\" field has been removed from the HTTP Field names registry and a \"Structured List\" field has been added",
       "createdAt": "2025-11-03T17:12:47Z",
-      "updatedAt": "2025-11-03T17:12:47Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T06:30:56Z",
+      "closedAt": "2026-03-02T06:30:56Z",
       "comments": []
     },
     {
@@ -3276,7 +3300,7 @@
       "id": "I_kwDODnOl887WarIe",
       "title": "MaxStreams interaction with out of order streams",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/159",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "hanidamlaj",
       "authorAssociation": "NONE",
       "assignees": [
@@ -3287,8 +3311,8 @@
       ],
       "body": "If a client advertises to the server `SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI = 1`  and the server opens stream 0x05 first (second server-initiated bidirectional stream), should we treat this as an error?",
       "createdAt": "2025-11-06T19:36:25Z",
-      "updatedAt": "2026-01-25T12:06:04Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T06:32:14Z",
+      "closedAt": "2026-03-02T06:32:14Z",
       "comments": []
     },
     {
@@ -3296,15 +3320,19 @@
       "id": "I_kwDODnOl887asZTy",
       "title": "Handling error codes beyond UINT32_MAX",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/160",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
       "body": "WebTransport over HTTP/3 has an [error code space](https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-14.html#section-4.4) of 32-bit unsigned integers as the error codes are mapped.\n```\nWebTransport application errors for streams are limited to an unsigned 32-bit integer, assuming values between 0x00000000 and 0xffffffff.\n```\n\nThis limit does not seem to apply to WebTransport over HTTP/2.\n\n[W3C](https://www.w3.org/TR/webtransport/#web-transport-error-interface) defines `streamErrorCode` in `WebTransportError` which is 32 bits in size. \n\nCan we add text to clarify how a WebTransport over HTTP/2 implementation handles error code values beyond UINT32_MAX? \n",
       "createdAt": "2025-11-26T21:20:27Z",
-      "updatedAt": "2025-11-26T21:20:27Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T23:02:02Z",
+      "closedAt": "2026-03-02T23:02:02Z",
       "comments": []
     },
     {
@@ -3312,7 +3340,7 @@
       "id": "I_kwDODnOl887lpk16",
       "title": "Update DoS considerations to match HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/161",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -3323,8 +3351,8 @@
       ],
       "body": "From: https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/222\n\n> The security considerations in this doc reference the Overview security considerations but that doesn't really talk about DoS. The security considerations in HTTP/3 still apply to WebTransport and stating that explicitly doesn't really hurt, so maybe think about doing that as a mininimum\n> \n> In the context of this issue though, I wonder if the DoS considerations in https://datatracker.ietf.org/doc/html/rfc9114#section-10.5 need some augmentation to make implementers defensive to the new interaction modes. This doc starts on that path by stating:\n> \n> An application could attempt to exhaust resources by opening too many WebTransport sessions at once. In cases when the application is untrusted, the WebTransport client SHOULD limit the number of outgoing sessions it will open.\n> However, I think there are more cases that need highlighting - its now possible for either side to bombard each other with streams and datagrams related to a session. This is somewhat novel for the client, who previously had some limits on server push as described in https://datatracker.ietf.org/doc/html/rfc9114#section-10.5-2\n> \n> We probably also want the \"catch all statement\" to make it clear to implementers that the buck stops with them, both HTTP/2 and HTTP/3 include a statement along the lines of \"webtransport features have legitimate uses but they can become a burden when they are used unnecessarily or to excess. An endpoint that doesn't monitor use of these features exposes itself to a risk of denial of service. Implementations SHOULD track the use of these features and set limits on their use. An endpoint MAY treat activity that is suspicious as a connection erro of type [ENHANCE_YOUR_CALM/H3_EXCESSIVE_LOAD].\"\n\nMany of these apply equally to HTTP/2 as well, we should have similar text.",
       "createdAt": "2026-01-25T08:51:06Z",
-      "updatedAt": "2026-01-25T11:54:49Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T23:11:10Z",
+      "closedAt": "2026-03-02T23:11:10Z",
       "comments": []
     },
     {
@@ -3356,15 +3384,39 @@
       "id": "I_kwDODnOl887tOZwD",
       "title": "Reference nits",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/165",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
       "body": "The document references draft-ietf-httpbis-semantics using two different abbreviations: HTTP and SCEMANTICS. There should be just one abbreviation referencing RFC9110. In addition, the reference for HTTP/3 also refers to the I-D, not the published RFC.\n\nThis doesn't seem to be a problem in the WT over H3 draft.",
       "createdAt": "2026-02-23T20:16:27Z",
-      "updatedAt": "2026-02-23T20:16:27Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T06:38:53Z",
+      "closedAt": "2026-03-02T06:38:53Z",
+      "comments": []
+    },
+    {
+      "number": 166,
+      "id": "I_kwDODnOl887u0DKU",
+      "title": "Add editorial guidance for when to send flow control updates",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/166",
+      "state": "CLOSED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
+      "body": "From https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/236. \n\nWe should add some editorial guidance about when to send flow control updates to better match HTTP/2 and QUIC.",
+      "createdAt": "2026-03-01T08:07:24Z",
+      "updatedAt": "2026-03-02T23:10:18Z",
+      "closedAt": "2026-03-02T23:10:18Z",
       "comments": []
     }
   ],
@@ -10442,25 +10494,35 @@
       "id": "PR_kwDODnOl886_Nv0p",
       "title": "Update security considerations",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/162",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Update security considerations to match those suggested for HTTP/3.\r\nFixes #161",
       "createdAt": "2026-01-25T09:02:11Z",
-      "updatedAt": "2026-01-27T04:16:09Z",
+      "updatedAt": "2026-03-02T23:11:12Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/update_security_considerations",
       "headRefOid": "b7a1c820dde7c36b45eca9e3879621e5ec974610",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2026-03-02T23:11:09Z",
+      "mergedAt": "2026-03-02T23:11:08Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "cddbe46aaa769751b670969dc4d72fcfe7388a0b"
+      },
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Going to merge this for the moment, but happy to adjust as we review the whole document",
+          "createdAt": "2026-03-02T23:11:03Z",
+          "updatedAt": "2026-03-02T23:11:03Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDODnOl887dEzrJ",
@@ -10481,6 +10543,26 @@
               "updatedAt": "2026-01-27T04:16:09Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDODnOl887mxeb_",
+          "commit": {
+            "abbreviatedOid": "b7a1c82"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-01T08:29:14Z",
+          "updatedAt": "2026-03-01T08:29:15Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "> send WebTransport streams and datagrams to its peer.\n\nYou're still sending WT streams, etc. So it still seems like a new interaction where the other side is causing you to take in data that you previously would only have done via an HTTP response (for a client) or something like Websockets.\n\nHappy to adjust if something else seems better, suggestions welcome.",
+              "createdAt": "2026-03-01T08:29:14Z",
+              "updatedAt": "2026-03-01T08:29:15Z"
+            }
+          ]
         }
       ]
     },
@@ -10489,24 +10571,26 @@
       "id": "PR_kwDODnOl886_OhuM",
       "title": "Add an example for MAX_STREAMS and stream ordering",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/163",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Add an example for MAX_STREAMS and stream ordering\r\nFixes #159",
       "createdAt": "2026-01-25T12:05:53Z",
-      "updatedAt": "2026-01-27T05:27:41Z",
+      "updatedAt": "2026-03-02T06:32:16Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
-      "baseRefOid": "847c38e5546332be14e8c717ddcfceb7fbd8fd39",
+      "baseRefOid": "90b36ac122be2a4d8f7cffa2b25daada969e3860",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/max_streams_example",
-      "headRefOid": "d7c52fce28d30d6fb97267ffcd6fcafbe222682e",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "9845bd8005f9afea51567a96b1c013011c394b31",
+      "closedAt": "2026-03-02T06:32:13Z",
+      "mergedAt": "2026-03-02T06:32:13Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "7e5f5b95e3c9f2d90c72639df95206c6de1b0e3a"
+      },
       "comments": [
         {
           "author": "martinthomson",
@@ -10514,6 +10598,13 @@
           "body": "Approval remains, but there's an interesting question regarding why this is necessary when the underlying transport is ordered.\r\n\r\nI think that the reason is that stream 3 might be created (and an ID handed to the application), but stream 15 might be the one that is written to first.  That means that stream 15 is the one that first appears on the wire.  The same is already true for HTTP/2 streams natively, so the concept shouldn't be too hard to understand.\r\n\r\nIs it worth adding that tiny bit of explanation?",
           "createdAt": "2026-01-27T05:27:41Z",
           "updatedAt": "2026-01-27T05:27:41Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I think that the reason is that stream 3 might be created (and an ID handed to the application), but stream 15 might be the one that is written to first. That means that stream 15 is the one that first appears on the wire. The same is already true for HTTP/2 streams natively, so the concept shouldn't be too hard to understand.\r\n\r\n> Is it worth adding that tiny bit of explanation?\r\n\r\nGreat idea. That's exactly something that we see in practice -- applications can open a \"connection\" representing that stream, but they don't have to start it or send any data on it, so you might end up with data on a later, higher numbered, stream arriving at the peer before they've ever heard anything about the lower numbered streams.",
+          "createdAt": "2026-03-01T08:31:00Z",
+          "updatedAt": "2026-03-01T08:31:00Z"
         }
       ],
       "reviews": [
@@ -10531,6 +10622,388 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 167,
+      "id": "PR_kwDODnOl887HGSKF",
+      "title": "Add guidance for flow control updates to aid in clarity",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/167",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add guidance for flow control updates to aid in clarity\r\nFixes #166",
+      "createdAt": "2026-03-01T08:10:59Z",
+      "updatedAt": "2026-03-02T23:10:20Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "7e5f5b95e3c9f2d90c72639df95206c6de1b0e3a",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/flow_control_guidance",
+      "headRefOid": "434b9162def0c44a3b4c324f1fd6581c07d98c3f",
+      "closedAt": "2026-03-02T23:10:17Z",
+      "mergedAt": "2026-03-02T23:10:17Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "f3c17e7c9d4e0171f7bee908f2d0f1528dbbf965"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 168,
+      "id": "PR_kwDODnOl887HGZw-",
+      "title": "Split SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI into SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL and SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/168",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Split SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI into SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL and SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE\r\n\r\nFixes #155",
+      "createdAt": "2026-03-01T08:37:43Z",
+      "updatedAt": "2026-03-02T23:11:53Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "1b1154929b8ee0f0e2c633d614459c8fe26de514",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/settings_local_remote",
+      "headRefOid": "e76555d8a521849bfdb5bef2f3649cae13939054",
+      "closedAt": "2026-03-02T23:11:50Z",
+      "mergedAt": "2026-03-02T23:11:50Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "3ba902a8ccefce253d69e3efecec6fca3c1f6655"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887nGopZ",
+          "commit": {
+            "abbreviatedOid": "8f61cab"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T16:33:39Z",
+          "updatedAt": "2026-03-02T16:33:39Z",
+          "comments": [
+            {
+              "originalPosition": 110,
+              "body": "Did you have to renumber these?",
+              "createdAt": "2026-03-02T16:33:39Z",
+              "updatedAt": "2026-03-02T16:33:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887nOFJP",
+          "commit": {
+            "abbreviatedOid": "8f61cab"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T23:03:23Z",
+          "updatedAt": "2026-03-02T23:03:24Z",
+          "comments": [
+            {
+              "originalPosition": 110,
+              "body": "We don't _have_ to, but it would be nice if the ones we used in the final version are logically ordered\n\nOriginally I just made the new one `0x2b66` though",
+              "createdAt": "2026-03-02T23:03:23Z",
+              "updatedAt": "2026-03-02T23:03:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887nOGB9",
+          "commit": {
+            "abbreviatedOid": "8f61cab"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T23:04:08Z",
+          "updatedAt": "2026-03-02T23:04:08Z",
+          "comments": [
+            {
+              "originalPosition": 110,
+              "body": "I'll put these back and we can do that post-WGLC when we change all the other provisional codepoints anyway so implementations can do a single pass at updating.",
+              "createdAt": "2026-03-02T23:04:08Z",
+              "updatedAt": "2026-03-02T23:04:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887nOL4G",
+          "commit": {
+            "abbreviatedOid": "8f61cab"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T23:09:21Z",
+          "updatedAt": "2026-03-02T23:09:22Z",
+          "comments": [
+            {
+              "originalPosition": 110,
+              "body": "Reverted in [e76555d](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/168/commits/e76555d8a521849bfdb5bef2f3649cae13939054)",
+              "createdAt": "2026-03-02T23:09:21Z",
+              "updatedAt": "2026-03-02T23:09:22Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 169,
+      "id": "PR_kwDODnOl887HGrY3",
+      "title": "Update references",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/169",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Update references\r\nFixes #165",
+      "createdAt": "2026-03-01T09:30:25Z",
+      "updatedAt": "2026-03-02T06:38:55Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "90b36ac122be2a4d8f7cffa2b25daada969e3860",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/references",
+      "headRefOid": "5d2ee0663df3c05cfb03cc7f55cee4d6715d2f3c",
+      "closedAt": "2026-03-02T06:38:52Z",
+      "mergedAt": "2026-03-02T06:38:52Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "1b1154929b8ee0f0e2c633d614459c8fe26de514"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 170,
+      "id": "PR_kwDODnOl887HG1rG",
+      "title": "Add editorial text for SETTINGS updates",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/170",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Add editorial text for SETTINGS updates\r\nFixes #156",
+      "createdAt": "2026-03-01T09:58:58Z",
+      "updatedAt": "2026-03-02T11:06:14Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5eb11d7300cde570ad2f349181e5472d6cc7177f",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/settings_updates",
+      "headRefOid": "ec804b0912b8e0c6ea722629f2df06327cbef18d",
+      "closedAt": "2026-03-02T11:06:11Z",
+      "mergedAt": "2026-03-02T11:06:11Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "3f8599c8105e2b9d61f701856c628ee208705979"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 171,
+      "id": "PR_kwDODnOl887HG3_Y",
+      "title": "Update IANA nits",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/171",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Update IANA nits\r\nFixes #158",
+      "createdAt": "2026-03-01T10:03:43Z",
+      "updatedAt": "2026-03-02T06:30:59Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5eb11d7300cde570ad2f349181e5472d6cc7177f",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/iana_review",
+      "headRefOid": "f6bff1f2d06978bd4622e1e3c4f69d629ce9d482",
+      "closedAt": "2026-03-02T06:30:55Z",
+      "mergedAt": "2026-03-02T06:30:55Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "3605dd66ca227d9b5543708f29995407e8b537e8"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887mx2jS",
+          "commit": {
+            "abbreviatedOid": "f6bff1f"
+          },
+          "author": "vasilvv",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-01T10:06:56Z",
+          "updatedAt": "2026-03-01T10:06:56Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 172,
+      "id": "PR_kwDODnOl887HG6eo",
+      "title": "Disallow error codes larger than 32 bits",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/172",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Disallow error codes larger than 32 bits\r\nFixes #160",
+      "createdAt": "2026-03-01T10:09:28Z",
+      "updatedAt": "2026-03-02T23:02:04Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5eb11d7300cde570ad2f349181e5472d6cc7177f",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/big_error",
+      "headRefOid": "70279736c276a7131e0e28c6741c4610b61374b0",
+      "closedAt": "2026-03-02T23:02:01Z",
+      "mergedAt": "2026-03-02T23:02:01Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "3c04dc1b451838fb82f1aa4fdcca6ecefbfe1d4a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887nECxk",
+          "commit": {
+            "abbreviatedOid": "54a85de"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-02T14:32:50Z",
+          "updatedAt": "2026-03-02T14:32:53Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "So our operating theory here is that webtransport application errors are constrained to the 32-bit space that was set aside in the [h3](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http3/draft-ietf-webtrans-http3.html#resetting-data-streams) mapping.  It might be worth citing that.",
+              "createdAt": "2026-03-02T14:32:50Z",
+              "updatedAt": "2026-03-02T14:32:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl887nLbz7",
+          "commit": {
+            "abbreviatedOid": "54a85de"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T20:29:14Z",
+          "updatedAt": "2026-03-02T20:29:15Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Updated in [7027973](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/172/commits/70279736c276a7131e0e28c6741c4610b61374b0)",
+              "createdAt": "2026-03-02T20:29:15Z",
+              "updatedAt": "2026-03-02T20:29:15Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 173,
+      "id": "PR_kwDODnOl887HHKoK",
+      "title": "Add discussion about other HTTP versions",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/173",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add discussion about other HTTP versions as an appendix\r\nFixes #80",
+      "createdAt": "2026-03-01T10:50:47Z",
+      "updatedAt": "2026-03-02T20:21:36Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5eb11d7300cde570ad2f349181e5472d6cc7177f",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/other_versions",
+      "headRefOid": "472be751b921c4e1489ac9dc4128aba04ee0d447",
+      "closedAt": "2026-03-02T20:21:33Z",
+      "mergedAt": "2026-03-02T20:21:33Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "f0c355b74492d6869abe75eb3f6e4c6d8ca3aa31"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl887nENya",
+          "commit": {
+            "abbreviatedOid": "472be75"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-02T14:40:55Z",
+          "updatedAt": "2026-03-02T14:40:55Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 174,
+      "id": "PR_kwDODnOl887HHjf-",
+      "title": "Editorial fixes",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/174",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "A few minor grammatical issues\r\nRewrap",
+      "createdAt": "2026-03-01T12:02:55Z",
+      "updatedAt": "2026-03-01T12:03:43Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "5eb11d7300cde570ad2f349181e5472d6cc7177f",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/very_editorial",
+      "headRefOid": "a7e26b79dc124ea8f5eb257c187cd5b983ba63aa",
+      "closedAt": "2026-03-01T12:03:41Z",
+      "mergedAt": "2026-03-01T12:03:41Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "90b36ac122be2a4d8f7cffa2b25daada969e3860"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }

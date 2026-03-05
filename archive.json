@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-03T01:46:41.220302+00:00",
+  "timestamp": "2026-03-05T01:43:51.477009+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -1480,7 +1480,7 @@
       ],
       "body": "WebTransport over HTTP/2, as it's currently defined, is, at its core, a protocol that is semantically compatible with QUIC, but works over capsules (i.e. TLV over TCP).  This means that it might be useful outside of HTTP/2 context.\r\n\r\nThe main gotcha is, of course, that we do use settings and headers.  The way we use settings is an optimization that only makes sense for pooling; on the other hand, I don't think we can function without the headers.\r\n\r\nSome possible applications we may to consider / discuss:\r\n\r\n1. HTTP/1.1 should just work, since capsules were designed with H/1 support in mind.\r\n2. Using it via WebSockets is possible, but you'd have to figure out how to exchange headers.",
       "createdAt": "2023-04-18T19:20:28Z",
-      "updatedAt": "2026-03-02T20:21:34Z",
+      "updatedAt": "2026-03-03T02:09:03Z",
       "closedAt": "2026-03-02T20:21:34Z",
       "comments": [
         {
@@ -1643,6 +1643,13 @@
           "body": "> we will not define how to do webtransport-over-h1 in the webtransport-over-h1 draft\n\nI don't believe there was a consensus to that effect.",
           "createdAt": "2025-08-06T13:42:10Z",
           "updatedAt": "2025-08-06T13:42:10Z"
+        },
+        {
+          "author": "guest271314",
+          "authorAssociation": "NONE",
+          "body": "I've been trying to figure out how to create a WebTransport server in the browser over Direct Sockets UDPSocket. Havn't been able to get past the TLS handshake using Web Cryptography API, yet.",
+          "createdAt": "2026-03-03T02:09:03Z",
+          "updatedAt": "2026-03-03T02:09:03Z"
         }
       ]
     },

@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 3 September 2026                                       T. Pauly
+Expires: 8 September 2026                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 3 September 2026                                       T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                            2 March 2026
+                                                            7 March 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 September 2026.
+   This Internet-Draft will expire on 8 September 2026.
 
 Copyright Notice
 
@@ -286,7 +286,7 @@ Table of Contents
    the client did not include a suitable protocol.
 
    Both WT-Available-Protocols and WT-Protocol are defined in
-   Section 3.4 of [WEBTRANSPORT-H3].
+   Section 3.3 of [WEBTRANSPORT-H3].
 
 3.4.  Session Termination and Error Handling
 
@@ -1601,9 +1601,9 @@ WebTransport Data
 
    [OVERVIEW] Kinnear, E. and V. Vasiliev, "The WebTransport Protocol
               Framework", Work in Progress, Internet-Draft, draft-ietf-
-              webtrans-overview-11, 20 October 2025,
+              webtrans-overview-12, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-overview-11>.
+              webtrans-overview-12>.
 
    [PARTIAL-RESET]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
@@ -1655,9 +1655,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-14, 20 October 2025,
+              ietf-webtrans-http3-15, 2 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-14>.
+              webtrans-http3-15>.
 
 12.2.  Informative References
 

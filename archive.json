@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-05T01:43:51.477009+00:00",
+  "timestamp": "2026-03-08T01:44:44.808891+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -11010,6 +11010,42 @@
         "oid": "90b36ac122be2a4d8f7cffa2b25daada969e3860"
       },
       "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 175,
+      "id": "PR_kwDODnOl887IocZu",
+      "title": "Fix reference to WT-Available-Protocols and WT-Protocol",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/175",
+      "state": "MERGED",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The header fields are defined in Section 3.3: https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-15#name-application-protocol-negoti",
+      "createdAt": "2026-03-07T00:17:37Z",
+      "updatedAt": "2026-03-07T00:38:22Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "3ba902a8ccefce253d69e3efecec6fca3c1f6655",
+      "headRepository": "Acconut/draft-ietf-webtrans-http2",
+      "headRefName": "patch-2",
+      "headRefOid": "5a6de8151d21bb2f99491637e45eca15081be3de",
+      "closedAt": "2026-03-07T00:38:22Z",
+      "mergedAt": "2026-03-07T00:38:22Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "57ed9dbc678277a8f2503bb726be4c607e85b58d"
+      },
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, a moving target. Thank you! ",
+          "createdAt": "2026-03-07T00:38:02Z",
+          "updatedAt": "2026-03-07T00:38:02Z"
+        }
+      ],
       "reviews": []
     }
   ]

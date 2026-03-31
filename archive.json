@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-08T01:44:44.808891+00:00",
+  "timestamp": "2026-03-31T01:56:29.624174+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3424,6 +3424,22 @@
       "createdAt": "2026-03-01T08:07:24Z",
       "updatedAt": "2026-03-02T23:10:18Z",
       "closedAt": "2026-03-02T23:10:18Z",
+      "comments": []
+    },
+    {
+      "number": 176,
+      "id": "I_kwDODnOl8874Yx1k",
+      "title": "WGLC Review",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/176",
+      "state": "OPEN",
+      "author": "afrind",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> A. Frindell\nFacebook Inc.\n\nHeh, it\u2019s called Meta now.  Probably needs fixing on H3 also.\n\n> can provide many of the capabilities of WebTransport over HTTP/2\n\ns/many of/\n\n> By relying only on generic HTTP semantics, this protocol might allow deployment using any HTTP version. However, this document only defines negotiation for HTTP/2...\n\nWell now H3 says you can do this over H3.\n\n>  Note that this document distinguishes between a WebTransport server and an HTTP/2 server. \n\nH3 says a lot more here.  Should we match?\n\n> SETTINGS_WT_MAX_SESSIONS\n\nWait, now I\u2019m confused.  H2 has MAX_SESSIONS but H3 does not?\n\n>  If the resource does not, the server SHOULD reply with status code 406 \n\nThis doesn\u2019t match H3 - which says 404\n\n> it MAY accept the session\n\nSee similar comment in h3\n\nIs it ok that H3 and H3 both reference each other?\n\n> Connection Mobility\n\nI don\u2019t think H3 mentions Connection Mobility\n\n>   WebTransport Application-Supplied Exporter Label (8..),\n\nSame question as h3 (8..) ?\n\n> WebTransport capsules mirror their QUIC frame counterparts as closely as possible \n\nThis is actually not true.  QMux mirror\u2019s as closely as possible. \n\n> 0x190B4D38\n\nRenumbering\n\n> allows either endpoint to abruptly terminate the sending part of a WebTransport stream\n\nRST_STREAM is only for the sender, right?\n\n> A receiver MUST treat the receipt of a WT_RESET_STREAM with a Reliable Size smaller than the number of bytes it has received on the stream as a session error.\n\nwith a Reliable Size **larger** than the number of bytes, right??\n\n> needs to be delivered to the application even though the stream is reset.\n\ndelivered to the application before the reset event?\n\n>  including the same error code, \n\nRFC9000 says you MUST send RST but SHOULD copy the code\n\n> The WT_MAX_DATA capsule defines special intermediary handling\n\nBut we also talk about intermediaries that might simply tunnel the entire stream - are these in conflict?\n\n> strongly-ordered transport \n\nWhat does that term mean here?  We\u2019re talking about the way flow control works?\n\n> For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a WT_STREAM capsule without error.\n\nThis could use an explanation of the error you\u2019re going to get.\n\n> Examples\n\nIs this section still helpful?\n",
+      "createdAt": "2026-03-30T04:34:49Z",
+      "updatedAt": "2026-03-30T04:34:49Z",
+      "closedAt": null,
       "comments": []
     }
   ],

@@ -606,7 +606,10 @@ The WT_RESET_STREAM capsule defines the following fields:
      error codes are constrained to an unsigned 32-bit range defined in
      {{Section 4.4 of WEBTRANSPORT-H3}}.  This value MUST NOT exceed 0xffffffff,
      values larger than this MUST be treated as a session error of type
-     WEBTRANSPORT_ERROR.
+     WEBTRANSPORT_ERROR.  The range of values reserved by the WebTransport
+     framework (see {{Section 3.3.1 of OVERVIEW}}) MUST NOT be sent by
+     applications; however, they are valid wire values used by the WebTransport
+     implementation.
 
    Reliable Size:
    : A variable-length integer indicating the amount of data that needs to be
@@ -654,7 +657,10 @@ The WT_STOP_SENDING capsule defines the following fields:
      constrained to an unsigned 32-bit range defined in
      {{Section 4.4 of WEBTRANSPORT-H3}}.  This value MUST NOT exceed 0xffffffff,
      values larger than this MUST be treated as a session error of type
-     WEBTRANSPORT_ERROR.
+     WEBTRANSPORT_ERROR.  The range of values reserved by the WebTransport
+     framework (see {{Section 3.3.1 of OVERVIEW}}) MUST NOT be sent by
+     applications; however, they are valid wire values used by the WebTransport
+     implementation.
 
 As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
 capsule sends a WT_RESET_STREAM capsule in response, including the same error

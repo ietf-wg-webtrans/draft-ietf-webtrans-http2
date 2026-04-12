@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-31T01:56:29.624174+00:00",
+  "timestamp": "2026-04-12T02:04:35.897504+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -11062,6 +11062,32 @@
           "updatedAt": "2026-03-07T00:38:02Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 177,
+      "id": "PR_kwDODnOl887Ri49E",
+      "title": "Clarify handling of reserved error codes",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/177",
+      "state": "OPEN",
+      "author": "afrind",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add text to WT_RESET_STREAM and WT_STOP_SENDING capsule definitions noting that reserved error codes (Section 3.3.1 of OVERVIEW) MUST NOT be sent by applications, but are valid wire values used by the WebTransport implementation.\r\n\r\nSimilar to ietf-wg-webtrans/draft-ietf-webtrans-http3#264.",
+      "createdAt": "2026-04-10T19:08:22Z",
+      "updatedAt": "2026-04-10T19:08:23Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "afrind/reserved-error-codes",
+      "headRefOid": "c632dca6dac20964669e3c52f94624f7986685a4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]

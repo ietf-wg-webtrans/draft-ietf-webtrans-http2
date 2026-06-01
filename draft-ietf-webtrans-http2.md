@@ -572,17 +572,17 @@ type=0x190B4D39 and allows either endpoint to abruptly terminate its sending
 side of a WebTransport stream.
 
 After sending a WT_RESET_STREAM capsule, an endpoint ceases transmission of
-WT_STREAM capsules on the identified stream. A receiver of a WT_RESET_STREAM
-capsule can discard any data in excess of the Reliable Size indicated, even if
-that data was already received.
+WT_STREAM capsules on the identified stream.
 
 The WT_RESET_STREAM capsule follows the design of the QUIC RESET_STREAM_AT frame
-{{PARTIAL-RESET}}.  Consequently, it includes a Reliable Size field.  A
-WT_RESET_STREAM capsule MUST be sent after WT_STREAM capsules that include an
-amount of data equal to or in excess of the value in the Reliable Size field.  A
-receiver MUST treat the receipt of a WT_RESET_STREAM with a Reliable Size
-smaller than the number of bytes it has
-received on the stream as a session error.
+{{PARTIAL-RESET}}.  Consequently, it includes a Reliable Size field.  Because
+WT_STREAM and WT_RESET_STREAM capsules are delivered in order on a single
+HTTP/2 stream, the Reliable Size MUST equal the total number of bytes the
+sender has sent via WT_STREAM capsules on the stream.  A receiver MUST close
+the WebTransport session with a WEBTRANSPORT_STREAM_STATE_ERROR session error
+if the Reliable Size in a WT_RESET_STREAM capsule does not equal the number of
+bytes received on that stream: a smaller value contradicts data already
+delivered, and a larger value promises bytes that cannot subsequently arrive.
 
 ~~~
 WT_RESET_STREAM Capsule {

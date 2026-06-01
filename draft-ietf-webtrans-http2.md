@@ -22,7 +22,7 @@ author:
   -
     ins: A. Frindell
     name: Alan Frindell
-    organization: Facebook Inc.
+    organization: Meta Platforms, Inc.
     email: afrind@fb.com
   -
     ins: E. Kinnear
@@ -53,7 +53,7 @@ author:
   -
     ins: G. Xie
     name: Guowu Xie
-    organization: Facebook Inc.
+    organization: Meta Platforms, Inc.
     email: woo@fb.com
 
 normative:
@@ -76,7 +76,7 @@ informative:
 
 WebTransport defines a set of low-level communications features designed for
 client-server interactions that are initiated by Web clients.  This document
-describes a protocol that can provide many of the capabilities of WebTransport
+describes a protocol that can provide the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available.
 

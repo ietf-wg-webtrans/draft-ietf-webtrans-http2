@@ -70,7 +70,6 @@ informative:
   DATAGRAM: RFC9221
   HTTP3: RFC9114
   QUIC: RFC9000
-  MPTCP: RFC6824
 
 --- abstract
 
@@ -478,14 +477,6 @@ Stream Independence:
 
 : WebTransport over HTTP/2 does not support stream independence, as HTTP/2
   inherently has head-of-line blocking.
-
-Connection Mobility:
-
-: WebTransport over HTTP/2 does not support connection mobility, unless an
-  underlying transport protocol that supports multipath or migration, such as
-  MPTCP {{MPTCP}}, is used underneath HTTP/2 and TLS. Without such
-  support, WebTransport over HTTP/2 connections cannot survive network
-  transitions.
 
 ## WebTransport Streams
 

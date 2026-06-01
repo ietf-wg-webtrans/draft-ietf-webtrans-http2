@@ -228,7 +228,7 @@ TLS Application-Layer Protocol Negotiation Extension (ALPN) {{?RFC7301}}; the
 intent is to simplify porting pre-existing protocols that rely on this type of
 functionality.
 
-The user agent MAY include a `WT-Available-Protocols` header field in the
+The client MAY include a `WT-Available-Protocols` header field in the
 CONNECT request. The `WT-Available-Protocols` enumerates the possible protocols
 in preference order. If the server receives such a header, it MAY include a
 `WT-Protocol` field in a successful (2xx) response. If it does, the server MUST

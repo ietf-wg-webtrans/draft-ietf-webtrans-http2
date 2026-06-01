@@ -1113,7 +1113,7 @@ Table of Contents
       provided by the application closing the connection.  The message
       takes up the remainder of the capsule, and its length MUST NOT
       exceed 1024 bytes.  Senders that truncate an application-supplied
-      message SHOULD do so at a UTF-8 character boundary.
+      message MUST do so at a UTF-8 character boundary.
 
       If the Application Error Message exceeds 1024 bytes or is not
       valid UTF-8, the receiver MUST treat this as a session error of

@@ -676,7 +676,7 @@ data.
 The Type field in the WT_STREAM capsule is either 0x190B4D3B or 0x190B4D3C.  The
 least significant bit in the capsule type is the FIN bit (0x01), indicating when
 set that the capsule marks the end of the stream in one direction.  Stream data
-consists of any number of 0x190B4D3B capsules followed by a terminal 0x190B4D3C
+consists of any number of 0x190B4D3C capsules followed by a terminal 0x190B4D3B
 capsule.
 
 ~~~

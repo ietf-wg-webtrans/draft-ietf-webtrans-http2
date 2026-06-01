@@ -124,9 +124,8 @@ WebTransport servers are identified by an HTTPS URI as defined in
 {{Section 4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, the server sends a
-SETTINGS_WT_MAX_SESSIONS setting with a value greater than "0" to indicate that
-it supports WebTransport over HTTP/2. The value of the setting is the number of
-concurrent sessions the server is willing to receive. Note that the client does
+SETTINGS_WT_ENABLED setting with a value greater than "0" to indicate that
+it supports WebTransport over HTTP/2. Note that the client does
 not need to send any value to indicate support for WebTransport; clients
 indicate support for WebTransport by using the "webtransport" upgrade token in
 CONNECT requests establishing WebTransport sessions (see {{upgrade-token}}).
@@ -176,10 +175,21 @@ A WebTransport session is a communication context between a client and server
 
 ## Establishing a WebTransport-Capable HTTP/2 Connection
 
-In order to indicate potential support for WebTransport, the server MUST send
-the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1" in its SETTINGS
-frame.  The client MUST NOT send a WebTransport request until it has received
-the setting indicating extended CONNECT support from the server.
+A WebTransport-Capable HTTP/2 connection requires the server to signal support
+for WebTransport over HTTP/2 using a setting.
+
+This document defines a SETTINGS_WT_ENABLED setting that WebTransport servers
+use to indicate their support for WebTransport.  The default value for the
+SETTINGS_WT_ENABLED setting is "0", meaning that the server does not support
+WebTransport.  Clients MUST NOT attempt to establish WebTransport sessions
+until they have received the setting indicating WebTransport support from the
+server.
+
+WebTransport over HTTP/2 uses extended CONNECT as defined in {{!RFC8441}},
+which defines the SETTINGS_ENABLE_CONNECT_PROTOCOL setting.  The server MUST
+send the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1" in its
+SETTINGS frame.  The client MUST NOT send a WebTransport request until it has
+received the setting indicating extended CONNECT support from the server.
 
 ## Creating a New Session
 
@@ -1312,6 +1322,28 @@ Reference:
 
 The following entries are added to the "HTTP/2 Settings" registry established by
 {{HTTP2}}:
+
+{: anchor="SETTINGS_WT_ENABLED"}
+
+The SETTINGS_WT_ENABLED parameter indicates that the endpoint supports
+WebTransport over HTTP/2.  The default value for the SETTINGS_WT_ENABLED
+parameter is "0", meaning that the endpoint does not support WebTransport.
+
+Setting Name:
+
+: SETTINGS_WT_ENABLED
+
+Code:
+
+: 0x2b60
+
+Initial Value:
+
+: 0
+
+Specification:
+
+: This document
 
 {: anchor="SETTINGS_WT_INITIAL_MAX_DATA"}
 

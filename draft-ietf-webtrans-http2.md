@@ -610,8 +610,8 @@ The WT_RESET_STREAM capsule defines the following fields:
      WT_ERROR.
 
    Reliable Size:
-   : A variable-length integer indicating the amount of data that needs to be
-     delivered to the application even though the stream is reset.
+   : A variable-length integer indicating the amount of data delivered on the
+     stream before the reset event.
 
 Unlike the equivalent QUIC frame, this capsule does not include a Final Size
 field. In-order delivery of WT_STREAM capsules ensures that the amount of

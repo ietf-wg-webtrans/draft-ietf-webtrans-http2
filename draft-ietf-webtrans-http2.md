@@ -188,13 +188,19 @@ desired WebTransport server. In a Web context, the request MUST include an
 requested the creation of the session.
 
 Upon receiving an extended CONNECT request with a `:protocol` field set to
-`webtransport`, the HTTP server checks if the identified resource supports
-WebTransport sessions. If the resource does not, the server SHOULD reply with
-status code 406 ({{Section 15.5.7 of HTTP}}). If it does, it MAY accept the
-session by replying with a 2xx series status code, as defined in
-{{Section 15.3 of HTTP}}. The WebTransport server MUST verify the `Origin`
-header to ensure that the specified origin is allowed to access the server
-in question.
+`webtransport`, the HTTP server can check if the target resource
+({{Section 7.1 of HTTP}}) supports WebTransport.  If the target resource does
+not support WebTransport, the server SHOULD reply with status code 405
+({{Section 15.5.6 of HTTP}}).
+
+When the request contains the `Origin` header, the WebTransport server MUST
+verify the `Origin` header to ensure that the specified origin is allowed to
+access the server in question.  If the verification fails, the WebTransport
+server SHOULD reply with status code 403 ({{Section 15.5.4 of HTTP}}).
+
+If these checks, including any specific to the server and target resource, pass,
+the session can be accepted by replying with a 2xx series status code, as
+defined in {{Section 15.3 of HTTP}}.
 
 A WebTransport session is established when the server sends a 2xx response. A
 server generates that response from the request header, not from the contents of

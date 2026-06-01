@@ -658,8 +658,9 @@ The WT_STOP_SENDING capsule defines the following fields:
      WT_ERROR.
 
 As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
-capsule sends a WT_RESET_STREAM capsule in response, including the same error
-code, if the stream is the "Ready" or "Send" state.
+capsule sends a WT_RESET_STREAM capsule in response if the stream is in the
+"Ready" or "Send" state.  The error code from the WT_STOP_SENDING capsule
+SHOULD be copied into the WT_RESET_STREAM capsule.
 
 A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in

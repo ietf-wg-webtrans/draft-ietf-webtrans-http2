@@ -568,8 +568,8 @@ but MAY treat non-zero padding as a [stream error](#errors).
 *[WT_RESET_STREAM]: #
 
 A WT_RESET_STREAM capsule is an HTTP capsule {{HTTP-DATAGRAM}} of
-type=0x190B4D39 and allows either endpoint to abruptly terminate the sending
-part of a WebTransport stream.
+type=0x190B4D39 and allows either endpoint to abruptly terminate its sending
+side of a WebTransport stream.
 
 After sending a WT_RESET_STREAM capsule, an endpoint ceases transmission of
 WT_STREAM capsules on the identified stream. A receiver of a WT_RESET_STREAM

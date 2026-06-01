@@ -106,11 +106,17 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
-This document follows terminology defined in {{Section 1.2 of OVERVIEW}}. Note
-that this document distinguishes between a WebTransport server and an HTTP/2
-server. An HTTP/2 server is the server that terminates HTTP/2 connections; a
-WebTransport server is an application that accepts WebTransport sessions, which
-can be accessed using HTTP/2 and this protocol.
+This document follows terminology defined in {{Section 1.2 of OVERVIEW}}.
+WebTransport servers and HTTP/2 servers are distinguished here as two separate
+roles: an HTTP/2 server terminates HTTP/2 connections, while a WebTransport
+server is an application that accepts WebTransport sessions, accessed via an
+HTTP/2 server, possibly through zero or more intermediaries.
+
+An application client is user-provided or developer-provided code, often
+untrusted, that uses the interface offered by the WebTransport client to
+communicate with an application server.  The application server uses the
+interface offered by the WebTransport server to accept incoming WebTransport
+sessions.
 
 # Protocol Overview
 

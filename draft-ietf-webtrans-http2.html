@@ -2513,7 +2513,10 @@ following fields:<a href="#section-6.12-4" class="pilcrow">¶</a></p>
           <dd style="margin-left: 1.5em" id="section-6.12-5.4">
             <p id="section-6.12-5.4.1">A UTF-8 encoded error message string provided by the application closing the
 connection.  The message takes up the remainder of the capsule, and its
-length MUST NOT exceed 1024 bytes.<a href="#section-6.12-5.4.1" class="pilcrow">¶</a></p>
+length MUST NOT exceed 1024 bytes.  Senders that truncate an
+application-supplied message MUST do so at a UTF-8 character boundary.<a href="#section-6.12-5.4.1" class="pilcrow">¶</a></p>
+<p id="section-6.12-5.4.2">If the Application Error Message exceeds 1024 bytes or is not valid UTF-8,
+the receiver MUST treat this as a session error of type WEBTRANSPORT_ERROR.<a href="#section-6.12-5.4.2" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>

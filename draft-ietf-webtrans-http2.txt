@@ -1117,7 +1117,12 @@ Table of Contents
    Application Error Message:  A UTF-8 encoded error message string
       provided by the application closing the connection.  The message
       takes up the remainder of the capsule, and its length MUST NOT
-      exceed 1024 bytes.
+      exceed 1024 bytes.  Senders that truncate an application-supplied
+      message MUST do so at a UTF-8 character boundary.
+
+      If the Application Error Message exceeds 1024 bytes or is not
+      valid UTF-8, the receiver MUST treat this as a session error of
+      type WEBTRANSPORT_ERROR.
 
    An endpoint that sends a WT_CLOSE_SESSION capsule MUST then half-
    close the stream by sending an HTTP/2 frame with the END_STREAM flag

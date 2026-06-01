@@ -1125,9 +1125,11 @@ state for streams. A simple forwarding intermediary that
 directly translates one type of protocol unit into another without understanding
 the underlying state might cause a receiver to abort the session.
 
-For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
-forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
-WT_STREAM capsule without error.
+For instance, after a RESET_STREAM frame is forwarded as a WT_RESET_STREAM
+capsule, forwarding another RESET_STREAM as a WT_RESET_STREAM or a STREAM
+frame as a WT_STREAM on the same stream will cause the receiving endpoint to
+signal a WEBTRANSPORT_STREAM_STATE_ERROR (see {{WT_RESET_STREAM}} and
+{{WT_STREAM}}).
 
 # Requirements on TLS Usage
 

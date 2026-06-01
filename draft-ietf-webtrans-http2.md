@@ -528,9 +528,8 @@ zero-length if omitted.
 
 # WebTransport Capsules
 
-WebTransport capsules mirror their QUIC frame counterparts as closely as
-possible to enable maximal reuse of any applicable QUIC infrastructure by
-implementors.
+WebTransport capsules are modeled after QUIC frames where applicable, to
+enable reuse of QUIC infrastructure by implementors.
 
 WebTransport capsules use the Capsule Protocol defined in
 {{Section 3.2 of HTTP-DATAGRAM}}.

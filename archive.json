@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-19T02:08:44.964328+00:00",
+  "timestamp": "2026-06-02T03:28:25.442696+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3434,27 +3434,100 @@
       "state": "OPEN",
       "author": "afrind",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
       "body": "> A. Frindell\nFacebook Inc.\n\nHeh, it\u2019s called Meta now.  Probably needs fixing on H3 also.\n\n> can provide many of the capabilities of WebTransport over HTTP/2\n\ns/many of/\n\n> By relying only on generic HTTP semantics, this protocol might allow deployment using any HTTP version. However, this document only defines negotiation for HTTP/2...\n\nWell now H3 says you can do this over H3.\n\n>  Note that this document distinguishes between a WebTransport server and an HTTP/2 server. \n\nH3 says a lot more here.  Should we match?\n\n> SETTINGS_WT_MAX_SESSIONS\n\nWait, now I\u2019m confused.  H2 has MAX_SESSIONS but H3 does not?\n\n>  If the resource does not, the server SHOULD reply with status code 406 \n\nThis doesn\u2019t match H3 - which says 404\n\n> it MAY accept the session\n\nSee similar comment in h3\n\nIs it ok that H3 and H3 both reference each other?\n\n> Connection Mobility\n\nI don\u2019t think H3 mentions Connection Mobility\n\n>   WebTransport Application-Supplied Exporter Label (8..),\n\nSame question as h3 (8..) ?\n\n> WebTransport capsules mirror their QUIC frame counterparts as closely as possible \n\nThis is actually not true.  QMux mirror\u2019s as closely as possible. \n\n> 0x190B4D38\n\nRenumbering\n\n> allows either endpoint to abruptly terminate the sending part of a WebTransport stream\n\nRST_STREAM is only for the sender, right?\n\n> A receiver MUST treat the receipt of a WT_RESET_STREAM with a Reliable Size smaller than the number of bytes it has received on the stream as a session error.\n\nwith a Reliable Size **larger** than the number of bytes, right??\n\n> needs to be delivered to the application even though the stream is reset.\n\ndelivered to the application before the reset event?\n\n>  including the same error code, \n\nRFC9000 says you MUST send RST but SHOULD copy the code\n\n> The WT_MAX_DATA capsule defines special intermediary handling\n\nBut we also talk about intermediaries that might simply tunnel the entire stream - are these in conflict?\n\n> strongly-ordered transport \n\nWhat does that term mean here?  We\u2019re talking about the way flow control works?\n\n> For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a WT_STREAM capsule without error.\n\nThis could use an explanation of the error you\u2019re going to get.\n\n> Examples\n\nIs this section still helpful?\n",
       "createdAt": "2026-03-30T04:34:49Z",
-      "updatedAt": "2026-03-30T04:34:49Z",
+      "updatedAt": "2026-06-01T12:06:05Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": ">> SETTINGS_WT_MAX_SESSIONS\n\n> Wait, now I\u2019m confused. H2 has MAX_SESSIONS but H3 does not?\n\nSigh. I'm thinking we probably should go one more tick around the merry-go-round and make H2 match H3 again. Let me do that in a separate issue so that we can discuss independently from the rest of these.\n\nCloned to #185 ",
+          "createdAt": "2026-06-01T11:19:58Z",
+          "updatedAt": "2026-06-01T11:20:59Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": ">> The WT_MAX_DATA capsule defines special intermediary handling\n\n> But we also talk about intermediaries that might simply tunnel the entire stream - are these in conflict?\n\nWe have text that says:\n\n> Because flow control in WebTransport is hop-by-hop and does not provide an end-to-end signal, intermediaries MUST consume flow control signals and express their own flow control limits to the next hop. [...] Intermediaries are responsible for storing any data for which they advertise flow control credit if that data cannot be immediately forwarded to the next hop.\n\nWe don't technically allow anyone to just \"tunnel\" the entire stream, except via a note that (as a special case), if both sides look the same to you, you can probably just pass everything along. \n\nIn practice, this means that someone who is doing that \"tunneling\" is fine, but I think the note about special intermediary handling should stay.",
+          "createdAt": "2026-06-01T11:53:31Z",
+          "updatedAt": "2026-06-01T11:53:31Z"
+        }
+      ]
     },
     {
       "number": 178,
       "id": "I_kwDODnOl887_iRe0",
       "title": "nits: 0x190B4D3B is the terminal WT_STREAM frame",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/178",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tatsuhiro-t",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "editorial",
+        "has pull request"
+      ],
       "body": "https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/draft-ietf-webtrans-http2.html#section-6.4\n\n> The Type field in the [WT_STREAM](https://ietf-wg-webtrans.github.io/draft-ietf-webtrans-http2/draft-ietf-webtrans-http2.html#WT_STREAM) capsule is either 0x190B4D3B or 0x190B4D3C. The least significant bit in the capsule type is the FIN bit (0x01), indicating when set that the capsule marks the end of the stream in one direction. Stream data consists of any number of 0x190B4D3B capsules followed by a terminal 0x190B4D3C capsule.\n\nThe last statement:\n\n> Stream data consists of any number of 0x190B4D3B capsules followed by a terminal 0x190B4D3C capsule.\n\nshould be\n\n> Stream data consists of any number of 0x190B4D3C capsules followed by a terminal 0x190B4D3B capsule.\n\nbecause 0x190B4D3B has the least significant bit (FIN bit 0x01) set, while 0x190B4D3C does not.\n",
       "createdAt": "2026-04-18T07:22:26Z",
-      "updatedAt": "2026-04-18T07:22:26Z",
+      "updatedAt": "2026-06-01T23:25:37Z",
+      "closedAt": "2026-06-01T23:25:37Z",
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Great catch! Updating.",
+          "createdAt": "2026-06-01T12:10:18Z",
+          "updatedAt": "2026-06-01T12:10:18Z"
+        }
+      ]
+    },
+    {
+      "number": 182,
+      "id": "I_kwDODnOl888AAAABD_GybQ",
+      "title": "Should we use WT_* instead of WEBTRANSPORT_* everywhere?",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/182",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "editorial",
+        "has pull request"
+      ],
+      "body": "In HTTP/3, we updated to use WT_* everywhere so it's less typing and less to say. \n\nWe have mostly done that in HTTP/2, but haven't done that for the errors, such as: \n\nWEBTRANSPORT_ERROR\nWEBTRANSPORT_STREAM_STATE_ERROR\nWEBTRANSPORT_FLOW_CONTROL_ERROR\n\nSeems straightforward to change these to WT_* instead.",
+      "createdAt": "2026-06-01T10:52:33Z",
+      "updatedAt": "2026-06-01T11:14:01Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 185,
+      "id": "I_kwDODnOl888AAAABD_SD2A",
+      "title": "Remove SETTINGS_WT_MAX_SESSIONS and make negotiation match H3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/185",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ekinnear"
+      ],
+      "labels": [
+        "has pull request"
+      ],
+      "body": "Splitting out an issue to track just this part: \n\n> SETTINGS_WT_MAX_SESSIONS\n\nWait, now I\u2019m confused.  H2 has MAX_SESSIONS but H3 does not?\n",
+      "createdAt": "2026-06-01T11:20:35Z",
+      "updatedAt": "2026-06-01T11:27:47Z",
       "closedAt": null,
       "comments": []
     }
@@ -11105,6 +11178,389 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 179,
+      "id": "PR_kwDODnOl887hNyaB",
+      "title": "Update status code text to match HTTP/3",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/179",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update status code text to match HTTP/3\r\n\r\nJust bringing over the other text and switch from 406->405.",
+      "createdAt": "2026-06-01T04:01:45Z",
+      "updatedAt": "2026-06-01T06:57:12Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/status_code",
+      "headRefOid": "192512851480e3237d3eb060746ff4c62bf06e19",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBjOLCA",
+          "commit": {
+            "abbreviatedOid": "1925128"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T06:57:08Z",
+          "updatedAt": "2026-06-01T06:57:12Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "```suggestion\nA server then performs any checks specific to the server and target resource.\nIf all checks pass,\nthe session can be accepted by replying with a 2xx series status code, as\ndefined in {{Section 15.3 of HTTP}}.\n```",
+              "createdAt": "2026-06-01T06:57:09Z",
+              "updatedAt": "2026-06-01T06:57:12Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 180,
+      "id": "PR_kwDODnOl887hUq2Z",
+      "title": "Match H3 for application close messages",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/180",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Match H3 for application close messages",
+      "createdAt": "2026-06-01T10:35:12Z",
+      "updatedAt": "2026-06-01T21:36:59Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/close_session_message",
+      "headRefOid": "be466d2a349d58b6cd3da1812695797f8d100be3",
+      "closedAt": "2026-06-01T21:36:56Z",
+      "mergedAt": "2026-06-01T21:36:56Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "6ee08f24c1b97a3e8898118d22f330e837e8edad"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBol2EA",
+          "commit": {
+            "abbreviatedOid": "be466d2"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T20:55:12Z",
+          "updatedAt": "2026-06-01T20:55:12Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 181,
+      "id": "PR_kwDODnOl887hU9AJ",
+      "title": "Match H3: Specify receiver behavior for invalid Maximum Streams values",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/181",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add WEBTRANSPORT_FLOW_CONTROL_ERROR receiver behavior for WT_MAX_STREAMS and WT_STREAMS_BLOCKED Maximum Streams values exceeding 2^60, matching the H3 text and the rest of the H2 flow-control section.\r\n\r\nFixes #267",
+      "createdAt": "2026-06-01T10:49:00Z",
+      "updatedAt": "2026-06-01T21:36:32Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/streams_error_scope",
+      "headRefOid": "a313da8f424aeabb821a52ef939c142d921ddea6",
+      "closedAt": "2026-06-01T21:36:29Z",
+      "mergedAt": "2026-06-01T21:36:29Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "f87c51968d637eb4600057d8b8c4fc3f35a680f3"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBozPOg",
+          "commit": {
+            "abbreviatedOid": "a313da8"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T21:35:26Z",
+          "updatedAt": "2026-06-01T21:35:26Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 183,
+      "id": "PR_kwDODnOl887hVKJN",
+      "title": "Rename WEBTRANSPORT_* to WT_*",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/183",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Rename WEBTRANSPORT_* to WT_*\r\n\r\nFixes #182",
+      "createdAt": "2026-06-01T10:58:40Z",
+      "updatedAt": "2026-06-01T23:12:00Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/wt_error_naming",
+      "headRefOid": "2035d7bc5bb0484a8cd9efb1eb7ed5016c7c7215",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBpMGqA",
+          "commit": {
+            "abbreviatedOid": "2035d7b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T23:11:38Z",
+          "updatedAt": "2026-06-01T23:12:00Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "Unrelated change.  I assume that this is just to check if I was paying attention, right?",
+              "createdAt": "2026-06-01T23:11:38Z",
+              "updatedAt": "2026-06-01T23:12:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 184,
+      "id": "PR_kwDODnOl887hVeKX",
+      "title": "Editorial fixes from Alan's WGLC review",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/184",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "* Update \"Facebook Inc.\" to \"Meta Platforms, Inc.\".\r\n* Drop \"many of\" from the Abstract.",
+      "createdAt": "2026-06-01T11:13:23Z",
+      "updatedAt": "2026-06-01T23:15:45Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/wglc_176_editorial",
+      "headRefOid": "d4bbbe7d21d271e9a72263760728c27af7c861e0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBk_G0A",
+          "commit": {
+            "abbreviatedOid": "d4bbbe7"
+          },
+          "author": "mxinden",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T11:44:30Z",
+          "updatedAt": "2026-06-01T11:44:30Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABBpNHyg",
+          "commit": {
+            "abbreviatedOid": "d4bbbe7"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Weird combination of fixes.\n\nAlso, I generally use \"Meta\", rather than something more formal, so unless someone explicitly requested the \"Inc\", I'd drop it.",
+          "createdAt": "2026-06-01T23:15:45Z",
+          "updatedAt": "2026-06-01T23:15:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 186,
+      "id": "PR_kwDODnOl887hVwbs",
+      "title": "Use SETTINGS_WT_ENABLED for WebTransport support signaling",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/186",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Mirror H3's capability signaling. Drop the dual-purpose SETTINGS_WT_MAX_SESSIONS and reintroduce SETTINGS_WT_ENABLED as a dedicated support signal. Session limiting continues to use SETTINGS_MAX_CONCURRENT_STREAMS, REFUSED_STREAM, and HTTP 429, just like H3.\r\n\r\nFixes #185",
+      "createdAt": "2026-06-01T11:27:28Z",
+      "updatedAt": "2026-06-01T23:18:03Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/wt_enabled_setting",
+      "headRefOid": "b8a8a4bc0df0ba62610e32be2f627b10215b9f66",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> But you need to explain that the active value of the setting at the time the request is made is what matters.\r\n\r\nAh, sorry, I thought we had a bunch of that previously, but didn't bring it all back. Let me go dig it up (or also happy to revisit how we're doing this... we just need to stop changing it).",
+          "createdAt": "2026-06-01T23:18:03Z",
+          "updatedAt": "2026-06-01T23:18:03Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBpMVCA",
+          "commit": {
+            "abbreviatedOid": "b8a8a4b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "In HTTP/2, you need to explain what happens when the setting is changed.  In this case, the transition from 0->1 is probably OK.  But you need to explain that the active value of the setting at the time the request is made is what matters.  Also, if the setting goes from 1 to 0, that does not affect sessions that have already been established.",
+          "createdAt": "2026-06-01T23:12:49Z",
+          "updatedAt": "2026-06-01T23:14:28Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Why not value of \"1\" ?  A value of \"2\" doesn't make a lot of sense.",
+              "createdAt": "2026-06-01T23:12:49Z",
+              "updatedAt": "2026-06-01T23:14:28Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 187,
+      "id": "PR_kwDODnOl887hWj1k",
+      "title": "Deeper updates from Alan's WGLC review",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/187",
+      "state": "OPEN",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Each change is its own commit to make it easy to accept/reject:\r\n\r\n* Remove Connection Mobility transport property \r\n* Acknowledge that the capsule-based protocol can also run over HTTP/3 \r\n* Soften the QUIC-frame-mirroring claim\r\n* Soften the error-code copy from MUST to SHOULD \r\n* Clarify that WT_RESET_STREAM terminates the endpoint's own sending side \r\n* Require Reliable Size to equal bytes received on the stream \r\n* Reword the Reliable Size field description \r\n* Replace \"strongly-ordered\" with an explicit description \r\n* Spell out the error that results from an intermediary's invalid forwa\u2026 \r\n* Match H3's Terminology paragraph \r\n* Use \"client\" for the ALPN initiator, matching H3 \r\n\r\nFixes #176 ",
+      "createdAt": "2026-06-01T12:05:48Z",
+      "updatedAt": "2026-06-01T23:24:31Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/wglc_176_substantive",
+      "headRefOid": "debdf57246a8395e47e3b14392210982bb54adb5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBpPCGQ",
+          "commit": {
+            "abbreviatedOid": "debdf57"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T23:22:36Z",
+          "updatedAt": "2026-06-01T23:24:31Z",
+          "comments": [
+            {
+              "originalPosition": 134,
+              "body": "```suggestion\nSHOULD be copied into the WT_RESET_STREAM capsule, though an\nendpoint can supply its own error code at its discretion.\n```\n\nI'm not a fan of this \"SHOULD\".  I would even do this:\n\n```suggestion\ncan be copied into the WT_RESET_STREAM capsule in case the\nendpoint does not have a more appropriate code to use.\n```",
+              "createdAt": "2026-06-01T23:22:36Z",
+              "updatedAt": "2026-06-01T23:24:31Z"
+            },
+            {
+              "originalPosition": 155,
+              "body": "```suggestion\nFor instance, as QUIC uses an unreliable transport, a QUIC RESET_STREAM frame\nmight be sent multiple times. If a RESET_STREAM frame is forwarded as a WT_RESET_STREAM\n```",
+              "createdAt": "2026-06-01T23:24:23Z",
+              "updatedAt": "2026-06-01T23:24:31Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 188,
+      "id": "PR_kwDODnOl887hWqEr",
+      "title": "Swap WT_STREAM type values in the FIN-bit example",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/188",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "0x190B4D3B has the FIN bit set (LSB=1) and is the terminal capsule; 0x190B4D3C (LSB=0) is the continuation capsule.  The example had these inverted.\r\n\r\nFixes #178",
+      "createdAt": "2026-06-01T12:10:31Z",
+      "updatedAt": "2026-06-01T23:25:36Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
+      "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "headRefName": "ek/fix_wt_stream_fin",
+      "headRefOid": "9b2c9f5c6dc1607ed209849c4462127c8549ec0d",
+      "closedAt": "2026-06-01T23:25:36Z",
+      "mergedAt": "2026-06-01T23:25:36Z",
+      "mergedBy": "martinthomson",
+      "mergeCommit": {
+        "oid": "33735ac9d3e1278426b5710ea81076a09353f7d9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABBpPkbw",
+          "commit": {
+            "abbreviatedOid": "9b2c9f5"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-01T23:25:30Z",
+          "updatedAt": "2026-06-01T23:25:30Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }

@@ -321,11 +321,13 @@ Table of Contents
    This document reserves the following HTTP/2 error codes for use with
    reporting WebTransport errors:
 
-   WEBTRANSPORT_ERROR (0xTBD):  This generic error can be used for
-      errors that do not have more specific error codes.
+   WT_ERROR (0xTBD):  This generic error can be used for errors that do
+      not have more specific error codes.
 
-   WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):  A stream-related capsule
-      identified a stream that was in an invalid state.
+   WT_STREAM_STATE_ERROR (0xTBD):  A stream-related capsule identified a
+      stream that was in an invalid state.
+
+   WT_FLOW_CONTROL_ERROR (0xTBD):  A flow control limit was violated.
 
    Prior to terminating a stream with an error, a WT_CLOSE_SESSION
    capsule with an application-specified error code MAY be sent.
@@ -681,7 +683,7 @@ Table of Contents
       are constrained to an unsigned 32-bit range defined in Section 4.4
       of [WEBTRANSPORT-H3].  This value MUST NOT exceed 0xffffffff,
       values larger than this MUST be treated as a session error of type
-      WEBTRANSPORT_ERROR.
+      WT_ERROR.
 
    Reliable Size:  A variable-length integer indicating the amount of
       data that needs to be delivered to the application even though the
@@ -695,8 +697,8 @@ Table of Contents
    A WT_RESET_STREAM capsule MUST NOT be sent after a stream is closed
    or reset.  While QUIC permits redundant RESET_STREAM frames, the
    ordering guarantee in HTTP/2 makes this unnecessary.  A stream error
-   (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
-   a WT_RESET_STREAM capsule is received for a stream that is not in a
+   (Section 3.4) of type WT_STREAM_STATE_ERROR MUST be sent if a
+   WT_RESET_STREAM capsule is received for a stream that is not in a
    valid state.
 
 6.3.  WT_STOP_SENDING Capsule
@@ -726,7 +728,7 @@ Table of Contents
       to an unsigned 32-bit range defined in Section 4.4 of
       [WEBTRANSPORT-H3].  This value MUST NOT exceed 0xffffffff, values
       larger than this MUST be treated as a session error of type
-      WEBTRANSPORT_ERROR.
+      WT_ERROR.
 
    As defined in Section 3.5 of [RFC9000], the recipient of a
    WT_STOP_SENDING capsule sends a WT_RESET_STREAM capsule in response,
@@ -736,8 +738,8 @@ Table of Contents
    A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the
    same stream.  While QUIC permits redundant STOP_SENDING frames, the
    ordering guarantee in HTTP/2 makes this unnecessary.  A stream error
-   (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
-   a second WT_STOP_SENDING capsule is received.
+   (Section 3.4) of type WT_STREAM_STATE_ERROR MUST be sent if a second
+   WT_STOP_SENDING capsule is received.
 
 6.4.  WT_STREAM Capsule
 
@@ -773,8 +775,8 @@ Table of Contents
    A WT_STREAM capsule MUST NOT be sent after a stream is closed or
    reset.  While QUIC permits redundant STREAM frames, the ordering
    guarantee in HTTP/2 makes this unnecessary.  A stream error
-   (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if
-   a WT_STREAM capsule is received for a stream that is not in a valid
+   (Section 3.4) of type WT_STREAM_STATE_ERROR MUST be sent if a
+   WT_STREAM capsule is received for a stream that is not in a valid
    state.
 
 6.5.  WT_MAX_DATA Capsule
@@ -803,12 +805,11 @@ Table of Contents
    NOT exceed the value advertised by a receiver.  If an endpoint
    receives an incoming WT_STREAM capsule with Stream Data in excess of
    this limit, it MUST close the WebTransport session with a
-   WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+   WT_FLOW_CONTROL_ERROR session error.
 
    If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data
    value less than a previously received value, it MUST close the
-   WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session
-   error.
+   WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
    The WT_MAX_DATA capsule defines special intermediary handling, as
    described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -848,13 +849,13 @@ Table of Contents
    WT_STREAM capsules on the identified stream MUST NOT exceed the value
    advertised by a receiver.  If an endpoint receives an incoming
    WT_STREAM capsule with Stream Data in excess of this limit, it MUST
-   close the WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
-   session error.
+   close the WebTransport session with a WT_FLOW_CONTROL_ERROR session
+   error.
 
    If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum
    Stream Data value less than a previously received value, it MUST
-   close the WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
-   session error.
+   close the WebTransport session with a WT_FLOW_CONTROL_ERROR session
+   error.
 
    The WT_MAX_STREAM_DATA capsule defines special intermediary handling,
    as described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -872,9 +873,8 @@ Table of Contents
    that a stream be closed with WT_STOP_SENDING.  While QUIC permits
    redundant MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2
    makes this unnecessary.  A stream error (Section 3.4) of type
-   WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a WT_MAX_STREAM_DATA
-   capsule is received after a WT_STOP_SENDING capsule for the same
-   stream.
+   WT_STREAM_STATE_ERROR MUST be sent if a WT_MAX_STREAM_DATA capsule is
+   received after a WT_STOP_SENDING capsule for the same stream.
 
 6.7.  WT_MAX_STREAMS Capsule
 
@@ -918,7 +918,7 @@ Table of Contents
 
    If an endpoint receives an incoming stream that would exceed the
    advertised Maximum Streams value, it MUST close the WebTransport
-   session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
+   session with a WT_FLOW_CONTROL_ERROR session error.
 
    Note that, like QUIC stream IDs, WebTransport stream IDs cannot be
    skipped.  Opening a stream with a given ID implicitly opens all
@@ -932,12 +932,11 @@ Table of Contents
    initiated bidirectional stream), this implicitly counts stream IDs 3,
    7, 11, and 15 against the limit, which would violate the limit of 3.
    An endpoint that receives such a stream would close the WebTransport
-   session with a WEBTRANSPORT_FLOW_CONTROL_ERROR error.
+   session with a WT_FLOW_CONTROL_ERROR error.
 
    If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum
    Streams value less than a previously received value, it MUST close
-   the WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
-   session error.
+   the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
    The WT_MAX_STREAMS capsule defines special intermediary handling, as
    described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -1014,9 +1013,9 @@ Table of Contents
    A WT_STREAM_DATA_BLOCKED capsule MUST NOT be sent after a stream is
    closed or reset.  While QUIC permits redundant STREAM_DATA_BLOCKED
    frames, the ordering guarantee in HTTP/2 makes this unnecessary.  A
-   stream error (Section 3.4) of type WEBTRANSPORT_STREAM_STATE_ERROR
-   MUST be sent if a WT_STREAM_DATA_BLOCKED capsule is received for a
-   stream that is not in a valid state.
+   stream error (Section 3.4) of type WT_STREAM_STATE_ERROR MUST be sent
+   if a WT_STREAM_DATA_BLOCKED capsule is received for a stream that is
+   not in a valid state.
 
 6.10.  WT_STREAMS_BLOCKED Capsule
 
@@ -1488,31 +1487,31 @@ WebTransport Data
    The following entries are added to the "HTTP/2 Error Code" registry
    established by [HTTP2]:
 
-   For WEBTRANSPORT_ERROR:
+   For WT_ERROR:
 
    Code:  0xTBD
 
-   Name:  WEBTRANSPORT_ERROR
+   Name:  WT_ERROR
 
    Description:  General WebTransport error detected
 
    Reference:  Section 3.4
 
-   For WEBTRANSPORT_STREAM_STATE_ERROR:
+   For WT_STREAM_STATE_ERROR:
 
    Code:  0xTBD
 
-   Name:  WEBTRANSPORT_STREAM_STATE_ERROR
+   Name:  WT_STREAM_STATE_ERROR
 
    Description:  Unexpected WebTransport stream-related capsule received
 
    Reference:  Section 3.4
 
-   For WEBTRANSPORT_FLOW_CONTROL_ERROR:
+   For WT_FLOW_CONTROL_ERROR:
 
    Code:  0xTBD
 
-   Name:  WEBTRANSPORT_FLOW_CONTROL_ERROR
+   Name:  WT_FLOW_CONTROL_ERROR
 
    Description:  A flow control error occurred
 

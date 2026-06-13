@@ -1527,15 +1527,20 @@ application-level signal, though there will be an HTTP/2 error code.<a href="#se
 <p id="section-3.4-6">This document reserves the following HTTP/2 error codes for use with reporting
 WebTransport errors:<a href="#section-3.4-6" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-3.4-7">
-          <dt id="section-3.4-7.1">WEBTRANSPORT_ERROR (0xTBD):</dt>
+          <dt id="section-3.4-7.1">WT_ERROR (0xTBD):</dt>
           <dd style="margin-left: 1.5em" id="section-3.4-7.2">
             <p id="section-3.4-7.2.1">This generic error can be used for errors that do not have more specific error
 codes.<a href="#section-3.4-7.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.4-7.3">WEBTRANSPORT_STREAM_STATE_ERROR (0xTBD):</dt>
+<dt id="section-3.4-7.3">WT_STREAM_STATE_ERROR (0xTBD):</dt>
           <dd style="margin-left: 1.5em" id="section-3.4-7.4">
             <p id="section-3.4-7.4.1">A stream-related capsule identified a stream that was in an invalid state.<a href="#section-3.4-7.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.4-7.5">WT_FLOW_CONTROL_ERROR (0xTBD):</dt>
+          <dd style="margin-left: 1.5em" id="section-3.4-7.6">
+            <p id="section-3.4-7.6.1">A flow control limit was violated.<a href="#section-3.4-7.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1969,7 +1974,7 @@ that indicates why the stream is being closed.  WebTransport application
 error codes are constrained to an unsigned 32-bit range defined in
 <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-15#section-4.4" class="relref">Section 4.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.  This value MUST NOT exceed 0xffffffff,
 values larger than this MUST be treated as a session error of type
-WEBTRANSPORT_ERROR.<a href="#section-6.2-6.4.1" class="pilcrow">¶</a></p>
+WT_ERROR.<a href="#section-6.2-6.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-6.2-6.5">Reliable Size:</dt>
@@ -1986,7 +1991,7 @@ endpoints.<a href="#section-6.2-7" class="pilcrow">¶</a></p>
 <p id="section-6.2-8">A <span id="iref-wt_reset_stream-48" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule MUST NOT be sent after a stream is closed or reset.
 While QUIC permits redundant RESET_STREAM frames, the ordering guarantee in
 HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
-WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_reset_stream-49" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule is
+WT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_reset_stream-49" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule is
 received for a stream that is not in a valid state.<a href="#section-6.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2030,7 +2035,7 @@ sender is ignoring the stream.  WebTransport application error codes are
 constrained to an unsigned 32-bit range defined in
 <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-15#section-4.4" class="relref">Section 4.4</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span>.  This value MUST NOT exceed 0xffffffff,
 values larger than this MUST be treated as a session error of type
-WEBTRANSPORT_ERROR.<a href="#section-6.3-4.4.1" class="pilcrow">¶</a></p>
+WT_ERROR.<a href="#section-6.3-4.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2040,7 +2045,7 @@ code, if the stream is the "Ready" or "Send" state.<a href="#section-6.3-5" clas
 <p id="section-6.3-6">A <span id="iref-wt_stop_sending-55" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
 HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
-WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a second <span id="iref-wt_stop_sending-56" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule
+WT_STREAM_STATE_ERROR MUST be sent if a second <span id="iref-wt_stop_sending-56" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule
 is received.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2091,7 +2096,7 @@ be used unless they open or close a stream; an endpoint MAY treat an empty
 <p id="section-6.4-6">A <span id="iref-wt_stream-62" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule MUST NOT be sent after a stream is closed or reset.  While
 QUIC permits redundant STREAM frames, the ordering guarantee in HTTP/2 makes
 this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
-WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream-63" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule is received
+WT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream-63" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule is received
 for a stream that is not in a valid state.<a href="#section-6.4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2131,10 +2136,10 @@ sent on the entire connection, in units of bytes.<a href="#section-6.5-4.2.1" cl
 lengths of Stream Data fields in <span id="iref-wt_stream-67" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsules MUST NOT exceed the value
 advertised by a receiver.  If an endpoint receives an incoming <span id="iref-wt_stream-68" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule
 with Stream Data in excess of this limit, it MUST close the WebTransport session
-with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.5-5" class="pilcrow">¶</a></p>
+with a WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.5-5" class="pilcrow">¶</a></p>
 <p id="section-6.5-6">If an endpoint receives a <span id="iref-wt_max_data-69" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule with a Maximum Data value less
 than a previously received value, it MUST close the WebTransport session with a
-WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.5-6" class="pilcrow">¶</a></p>
+WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.5-6" class="pilcrow">¶</a></p>
 <p id="section-6.5-7">The <span id="iref-wt_max_data-70" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule defines special intermediary handling, as described in
 <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermediaries MUST consume <span id="iref-wt_max_data-71" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a>
 capsules for flow control purposes and MUST generate and send appropriate flow
@@ -2187,10 +2192,10 @@ limit.  The sum of the lengths of Stream Data fields in <span id="iref-wt_stream
 the identified stream MUST NOT exceed the value advertised by a receiver.  If an
 endpoint receives an incoming <span id="iref-wt_stream-77" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule with Stream Data in excess of
 this limit, it MUST close the WebTransport session with a
-WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.6-5" class="pilcrow">¶</a></p>
+WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.6-5" class="pilcrow">¶</a></p>
 <p id="section-6.6-6">If an endpoint receives a <span id="iref-wt_max_stream_data-78" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule with a Maximum Stream Data
 value less than a previously received value, it MUST close the WebTransport
-session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.6-6" class="pilcrow">¶</a></p>
+session with a WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.6-6" class="pilcrow">¶</a></p>
 <p id="section-6.6-7">The <span id="iref-wt_max_stream_data-79" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule defines special intermediary handling, as
 described in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermediaries MUST consume
 <span id="iref-wt_max_stream_data-80" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for flow control purposes and MUST generate and send
@@ -2204,7 +2209,7 @@ be communicated by sending non-zero values for
 <p id="section-6.6-9">A <span id="iref-wt_max_stream_data-84" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule MUST NOT be sent after a sender requests that a
 stream be closed with <span id="iref-wt_stop_sending-85" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a>.  While QUIC permits redundant
 MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2 makes this unnecessary.
-A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent
+A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type WT_STREAM_STATE_ERROR MUST be sent
 if a <span id="iref-wt_max_stream_data-86" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule is received after a <span id="iref-wt_stop_sending-87" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule for
 the same stream.<a href="#section-6.6-9" class="pilcrow">¶</a></p>
 </section>
@@ -2258,7 +2263,7 @@ stream limit of 3 is permitted to open streams 3, 7, and 11, but not stream 15.<
 that are open.<a href="#section-6.7-7" class="pilcrow">¶</a></p>
 <p id="section-6.7-8">If an endpoint receives an incoming stream that would exceed the advertised
 Maximum Streams value, it MUST close the WebTransport session with a
-WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-8" class="pilcrow">¶</a></p>
+WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-8" class="pilcrow">¶</a></p>
 <p id="section-6.7-9">Note that, like QUIC stream IDs, WebTransport stream IDs cannot be skipped.
 Opening a stream with a given ID implicitly opens all streams of the same type
 and direction with lower stream IDs.  Even though WebTransport over HTTP/2 uses
@@ -2270,10 +2275,10 @@ is 3 and the server opens stream ID 15 (the fourth server-initiated
 bidirectional stream), this implicitly counts stream IDs 3, 7, 11, and 15
 against the limit, which would violate the limit of 3.  An endpoint that
 receives such a stream would close the WebTransport session with a
-WEBTRANSPORT_FLOW_CONTROL_ERROR error.<a href="#section-6.7-9" class="pilcrow">¶</a></p>
+WT_FLOW_CONTROL_ERROR error.<a href="#section-6.7-9" class="pilcrow">¶</a></p>
 <p id="section-6.7-10">If an endpoint receives a <span id="iref-wt_max_streams-93" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule with a Maximum Streams value
 less than a previously received value, it MUST close the WebTransport session
-with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-10" class="pilcrow">¶</a></p>
+with a WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-10" class="pilcrow">¶</a></p>
 <p id="section-6.7-11">The <span id="iref-wt_max_streams-94" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule defines special intermediary handling, as described
 in <span><a href="https://rfc-editor.org/rfc/rfc9297#section-3.2" class="relref">Section 3.2</a> of [<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>.  Intermediaries MUST consume <span id="iref-wt_max_streams-95" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a>
 capsules for flow control purposes and MUST generate and send appropriate flow
@@ -2376,7 +2381,7 @@ send appropriate flow control signals for their limits; see
 <p id="section-6.9-7">A <span id="iref-wt_stream_data_blocked-111" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule MUST NOT be sent after a stream is closed or
 reset.  While QUIC permits redundant STREAM_DATA_BLOCKED frames, the ordering
 guarantee in HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
-WEBTRANSPORT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream_data_blocked-112" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule
+WT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream_data_blocked-112" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule
 is received for a stream that is not in a valid state.<a href="#section-6.9-7" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2995,7 +3000,7 @@ connection on which this SETTING is sent.<a href="#section-11.2-18" class="pilcr
         </h3>
 <p id="section-11.3-1">The following entries are added to the "HTTP/2 Error Code" registry established
 by <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section-11.3-1" class="pilcrow">¶</a></p>
-<p id="section-11.3-2">For WEBTRANSPORT_ERROR:<a href="#section-11.3-2" class="pilcrow">¶</a></p>
+<p id="section-11.3-2">For WT_ERROR:<a href="#section-11.3-2" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-11.3-3">
           <dt id="section-11.3-3.1">Code:</dt>
           <dd style="margin-left: 1.5em" id="section-11.3-3.2">
@@ -3004,7 +3009,7 @@ by <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section
           <dd class="break"></dd>
 <dt id="section-11.3-3.3">Name:</dt>
           <dd style="margin-left: 1.5em" id="section-11.3-3.4">
-            <p id="section-11.3-3.4.1">WEBTRANSPORT_ERROR<a href="#section-11.3-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-11.3-3.4.1">WT_ERROR<a href="#section-11.3-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-11.3-3.5">Description:</dt>
@@ -3018,7 +3023,7 @@ by <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-11.3-4">For WEBTRANSPORT_STREAM_STATE_ERROR:<a href="#section-11.3-4" class="pilcrow">¶</a></p>
+<p id="section-11.3-4">For WT_STREAM_STATE_ERROR:<a href="#section-11.3-4" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-11.3-5">
           <dt id="section-11.3-5.1">Code:</dt>
           <dd style="margin-left: 1.5em" id="section-11.3-5.2">
@@ -3027,7 +3032,7 @@ by <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section
           <dd class="break"></dd>
 <dt id="section-11.3-5.3">Name:</dt>
           <dd style="margin-left: 1.5em" id="section-11.3-5.4">
-            <p id="section-11.3-5.4.1">WEBTRANSPORT_STREAM_STATE_ERROR<a href="#section-11.3-5.4.1" class="pilcrow">¶</a></p>
+            <p id="section-11.3-5.4.1">WT_STREAM_STATE_ERROR<a href="#section-11.3-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-11.3-5.5">Description:</dt>
@@ -3041,7 +3046,7 @@ by <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-11.3-6">For WEBTRANSPORT_FLOW_CONTROL_ERROR:<a href="#section-11.3-6" class="pilcrow">¶</a></p>
+<p id="section-11.3-6">For WT_FLOW_CONTROL_ERROR:<a href="#section-11.3-6" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-11.3-7">
           <dt id="section-11.3-7.1">Code:</dt>
           <dd style="margin-left: 1.5em" id="section-11.3-7.2">
@@ -3050,7 +3055,7 @@ by <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section
           <dd class="break"></dd>
 <dt id="section-11.3-7.3">Name:</dt>
           <dd style="margin-left: 1.5em" id="section-11.3-7.4">
-            <p id="section-11.3-7.4.1">WEBTRANSPORT_FLOW_CONTROL_ERROR<a href="#section-11.3-7.4.1" class="pilcrow">¶</a></p>
+            <p id="section-11.3-7.4.1">WT_FLOW_CONTROL_ERROR<a href="#section-11.3-7.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-11.3-7.5">Description:</dt>

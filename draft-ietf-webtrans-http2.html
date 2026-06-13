@@ -2252,7 +2252,7 @@ can be opened over the lifetime of the connection. This value cannot
 exceed 2<sup>60</sup>, as it is not possible to encode stream IDs larger
 than 2<sup>62</sup>-1.  Recipients of a capsule with a Maximum Streams
 value larger than this limit MUST close the WebTransport session with a
-WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-5.2.1" class="pilcrow">¶</a></p>
+WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.7-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2425,7 +2425,7 @@ at the time the capsule was sent. This value cannot exceed 2<sup>60</sup>,
 as it is not possible to encode stream IDs larger than 2<sup>62</sup>-1.
 Recipients of a capsule with a Maximum Streams value larger than this
 limit MUST close the WebTransport session with a
-WEBTRANSPORT_FLOW_CONTROL_ERROR session error.<a href="#section-6.10-5.2.1" class="pilcrow">¶</a></p>
+WT_FLOW_CONTROL_ERROR session error.<a href="#section-6.10-5.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2525,7 +2525,7 @@ connection.  The message takes up the remainder of the capsule, and its
 length MUST NOT exceed 1024 bytes.  Senders that truncate an
 application-supplied message MUST do so at a UTF-8 character boundary.<a href="#section-6.12-5.4.1" class="pilcrow">¶</a></p>
 <p id="section-6.12-5.4.2">If the Application Error Message exceeds 1024 bytes or is not valid UTF-8,
-the receiver MUST treat this as a session error of type WEBTRANSPORT_ERROR.<a href="#section-6.12-5.4.2" class="pilcrow">¶</a></p>
+the receiver MUST treat this as a session error of type WT_ERROR.<a href="#section-6.12-5.4.2" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>

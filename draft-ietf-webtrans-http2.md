@@ -124,7 +124,7 @@ WebTransport servers are identified by an HTTPS URI as defined in
 {{Section 4.2.2 of HTTP}}.
 
 When an HTTP/2 connection is established, the server sends a
-SETTINGS_WT_ENABLED setting with a value greater than "0" to indicate that
+SETTINGS_WT_ENABLED setting with a value of "1" to indicate that
 it supports WebTransport over HTTP/2. Note that the client does
 not need to send any value to indicate support for WebTransport; clients
 indicate support for WebTransport by using the "webtransport" upgrade token in
@@ -173,7 +173,7 @@ over that CONNECT stream.
 A WebTransport session is a communication context between a client and server
 {{OVERVIEW}}. This section describes how sessions begin and end.
 
-## Establishing a WebTransport-Capable HTTP/2 Connection
+## Establishing a WebTransport-Capable HTTP/2 Connection {#setting}
 
 A WebTransport-Capable HTTP/2 connection requires the server to signal support
 for WebTransport over HTTP/2 using a setting.
@@ -181,9 +181,20 @@ for WebTransport over HTTP/2 using a setting.
 This document defines a SETTINGS_WT_ENABLED setting that WebTransport servers
 use to indicate their support for WebTransport.  The default value for the
 SETTINGS_WT_ENABLED setting is "0", meaning that the server does not support
-WebTransport.  Clients MUST NOT attempt to establish WebTransport sessions
-until they have received the setting indicating WebTransport support from the
-server.
+WebTransport.  A value of "1" indicates support for the variant of WebTransport
+that is described in this document: "webtransport".  Clients MUST
+treat values greater than "1" as a connection error of type PROTOCOL_ERROR
+({{Section 5.4.1 of HTTP2}}).  Clients MUST NOT attempt to establish
+WebTransport sessions with the "webtransport" token until they have received
+the setting indicating WebTransport support from the server.
+
+The SETTINGS_WT_ENABLED setting can be updated during the lifetime of the
+HTTP/2 connection, as described in {{Section 6.5.3 of HTTP2}}.  Whether the
+server supports WebTransport for a given CONNECT request is determined by the
+most recently acknowledged value of SETTINGS_WT_ENABLED at the time the
+request is sent.  If a server disables WebTransport after previously accepting
+it, this does not affect active sessions, it only prevents the creation of
+new sessions.
 
 WebTransport over HTTP/2 uses extended CONNECT as defined in {{!RFC8441}},
 which defines the SETTINGS_ENABLE_CONNECT_PROTOCOL setting.  The server MUST
@@ -1343,7 +1354,7 @@ Initial Value:
 
 Specification:
 
-: This document
+: {{setting}}
 
 {: anchor="SETTINGS_WT_INITIAL_MAX_DATA"}
 

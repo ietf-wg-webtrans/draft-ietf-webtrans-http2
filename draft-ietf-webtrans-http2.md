@@ -261,6 +261,9 @@ WT_ERROR (0xTBD):
 WT_STREAM_STATE_ERROR (0xTBD):
 : A stream-related capsule identified a stream that was in an invalid state.
 
+WT_FLOW_CONTROL_ERROR (0xTBD):
+: A flow control limit was violated.
+
 Prior to terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
 application-specified error code MAY be sent.
 

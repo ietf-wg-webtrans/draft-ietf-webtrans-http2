@@ -22,7 +22,7 @@ author:
   -
     ins: A. Frindell
     name: Alan Frindell
-    organization: Meta Platforms, Inc.
+    organization: Meta
     email: afrind@fb.com
   -
     ins: E. Kinnear
@@ -53,7 +53,7 @@ author:
   -
     ins: G. Xie
     name: Guowu Xie
-    organization: Meta Platforms, Inc.
+    organization: Meta
     email: woo@fb.com
 
 normative:

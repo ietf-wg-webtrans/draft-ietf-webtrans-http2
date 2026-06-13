@@ -3,7 +3,7 @@
 
 
 WEBTRANS                                                     A. Frindell
-Internet-Draft                                             Facebook Inc.
+Internet-Draft                                                      Meta
 Intended status: Standards Track                              E. Kinnear
 Expires: 15 December 2026                                       T. Pauly
                                                               Apple Inc.
@@ -12,7 +12,7 @@ Expires: 15 December 2026                                       T. Pauly
                                                              V. Vasiliev
                                                                   Google
                                                                   G. Xie
-                                                           Facebook Inc.
+                                                                    Meta
                                                             13 June 2026
 
 
@@ -23,9 +23,9 @@ Abstract
 
    WebTransport defines a set of low-level communications features
    designed for client-server interactions that are initiated by Web
-   clients.  This document describes a protocol that can provide many of
-   the capabilities of WebTransport over HTTP/2.  This protocol enables
-   the use of WebTransport when a UDP-based protocol is not available.
+   clients.  This document describes a protocol that can provide the
+   capabilities of WebTransport over HTTP/2.  This protocol enables the
+   use of WebTransport when a UDP-based protocol is not available.
 
 About This Document
 
@@ -1834,7 +1834,7 @@ Index
 Authors' Addresses
 
    Alan Frindell
-   Facebook Inc.
+   Meta
    Email: afrind@fb.com
 
 
@@ -1865,5 +1865,5 @@ Authors' Addresses
 
 
    Guowu Xie
-   Facebook Inc.
+   Meta
    Email: woo@fb.com

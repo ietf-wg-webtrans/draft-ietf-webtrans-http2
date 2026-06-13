@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 3 December 2026                                        T. Pauly
+Expires: 15 December 2026                                       T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 3 December 2026                                        T. Pauly
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                             1 June 2026
+                                                            13 June 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 December 2026.
+   This Internet-Draft will expire on 15 December 2026.
 
 Copyright Notice
 
@@ -259,9 +259,10 @@ Table of Contents
    the WebTransport server SHOULD reply with status code 403
    (Section 15.5.4 of [HTTP]).
 
-   If these checks, including any specific to the server and target
-   resource, pass, the session can be accepted by replying with a 2xx
-   series status code, as defined in Section 15.3 of [HTTP].
+   A server then performs any checks specific to the server and target
+   resource.  If all checks pass, the session can be accepted by
+   replying with a 2xx series status code, as defined in Section 15.3 of
+   [HTTP].
 
    A WebTransport session is established when the server sends a 2xx
    response.  A server generates that response from the request header,
@@ -747,7 +748,7 @@ Table of Contents
    0x190B4D3C.  The least significant bit in the capsule type is the FIN
    bit (0x01), indicating when set that the capsule marks the end of the
    stream in one direction.  Stream data consists of any number of
-   0x190B4D3B capsules followed by a terminal 0x190B4D3C capsule.
+   0x190B4D3C capsules followed by a terminal 0x190B4D3B capsule.
 
    WT_STREAM Capsule {
      Type (i) = 0x190B4D3B..0x190B4D3C,
@@ -902,7 +903,10 @@ Table of Contents
    Maximum Streams:  A count of the cumulative number of streams of the
       corresponding type that can be opened over the lifetime of the
       connection.  This value cannot exceed 2^60, as it is not possible
-      to encode stream IDs larger than 2^62-1.
+      to encode stream IDs larger than 2^62-1.  Recipients of a capsule
+      with a Maximum Streams value larger than this limit MUST close the
+      WebTransport session with a WEBTRANSPORT_FLOW_CONTROL_ERROR
+      session error.
 
    An endpoint MUST NOT open more streams than permitted by the current
    stream limit set by its peer.  For instance, a server that receives a
@@ -1044,7 +1048,9 @@ Table of Contents
    Maximum Streams:  A variable-length integer indicating the maximum
       number of streams allowed at the time the capsule was sent.  This
       value cannot exceed 2^60, as it is not possible to encode stream
-      IDs larger than 2^62-1.
+      IDs larger than 2^62-1.  Recipients of a capsule with a Maximum
+      Streams value larger than this limit MUST close the WebTransport
+      session with a WEBTRANSPORT_FLOW_CONTROL_ERROR session error.
 
    The WT_STREAMS_BLOCKED capsule defines special intermediary handling,
    as described in Section 3.2 of [HTTP-DATAGRAM].  Intermediaries MUST
@@ -1119,7 +1125,12 @@ Table of Contents
    Application Error Message:  A UTF-8 encoded error message string
       provided by the application closing the connection.  The message
       takes up the remainder of the capsule, and its length MUST NOT
-      exceed 1024 bytes.
+      exceed 1024 bytes.  Senders that truncate an application-supplied
+      message MUST do so at a UTF-8 character boundary.
+
+      If the Application Error Message exceeds 1024 bytes or is not
+      valid UTF-8, the receiver MUST treat this as a session error of
+      type WEBTRANSPORT_ERROR.
 
    An endpoint that sends a WT_CLOSE_SESSION capsule MUST then half-
    close the stream by sending an HTTP/2 frame with the END_STREAM flag

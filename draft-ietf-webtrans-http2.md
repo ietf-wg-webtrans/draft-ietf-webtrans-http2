@@ -585,7 +585,7 @@ The WT_RESET_STREAM capsule follows the design of the QUIC RESET_STREAM_AT frame
 WT_STREAM and WT_RESET_STREAM capsules are delivered in order on a single
 HTTP/2 stream, the Reliable Size MUST equal the total number of bytes the
 sender has sent via WT_STREAM capsules on the stream.  A receiver MUST close
-the WebTransport session with a WEBTRANSPORT_STREAM_STATE_ERROR session error
+the WebTransport session with a WT_STREAM_STATE_ERROR session error
 if the Reliable Size in a WT_RESET_STREAM capsule does not equal the number of
 bytes received on that stream: a smaller value contradicts data already
 delivered, and a larger value promises bytes that cannot subsequently arrive.
@@ -1134,7 +1134,7 @@ the underlying state might cause a receiver to abort the session.
 For instance, after a RESET_STREAM frame is forwarded as a WT_RESET_STREAM
 capsule, forwarding another RESET_STREAM as a WT_RESET_STREAM or a STREAM
 frame as a WT_STREAM on the same stream will cause the receiving endpoint to
-signal a WEBTRANSPORT_STREAM_STATE_ERROR (see {{WT_RESET_STREAM}} and
+signal a WT_STREAM_STATE_ERROR (see {{WT_RESET_STREAM}} and
 {{WT_STREAM}}).
 
 # Requirements on TLS Usage

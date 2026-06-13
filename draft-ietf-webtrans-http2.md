@@ -701,8 +701,9 @@ WT_STREAM Capsule {
 WT_STREAM capsules contain the following fields:
 
 Stream ID:
-: The stream ID for the stream.  The second least significant bit of the Stream ID indicates whether
-  the stream is bidirectional or unidirectional, as described in {{webtransport-streams}}.
+: The stream ID for the stream.  The second least significant bit of the Stream
+  ID indicates whether the stream is bidirectional or unidirectional, as
+  described in {{webtransport-streams}}.
 
 Stream Data:
 : Zero or more bytes of data for the stream.  Empty WT_STREAM capsules MUST NOT
@@ -819,9 +820,9 @@ the same stream.
 *[WT_MAX_STREAMS]: #
 
 An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is defined by
-{{Section 5.6.1 of WEBTRANSPORT-H3}} to inform the peer of the cumulative number of
-streams of a given type it is permitted to open.  A WT_MAX_STREAMS capsule with
-a type of 0x190B4D3F applies to bidirectional streams, and a WT_MAX_STREAMS
+{{Section 5.6.1 of WEBTRANSPORT-H3}} to inform the peer of the cumulative number
+of streams of a given type it is permitted to open.  A WT_MAX_STREAMS capsule
+with a type of 0x190B4D3F applies to bidirectional streams, and a WT_MAX_STREAMS
 capsule with a type of 0x190B4D40 applies to unidirectional streams.
 
 Note that, because Maximum Streams is a cumulative value representing the total

@@ -70,7 +70,6 @@ informative:
   DATAGRAM: RFC9221
   HTTP3: RFC9114
   QUIC: RFC9000
-  MPTCP: RFC6824
 
 --- abstract
 
@@ -94,9 +93,11 @@ This document defines a protocol that provides all of the core functions of
 WebTransport using HTTP semantics. This includes unidirectional streams,
 bidirectional streams, and datagrams.
 
-By relying only on generic HTTP semantics, this protocol might allow deployment
-using any HTTP version.  However, this document only defines negotiation for
-HTTP/2 {{HTTP2}} as the current most common TCP-based fallback to HTTP/3.
+By relying only on generic HTTP semantics, this protocol can be deployed over
+multiple HTTP versions.  This document defines negotiation for HTTP/2 {{HTTP2}}
+as the current most common TCP-based fallback to HTTP/3.  In some cases, the
+same capsule-based protocol can also be used over HTTP/3, as described in
+{{Section 2.1.2 of WEBTRANSPORT-H3}}.
 
 ## Terminology
 
@@ -105,11 +106,17 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
-This document follows terminology defined in {{Section 1.2 of OVERVIEW}}. Note
-that this document distinguishes between a WebTransport server and an HTTP/2
-server. An HTTP/2 server is the server that terminates HTTP/2 connections; a
-WebTransport server is an application that accepts WebTransport sessions, which
-can be accessed using HTTP/2 and this protocol.
+This document follows terminology defined in {{Section 1.2 of OVERVIEW}}.
+WebTransport servers and HTTP/2 servers are distinguished here as two separate
+roles: an HTTP/2 server terminates HTTP/2 connections, while a WebTransport
+server is an application that accepts WebTransport sessions, accessed via an
+HTTP/2 server, possibly through zero or more intermediaries.
+
+An application client is user-provided or developer-provided code, often
+untrusted, that uses the interface offered by the WebTransport client to
+communicate with an application server.  The application server uses the
+interface offered by the WebTransport server to accept incoming WebTransport
+sessions.
 
 # Protocol Overview
 
@@ -221,7 +228,7 @@ TLS Application-Layer Protocol Negotiation Extension (ALPN) {{?RFC7301}}; the
 intent is to simplify porting pre-existing protocols that rely on this type of
 functionality.
 
-The user agent MAY include a `WT-Available-Protocols` header field in the
+The client MAY include a `WT-Available-Protocols` header field in the
 CONNECT request. The `WT-Available-Protocols` enumerates the possible protocols
 in preference order. If the server receives such a header, it MAY include a
 `WT-Protocol` field in a successful (2xx) response. If it does, the server MUST
@@ -479,14 +486,6 @@ Stream Independence:
 : WebTransport over HTTP/2 does not support stream independence, as HTTP/2
   inherently has head-of-line blocking.
 
-Connection Mobility:
-
-: WebTransport over HTTP/2 does not support connection mobility, unless an
-  underlying transport protocol that supports multipath or migration, such as
-  MPTCP {{MPTCP}}, is used underneath HTTP/2 and TLS. Without such
-  support, WebTransport over HTTP/2 connections cannot survive network
-  transitions.
-
 ## WebTransport Streams
 
 WebTransport streams have identifiers and states that mirror the identifiers
@@ -535,9 +534,8 @@ zero-length if omitted.
 
 # WebTransport Capsules
 
-WebTransport capsules mirror their QUIC frame counterparts as closely as
-possible to enable maximal reuse of any applicable QUIC infrastructure by
-implementors.
+WebTransport capsules are modeled after QUIC frames where applicable, to
+enable reuse of QUIC infrastructure by implementors.
 
 WebTransport capsules use the Capsule Protocol defined in
 {{Section 3.2 of HTTP-DATAGRAM}}.
@@ -576,21 +574,21 @@ but MAY treat non-zero padding as a [stream error](#errors).
 *[WT_RESET_STREAM]: #
 
 A WT_RESET_STREAM capsule is an HTTP capsule {{HTTP-DATAGRAM}} of
-type=0x190B4D39 and allows either endpoint to abruptly terminate the sending
-part of a WebTransport stream.
+type=0x190B4D39 and allows either endpoint to abruptly terminate its sending
+side of a WebTransport stream.
 
 After sending a WT_RESET_STREAM capsule, an endpoint ceases transmission of
-WT_STREAM capsules on the identified stream. A receiver of a WT_RESET_STREAM
-capsule can discard any data in excess of the Reliable Size indicated, even if
-that data was already received.
+WT_STREAM capsules on the identified stream.
 
 The WT_RESET_STREAM capsule follows the design of the QUIC RESET_STREAM_AT frame
-{{PARTIAL-RESET}}.  Consequently, it includes a Reliable Size field.  A
-WT_RESET_STREAM capsule MUST be sent after WT_STREAM capsules that include an
-amount of data equal to or in excess of the value in the Reliable Size field.  A
-receiver MUST treat the receipt of a WT_RESET_STREAM with a Reliable Size
-smaller than the number of bytes it has
-received on the stream as a session error.
+{{PARTIAL-RESET}}.  Consequently, it includes a Reliable Size field.  Because
+WT_STREAM and WT_RESET_STREAM capsules are delivered in order on a single
+HTTP/2 stream, the Reliable Size MUST equal the total number of bytes the
+sender has sent via WT_STREAM capsules on the stream.  A receiver MUST close
+the WebTransport session with a WT_STREAM_STATE_ERROR session error
+if the Reliable Size in a WT_RESET_STREAM capsule does not equal the number of
+bytes received on that stream: a smaller value contradicts data already
+delivered, and a larger value promises bytes that cannot subsequently arrive.
 
 ~~~
 WT_RESET_STREAM Capsule {
@@ -618,8 +616,8 @@ The WT_RESET_STREAM capsule defines the following fields:
      WT_ERROR.
 
    Reliable Size:
-   : A variable-length integer indicating the amount of data that needs to be
-     delivered to the application even though the stream is reset.
+   : A variable-length integer indicating the amount of data delivered on the
+     stream before the reset event.
 
 Unlike the equivalent QUIC frame, this capsule does not include a Final Size
 field. In-order delivery of WT_STREAM capsules ensures that the amount of
@@ -666,8 +664,10 @@ The WT_STOP_SENDING capsule defines the following fields:
      WT_ERROR.
 
 As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
-capsule sends a WT_RESET_STREAM capsule in response, including the same error
-code, if the stream is the "Ready" or "Send" state.
+capsule sends a WT_RESET_STREAM capsule in response if the stream is in the
+"Ready" or "Send" state.  The error code from the WT_STOP_SENDING capsule
+can be copied into the WT_RESET_STREAM capsule if the endpoint does not
+have a more appropriate code to use.
 
 A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
@@ -1125,15 +1125,19 @@ to tolerate capsules that arrive out of order. This differs from QUIC in that a
 receiver is required to treat the arrival of out of order frames rather than
 being tolerant.
 
-For an intermediary that forwards from an strongly-ordered transport (like
-{{WEBTRANSPORT-H3}}) to a reliable transport (like this protocol), it is
-necessary to maintain state for streams. A simple forwarding intermediary that
+For an intermediary that forwards from a transport with independently reliable
+and ordered streams (like {{WEBTRANSPORT-H3}}) to a transport that multiplexes
+over a single in-order stream (like this protocol), it is necessary to maintain
+state for streams. A simple forwarding intermediary that
 directly translates one type of protocol unit into another without understanding
 the underlying state might cause a receiver to abort the session.
 
-For instance, after a RESET_STREAM frame is forwarded, an intermediary cannot
-forward a RESET_STREAM frame as a WT_RESET_STREAM capsule or a STREAM frame as a
-WT_STREAM capsule without error.
+For instance, as QUIC uses an unreliable transport, a QUIC RESET_STREAM frame
+might be sent multiple times. If a RESET_STREAM frame is forwarded as a
+WT_RESET_STREAM capsule, forwarding another RESET_STREAM as a WT_RESET_STREAM
+or a STREAM frame as a WT_STREAM on the same stream will cause the receiving
+endpoint to signal a WT_STREAM_STATE_ERROR (see {{WT_RESET_STREAM}} and
+{{WT_STREAM}}).
 
 # Requirements on TLS Usage
 

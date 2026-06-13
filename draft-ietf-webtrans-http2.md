@@ -666,7 +666,8 @@ The WT_STOP_SENDING capsule defines the following fields:
 As defined in {{Section 3.5 of !RFC9000}}, the recipient of a WT_STOP_SENDING
 capsule sends a WT_RESET_STREAM capsule in response if the stream is in the
 "Ready" or "Send" state.  The error code from the WT_STOP_SENDING capsule
-SHOULD be copied into the WT_RESET_STREAM capsule.
+can be copied into the WT_RESET_STREAM capsule if the endpoint does not
+have a more appropriate code to use.
 
 A WT_STOP_SENDING capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
@@ -1131,10 +1132,11 @@ state for streams. A simple forwarding intermediary that
 directly translates one type of protocol unit into another without understanding
 the underlying state might cause a receiver to abort the session.
 
-For instance, after a RESET_STREAM frame is forwarded as a WT_RESET_STREAM
-capsule, forwarding another RESET_STREAM as a WT_RESET_STREAM or a STREAM
-frame as a WT_STREAM on the same stream will cause the receiving endpoint to
-signal a WT_STREAM_STATE_ERROR (see {{WT_RESET_STREAM}} and
+For instance, as QUIC uses an unreliable transport, a QUIC RESET_STREAM frame
+might be sent multiple times. If a RESET_STREAM frame is forwarded as a
+WT_RESET_STREAM capsule, forwarding another RESET_STREAM as a WT_RESET_STREAM
+or a STREAM frame as a WT_STREAM on the same stream will cause the receiving
+endpoint to signal a WT_STREAM_STATE_ERROR (see {{WT_RESET_STREAM}} and
 {{WT_STREAM}}).
 
 # Requirements on TLS Usage

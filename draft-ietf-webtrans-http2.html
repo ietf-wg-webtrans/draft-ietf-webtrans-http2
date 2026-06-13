@@ -2081,8 +2081,9 @@ WT_STREAM Capsule {
 <span class="break"></span><dl class="dlParallel" id="section-6.4-5">
           <dt id="section-6.4-5.1">Stream ID:</dt>
           <dd style="margin-left: 1.5em" id="section-6.4-5.2">
-            <p id="section-6.4-5.2.1">The stream ID for the stream.  The second least significant bit of the Stream ID indicates whether
-the stream is bidirectional or unidirectional, as described in <a href="#webtransport-streams" class="auto internal xref">Section 5.2</a>.<a href="#section-6.4-5.2.1" class="pilcrow">¶</a></p>
+            <p id="section-6.4-5.2.1">The stream ID for the stream.  The second least significant bit of the Stream
+ID indicates whether the stream is bidirectional or unidirectional, as
+described in <a href="#webtransport-streams" class="auto internal xref">Section 5.2</a>.<a href="#section-6.4-5.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-6.4-5.3">Stream Data:</dt>
@@ -2220,9 +2221,9 @@ the same stream.<a href="#section-6.6-9" class="pilcrow">¶</a></p>
 <a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-wt_max_streams-capsule" class="section-name selfRef">WT_MAX_STREAMS Capsule</a>
         </h3>
 <p id="section-6.7-1">An HTTP capsule <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span> called <span id="iref-wt_max_streams-88" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> is defined by
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-15#section-5.6.1" class="relref">Section 5.6.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to inform the peer of the cumulative number of
-streams of a given type it is permitted to open.  A <span id="iref-wt_max_streams-89" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule with
-a type of 0x190B4D3F applies to bidirectional streams, and a <span id="iref-wt_max_streams-90" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a>
+<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http3-15#section-5.6.1" class="relref">Section 5.6.1</a> of [<a href="#WEBTRANSPORT-H3" class="cite xref">WEBTRANSPORT-H3</a>]</span> to inform the peer of the cumulative number
+of streams of a given type it is permitted to open.  A <span id="iref-wt_max_streams-89" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule
+with a type of 0x190B4D3F applies to bidirectional streams, and a <span id="iref-wt_max_streams-90" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a>
 capsule with a type of 0x190B4D40 applies to unidirectional streams.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
 <p id="section-6.7-2">Note that, because Maximum Streams is a cumulative value representing the total
 allowed number of streams, including previously closed streams, endpoints

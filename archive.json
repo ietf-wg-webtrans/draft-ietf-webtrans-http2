@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-14T03:29:22.669897+00:00",
+  "timestamp": "2026-06-16T03:34:06.338240+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -11478,7 +11478,7 @@
       "labels": [],
       "body": "Mirror H3's capability signaling. Drop the dual-purpose SETTINGS_WT_MAX_SESSIONS and reintroduce SETTINGS_WT_ENABLED as a dedicated support signal. Session limiting continues to use SETTINGS_MAX_CONCURRENT_STREAMS, REFUSED_STREAM, and HTTP 429, just like H3.\r\n\r\nFixes #185",
       "createdAt": "2026-06-01T11:27:28Z",
-      "updatedAt": "2026-06-13T05:59:30Z",
+      "updatedAt": "2026-06-15T06:55:37Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "77ce6a6c865b950a1eb414ce273922a2b97fd000",
@@ -11543,6 +11543,38 @@
               "body": "Updated",
               "createdAt": "2026-06-13T05:58:46Z",
               "updatedAt": "2026-06-13T05:58:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABC-zAgQ",
+          "commit": {
+            "abbreviatedOid": "ea6ef02"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "I personally prefer not to worry about the fact that the setting might change.  Because it governs new sessions, let it.  (I can be talked out of this, but it really seems the most sensible approach.)",
+          "createdAt": "2026-06-15T06:54:44Z",
+          "updatedAt": "2026-06-15T06:55:37Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "```suggestion\n: {{setting}}\n```",
+              "createdAt": "2026-06-15T06:54:44Z",
+              "updatedAt": "2026-06-15T06:55:37Z"
+            },
+            {
+              "originalPosition": 39,
+              "body": "```suggestion\nrequest is sent.  If a server disables WebTransport after previously accepting\nit, this does not affect active sessions, it only prevents the creation of new\nsessions.\n```\n\nThe easiest thing to do is to let the server change its mind.",
+              "createdAt": "2026-06-15T06:54:46Z",
+              "updatedAt": "2026-06-15T06:55:37Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\n## Establishing a WebTransport-Capable HTTP/2 Connection {#setting}\n```",
+              "createdAt": "2026-06-15T06:54:47Z",
+              "updatedAt": "2026-06-15T06:55:37Z"
             }
           ]
         }

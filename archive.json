@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-16T03:34:06.338240+00:00",
+  "timestamp": "2026-06-18T03:24:05.519765+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2131,9 +2131,17 @@
       ],
       "body": "Our current codepoints are often two-bytes or four-bytes where they could be smaller. This matters, especially for prefixes we use for user data. We should renumber them after WGLC, this is a bug to not forget this.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/136.",
       "createdAt": "2023-11-28T23:20:42Z",
-      "updatedAt": "2023-11-29T00:02:17Z",
+      "updatedAt": "2026-06-16T07:03:32Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Worth noting here that the draft is not accurate presently, though addressing this issue *should* fix this:\n\n> the minimum size of the capsule is two bytes: one byte for the Type and one byte to encode \"0\" for the Length.\n\nThis is amusing given the definition of the type:\n\n```\nPADDING Capsule {\n  Type (i) = 0x190B4D38,\n```\n\nGood luck getting that varint into a single byte.  That does mean that we'll need to seek out a PADDING Type that is in the 0-63 range.",
+          "createdAt": "2026-06-16T07:03:32Z",
+          "updatedAt": "2026-06-16T07:03:32Z"
+        }
+      ]
     },
     {
       "number": 100,
@@ -3528,6 +3536,22 @@
       "body": "Splitting out an issue to track just this part: \n\n> SETTINGS_WT_MAX_SESSIONS\n\nWait, now I\u2019m confused.  H2 has MAX_SESSIONS but H3 does not?\n",
       "createdAt": "2026-06-01T11:20:35Z",
       "updatedAt": "2026-06-01T11:27:47Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 189,
+      "id": "I_kwDODnOl888AAAABFm-viA",
+      "title": "Race conditions in settings",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/189",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": ">  The initial flow control limits for a new session are determined by the most recently acknowledged SETTINGS values at the time the session is created. \n\nIs this correct?\n\nI think that this depends on what it meant by \"the time the session is created\", which might change based on perspective.  Consider the following sequence of messages:\n\n```mermaid\n---\nconfig:\n  mirrorActors: false\n---\n\nsequenceDiagram\n\nClient->>Server: SETTINGS (1)\nClient->>Server: SETTINGS (2)\nClient->>Server: SETTINGS (3)\n\nServer-->Client: SETTINGS_ACK (1)\n\nClient->>Server: HEADERS (CONNECT...propose session)\n\nServer-->Client: SETTINGS_ACK (2)\n\nServer->>Client: HEADERS (200...accept session)\n\nServer-->Client: SETTINGS_ACK (3)\n```\n\nNow, this shows three different settings, just on the client side:\n\n1. The first settings are active before anything happens, but they are active when the client request is sent.  The client probably believes that these settings are applicable.\n2. The second settings become active between when the client proposes the session and when the server accepts it.  This is the interesting case.\n3. The third settings only become active after the session is accepted, so these probably don't apply.\n\nThat second set is interesting, because these are the settings that are active at the time the server creates the session, but these are not the settings that are active when the client initiated the connection.  I think that the text says that these settings apply to the session.\n\nThis is an unavoidable conclusion, because the ordering relationship between the request and the second `SETTINGS_ACK` is impossible to be sure of.  The two messages could pass in flight.  So it could very well have been that the server acknowledged the first `SETTINGS_ACK` after the client initiated the request, because there is no strong ordering guarantee between messages that travel in different directions.\n\nThe case of server settings is also interesting:\n\n```mermaid\n---\nconfig:\n  mirrorActors: false\n---\n\nsequenceDiagram\nparticipant Client\n\nServer->>Client: SETTINGS (1)\nServer->>Client: SETTINGS (2)\nServer->>Client: SETTINGS (3)\n\nClient-->Server: SETTINGS_ACK (1)\n\nClient->>Server: HEADERS (CONNECT...propose session)\n\nClient-->Server: SETTINGS_ACK (2)\n\nServer->>Client: HEADERS (200...accept session)\n\nClient-->Server: SETTINGS_ACK (3)\n```\n\nThe same question about the second settings applies, but here the client has no certainty about whether they apply.  The response and this second `SETTINGS_ACK` (or any `SETTINGS_ACK`, for that matter) has no strict ordering.\n\nThe only conclusion I can reach here is that this text is ambiguous.  What it should instead say is that the settings that apply are:\n\n* For settings that a client controls/advertises, the settings that the server last acknowledged prior to the response apply.\n* For settings that a server controls/advertises, the settings that the client last acknowledged prior to the *request* apply.\n\nThis is a general problem that should be addressed in other protocols that use HTTP/2, but it seems like this is somewhat unique here.  RFC 8441 narrowly avoids this problem by making the setting a one-way latch: you can't disable `SETTINGS_ENABLE_CONNECT_PROTOCOL` after is enabled.  In that case, whether the setting is acknowledged or not doesn't really make a big difference.  Even if the server isn't sure whether the client acknowledged the updated setting, it can just handle any extended `CONNECT` anyway; it's not like it could retract its commitment to understand the request.\n",
+      "createdAt": "2026-06-16T05:37:32Z",
+      "updatedAt": "2026-06-16T05:38:41Z",
       "closedAt": null,
       "comments": []
     }

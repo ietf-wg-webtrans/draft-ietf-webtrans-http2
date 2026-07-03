@@ -374,9 +374,21 @@ Initial flow control limits can be exchanged via HTTP/2 SETTINGS
 
 WebTransport SETTINGS can be updated during the lifetime of the HTTP/2
 connection.  Updated values take effect for new sessions once they have been
-acknowledged by the peer, as described in {{Section 6.5.3 of HTTP2}}.  The
-initial flow control limits for a new session are determined by the most
-recently acknowledged SETTINGS values at the time the session is created.
+acknowledged by the peer, as described in {{Section 6.5.3 of HTTP2}}.
+
+Because SETTINGS frames and their acknowledgements can be in flight when a
+CONNECT request or response is exchanged, the initial flow control limits for
+a new session are determined per-direction:
+
+* For SETTINGS sent by the server, the initial limits are those most recently
+  acknowledged before the CONNECT request.
+* For SETTINGS sent by the client, the initial limits are those most recently
+  acknowledged before the response accepting the session.
+
+Note that these may be older than the sender's most recent SETTINGS: values
+that were still unacknowledged when the CONNECT request or response was sent
+do not apply except to new sessions created after they are acknowledged.
+
 Sessions that are already established are not affected by changes to these
 SETTINGS, and their limits can only be updated using the corresponding flow
 control capsules.

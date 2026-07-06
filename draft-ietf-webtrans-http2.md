@@ -381,9 +381,9 @@ CONNECT request or response is exchanged, the initial flow control limits for
 a new session are determined per-direction:
 
 * For SETTINGS sent by the server, the initial limits are those most recently
-  acknowledged before the CONNECT request.
+  acknowledged immediately before the CONNECT request is sent.
 * For SETTINGS sent by the client, the initial limits are those most recently
-  acknowledged before the response accepting the session.
+  acknowledged immediately before the response accepting the session is sent.
 
 Note that these may be older than the sender's most recent SETTINGS: values
 that were still unacknowledged when the CONNECT request or response was sent

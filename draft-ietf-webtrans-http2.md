@@ -385,9 +385,14 @@ a new session are determined per-direction:
 * For SETTINGS sent by the client, the initial limits are those most recently
   acknowledged immediately before the response accepting the session is sent.
 
-Note that these may be older than the sender's most recent SETTINGS: values
-that were still unacknowledged when the CONNECT request or response was sent
-do not apply except to new sessions created after they are acknowledged.
+Note that this requires some care when SETTINGS are updated during the
+connection.  A client sending a CONNECT request MUST use the server-sent
+SETTINGS it has acknowledged at that moment. Those are the values that apply to
+the resulting session, even if the client acknowledges further server SETTINGS
+before the response arrives. Similarly, a server sending a response accepting a
+session MUST use the client-sent SETTINGS that it has acknowledged before
+sending that response.  Values still unacknowledged at these moments apply only
+to sessions created after they are acknowledged.
 
 Sessions that are already established are not affected by changes to these
 SETTINGS, and their limits can only be updated using the corresponding flow

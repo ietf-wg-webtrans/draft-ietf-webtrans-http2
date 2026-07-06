@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                                      Meta
 Intended status: Standards Track                              E. Kinnear
-Expires: 4 January 2027                                         T. Pauly
+Expires: 7 January 2027                                         T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 4 January 2027                                         T. Pauly
                                                                   Google
                                                                   G. Xie
                                                                     Meta
-                                                             3 July 2026
+                                                             6 July 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2027.
+   This Internet-Draft will expire on 7 January 2027.
 
 Copyright Notice
 
@@ -451,10 +451,12 @@ Table of Contents
    control limits for a new session are determined per-direction:
 
    *  For SETTINGS sent by the server, the initial limits are those most
-      recently acknowledged before the CONNECT request.
+      recently acknowledged immediately before the CONNECT request is
+      sent.
 
    *  For SETTINGS sent by the client, the initial limits are those most
-      recently acknowledged before the response accepting the session.
+      recently acknowledged immediately before the response accepting
+      the session is sent.
 
    Note that these may be older than the sender's most recent SETTINGS:
    values that were still unacknowledged when the CONNECT request or
@@ -1643,9 +1645,9 @@ WebTransport Data
    [PARTIAL-RESET]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
               Delivery", Work in Progress, Internet-Draft, draft-ietf-
-              quic-reliable-stream-reset-08, 26 June 2026,
+              quic-reliable-stream-reset-09, 4 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
-              reliable-stream-reset-08>.
+              reliable-stream-reset-09>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,

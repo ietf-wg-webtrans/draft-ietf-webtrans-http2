@@ -18,22 +18,23 @@ describes a protocol that can provide the capabilities of WebTransport
 over HTTP/2.  This protocol enables the use of WebTransport when a UDP-based
 protocol is not available. 
     " name="description">
-<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="webtransport" name="keyword">
 <meta content="draft-ietf-webtrans-http2-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.33.0
-    Python 3.12.13
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.7.0
+    wcwidth 0.8.2
 -->
 <link href="draft-ietf-webtrans-http2.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1052,11 +1053,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">WebTransport-H2</td>
-<td class="right">June 2026</td>
+<td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Frindell, et al.</td>
-<td class="center">Expires 15 December 2026</td>
+<td class="center">Expires 7 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1070,12 @@ svg {
 <dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-13" class="published">13 June 2026</time>
+<time datetime="2026-07-06" class="published">6 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-15">15 December 2026</time></dd>
+<dd class="expires"><time datetime="2027-01-07">7 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1148,7 +1149,7 @@ protocol is not available.<a href="#section-abstract-1" class="pilcrow">¶</a></
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1399,9 +1400,8 @@ sessions.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <p id="section-2-1">WebTransport servers are identified by an HTTPS URI as defined in
 <span><a href="https://rfc-editor.org/rfc/rfc9110#section-4.2.2" class="relref">Section 4.2.2</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">When an HTTP/2 connection is established, the server sends a
-SETTINGS_WT_MAX_SESSIONS setting with a value greater than "0" to indicate that
-it supports WebTransport over HTTP/2. The value of the setting is the number of
-concurrent sessions the server is willing to receive. Note that the client does
+SETTINGS_WT_ENABLED setting with a value of "1" to indicate that
+it supports WebTransport over HTTP/2. Note that the client does
 not need to send any value to indicate support for WebTransport; clients
 indicate support for WebTransport by using the "webtransport" upgrade token in
 CONNECT requests establishing WebTransport sessions (see <a href="#upgrade-token" class="auto internal xref">Section 11.1</a>).<a href="#section-2-2" class="pilcrow">¶</a></p>
@@ -1445,15 +1445,34 @@ over that CONNECT stream.<a href="#section-2-9" class="pilcrow">¶</a></p>
       </h2>
 <p id="section-3-1">A WebTransport session is a communication context between a client and server
 <span>[<a href="#OVERVIEW" class="cite xref">OVERVIEW</a>]</span>. This section describes how sessions begin and end.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<div id="establishing-a-webtransport-capable-http2-connection">
+<div id="setting">
 <section id="section-3.1">
         <h3 id="name-establishing-a-webtransport">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-establishing-a-webtransport" class="section-name selfRef">Establishing a WebTransport-Capable HTTP/2 Connection</a>
         </h3>
-<p id="section-3.1-1">In order to indicate potential support for WebTransport, the server MUST send
-the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1" in its SETTINGS
-frame.  The client MUST NOT send a WebTransport request until it has received
-the setting indicating extended CONNECT support from the server.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">A WebTransport-Capable HTTP/2 connection requires the server to signal support
+for WebTransport over HTTP/2 using a setting.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">This document defines a SETTINGS_WT_ENABLED setting that WebTransport servers
+use to indicate their support for WebTransport.  The default value for the
+SETTINGS_WT_ENABLED setting is "0", meaning that the server does not support
+WebTransport.  A value of "1" indicates support for the variant of WebTransport
+that is described in this document: "webtransport".  Clients MUST
+treat values greater than "1" as a connection error of type PROTOCOL_ERROR
+(<span><a href="https://rfc-editor.org/rfc/rfc9113#section-5.4.1" class="relref">Section 5.4.1</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>).  Clients MUST NOT attempt to establish
+WebTransport sessions with the "webtransport" token until they have received
+the setting indicating WebTransport support from the server.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">The SETTINGS_WT_ENABLED setting can be updated during the lifetime of the
+HTTP/2 connection, as described in <span><a href="https://rfc-editor.org/rfc/rfc9113#section-6.5.3" class="relref">Section 6.5.3</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.  Whether the
+server supports WebTransport for a given CONNECT request is determined by the
+most recently acknowledged value of SETTINGS_WT_ENABLED at the time the
+request is sent.  If a server disables WebTransport after previously accepting
+it, this does not affect active sessions, it only prevents the creation of
+new sessions.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">WebTransport over HTTP/2 uses extended CONNECT as defined in <span>[<a href="#RFC8441" class="cite xref">RFC8441</a>]</span>,
+which defines the SETTINGS_ENABLE_CONNECT_PROTOCOL setting.  The server MUST
+send the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value of "1" in its
+SETTINGS frame.  The client MUST NOT send a WebTransport request until it has
+received the setting indicating extended CONNECT support from the server.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="creating-a-new-session">
@@ -2796,202 +2815,229 @@ Token Registry" registry established by Section 16.7 of <span>[<a href="#HTTP" c
         </h3>
 <p id="section-11.2-1">The following entries are added to the "HTTP/2 Settings" registry established by
 <span>[<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>:<a href="#section-11.2-1" class="pilcrow">¶</a></p>
+<div id="SETTINGS_WT_ENABLED">
+<p id="section-11.2-2">The SETTINGS_WT_ENABLED parameter indicates that the endpoint supports
+WebTransport over HTTP/2.  The default value for the SETTINGS_WT_ENABLED
+parameter is "0", meaning that the endpoint does not support WebTransport.<a href="#section-11.2-2" class="pilcrow">¶</a></p>
+</div>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-3">
+          <dt id="section-11.2-3.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-3.2">
+            <p id="section-11.2-3.2.1">SETTINGS_WT_ENABLED<a href="#section-11.2-3.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-11.2-3.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-3.4">
+            <p id="section-11.2-3.4.1">0x2b60<a href="#section-11.2-3.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-11.2-3.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-3.6">
+            <p id="section-11.2-3.6.1">0<a href="#section-11.2-3.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-11.2-3.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-3.8">
+            <p id="section-11.2-3.8.1"><a href="#setting" class="auto internal xref">Section 3.1</a><a href="#section-11.2-3.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
 <div id="SETTINGS_WT_INITIAL_MAX_DATA">
-<p id="section-11.2-2">The <span id="iref-settings_wt_initial_max_data-" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WT_INITIAL_MAX_DATA</a> parameter indicates the initial value for the
+<p id="section-11.2-4">The <span id="iref-settings_wt_initial_max_data-" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WT_INITIAL_MAX_DATA</a> parameter indicates the initial value for the
 session data limit, otherwise communicated by the <span id="iref-wt_max_data-129" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a> capsule
 (<a href="#WT_MAX_DATA" class="auto internal xref">Section 6.5</a>).  The default value for the <span id="iref-settings_wt_initial_max_data-1" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WT_INITIAL_MAX_DATA</a>
 parameter is "0", indicating that the endpoint needs to send a <span id="iref-wt_max_data-131" class="iref"></span><a href="#WT_MAX_DATA" class="internal xref">WT_MAX_DATA</a>
 capsule within each session before its peer is allowed to send any stream data
-within that session.<a href="#section-11.2-2" class="pilcrow">¶</a></p>
+within that session.<a href="#section-11.2-4" class="pilcrow">¶</a></p>
 </div>
-<p id="section-11.2-3">Note that this limit applies to all WebTransport sessions that use the HTTP/2
-connection on which this SETTING is sent.<a href="#section-11.2-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-11.2-4">
-          <dt id="section-11.2-4.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-4.2">
-            <p id="section-11.2-4.2.1"><span id="iref-settings_wt_initial_max_data-13" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WT_INITIAL_MAX_DATA</a><a href="#section-11.2-4.2.1" class="pilcrow">¶</a></p>
+<p id="section-11.2-5">Note that this limit applies to all WebTransport sessions that use the HTTP/2
+connection on which this SETTING is sent.<a href="#section-11.2-5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-6">
+          <dt id="section-11.2-6.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-6.2">
+            <p id="section-11.2-6.2.1"><span id="iref-settings_wt_initial_max_data-13" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="internal xref">SETTINGS_WT_INITIAL_MAX_DATA</a><a href="#section-11.2-6.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-4.3">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-4.4">
-            <p id="section-11.2-4.4.1">0x2b61<a href="#section-11.2-4.4.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-6.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-6.4">
+            <p id="section-11.2-6.4.1">0x2b61<a href="#section-11.2-6.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-4.5">Initial Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-4.6">
-            <p id="section-11.2-4.6.1">0<a href="#section-11.2-4.6.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-6.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-6.6">
+            <p id="section-11.2-6.6.1">0<a href="#section-11.2-6.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-4.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-4.8">
-            <p id="section-11.2-4.8.1">This document<a href="#section-11.2-4.8.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-6.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-6.8">
+            <p id="section-11.2-6.8.1">This document<a href="#section-11.2-6.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI">
-<p id="section-11.2-5">The <span id="iref-settings_wt_initial_max_stream_dat" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter indicates the initial
+<p id="section-11.2-7">The <span id="iref-settings_wt_initial_max_stream_dat" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter indicates the initial
 value for the stream data limit for incoming unidirectional streams, otherwise
 communicated by the <span id="iref-wt_max_stream_data-134" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>).  The
 default value for the <span id="iref-settings_wt_initial_max_stream_data" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</a> parameter is "0",
 indicating that the endpoint needs to send <span id="iref-wt_max_stream_data-136" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each
 stream within each individual WebTransport session before its peer is allowed to
-send any stream data on those streams.<a href="#section-11.2-5" class="pilcrow">¶</a></p>
+send any stream data on those streams.<a href="#section-11.2-7" class="pilcrow">¶</a></p>
 </div>
-<p id="section-11.2-6">Note that this limit applies to all WebTransport streams on all sessions that
-use the HTTP/2 connection on which this SETTING is sent.<a href="#section-11.2-6" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-11.2-7">
-          <dt id="section-11.2-7.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-7.2">
-            <p id="section-11.2-7.2.1"><span id="iref-settings_wt_initial_max_stream_data-2" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</a><a href="#section-11.2-7.2.1" class="pilcrow">¶</a></p>
+<p id="section-11.2-8">Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.<a href="#section-11.2-8" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-9">
+          <dt id="section-11.2-9.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-9.2">
+            <p id="section-11.2-9.2.1"><span id="iref-settings_wt_initial_max_stream_data-2" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</a><a href="#section-11.2-9.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-7.3">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-7.4">
-            <p id="section-11.2-7.4.1">0x2b62<a href="#section-11.2-7.4.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-9.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-9.4">
+            <p id="section-11.2-9.4.1">0x2b62<a href="#section-11.2-9.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-7.5">Initial Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-7.6">
-            <p id="section-11.2-7.6.1">0<a href="#section-11.2-7.6.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-9.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-9.6">
+            <p id="section-11.2-9.6.1">0<a href="#section-11.2-9.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-7.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-7.8">
-            <p id="section-11.2-7.8.1">This document<a href="#section-11.2-7.8.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-9.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-9.8">
+            <p id="section-11.2-9.8.1">This document<a href="#section-11.2-9.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL">
-<p id="section-11.2-8">The <span id="iref-settings_wt_initial_max_stream_data-3" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL</a> parameter indicates the
+<p id="section-11.2-10">The <span id="iref-settings_wt_initial_max_stream_data-3" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL</a> parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
 streams initiated by the sender of this setting, otherwise communicated by the
 <span id="iref-wt_max_stream_data-139" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>).  The default value for the
 <span id="iref-settings_wt_initial_max_stream_data-4" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL</a> parameter is "0", indicating
 that the endpoint needs to send <span id="iref-wt_max_stream_data-141" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each stream
 within each individual WebTransport session before its peer is allowed to send
-any stream data on those streams.<a href="#section-11.2-8" class="pilcrow">¶</a></p>
+any stream data on those streams.<a href="#section-11.2-10" class="pilcrow">¶</a></p>
 </div>
-<p id="section-11.2-9">Note that this limit applies to all WebTransport streams on all sessions that
-use the HTTP/2 connection on which this SETTING is sent.<a href="#section-11.2-9" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-11.2-10">
-          <dt id="section-11.2-10.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-10.2">
-            <p id="section-11.2-10.2.1"><span id="iref-settings_wt_initial_max_stream_data-5" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL</a><a href="#section-11.2-10.2.1" class="pilcrow">¶</a></p>
+<p id="section-11.2-11">Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.<a href="#section-11.2-11" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-12">
+          <dt id="section-11.2-12.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-12.2">
+            <p id="section-11.2-12.2.1"><span id="iref-settings_wt_initial_max_stream_data-5" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL</a><a href="#section-11.2-12.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-10.3">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-10.4">
-            <p id="section-11.2-10.4.1">0x2b63<a href="#section-11.2-10.4.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-12.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-12.4">
+            <p id="section-11.2-12.4.1">0x2b63<a href="#section-11.2-12.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-10.5">Initial Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-10.6">
-            <p id="section-11.2-10.6.1">0<a href="#section-11.2-10.6.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-12.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-12.6">
+            <p id="section-11.2-12.6.1">0<a href="#section-11.2-12.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-10.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-10.8">
-            <p id="section-11.2-10.8.1">This document<a href="#section-11.2-10.8.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-12.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-12.8">
+            <p id="section-11.2-12.8.1">This document<a href="#section-11.2-12.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE">
-<p id="section-11.2-11">The <span id="iref-settings_wt_initial_max_stream_data-6" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE</a> parameter indicates the
+<p id="section-11.2-13">The <span id="iref-settings_wt_initial_max_stream_data-6" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE</a> parameter indicates the
 initial value for the stream data limit for incoming data on bidirectional
 streams initiated by the receiver of this setting, otherwise communicated by
 the <span id="iref-wt_max_stream_data-144" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule (<a href="#WT_MAX_STREAM_DATA" class="auto internal xref">Section 6.6</a>).  The default value for
 the <span id="iref-settings_wt_initial_max_stream_data-7" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE</a> parameter is "0",
 indicating that the endpoint needs to send <span id="iref-wt_max_stream_data-146" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsules for each
 stream within each individual WebTransport session before its peer is allowed
-to send any stream data on those streams.<a href="#section-11.2-11" class="pilcrow">¶</a></p>
+to send any stream data on those streams.<a href="#section-11.2-13" class="pilcrow">¶</a></p>
 </div>
-<p id="section-11.2-12">Note that this limit applies to all WebTransport streams on all sessions that
-use the HTTP/2 connection on which this SETTING is sent.<a href="#section-11.2-12" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-11.2-13">
-          <dt id="section-11.2-13.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-13.2">
-            <p id="section-11.2-13.2.1"><span id="iref-settings_wt_initial_max_stream_data-8" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE</a><a href="#section-11.2-13.2.1" class="pilcrow">¶</a></p>
+<p id="section-11.2-14">Note that this limit applies to all WebTransport streams on all sessions that
+use the HTTP/2 connection on which this SETTING is sent.<a href="#section-11.2-14" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-15">
+          <dt id="section-11.2-15.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-15.2">
+            <p id="section-11.2-15.2.1"><span id="iref-settings_wt_initial_max_stream_data-8" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE</a><a href="#section-11.2-15.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-13.3">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-13.4">
-            <p id="section-11.2-13.4.1">0x2b66<a href="#section-11.2-13.4.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-15.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-15.4">
+            <p id="section-11.2-15.4.1">0x2b66<a href="#section-11.2-15.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-13.5">Initial Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-13.6">
-            <p id="section-11.2-13.6.1">0<a href="#section-11.2-13.6.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-15.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-15.6">
+            <p id="section-11.2-15.6.1">0<a href="#section-11.2-15.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-13.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-13.8">
-            <p id="section-11.2-13.8.1">This document<a href="#section-11.2-13.8.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-15.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-15.8">
+            <p id="section-11.2-15.8.1">This document<a href="#section-11.2-15.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WT_INITIAL_MAX_STREAMS_UNI">
-<p id="section-11.2-14">The <span id="iref-settings_wt_initial_max_streams_u" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</a> parameter indicates the initial value
+<p id="section-11.2-16">The <span id="iref-settings_wt_initial_max_streams_u" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</a> parameter indicates the initial value
 for the unidirectional max stream limit, otherwise communicated by the
 <span id="iref-wt_max_streams-149" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (<a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>).  The default value for the
 <span id="iref-settings_wt_initial_max_streams_un" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</a> parameter is "0", indicating that the
 endpoint needs to send <span id="iref-wt_max_streams-151" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual WebTransport
 session before its peer is allowed to create any unidirectional streams within
-that session.<a href="#section-11.2-14" class="pilcrow">¶</a></p>
+that session.<a href="#section-11.2-16" class="pilcrow">¶</a></p>
 </div>
-<p id="section-11.2-15">Note that this limit applies to all WebTransport sessions that use the HTTP/2
-connection on which this SETTING is sent.<a href="#section-11.2-15" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-11.2-16">
-          <dt id="section-11.2-16.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-16.2">
-            <p id="section-11.2-16.2.1"><span id="iref-settings_wt_initial_max_streams_uni" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</a><a href="#section-11.2-16.2.1" class="pilcrow">¶</a></p>
+<p id="section-11.2-17">Note that this limit applies to all WebTransport sessions that use the HTTP/2
+connection on which this SETTING is sent.<a href="#section-11.2-17" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-18">
+          <dt id="section-11.2-18.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-18.2">
+            <p id="section-11.2-18.2.1"><span id="iref-settings_wt_initial_max_streams_uni" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</a><a href="#section-11.2-18.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-16.3">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-16.4">
-            <p id="section-11.2-16.4.1">0x2b64<a href="#section-11.2-16.4.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-18.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-18.4">
+            <p id="section-11.2-18.4.1">0x2b64<a href="#section-11.2-18.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-16.5">Initial Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-16.6">
-            <p id="section-11.2-16.6.1">0<a href="#section-11.2-16.6.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-18.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-18.6">
+            <p id="section-11.2-18.6.1">0<a href="#section-11.2-18.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-16.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-16.8">
-            <p id="section-11.2-16.8.1">This document<a href="#section-11.2-16.8.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-18.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-18.8">
+            <p id="section-11.2-18.8.1">This document<a href="#section-11.2-18.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
 <div id="SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI">
-<p id="section-11.2-17">The <span id="iref-settings_wt_initial_max_streams_bi" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a> parameter indicates the initial value
+<p id="section-11.2-19">The <span id="iref-settings_wt_initial_max_streams_bi" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a> parameter indicates the initial value
 for the bidirectional max stream limit, otherwise communicated by the
 <span id="iref-wt_max_streams-154" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsule (<a href="#WT_MAX_STREAMS" class="auto internal xref">Section 6.7</a>).  The default value for the
 <span id="iref-settings_wt_initial_max_streams_bid" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a> parameter is "0", indicating that the
 endpoint needs to send <span id="iref-wt_max_streams-156" class="iref"></span><a href="#WT_MAX_STREAMS" class="internal xref">WT_MAX_STREAMS</a> capsules on each individual WebTransport
 session before its peer is allowed to create any bidirectional streams within
-that session.<a href="#section-11.2-17" class="pilcrow">¶</a></p>
+that session.<a href="#section-11.2-19" class="pilcrow">¶</a></p>
 </div>
-<p id="section-11.2-18">Note that this limit applies to all WebTransport sessions that use the HTTP/2
-connection on which this SETTING is sent.<a href="#section-11.2-18" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-11.2-19">
-          <dt id="section-11.2-19.1">Setting Name:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-19.2">
-            <p id="section-11.2-19.2.1"><span id="iref-settings_wt_initial_max_streams_bid-2" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a><a href="#section-11.2-19.2.1" class="pilcrow">¶</a></p>
+<p id="section-11.2-20">Note that this limit applies to all WebTransport sessions that use the HTTP/2
+connection on which this SETTING is sent.<a href="#section-11.2-20" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-11.2-21">
+          <dt id="section-11.2-21.1">Setting Name:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-21.2">
+            <p id="section-11.2-21.2.1"><span id="iref-settings_wt_initial_max_streams_bid-2" class="iref"></span><a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="internal xref">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</a><a href="#section-11.2-21.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-19.3">Code:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-19.4">
-            <p id="section-11.2-19.4.1">0x2b65<a href="#section-11.2-19.4.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-21.3">Code:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-21.4">
+            <p id="section-11.2-21.4.1">0x2b65<a href="#section-11.2-21.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-19.5">Initial Value:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-19.6">
-            <p id="section-11.2-19.6.1">0<a href="#section-11.2-19.6.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-21.5">Initial Value:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-21.6">
+            <p id="section-11.2-21.6.1">0<a href="#section-11.2-21.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-11.2-19.7">Specification:</dt>
-          <dd style="margin-left: 1.5em" id="section-11.2-19.8">
-            <p id="section-11.2-19.8.1">This document<a href="#section-11.2-19.8.1" class="pilcrow">¶</a></p>
+<dt id="section-11.2-21.7">Specification:</dt>
+          <dd style="margin-left: 1.5em" id="section-11.2-21.8">
+            <p id="section-11.2-21.8.1">This document<a href="#section-11.2-21.8.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -3328,13 +3374,13 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
         <dd>
 <span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="HTTP-DATAGRAM">[HTTP-DATAGRAM]</dt>
-        <dd>
-<span class="refAuthor">Schinazi, D.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"HTTP Datagrams and the Capsule Protocol"</span>, <span class="seriesInfo">RFC 9297</span>, <span class="seriesInfo">DOI 10.17487/RFC9297</span>, <time datetime="2022-08" class="refDate">August 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9297">https://www.rfc-editor.org/rfc/rfc9297</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="HTTP2">[HTTP2]</dt>
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HTTP-DATAGRAM">[HTTP-DATAGRAM]</dt>
+        <dd>
+<span class="refAuthor">Schinazi, D.</span> and <span class="refAuthor">L. Pardue</span>, <span class="refTitle">"HTTP Datagrams and the Capsule Protocol"</span>, <span class="seriesInfo">RFC 9297</span>, <span class="seriesInfo">DOI 10.17487/RFC9297</span>, <time datetime="2022-08" class="refDate">August 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9297">https://www.rfc-editor.org/rfc/rfc9297</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="ORIGIN">[ORIGIN]</dt>
         <dd>
@@ -3346,7 +3392,7 @@ by <span>[<a href="#HTTP-DATAGRAM" class="cite xref">HTTP-DATAGRAM</a>]</span>:<
 <dd class="break"></dd>
 <dt id="PARTIAL-RESET">[PARTIAL-RESET]</dt>
         <dd>
-<span class="refAuthor">Seemann, M.</span> and <span class="refAuthor">K. Oku</span>, <span class="refTitle">"QUIC Stream Resets with Partial Delivery"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-reliable-stream-reset-07</span>, <time datetime="2025-06-14" class="refDate">14 June 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-07">https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Seemann, M.</span> and <span class="refAuthor">K. Oku</span>, <span class="refTitle">"QUIC Stream Resets with Partial Delivery"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-reliable-stream-reset-09</span>, <time datetime="2026-07-04" class="refDate">4 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-09">https://datatracker.ietf.org/doc/html/draft-ietf-quic-reliable-stream-reset-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -3511,8 +3557,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                   <p id="appendix-C-2.2.2.1.1.2.1">
                     <a href="#section-4.3.1-2.1.1" class="auto internal xref">Section 4.3.1, Paragraph 2.1.1</a>; 
 <a href="#section-6.5-8" class="auto internal xref">Section 6.5, Paragraph 8</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 2</a>; 
-<a href="#section-11.2-4.2.1" class="auto internal xref">Section 11.2, Paragraph 4.2.1</a><a href="#appendix-C-2.2.2.1.1.2.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 4</a>; 
+<a href="#section-11.2-6.2.1" class="auto internal xref">Section 11.2, Paragraph 6.2.1</a><a href="#appendix-C-2.2.2.1.1.2.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.2.2.1.1.3">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL</dt>
@@ -3520,8 +3566,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                   <p id="appendix-C-2.2.2.1.1.4.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="auto internal xref">Section 11.2, Paragraph 8</a>; 
-<a href="#section-11.2-10.2.1" class="auto internal xref">Section 11.2, Paragraph 10.2.1</a><a href="#appendix-C-2.2.2.1.1.4.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="auto internal xref">Section 11.2, Paragraph 10</a>; 
+<a href="#section-11.2-12.2.1" class="auto internal xref">Section 11.2, Paragraph 12.2.1</a><a href="#appendix-C-2.2.2.1.1.4.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.2.2.1.1.5">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE</dt>
@@ -3529,8 +3575,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                   <p id="appendix-C-2.2.2.1.1.6.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="auto internal xref">Section 11.2, Paragraph 11</a>; 
-<a href="#section-11.2-13.2.1" class="auto internal xref">Section 11.2, Paragraph 13.2.1</a><a href="#appendix-C-2.2.2.1.1.6.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="auto internal xref">Section 11.2, Paragraph 13</a>; 
+<a href="#section-11.2-15.2.1" class="auto internal xref">Section 11.2, Paragraph 15.2.1</a><a href="#appendix-C-2.2.2.1.1.6.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.2.2.1.1.7">SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI</dt>
@@ -3538,8 +3584,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                   <p id="appendix-C-2.2.2.1.1.8.1">
                     <a href="#section-4.3.1-2.2.1" class="auto internal xref">Section 4.3.1, Paragraph 2.2.1</a>; 
 <a href="#section-6.6-8" class="auto internal xref">Section 6.6, Paragraph 8</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 11.2, Paragraph 5</a>; 
-<a href="#section-11.2-7.2.1" class="auto internal xref">Section 11.2, Paragraph 7.2.1</a><a href="#appendix-C-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 11.2, Paragraph 7</a>; 
+<a href="#section-11.2-9.2.1" class="auto internal xref">Section 11.2, Paragraph 9.2.1</a><a href="#appendix-C-2.2.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.2.2.1.1.9">SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI</dt>
@@ -3547,8 +3593,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                   <p id="appendix-C-2.2.2.1.1.10.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-6.7-12" class="auto internal xref">Section 6.7, Paragraph 12</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 17</a>; 
-<a href="#section-11.2-19.2.1" class="auto internal xref">Section 11.2, Paragraph 19.2.1</a><a href="#appendix-C-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 19</a>; 
+<a href="#section-11.2-21.2.1" class="auto internal xref">Section 11.2, Paragraph 21.2.1</a><a href="#appendix-C-2.2.2.1.1.10.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.2.2.1.1.11">SETTINGS_WT_INITIAL_MAX_STREAMS_UNI</dt>
@@ -3556,8 +3602,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
                   <p id="appendix-C-2.2.2.1.1.12.1">
                     <a href="#section-4.3.1-2.3.1" class="auto internal xref">Section 4.3.1, Paragraph 2.3.1</a>; 
 <a href="#section-6.7-12" class="auto internal xref">Section 6.7, Paragraph 12</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 14</a>; 
-<a href="#section-11.2-16.2.1" class="auto internal xref">Section 11.2, Paragraph 16.2.1</a><a href="#appendix-C-2.2.2.1.1.12.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 16</a>; 
+<a href="#section-11.2-18.2.1" class="auto internal xref">Section 11.2, Paragraph 18.2.1</a><a href="#appendix-C-2.2.2.1.1.12.1" class="pilcrow">¶</a></p>
 </dd>
               <dd class="break"></dd>
 </dl>
@@ -3595,7 +3641,7 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.5-3" class="auto internal xref">Section 6.5, Paragraph 3</a>; 
 <a href="#section-6.5-6" class="auto internal xref">Section 6.5, Paragraph 6</a>; 
 <a href="#section-6.5-7" class="auto internal xref">Section 6.5, Paragraph 7</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 2</a><a href="#appendix-C-2.3.2.1.1.4.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_DATA" class="auto internal xref">Section 11.2, Paragraph 4</a><a href="#appendix-C-2.3.2.1.1.4.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.3.2.1.1.5">WT_MAX_STREAM_DATA</dt>
@@ -3610,9 +3656,9 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.6-6" class="auto internal xref">Section 6.6, Paragraph 6</a>; 
 <a href="#section-6.6-7" class="auto internal xref">Section 6.6, Paragraph 7</a>; 
 <a href="#section-6.6-9" class="auto internal xref">Section 6.6, Paragraph 9</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 11.2, Paragraph 5</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="auto internal xref">Section 11.2, Paragraph 8</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="auto internal xref">Section 11.2, Paragraph 11</a>; 
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI" class="auto internal xref">Section 11.2, Paragraph 7</a>; 
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL" class="auto internal xref">Section 11.2, Paragraph 10</a>; 
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE" class="auto internal xref">Section 11.2, Paragraph 13</a>; 
 <a href="#section-11.4-11.4.1" class="auto internal xref">Section 11.4, Paragraph 11.4.1</a><a href="#appendix-C-2.3.2.1.1.6.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
@@ -3629,8 +3675,8 @@ work. The requirements on TLS usage were inspired by <span>[<a href="#RFC9729" c
 <a href="#section-6.7-4" class="auto internal xref">Section 6.7, Paragraph 4</a>; 
 <a href="#section-6.7-10" class="auto internal xref">Section 6.7, Paragraph 10</a>; 
 <a href="#section-6.7-11" class="auto internal xref">Section 6.7, Paragraph 11</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 14</a>; 
-<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 17</a><a href="#appendix-C-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_UNI" class="auto internal xref">Section 11.2, Paragraph 16</a>; 
+<a href="#SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI" class="auto internal xref">Section 11.2, Paragraph 19</a><a href="#appendix-C-2.3.2.1.1.8.1" class="pilcrow">¶</a></p>
 </dd>
                 <dd class="break"></dd>
 <dt id="appendix-C-2.3.2.1.1.9">WT_RESET_STREAM</dt>

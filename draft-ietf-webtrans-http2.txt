@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                                      Meta
 Intended status: Standards Track                              E. Kinnear
-Expires: 15 December 2026                                       T. Pauly
+Expires: 7 January 2027                                         T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 15 December 2026                                       T. Pauly
                                                                   Google
                                                                   G. Xie
                                                                     Meta
-                                                            13 June 2026
+                                                             6 July 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2026.
+   This Internet-Draft will expire on 7 January 2027.
 
 Copyright Notice
 
@@ -175,13 +175,12 @@ Table of Contents
    Section 4.2.2 of [HTTP].
 
    When an HTTP/2 connection is established, the server sends a
-   SETTINGS_WT_MAX_SESSIONS setting with a value greater than "0" to
-   indicate that it supports WebTransport over HTTP/2.  The value of the
-   setting is the number of concurrent sessions the server is willing to
-   receive.  Note that the client does not need to send any value to
-   indicate support for WebTransport; clients indicate support for
-   WebTransport by using the "webtransport" upgrade token in CONNECT
-   requests establishing WebTransport sessions (see Section 11.1).
+   SETTINGS_WT_ENABLED setting with a value of "1" to indicate that it
+   supports WebTransport over HTTP/2.  Note that the client does not
+   need to send any value to indicate support for WebTransport; clients
+   indicate support for WebTransport by using the "webtransport" upgrade
+   token in CONNECT requests establishing WebTransport sessions (see
+   Section 11.1).
 
    A client initiates a WebTransport session by sending an extended
    CONNECT request [RFC8441].  If the server accepts the request, a
@@ -235,11 +234,35 @@ Table of Contents
 
 3.1.  Establishing a WebTransport-Capable HTTP/2 Connection
 
-   In order to indicate potential support for WebTransport, the server
-   MUST send the SETTINGS_ENABLE_CONNECT_PROTOCOL setting with a value
-   of "1" in its SETTINGS frame.  The client MUST NOT send a
-   WebTransport request until it has received the setting indicating
-   extended CONNECT support from the server.
+   A WebTransport-Capable HTTP/2 connection requires the server to
+   signal support for WebTransport over HTTP/2 using a setting.
+
+   This document defines a SETTINGS_WT_ENABLED setting that WebTransport
+   servers use to indicate their support for WebTransport.  The default
+   value for the SETTINGS_WT_ENABLED setting is "0", meaning that the
+   server does not support WebTransport.  A value of "1" indicates
+   support for the variant of WebTransport that is described in this
+   document: "webtransport".  Clients MUST treat values greater than "1"
+   as a connection error of type PROTOCOL_ERROR (Section 5.4.1 of
+   [HTTP2]).  Clients MUST NOT attempt to establish WebTransport
+   sessions with the "webtransport" token until they have received the
+   setting indicating WebTransport support from the server.
+
+   The SETTINGS_WT_ENABLED setting can be updated during the lifetime of
+   the HTTP/2 connection, as described in Section 6.5.3 of [HTTP2].
+   Whether the server supports WebTransport for a given CONNECT request
+   is determined by the most recently acknowledged value of
+   SETTINGS_WT_ENABLED at the time the request is sent.  If a server
+   disables WebTransport after previously accepting it, this does not
+   affect active sessions, it only prevents the creation of new
+   sessions.
+
+   WebTransport over HTTP/2 uses extended CONNECT as defined in
+   [RFC8441], which defines the SETTINGS_ENABLE_CONNECT_PROTOCOL
+   setting.  The server MUST send the SETTINGS_ENABLE_CONNECT_PROTOCOL
+   setting with a value of "1" in its SETTINGS frame.  The client MUST
+   NOT send a WebTransport request until it has received the setting
+   indicating extended CONNECT support from the server.
 
 3.2.  Creating a New Session
 
@@ -1364,6 +1387,19 @@ WebTransport Data
    The following entries are added to the "HTTP/2 Settings" registry
    established by [HTTP2]:
 
+   The SETTINGS_WT_ENABLED parameter indicates that the endpoint
+   supports WebTransport over HTTP/2.  The default value for the
+   SETTINGS_WT_ENABLED parameter is "0", meaning that the endpoint does
+   not support WebTransport.
+
+   Setting Name:  SETTINGS_WT_ENABLED
+
+   Code:  0x2b60
+
+   Initial Value:  0
+
+   Specification:  Section 3.1
+
    The SETTINGS_WT_INITIAL_MAX_DATA parameter indicates the initial
    value for the session data limit, otherwise communicated by the
    WT_MAX_DATA capsule (Section 6.5).  The default value for the
@@ -1607,14 +1643,14 @@ WebTransport Data
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/rfc/rfc9110>.
 
+   [HTTP2]    Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
+              DOI 10.17487/RFC9113, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9113>.
+
    [HTTP-DATAGRAM]
               Schinazi, D. and L. Pardue, "HTTP Datagrams and the
               Capsule Protocol", RFC 9297, DOI 10.17487/RFC9297, August
               2022, <https://www.rfc-editor.org/rfc/rfc9297>.
-
-   [HTTP2]    Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
-              DOI 10.17487/RFC9113, June 2022,
-              <https://www.rfc-editor.org/rfc/rfc9113>.
 
    [ORIGIN]   Barth, A., "The Web Origin Concept", RFC 6454,
               DOI 10.17487/RFC6454, December 2011,
@@ -1629,9 +1665,9 @@ WebTransport Data
    [PARTIAL-RESET]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
               Delivery", Work in Progress, Internet-Draft, draft-ietf-
-              quic-reliable-stream-reset-07, 14 June 2025,
+              quic-reliable-stream-reset-09, 4 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
-              reliable-stream-reset-07>.
+              reliable-stream-reset-09>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1761,23 +1797,23 @@ Index
       S
 
          SETTINGS_WT_INITIAL_MAX_DATA  Section 4.3.1, Paragraph 2.1.1;
-            Section 6.5, Paragraph 8; Section 11.2, Paragraph 2;
-            Section 11.2, Paragraph 4.2.1
+            Section 6.5, Paragraph 8; Section 11.2, Paragraph 4;
+            Section 11.2, Paragraph 6.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_LOCAL  Section 4.3.1,
             Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.2,
-            Paragraph 8; Section 11.2, Paragraph 10.2.1
+            Paragraph 10; Section 11.2, Paragraph 12.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_BIDI_REMOTE  Section 4.3.1,
             Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.2,
-            Paragraph 11; Section 11.2, Paragraph 13.2.1
+            Paragraph 13; Section 11.2, Paragraph 15.2.1
          SETTINGS_WT_INITIAL_MAX_STREAM_DATA_UNI  Section 4.3.1,
             Paragraph 2.2.1; Section 6.6, Paragraph 8; Section 11.2,
-            Paragraph 5; Section 11.2, Paragraph 7.2.1
+            Paragraph 7; Section 11.2, Paragraph 9.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI  Section 4.3.1, Paragraph
             2.3.1; Section 6.7, Paragraph 12; Section 11.2, Paragraph
-            17; Section 11.2, Paragraph 19.2.1
+            19; Section 11.2, Paragraph 21.2.1
          SETTINGS_WT_INITIAL_MAX_STREAMS_UNI  Section 4.3.1, Paragraph
             2.3.1; Section 6.7, Paragraph 12; Section 11.2, Paragraph
-            14; Section 11.2, Paragraph 16.2.1
+            16; Section 11.2, Paragraph 18.2.1
 
       W
 
@@ -1789,20 +1825,20 @@ Index
             2.1.1; Section 4.4, Paragraph 1; Section 4.4, Paragraph 2;
             Section 6.5, Paragraph 1; Section 6.5, Paragraph 3;
             Section 6.5, Paragraph 6; Section 6.5, Paragraph 7;
-            Section 11.2, Paragraph 2
+            Section 11.2, Paragraph 4
          WT_MAX_STREAM_DATA  Section 2, Paragraph 7; Section 4.3.1,
             Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 4.4,
             Paragraph 2; Section 6.6, Paragraph 1; Section 6.6,
             Paragraph 3; Section 6.6, Paragraph 6; Section 6.6,
             Paragraph 7; Section 6.6, Paragraph 9; Section 11.2,
-            Paragraph 5; Section 11.2, Paragraph 8; Section 11.2,
-            Paragraph 11; Section 11.4, Paragraph 11.4.1
+            Paragraph 7; Section 11.2, Paragraph 10; Section 11.2,
+            Paragraph 13; Section 11.4, Paragraph 11.4.1
          WT_MAX_STREAMS  Section 2, Paragraph 7; Section 4.2, Paragraph
             1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
             Section 4.4, Paragraph 2; Section 6.7, Paragraph 1;
             Section 6.7, Paragraph 2; Section 6.7, Paragraph 4;
             Section 6.7, Paragraph 10; Section 6.7, Paragraph 11;
-            Section 11.2, Paragraph 14; Section 11.2, Paragraph 17
+            Section 11.2, Paragraph 16; Section 11.2, Paragraph 19
          WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;

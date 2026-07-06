@@ -1693,9 +1693,14 @@ acknowledged immediately before the CONNECT request is sent.<a href="#section-4.
 acknowledged immediately before the response accepting the session is sent.<a href="#section-4.3.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.3.1-6">Note that these may be older than the sender's most recent SETTINGS: values
-that were still unacknowledged when the CONNECT request or response was sent
-do not apply except to new sessions created after they are acknowledged.<a href="#section-4.3.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-6">Note that this requires some care when SETTINGS are updated during the
+connection.  A client sending a CONNECT request MUST use the server-sent
+SETTINGS it has acknowledged at that moment. Those are the values that apply to
+the resulting session, even if the client acknowledges further server SETTINGS
+before the response arrives. Similarly, a server sending a response accepting a
+session MUST use the client-sent SETTINGS that it has acknowledged before
+sending that response.  Values still unacknowledged at these moments apply only
+to sessions created after they are acknowledged.<a href="#section-4.3.1-6" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-7">Sessions that are already established are not affected by changes to these
 SETTINGS, and their limits can only be updated using the corresponding flow
 control capsules.<a href="#section-4.3.1-7" class="pilcrow">¶</a></p>

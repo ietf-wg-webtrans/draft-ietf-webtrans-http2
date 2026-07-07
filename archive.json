@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-05T02:35:23.629862+00:00",
+  "timestamp": "2026-07-07T02:35:55.820018+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3524,7 +3524,7 @@
       "id": "I_kwDODnOl888AAAABD_SD2A",
       "title": "Remove SETTINGS_WT_MAX_SESSIONS and make negotiation match H3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/185",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -3535,8 +3535,8 @@
       ],
       "body": "Splitting out an issue to track just this part: \n\n> SETTINGS_WT_MAX_SESSIONS\n\nWait, now I\u2019m confused.  H2 has MAX_SESSIONS but H3 does not?\n",
       "createdAt": "2026-06-01T11:20:35Z",
-      "updatedAt": "2026-06-01T11:27:47Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-06T08:12:39Z",
+      "closedAt": "2026-07-06T08:12:39Z",
       "comments": []
     },
     {
@@ -3544,7 +3544,7 @@
       "id": "I_kwDODnOl888AAAABFm-viA",
       "title": "Race conditions in settings",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/189",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -3555,8 +3555,8 @@
       ],
       "body": ">  The initial flow control limits for a new session are determined by the most recently acknowledged SETTINGS values at the time the session is created. \n\nIs this correct?\n\nI think that this depends on what it meant by \"the time the session is created\", which might change based on perspective.  Consider the following sequence of messages:\n\n```mermaid\n---\nconfig:\n  mirrorActors: false\n---\n\nsequenceDiagram\n\nClient->>Server: SETTINGS (1)\nClient->>Server: SETTINGS (2)\nClient->>Server: SETTINGS (3)\n\nServer-->Client: SETTINGS_ACK (1)\n\nClient->>Server: HEADERS (CONNECT...propose session)\n\nServer-->Client: SETTINGS_ACK (2)\n\nServer->>Client: HEADERS (200...accept session)\n\nServer-->Client: SETTINGS_ACK (3)\n```\n\nNow, this shows three different settings, just on the client side:\n\n1. The first settings are active before anything happens, but they are active when the client request is sent.  The client probably believes that these settings are applicable.\n2. The second settings become active between when the client proposes the session and when the server accepts it.  This is the interesting case.\n3. The third settings only become active after the session is accepted, so these probably don't apply.\n\nThat second set is interesting, because these are the settings that are active at the time the server creates the session, but these are not the settings that are active when the client initiated the connection.  I think that the text says that these settings apply to the session.\n\nThis is an unavoidable conclusion, because the ordering relationship between the request and the second `SETTINGS_ACK` is impossible to be sure of.  The two messages could pass in flight.  So it could very well have been that the server acknowledged the first `SETTINGS_ACK` after the client initiated the request, because there is no strong ordering guarantee between messages that travel in different directions.\n\nThe case of server settings is also interesting:\n\n```mermaid\n---\nconfig:\n  mirrorActors: false\n---\n\nsequenceDiagram\nparticipant Client\n\nServer->>Client: SETTINGS (1)\nServer->>Client: SETTINGS (2)\nServer->>Client: SETTINGS (3)\n\nClient-->Server: SETTINGS_ACK (1)\n\nClient->>Server: HEADERS (CONNECT...propose session)\n\nClient-->Server: SETTINGS_ACK (2)\n\nServer->>Client: HEADERS (200...accept session)\n\nClient-->Server: SETTINGS_ACK (3)\n```\n\nThe same question about the second settings applies, but here the client has no certainty about whether they apply.  The response and this second `SETTINGS_ACK` (or any `SETTINGS_ACK`, for that matter) has no strict ordering.\n\nThe only conclusion I can reach here is that this text is ambiguous.  What it should instead say is that the settings that apply are:\n\n* For settings that a client controls/advertises, the settings that the server last acknowledged prior to the response apply.\n* For settings that a server controls/advertises, the settings that the client last acknowledged prior to the *request* apply.\n\nThis is a general problem that should be addressed in other protocols that use HTTP/2, but it seems like this is somewhat unique here.  RFC 8441 narrowly avoids this problem by making the setting a one-way latch: you can't disable `SETTINGS_ENABLE_CONNECT_PROTOCOL` after is enabled.  In that case, whether the setting is acknowledged or not doesn't really make a big difference.  Even if the server isn't sure whether the client acknowledged the updated setting, it can just handle any extended `CONNECT` anyway; it's not like it could retract its commitment to understand the request.\n",
       "createdAt": "2026-06-16T05:37:32Z",
-      "updatedAt": "2026-07-03T17:20:22Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-06T22:00:25Z",
+      "closedAt": "2026-07-06T22:00:25Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -9621,25 +9621,33 @@
       "id": "PR_kwDODnOl886gNyDs",
       "title": "Support non-HTTP/2 protocols",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/132",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "vasilvv",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "A strawman solution to #80.",
+      "body": "A strawman solution to ietf-wg-webtrans/draft-ietf-webtrans-http2#80.",
       "createdAt": "2025-07-23T08:15:00Z",
-      "updatedAt": "2025-07-29T01:50:36Z",
+      "updatedAt": "2026-07-06T20:36:05Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "aaca56162a157b3504ec3d02604c9da30a478b17",
       "headRepository": "vasilvv/draft-webtransport-http2",
       "headRefName": "non-h2",
       "headRefOid": "5917d28bd4622cf262550357a55346e6d4c7a0c4",
-      "closedAt": null,
+      "closedAt": "2026-07-06T20:36:05Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Parking this for now, we can reopen if needed",
+          "createdAt": "2026-07-06T20:36:05Z",
+          "updatedAt": "2026-07-06T20:36:05Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDODnOl8861kaxs",
@@ -11507,24 +11515,26 @@
       "id": "PR_kwDODnOl887hVwbs",
       "title": "Use SETTINGS_WT_ENABLED for WebTransport support signaling",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/186",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Mirror H3's capability signaling. Drop the dual-purpose SETTINGS_WT_MAX_SESSIONS and reintroduce SETTINGS_WT_ENABLED as a dedicated support signal. Session limiting continues to use SETTINGS_MAX_CONCURRENT_STREAMS, REFUSED_STREAM, and HTTP 429, just like H3.\r\n\r\nFixes #185",
       "createdAt": "2026-06-01T11:27:28Z",
-      "updatedAt": "2026-07-03T16:48:56Z",
+      "updatedAt": "2026-07-06T20:36:47Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "77ce6a6c865b950a1eb414ce273922a2b97fd000",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "ek/wt_enabled_setting",
       "headRefOid": "fcd092bb91b65e4ecafa053edb560a14eb5047b8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-07-06T08:12:38Z",
+      "mergedAt": "2026-07-06T08:12:38Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "0736acec59320180ba9bd3bb3df3f644b885fae9"
+      },
       "comments": [
         {
           "author": "ekinnear",
@@ -11631,6 +11641,59 @@
               "body": "It seems like an odd thing for a server to do, which is why I was thinking we'd keep the prohibition, but it's not actually hard to understand or to specify/implement, so let's do it.",
               "createdAt": "2026-07-03T16:48:56Z",
               "updatedAt": "2026-07-03T16:48:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABFDDfhg",
+          "commit": {
+            "abbreviatedOid": "fcd092b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I like this better than RFC 8441.  Thanks for indulging me.",
+          "createdAt": "2026-07-06T07:30:00Z",
+          "updatedAt": "2026-07-06T07:30:00Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABFGv71Q",
+          "commit": {
+            "abbreviatedOid": "fcd092b"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-06T15:59:03Z",
+          "updatedAt": "2026-07-06T15:59:04Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "I assume the same \"take backsies\" rule applies here, if a server sends SETTINGS_ENABLE_CONNECT_PROTOCOL=1 and then later SETTINGS_ENABLE_CONNECT_PROTOCOL=0.  Though I'm not sure we need to say it explicitly since it's kind of silly and won't happen in practice?",
+              "createdAt": "2026-07-06T15:59:03Z",
+              "updatedAt": "2026-07-06T15:59:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABFIpeFQ",
+          "commit": {
+            "abbreviatedOid": "fcd092b"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-06T20:36:46Z",
+          "updatedAt": "2026-07-06T20:36:47Z",
+          "comments": [
+            {
+              "originalPosition": 46,
+              "body": "I think 8441 tries to prohibit that, so was leaving that alone",
+              "createdAt": "2026-07-06T20:36:46Z",
+              "updatedAt": "2026-07-06T20:36:47Z"
             }
           ]
         }
@@ -11764,26 +11827,101 @@
       "id": "PR_kwDODnOl887trODv",
       "title": "Clarify which SETTINGS govern a new session",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/190",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Clarify which SETTINGS govern a new session\r\n\r\nFixes #189",
       "createdAt": "2026-07-03T17:20:44Z",
-      "updatedAt": "2026-07-03T17:20:45Z",
+      "updatedAt": "2026-07-06T22:00:28Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "77ce6a6c865b950a1eb414ce273922a2b97fd000",
       "headRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "headRefName": "ek/settings_race_conditions",
-      "headRefOid": "2264cb4d9961a5336b1aac31939e733871fcd066",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "317b12131e8c683d8831ad5d46488d396b6cd89c",
+      "closedAt": "2026-07-06T22:00:24Z",
+      "mergedAt": "2026-07-06T22:00:24Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "9d820ff183477d78d93d604035032742a9a007ad"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABFDGVow",
+          "commit": {
+            "abbreviatedOid": "2264cb4"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Not sure about the amended text.  It's a little fiddly.",
+          "createdAt": "2026-07-06T07:38:07Z",
+          "updatedAt": "2026-07-06T07:49:50Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\n  acknowledged immediately before the CONNECT request is sent.\n```",
+              "createdAt": "2026-07-06T07:38:07Z",
+              "updatedAt": "2026-07-06T07:49:50Z"
+            },
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\n  acknowledged immediately before the response accepting the session is sent.\n```",
+              "createdAt": "2026-07-06T07:38:21Z",
+              "updatedAt": "2026-07-06T07:49:50Z"
+            },
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\nNote that this requires some care when settings are updated.\nIf a server receives a request and sends a response immediately,\nit can use the active settings at that time.\nA client needs to take additional care.\nThe server settings that the client has acknowledged need to be saved\nfrom the time that the client sends its request.\nThis means that server settings might be older\nthan what is currently active when a client creates a WebTransport session. \nThe last client settings that the server has acknowledged are used \nat the time the response is received.\n```",
+              "createdAt": "2026-07-06T07:49:33Z",
+              "updatedAt": "2026-07-06T07:49:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABFGu_Yw",
+          "commit": {
+            "abbreviatedOid": "2264cb4"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-06T15:56:49Z",
+          "updatedAt": "2026-07-06T15:56:49Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "> This means that server settings might be older than what is currently active when a client creates a WebTransport session. \r\n\r\nIs this correct?  It sounds like the client needs to remember the server settings active when it sends its request, because they can change between that point and the time when a 200 is received.  So perhaps the sentence needs to say \"currently active when the client receives the 200 establishing the WebTransport session\"?",
+              "createdAt": "2026-07-06T15:56:49Z",
+              "updatedAt": "2026-07-06T15:56:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABFIU3bA",
+          "commit": {
+            "abbreviatedOid": "2264cb4"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-06T19:49:48Z",
+          "updatedAt": "2026-07-06T19:49:48Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Tried to blend these two and make it clear in [317b121](https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/190/commits/317b12131e8c683d8831ad5d46488d396b6cd89c)",
+              "createdAt": "2026-07-06T19:49:48Z",
+              "updatedAt": "2026-07-06T19:49:48Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

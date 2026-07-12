@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-07T02:35:55.820018+00:00",
+  "timestamp": "2026-07-12T02:10:51.618569+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -2131,7 +2131,7 @@
       ],
       "body": "Our current codepoints are often two-bytes or four-bytes where they could be smaller. This matters, especially for prefixes we use for user data. We should renumber them after WGLC, this is a bug to not forget this.\r\n\r\nSee https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/136.",
       "createdAt": "2023-11-28T23:20:42Z",
-      "updatedAt": "2026-06-16T07:03:32Z",
+      "updatedAt": "2026-07-10T08:05:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -11209,7 +11209,7 @@
       "labels": [],
       "body": "Add text to WT_RESET_STREAM and WT_STOP_SENDING capsule definitions noting that reserved error codes (Section 3.3.1 of OVERVIEW) MUST NOT be sent by applications, but are valid wire values used by the WebTransport implementation.\r\n\r\nSimilar to ietf-wg-webtrans/draft-ietf-webtrans-http3#264.",
       "createdAt": "2026-04-10T19:08:22Z",
-      "updatedAt": "2026-04-10T19:08:23Z",
+      "updatedAt": "2026-07-10T08:06:55Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",

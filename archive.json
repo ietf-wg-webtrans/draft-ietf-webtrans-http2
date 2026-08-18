@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-16T00:57:45.670823+00:00",
+  "timestamp": "2026-08-18T00:54:03.678699+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3579,9 +3579,17 @@
       "labels": [],
       "body": "WebTransport over HTTP/3 says that if `WT_MAX_STREAMS` or `WT_MAX_DATA` were received with a value that does not increase the previously established value, session must be closed. \n\n>  If an endpoint receives a WT_MAX_STREAMS capsule that does not increase the Maximum Streams value previously received, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR error code.\n\n> If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value that does not increase the Maximum Data value previously received, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR error code.\n\nWebTransport over HTTP/2 is slightly more lenient and allows equal values (also extends to `WT_MAX_STREAM_DATA`).\n\n> If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less than a previously received value, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.\n\n> If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data value less than a previously received value, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.\n\n> If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams value less than a previously received value, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.\n\n\nCan we make this consistent? \n\n\nAdditionally, is it allowed to send capsules with values equal to the values from HTTP SETTINGS / WebTransport-Init header or should the capsule values be strictly greater than those values?  ",
       "createdAt": "2026-08-14T03:30:08Z",
-      "updatedAt": "2026-08-14T03:30:08Z",
+      "updatedAt": "2026-08-16T08:44:15Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "martenrichter",
+          "authorAssociation": "NONE",
+          "body": "If a library does not support http settings over http/2, sending capsules might be the only way to communicate this value. (was the case for earlier node.js versions), so it was the only way to send it via capsule. Therefore I do not think it is a good idea to request a strict increase for the first capsules.",
+          "createdAt": "2026-08-16T08:44:15Z",
+          "updatedAt": "2026-08-16T08:44:15Z"
+        }
+      ]
     }
   ],
   "pulls": [

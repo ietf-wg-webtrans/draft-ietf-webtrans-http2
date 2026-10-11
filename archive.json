@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-18T00:54:03.678699+00:00",
+  "timestamp": "2026-10-11T03:30:44.486994+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3590,6 +3590,102 @@
           "updatedAt": "2026-08-16T08:44:15Z"
         }
       ]
+    },
+    {
+      "number": 192,
+      "id": "I_kwDODnOl888AAAABWSBkoQ",
+      "title": "Repetitive text in section 3.4",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/192",
+      "state": "OPEN",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The first paragraphs in [section 3.4](datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-session-termination-and-err) appear a bit repetitive to me:\n\n> A WebTransport session over HTTP/2 is terminated when either endpoint closes the stream associated with the CONNECT request that initiated the session.\n> \n> Prior to closing the stream associated with the CONNECT request, either endpoint can send a WT_CLOSE_SESSION capsule with an application error code and message to convey additional information about the reasons for the closure of the session.\n> \n> Session errors result in the termination of a session. Errors can be reported using the WT_CLOSE_SESSION capsule, which includes an error code and an optional explanatory message.\n> \n> An endpoint can terminate a session without sending a WT_CLOSE_SESSION capsule by closing the HTTP/2 stream.\n> \n> An HTTP/2 stream that is reset terminates the session without providing an application-level signal, though there will be an HTTP/2 error code.\n\nIn particular, the third and fourth paragraphs seem to restate what the previous sentences already said. Is it possible to make the text more concise?",
+      "createdAt": "2026-10-10T10:11:16Z",
+      "updatedAt": "2026-10-10T10:11:16Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 193,
+      "id": "I_kwDODnOl888AAAABWSD7tg",
+      "title": "Metion WT_FLOW_CONTROL_ERROR in WT_STREAM section",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/193",
+      "state": "OPEN",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Other sections already mention that an endpoint must close the session with WT_FLOW_CONTROL_ERROR if a stream or data limit is exceeded (e.g. in [6.5. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-6.5)[WT_MAX_DATA Capsule](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-wt_max_data-capsule)). It would be handy to briefly mention that in [6.4. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-6.4)[WT_STREAM Capsule](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-wt_stream-capsule) as well, since these limit checks are likely implemented next to the WT_STREAM capsule handling.",
+      "createdAt": "2026-10-10T10:16:57Z",
+      "updatedAt": "2026-10-10T10:16:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 194,
+      "id": "I_kwDODnOl888AAAABWSHY5g",
+      "title": "Other flow control limits in WebTransport-Init",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/194",
+      "state": "OPEN",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The WebTransport-Init header field ([4.3.2. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-4.3.2)[Flow Control Header Field](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-flow-control-header-field)) defines parameters for the initial flow control limits for unidirectional and bidirectional streams. As far as I understand, these are initial values for the WT_MAX_STREAM_DATA capsule.\n\nWhy are there no parameters to indicate the initial values for WT_MAX_DATA and WT_MAX_STREAMS? This seems inconsistent since these values can be set in a SETTINGS frame. Is that on purpose or has a need for this just not arisen yet?",
+      "createdAt": "2026-10-10T10:25:23Z",
+      "updatedAt": "2026-10-10T10:25:23Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 195,
+      "id": "I_kwDODnOl888AAAABWSLhAg",
+      "title": "Clarify bit indicating stream directionality",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/195",
+      "state": "OPEN",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From [5.2. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-5.2)[WebTransport Streams](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-webtransport-streams):\n\n> WebTransport streams are identified by a numeric value, or stream ID. Stream IDs are only meaningful within the WebTransport session in which they were created. They share the same semantics as QUIC stream IDs, with client initiated streams having even-numbered stream IDs and server-initiated streams having odd-numbered stream IDs. **Similarly, they can be bidirectional or unidirectional, indicated by the second least significant bit of the stream ID.**\n\nThe emphasized sentence doesn't make it super clear which bit value of the second least significant bit indicates which directionality. Can that be clarified, similar to how it's explicitly mentioned in the previous sentence about the bit indicating the initiator? In addition, example values would be helpful as well. This might not be needed by people more familiar with QUIC, but it confused me while reading this document on its own.",
+      "createdAt": "2026-10-10T10:35:38Z",
+      "updatedAt": "2026-10-10T10:35:38Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 196,
+      "id": "I_kwDODnOl888AAAABWSM32w",
+      "title": "Missing SETTINGS_WT_ENABLED in examples",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/196",
+      "state": "OPEN",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The examples in [8. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-8)[Examples](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-examples) are missing SETTINGS_WT_ENABLED in the server's SETTINGS frame, although I think it's necessary to allow the client to open a WebTransport session.",
+      "createdAt": "2026-10-10T10:39:02Z",
+      "updatedAt": "2026-10-10T10:39:02Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 197,
+      "id": "I_kwDODnOl888AAAABWSQ2aw",
+      "title": "WT_STREAM_DATA_BLOCKED missing from IANA considerations",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/197",
+      "state": "OPEN",
+      "author": "Acconut",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The WT_STREAM_DATA_BLOCKED capsule type is defined in this document (not in the WT over H3 document), but is missing from the IANA considerations to register this value. As far as I checked, this is the only value missing from the considerations, but it might be worth to double check.",
+      "createdAt": "2026-10-10T10:48:41Z",
+      "updatedAt": "2026-10-10T10:48:41Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [

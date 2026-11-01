@@ -1198,7 +1198,9 @@ the request as malformed, as specified in {{Section 8.1.1 of HTTP2}}.
 An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
 This example is intended to closely follow the example in
 {{Section 5.1 of !RFC8441}} to help illustrate the differences defined in this
-document.
+document.  For brevity, these examples omit the initial flow control limits
+({{flow-control-initial}}) that the endpoints would also exchange to permit the
+streams and data shown.
 
 ~~~
 [[ From Client ]]                   [[ From Server ]]

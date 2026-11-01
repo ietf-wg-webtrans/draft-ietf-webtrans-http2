@@ -530,12 +530,23 @@ WebTransport streams have identifiers and states that mirror the identifiers
 (({{Section 2.1 of !RFC9000}})) and states ({{Section 3 of !RFC9000}}) of QUIC
 streams as closely as possible to aid in ease of implementation.
 
-WebTransport streams are identified by a numeric value, or stream ID. Stream IDs
-are only meaningful within the WebTransport session in which they were created.
-They share the same semantics as QUIC stream IDs, with client initiated streams
-having even-numbered stream IDs and server-initiated streams having odd-numbered
-stream IDs. Similarly, they can be bidirectional or unidirectional, indicated by
-the second least significant bit of the stream ID.
+WebTransport streams are identified by a numeric value, or stream ID.  Stream
+IDs are only meaningful within the WebTransport session in which they were
+created.  They share the same semantics as QUIC stream IDs.  The least
+significant bit (0x01) of the stream ID identifies the initiator of the stream:
+client-initiated streams have even-numbered stream IDs (with the bit set to 0),
+and server-initiated streams have odd-numbered stream IDs (with the bit set to
+1).  The second least significant bit (0x02) distinguishes between
+bidirectional streams (with the bit set to 0) and unidirectional streams (with
+the bit set to 1).  {{stream-id-types}} summarizes the four types of streams.
+
+| Bits | Stream Type                      |
+|:-----|:---------------------------------|
+| 0x00 | Client-Initiated, Bidirectional  |
+| 0x01 | Server-Initiated, Bidirectional  |
+| 0x02 | Client-Initiated, Unidirectional |
+| 0x03 | Server-Initiated, Unidirectional |
+{: #stream-id-types title="Stream ID Types"}
 
 Because WebTransport does not provide an acknowledgement mechanism for
 WebTransport capsules, it relies on the underlying transport's in order delivery

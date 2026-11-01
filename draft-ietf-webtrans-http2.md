@@ -1723,6 +1723,30 @@ Notes:
 : None
 {: spacing="compact"}
 
+The `WT_STREAM_DATA_BLOCKED` capsule.
+
+Value:
+: 0x190B4D42
+
+Capsule Type:
+: WT_STREAM_DATA_BLOCKED
+
+Status:
+: permanent
+
+Specification:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
 ## HTTP Header Field Name {#iana-header}
 
 IANA will register the following entry in the "Hypertext Transfer Protocol

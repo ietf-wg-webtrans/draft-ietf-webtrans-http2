@@ -1614,7 +1614,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1638,7 +1638,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1662,7 +1662,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1686,7 +1686,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1710,7 +1710,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1734,7 +1734,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:

@@ -1207,6 +1207,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
+                                    SETTINGS_WT_ENABLED = 1
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -1244,6 +1245,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
+                                    SETTINGS_WT_ENABLED = 1
 
 HEADERS + END_HEADERS
 Stream ID = 3

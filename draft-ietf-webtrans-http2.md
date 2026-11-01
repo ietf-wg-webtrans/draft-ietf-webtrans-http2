@@ -1216,7 +1216,7 @@ Stream ID = 3
 :scheme = https
 :path = /
 :authority = server.example.com
-origin: server.example.com
+origin: https://server.example.com
 
                                     HEADERS + END_HEADERS
                                     Stream ID = 3
@@ -1254,7 +1254,7 @@ Stream ID = 3
 :scheme = https
 :path = /
 :authority = server.example.com
-origin: server.example.com
+origin: https://server.example.com
                                     HEADERS + END_HEADERS
                                     Stream ID = 3
                                     :status = 200

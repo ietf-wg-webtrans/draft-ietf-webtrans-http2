@@ -527,7 +527,7 @@ Stream Independence:
 ## WebTransport Streams
 
 WebTransport streams have identifiers and states that mirror the identifiers
-(({{Section 2.1 of !RFC9000}})) and states ({{Section 3 of !RFC9000}}) of QUIC
+({{Section 2.1 of !RFC9000}}) and states ({{Section 3 of !RFC9000}}) of QUIC
 streams as closely as possible to aid in ease of implementation.
 
 WebTransport streams are identified by a numeric value, or stream ID.  Stream

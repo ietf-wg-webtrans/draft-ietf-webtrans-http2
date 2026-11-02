@@ -2701,7 +2701,9 @@ the request as malformed, as specified in <span><a href="https://rfc-editor.org/
 <p id="section-8-1">An example of negotiating a WebTransport Stream on an HTTP/2 connection follows.
 This example is intended to closely follow the example in
 <span><a href="https://rfc-editor.org/rfc/rfc8441#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC8441" class="cite xref">RFC8441</a>]</span> to help illustrate the differences defined in this
-document.<a href="#section-8-1" class="pilcrow">¶</a></p>
+document.  For brevity, these examples omit the initial flow control limits
+(<a href="#flow-control-initial" class="auto internal xref">Section 4.3</a>) that the endpoints would also exchange to permit the
+streams and data shown.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8-2">
 <pre>
 [[ From Client ]]                   [[ From Server ]]
@@ -2710,6 +2712,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
+                                    SETTINGS_WT_ENABLED = 1
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -2718,7 +2721,7 @@ Stream ID = 3
 :scheme = https
 :path = /
 :authority = server.example.com
-origin: server.example.com
+origin: https://server.example.com
 
                                     HEADERS + END_HEADERS
                                     Stream ID = 3
@@ -2747,6 +2750,7 @@ SETTINGS
 
                                     SETTINGS
                                     SETTINGS_ENABLE_CONNECT_PROTOCOL = 1
+                                    SETTINGS_WT_ENABLED = 1
 
 HEADERS + END_HEADERS
 Stream ID = 3
@@ -2755,7 +2759,7 @@ Stream ID = 3
 :scheme = https
 :path = /
 :authority = server.example.com
-origin: server.example.com
+origin: https://server.example.com
                                     HEADERS + END_HEADERS
                                     Stream ID = 3
                                     :status = 200

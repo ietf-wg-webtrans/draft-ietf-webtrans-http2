@@ -1290,11 +1290,7 @@ simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
 A draft version of this document that makes a breaking change, either to the
 wire format or to protocol behavior, uses a new codepoint for the
-SETTINGS_WT_ENABLED setting.  This draft version uses 0x2b67;
-draft-ietf-webtrans-http2-15 used 0x2b60.  A server that supports more than one
-draft version can send SETTINGS_WT_ENABLED with each corresponding codepoint,
-but since a client does not indicate which draft version it uses, the server
-needs to behave in a way that is valid for all of the versions it advertises.
+SETTINGS_WT_ENABLED setting.
 
 # Security Considerations
 

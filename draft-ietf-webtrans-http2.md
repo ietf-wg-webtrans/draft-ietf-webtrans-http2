@@ -765,6 +765,12 @@ this unnecessary.  A [stream error](#errors) of type
 WT_STREAM_STATE_ERROR MUST be sent if a WT_STREAM capsule is received
 for a stream that is not in a valid state.
 
+Opening a stream and sending stream data with WT_STREAM capsules is subject to
+the limits on the number of streams ({{WT_MAX_STREAMS}}), on session data
+({{WT_MAX_DATA}}), and on stream data ({{WT_MAX_STREAM_DATA}}).  A WT_STREAM
+capsule that exceeds any of these limits results in a WT_FLOW_CONTROL_ERROR
+session error, as described in the corresponding sections.
+
 ## WT_MAX_DATA Capsule {#WT_MAX_DATA}
 
 *[WT_MAX_DATA]: #

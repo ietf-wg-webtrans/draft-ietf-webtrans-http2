@@ -1614,7 +1614,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1638,7 +1638,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1662,7 +1662,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1686,7 +1686,7 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
 : This document
 
 Change Controller:
@@ -1710,7 +1710,31 @@ Capsule Type:
 Status:
 : permanent
 
-Specification:
+Reference:
+: This document
+
+Change Controller:
+: IETF
+
+Contact:
+: WebTransport Working Group <webtransport@ietf.org>
+
+Notes:
+: None
+{: spacing="compact"}
+
+The `WT_STREAM_DATA_BLOCKED` capsule.
+
+Value:
+: 0x190B4D42
+
+Capsule Type:
+: WT_STREAM_DATA_BLOCKED
+
+Status:
+: permanent
+
+Reference:
 : This document
 
 Change Controller:

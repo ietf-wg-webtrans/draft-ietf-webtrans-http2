@@ -1535,43 +1535,37 @@ the request if the client did not include a suitable protocol.<a href="#section-
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-session-termination-and-err" class="section-name selfRef">Session Termination and Error Handling</a>
         </h3>
 <p id="section-3.4-1">A WebTransport session over HTTP/2 is terminated when either endpoint closes the
-stream associated with the CONNECT request that initiated the session.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Prior to closing the stream associated with the CONNECT request, either endpoint
-can send a WT_CLOSE_SESSION capsule with an application error code and message
-to convey additional information about the reasons for the closure of the
-session.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<p id="section-3.4-3">Session errors result in the termination of a session.  Errors can be reported
-using the WT_CLOSE_SESSION capsule, which includes an error code and an optional
-explanatory message.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
-<p id="section-3.4-4">An endpoint can terminate a session without sending a WT_CLOSE_SESSION capsule
-by closing the HTTP/2 stream.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5">An HTTP/2 stream that is reset terminates the session without providing an
-application-level signal, though there will be an HTTP/2 error code.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">This document reserves the following HTTP/2 error codes for use with reporting
-WebTransport errors:<a href="#section-3.4-6" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-3.4-7">
-          <dt id="section-3.4-7.1">WT_ERROR (0xTBD):</dt>
-          <dd style="margin-left: 1.5em" id="section-3.4-7.2">
-            <p id="section-3.4-7.2.1">This generic error can be used for errors that do not have more specific error
-codes.<a href="#section-3.4-7.2.1" class="pilcrow">¶</a></p>
+stream associated with the CONNECT request that initiated the session.  Before
+closing the stream, either endpoint can send a WT_CLOSE_SESSION capsule
+(<a href="#WT_CLOSE_SESSION_CAPSULE" class="auto internal xref">Section 6.12</a>) with an application error code and message to
+convey additional information about the reasons for closing the session.
+Resetting the CONNECT stream also terminates the session, without providing
+an application-level signal, though there will be an HTTP/2 error code.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">Session errors result in the termination of a session.  This document reserves
+the following HTTP/2 error codes for use with reporting WebTransport errors:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.4-3">
+          <dt id="section-3.4-3.1">WT_ERROR (0xTBD):</dt>
+          <dd style="margin-left: 1.5em" id="section-3.4-3.2">
+            <p id="section-3.4-3.2.1">This generic error can be used for errors that do not have more specific error
+codes.<a href="#section-3.4-3.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.4-7.3">WT_STREAM_STATE_ERROR (0xTBD):</dt>
-          <dd style="margin-left: 1.5em" id="section-3.4-7.4">
-            <p id="section-3.4-7.4.1">A stream-related capsule identified a stream that was in an invalid state.<a href="#section-3.4-7.4.1" class="pilcrow">¶</a></p>
+<dt id="section-3.4-3.3">WT_STREAM_STATE_ERROR (0xTBD):</dt>
+          <dd style="margin-left: 1.5em" id="section-3.4-3.4">
+            <p id="section-3.4-3.4.1">A stream-related capsule identified a stream that was in an invalid state.<a href="#section-3.4-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.4-7.5">WT_FLOW_CONTROL_ERROR (0xTBD):</dt>
-          <dd style="margin-left: 1.5em" id="section-3.4-7.6">
-            <p id="section-3.4-7.6.1">A flow control limit was violated.<a href="#section-3.4-7.6.1" class="pilcrow">¶</a></p>
+<dt id="section-3.4-3.5">WT_FLOW_CONTROL_ERROR (0xTBD):</dt>
+          <dd style="margin-left: 1.5em" id="section-3.4-3.6">
+            <p id="section-3.4-3.6.1">A flow control limit was violated.<a href="#section-3.4-3.6.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-3.4-8">Prior to terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
-application-specified error code MAY be sent.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
-<p id="section-3.4-9">Session errors do not necessarily result in any change of HTTP/2 connection
+<p id="section-3.4-4">Prior to terminating a stream with an error, a WT_CLOSE_SESSION capsule with an
+application-specified error code MAY be sent.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">Session errors do not necessarily result in any change of HTTP/2 connection
 state, except that an endpoint might choose to terminate a connection in
-response to stream errors; see <span><a href="https://rfc-editor.org/rfc/rfc9113#section-5.4" class="relref">Section 5.4</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+response to stream errors; see <span><a href="https://rfc-editor.org/rfc/rfc9113#section-5.4" class="relref">Section 5.4</a> of [<a href="#HTTP2" class="cite xref">HTTP2</a>]</span>.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1987,7 +1981,7 @@ PADDING Capsule {
 </div>
 <p id="section-6.1-4">The Padding field MUST be set to an all-zero sequence of bytes of any length as
 specified by the Length field.  A receiver is not obligated to verify padding
-but MAY treat non-zero padding as a <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span>.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+but MAY treat non-zero padding as a <span><a href="#errors" class="internal xref">session error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span>.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="WT_RESET_STREAM">
@@ -2057,7 +2051,7 @@ session-level flow control consumed by a stream is always known by both
 endpoints.<a href="#section-6.2-7" class="pilcrow">¶</a></p>
 <p id="section-6.2-8">A <span id="iref-wt_reset_stream-48" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule MUST NOT be sent after a stream is closed or reset.
 While QUIC permits redundant RESET_STREAM frames, the ordering guarantee in
-HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">session error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
 WT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_reset_stream-49" class="iref"></span><a href="#WT_RESET_STREAM" class="internal xref">WT_RESET_STREAM</a> capsule is
 received for a stream that is not in a valid state.<a href="#section-6.2-8" class="pilcrow">¶</a></p>
 </section>
@@ -2113,7 +2107,7 @@ can be copied into the <span id="iref-wt_reset_stream-56" class="iref"></span><a
 have a more appropriate code to use.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
 <p id="section-6.3-6">A <span id="iref-wt_stop_sending-57" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule MUST NOT be sent multiple times for the same stream.
 While QUIC permits redundant STOP_SENDING frames, the ordering guarantee in
-HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">session error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
 WT_STREAM_STATE_ERROR MUST be sent if a second <span id="iref-wt_stop_sending-58" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule
 is received.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
 </section>
@@ -2165,7 +2159,7 @@ be used unless they open or close a stream; an endpoint MAY treat an empty
 </dl>
 <p id="section-6.4-6">A <span id="iref-wt_stream-64" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule MUST NOT be sent after a stream is closed or reset.  While
 QUIC permits redundant STREAM frames, the ordering guarantee in HTTP/2 makes
-this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+this unnecessary.  A <span><a href="#errors" class="internal xref">session error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
 WT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream-65" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsule is received
 for a stream that is not in a valid state.<a href="#section-6.4-6" class="pilcrow">¶</a></p>
 <p id="section-6.4-7">Opening a stream and sending stream data with <span id="iref-wt_stream-66" class="iref"></span><a href="#WT_STREAM" class="internal xref">WT_STREAM</a> capsules is subject to
@@ -2284,7 +2278,7 @@ be communicated by sending non-zero values for
 <p id="section-6.6-9">A <span id="iref-wt_max_stream_data-88" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule MUST NOT be sent after a sender requests that a
 stream be closed with <span id="iref-wt_stop_sending-89" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a>.  While QUIC permits redundant
 MAX_STREAM_DATA frames, the ordering guarantee in HTTP/2 makes this unnecessary.
-A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type WT_STREAM_STATE_ERROR MUST be sent
+A <span><a href="#errors" class="internal xref">session error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type WT_STREAM_STATE_ERROR MUST be sent
 if a <span id="iref-wt_max_stream_data-90" class="iref"></span><a href="#WT_MAX_STREAM_DATA" class="internal xref">WT_MAX_STREAM_DATA</a> capsule is received after a <span id="iref-wt_stop_sending-91" class="iref"></span><a href="#WT_STOP_SENDING" class="internal xref">WT_STOP_SENDING</a> capsule for
 the same stream.<a href="#section-6.6-9" class="pilcrow">¶</a></p>
 </section>
@@ -2455,7 +2449,7 @@ send appropriate flow control signals for their limits; see
 <a href="#flow-control-intermediaries" class="auto internal xref">Section 4.4</a>.<a href="#section-6.9-6" class="pilcrow">¶</a></p>
 <p id="section-6.9-7">A <span id="iref-wt_stream_data_blocked-115" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule MUST NOT be sent after a stream is closed or
 reset.  While QUIC permits redundant STREAM_DATA_BLOCKED frames, the ordering
-guarantee in HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">stream error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
+guarantee in HTTP/2 makes this unnecessary.  A <span><a href="#errors" class="internal xref">session error</a> (<a href="#errors" class="auto internal xref">Section 3.4</a>)</span> of type
 WT_STREAM_STATE_ERROR MUST be sent if a <span id="iref-wt_stream_data_blocked-116" class="iref"></span><a href="#WT_STREAM_DATA_BLOCKED" class="internal xref">WT_STREAM_DATA_BLOCKED</a> capsule
 is received for a stream that is not in a valid state.<a href="#section-6.9-7" class="pilcrow">¶</a></p>
 </section>

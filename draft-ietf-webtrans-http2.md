@@ -435,6 +435,13 @@ If any of these keys are present but contain invalid values, the endpoint MUST
 reject the CONNECT request with a 4xx status code.  Unknown keys and parameters
 in the dictionary MUST be ignored.
 
+The `WebTransport-Init` header field only includes initial stream data limits.
+A WT_MAX_STREAM_DATA capsule applies to a specific stream and can only be sent
+once that stream exists, so an initial value is needed for a peer to send data
+on a new stream without waiting for a round trip.  Session-level limits can be
+provided at the start of a session by sending WT_MAX_DATA and WT_MAX_STREAMS
+capsules along with the request or response.
+
 ## Flow Control and Intermediaries {#flow-control-intermediaries}
 
 WebTransport over HTTP/2 uses several capsules for flow control, and all of

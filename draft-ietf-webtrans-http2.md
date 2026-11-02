@@ -374,6 +374,11 @@ each corresponding initial flow control value.  Endpoints sending the SETTINGS
 and also including the header field SHOULD ensure that the header field values
 are greater than or equal to the values provided in the SETTINGS.
 
+For the checks in {{WT_MAX_DATA}}, {{WT_MAX_STREAM_DATA}}, and
+{{WT_MAX_STREAMS}}, the initial values that apply to a session count as values
+previously received, and a capsule that repeats an initial value does not
+increase the limit.
+
 ### Flow Control SETTINGS {#flow-control-settings}
 
 *[SETTINGS_WT_INITIAL_MAX_DATA]: #
@@ -471,7 +476,8 @@ that data cannot be immediately forwarded to the next hop.
 In practice, an intermediary that translates flow control signals between
 similar WebTransport protocols, such as between two HTTP/2 connections, can
 often simply reexpress the same limits received on one connection directly on
-the other connection.
+the other connection, as long as each capsule it sends increases the
+corresponding limit on that connection.
 
 An intermediary that does not want to be responsible for storing data that
 cannot be immediately sent on its translated connection would ensure that it
@@ -783,9 +789,9 @@ advertised by a receiver.  If an endpoint receives an incoming WT_STREAM capsule
 with Stream Data in excess of this limit, it MUST close the WebTransport session
 with a WT_FLOW_CONTROL_ERROR session error.
 
-If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less
-than a previously received value, it MUST close the WebTransport session with a
-WT_FLOW_CONTROL_ERROR session error.
+If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value that
+does not increase the Maximum Data value previously received, it MUST close the
+WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_DATA
@@ -831,8 +837,9 @@ this limit, it MUST close the WebTransport session with a
 WT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data
-value less than a previously received value, it MUST close the WebTransport
-session with a WT_FLOW_CONTROL_ERROR session error.
+value that does not increase the Maximum Stream Data value previously received
+for that stream, it MUST close the WebTransport session with a
+WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -912,8 +919,8 @@ receives such a stream would close the WebTransport session with a
 WT_FLOW_CONTROL_ERROR error.
 
 If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams value
-less than a previously received value, it MUST close the WebTransport session
-with a WT_FLOW_CONTROL_ERROR session error.
+that does not increase the Maximum Streams value previously received, it MUST
+close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as described
 in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_STREAMS
@@ -1277,6 +1284,18 @@ used to establish WebTransport sessions will need to modify the upgrade token
 used to identify WebTransport, allowing servers to offer multiple versions
 simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
+## Draft Versions {#draft-versions}
+
+\[\[RFC editor: please remove this section before publication.]]
+
+A draft version of this document that makes a breaking change, either to the
+wire format or to protocol behavior, uses a new codepoint for the
+SETTINGS_WT_ENABLED setting.  This draft version uses 0x2b67;
+draft-ietf-webtrans-http2-15 used 0x2b60.  A server that supports more than one
+draft version can send SETTINGS_WT_ENABLED with each corresponding codepoint,
+but since a client does not indicate which draft version it uses, the server
+needs to behave in a way that is valid for all of the versions it advertises.
+
 # Security Considerations
 
 WebTransport over HTTP/2 satisfies all of the security requirements imposed by
@@ -1363,7 +1382,7 @@ Setting Name:
 
 Code:
 
-: 0x2b60
+: 0x2b67
 
 Initial Value:
 

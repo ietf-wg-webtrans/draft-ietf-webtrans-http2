@@ -468,7 +468,8 @@ that data cannot be immediately forwarded to the next hop.
 In practice, an intermediary that translates flow control signals between
 similar WebTransport protocols, such as between two HTTP/2 connections, can
 often simply reexpress the same limits received on one connection directly on
-the other connection.
+the other connection, as long as each capsule it sends increases the
+corresponding limit on that connection.
 
 An intermediary that does not want to be responsible for storing data that
 cannot be immediately sent on its translated connection would ensure that it
@@ -797,8 +798,10 @@ advertised by a receiver.  If an endpoint receives an incoming WT_STREAM capsule
 with Stream Data in excess of this limit, it MUST close the WebTransport session
 with a WT_FLOW_CONTROL_ERROR session error.
 
-If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less
-than a previously received value, it MUST close the WebTransport session with a
+If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value that
+does not increase the Maximum Data value previously received, or the initial
+value for the session ({{flow-control-initial}}) if no WT_MAX_DATA capsule has
+been received, it MUST close the WebTransport session with a
 WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
@@ -845,8 +848,10 @@ this limit, it MUST close the WebTransport session with a
 WT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data
-value less than a previously received value, it MUST close the WebTransport
-session with a WT_FLOW_CONTROL_ERROR session error.
+value that does not increase the Maximum Stream Data value previously received
+for that stream, or the stream's initial value ({{flow-control-initial}}) if no
+WT_MAX_STREAM_DATA capsule has been received for it, it MUST close the
+WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -926,8 +931,10 @@ receives such a stream would close the WebTransport session with a
 WT_FLOW_CONTROL_ERROR error.
 
 If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams value
-less than a previously received value, it MUST close the WebTransport session
-with a WT_FLOW_CONTROL_ERROR session error.
+that does not increase the Maximum Streams value previously received, or the
+corresponding initial value for the session ({{flow-control-initial}}) if no
+WT_MAX_STREAMS capsule of that type has been received, it MUST close the
+WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as described
 in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_STREAMS
@@ -1295,6 +1302,14 @@ used to establish WebTransport sessions will need to modify the upgrade token
 used to identify WebTransport, allowing servers to offer multiple versions
 simultaneously ({{Section 9.1 of WEBTRANSPORT-H3}}).
 
+## Draft Versions {#draft-versions}
+
+\[\[RFC editor: please remove this section before publication.]]
+
+A draft version of this document that makes a breaking change, either to the
+wire format or to protocol behavior, uses a new codepoint for the
+SETTINGS_WT_ENABLED setting.
+
 # Security Considerations
 
 WebTransport over HTTP/2 satisfies all of the security requirements imposed by
@@ -1381,7 +1396,7 @@ Setting Name:
 
 Code:
 
-: 0x2b60
+: 0x2b67
 
 Initial Value:
 

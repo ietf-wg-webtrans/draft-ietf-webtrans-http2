@@ -842,6 +842,13 @@ Table of Contents
    WT_STREAM capsule is received for a stream that is not in a valid
    state.
 
+   Opening a stream and sending stream data with WT_STREAM capsules is
+   subject to the limits on the number of streams (Section 6.7), on
+   session data (Section 6.5), and on stream data (Section 6.6).  A
+   WT_STREAM capsule that exceeds any of these limits results in a
+   WT_FLOW_CONTROL_ERROR session error, as described in the
+   corresponding sections.
+
 6.5.  WT_MAX_DATA Capsule
 
    An HTTP capsule [HTTP-DATAGRAM] called WT_MAX_DATA (type=0x190B4D3D)
@@ -1903,9 +1910,9 @@ Index
             Section 6.2, Paragraph 7; Section 6.4, Paragraph 1;
             Section 6.4, Paragraph 2; Section 6.4, Paragraph 4;
             Section 6.4, Paragraph 5.4.1; Section 6.4, Paragraph 6;
-            Section 6.5, Paragraph 5; Section 6.6, Paragraph 5;
-            Section 6.14, Paragraph 3; Section 8, Paragraph 3;
-            Section 11.4, Paragraph 9.4.1
+            Section 6.4, Paragraph 7; Section 6.5, Paragraph 5;
+            Section 6.6, Paragraph 5; Section 6.14, Paragraph 3;
+            Section 8, Paragraph 3; Section 11.4, Paragraph 9.4.1
          WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4,
             Paragraph 1; Section 4.4, Paragraph 2; Section 6.9,
             Paragraph 1; Section 6.9, Paragraph 4; Section 6.9,

@@ -5,7 +5,7 @@
 WEBTRANS                                                     A. Frindell
 Internet-Draft                                                      Meta
 Intended status: Standards Track                              E. Kinnear
-Expires: 7 January 2027                                         T. Pauly
+Expires: 6 May 2027                                             T. Pauly
                                                               Apple Inc.
                                                               M. Thomson
                                                                  Mozilla
@@ -13,7 +13,7 @@ Expires: 7 January 2027                                         T. Pauly
                                                                   Google
                                                                   G. Xie
                                                                     Meta
-                                                             6 July 2026
+                                                         2 November 2026
 
 
                         WebTransport over HTTP/2
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2027.
+   This Internet-Draft will expire on 6 May 2027.
 
 Copyright Notice
 
@@ -1588,7 +1588,7 @@ WebTransport Data
    Value:  0x190B4D38
    Capsule Type:  PADDING
    Status:  permanent
-   Specification:  This document
+   Reference:  This document
    Change Controller:  IETF
    Contact:  WebTransport Working Group webtransport@ietf.org
       (mailto:webtransport@ietf.org)
@@ -1599,7 +1599,7 @@ WebTransport Data
    Value:  0x190B4D39
    Capsule Type:  WT_RESET_STREAM
    Status:  permanent
-   Specification:  This document
+   Reference:  This document
    Change Controller:  IETF
    Contact:  WebTransport Working Group webtransport@ietf.org
       (mailto:webtransport@ietf.org)
@@ -1610,7 +1610,7 @@ WebTransport Data
    Value:  0x190B4D3A
    Capsule Type:  WT_STOP_SENDING
    Status:  permanent
-   Specification:  This document
+   Reference:  This document
    Change Controller:  IETF
    Contact:  WebTransport Working Group webtransport@ietf.org
       (mailto:webtransport@ietf.org)
@@ -1621,7 +1621,7 @@ WebTransport Data
    Value:  0x190B4D3B..0x190B4D3C
    Capsule Type:  WT_STREAM
    Status:  permanent
-   Specification:  This document
+   Reference:  This document
    Change Controller:  IETF
    Contact:  WebTransport Working Group webtransport@ietf.org
       (mailto:webtransport@ietf.org)
@@ -1632,7 +1632,18 @@ WebTransport Data
    Value:  0x190B4D3E
    Capsule Type:  WT_MAX_STREAM_DATA
    Status:  permanent
-   Specification:  This document
+   Reference:  This document
+   Change Controller:  IETF
+   Contact:  WebTransport Working Group webtransport@ietf.org
+      (mailto:webtransport@ietf.org)
+   Notes:  None
+
+   The WT_STREAM_DATA_BLOCKED capsule.
+
+   Value:  0x190B4D42
+   Capsule Type:  WT_STREAM_DATA_BLOCKED
+   Status:  permanent
+   Reference:  This document
    Change Controller:  IETF
    Contact:  WebTransport Working Group webtransport@ietf.org
       (mailto:webtransport@ietf.org)
@@ -1679,16 +1690,16 @@ WebTransport Data
 
    [OVERVIEW] Kinnear, E. and V. Vasiliev, "The WebTransport Protocol
               Framework", Work in Progress, Internet-Draft, draft-ietf-
-              webtrans-overview-12, 2 March 2026,
+              webtrans-overview-13, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-overview-12>.
+              webtrans-overview-13>.
 
    [PARTIAL-RESET]
               Seemann, M. and K. Oku, "QUIC Stream Resets with Partial
               Delivery", Work in Progress, Internet-Draft, draft-ietf-
-              quic-reliable-stream-reset-09, 4 July 2026,
+              quic-reliable-stream-reset-11, 6 September 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-quic-
-              reliable-stream-reset-09>.
+              reliable-stream-reset-11>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1733,9 +1744,9 @@ WebTransport Data
    [WEBTRANSPORT-H3]
               Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
               over HTTP/3", Work in Progress, Internet-Draft, draft-
-              ietf-webtrans-http3-15, 2 March 2026,
+              ietf-webtrans-http3-16, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-http3-15>.
+              webtrans-http3-16>.
 
 12.2.  Informative References
 
@@ -1880,7 +1891,8 @@ Index
          WT_STREAM_DATA_BLOCKED  Section 2, Paragraph 7; Section 4.4,
             Paragraph 1; Section 4.4, Paragraph 2; Section 6.9,
             Paragraph 1; Section 6.9, Paragraph 4; Section 6.9,
-            Paragraph 6; Section 6.9, Paragraph 7
+            Paragraph 6; Section 6.9, Paragraph 7; Section 11.4,
+            Paragraph 13.4.1
          WT_STREAMS_BLOCKED  Section 2, Paragraph 7; Section 4.4,
             Paragraph 1; Section 4.4, Paragraph 2; Section 6.10,
             Paragraph 1; Section 6.10, Paragraph 2; Section 6.10,

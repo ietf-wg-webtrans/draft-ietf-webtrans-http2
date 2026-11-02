@@ -408,7 +408,7 @@ Table of Contents
 
 4.2.  Limiting the Number of Streams Within a Session
 
-   The WT_MAX_STREAMS capsule (Section 5.6.1 of [WEBTRANSPORT-H3])
+   The WT_MAX_STREAMS capsule (Section 5.6.2 of [WEBTRANSPORT-H3])
    allows each endpoint to limit the number of streams its peer is
    permitted to open as part of a WebTransport session.  There is a
    separate limit for bidirectional streams and for unidirectional
@@ -490,7 +490,7 @@ Table of Contents
    The WebTransport-Init HTTP header field can be used to communicate
    the initial values of the flow control windows, similar to how QUIC
    uses transport parameters.  The WebTransport-Init is a Dictionary
-   Structured Field (Section 3.2 of [RFC8941]).  If the WebTransport-
+   Structured Field (Section 3.2 of [RFC9651]).  If the WebTransport-
    Init field cannot be parsed correctly or does not have the correct
    type, the endpoint MUST reject the CONNECT request with a 4xx status
    code.  The following keys are defined for the WebTransport-Init
@@ -842,7 +842,7 @@ Table of Contents
 6.5.  WT_MAX_DATA Capsule
 
    An HTTP capsule [HTTP-DATAGRAM] called WT_MAX_DATA (type=0x190B4D3D)
-   (Section 5.4.3 of [WEBTRANSPORT-H3]) is used to inform the peer of
+   (Section 5.6.4 of [WEBTRANSPORT-H3]) is used to inform the peer of
    the maximum amount of data that can be sent on the WebTransport
    session as a whole.
 
@@ -939,7 +939,7 @@ Table of Contents
 6.7.  WT_MAX_STREAMS Capsule
 
    An HTTP capsule [HTTP-DATAGRAM] called WT_MAX_STREAMS is defined by
-   Section 5.6.1 of [WEBTRANSPORT-H3] to inform the peer of the
+   Section 5.6.2 of [WEBTRANSPORT-H3] to inform the peer of the
    cumulative number of streams of a given type it is permitted to open.
    A WT_MAX_STREAMS capsule with a type of 0x190B4D3F applies to
    bidirectional streams, and a WT_MAX_STREAMS capsule with a type of
@@ -1009,7 +1009,7 @@ Table of Contents
 6.8.  WT_DATA_BLOCKED Capsule
 
    A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41)
-   (Section 5.6.4 of [WEBTRANSPORT-H3]) when it wishes to send data but
+   (Section 5.6.5 of [WEBTRANSPORT-H3]) when it wishes to send data but
    is unable to do so due to WebTransport session-level flow control.  A
    sender is not required to send WT_DATA_BLOCKED capsules, however
    WT_DATA_BLOCKED capsules can be used as input to tuning of flow
@@ -1079,7 +1079,7 @@ Table of Contents
 6.10.  WT_STREAMS_BLOCKED Capsule
 
    A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x190B4D43 or
-   0x190B4D44) (Section 5.4.2 of [WEBTRANSPORT-H3]) when it wishes to
+   0x190B4D44) (Section 5.6.3 of [WEBTRANSPORT-H3]) when it wishes to
    open a stream but is unable to do so due to the maximum stream limit
    set by its peer.  A WT_STREAMS_BLOCKED capsule of type 0x190B4D43 is
    used to indicate reaching the bidirectional stream limit, and a
@@ -1158,7 +1158,7 @@ Table of Contents
 6.12.  WT_CLOSE_SESSION Capsule
 
    WebTransport over HTTP/2 uses the WT_CLOSE_SESSION capsule defined in
-   Section 5 of [WEBTRANSPORT-H3] to terminate a WebTransport session
+   Section 6 of [WEBTRANSPORT-H3] to terminate a WebTransport session
    with an application error code and message.
 
    WebTransport sessions can be terminated by optionally sending a
@@ -1209,7 +1209,7 @@ Table of Contents
    finishing processing of previously established streams.
 
    WebTransport over HTTP/2 uses the WT_DRAIN_SESSION capsule defined in
-   Section 4.6 of [WEBTRANSPORT-H3] to gracefully shut down a
+   Section 4.7 of [WEBTRANSPORT-H3] to gracefully shut down a
    WebTransport session.
 
    WT_DRAIN_SESSION Capsule {
@@ -1739,10 +1739,6 @@ WebTransport Data
               RFC 8441, DOI 10.17487/RFC8441, September 2018,
               <https://www.rfc-editor.org/rfc/rfc8441>.
 
-   [RFC8941]  Nottingham, M. and P. Kamp, "Structured Field Values for
-              HTTP", RFC 8941, DOI 10.17487/RFC8941, February 2021,
-              <https://www.rfc-editor.org/rfc/rfc8941>.
-
    [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
@@ -1751,6 +1747,10 @@ WebTransport Data
    [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
               DOI 10.17487/RFC9113, June 2022,
               <https://www.rfc-editor.org/rfc/rfc9113>.
+
+   [RFC9651]  Nottingham, M. and P. Kamp, "Structured Field Values for
+              HTTP", RFC 9651, DOI 10.17487/RFC9651, September 2024,
+              <https://www.rfc-editor.org/rfc/rfc9651>.
 
    [TLS]      Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,

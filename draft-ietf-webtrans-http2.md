@@ -374,11 +374,6 @@ each corresponding initial flow control value.  Endpoints sending the SETTINGS
 and also including the header field SHOULD ensure that the header field values
 are greater than or equal to the values provided in the SETTINGS.
 
-For the checks in {{WT_MAX_DATA}}, {{WT_MAX_STREAM_DATA}}, and
-{{WT_MAX_STREAMS}}, the initial values that apply to a session count as values
-previously received, and a capsule that repeats an initial value does not
-increase the limit.
-
 ### Flow Control SETTINGS {#flow-control-settings}
 
 *[SETTINGS_WT_INITIAL_MAX_DATA]: #
@@ -790,8 +785,10 @@ with Stream Data in excess of this limit, it MUST close the WebTransport session
 with a WT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value that
-does not increase the Maximum Data value previously received, it MUST close the
-WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
+does not increase the Maximum Data value previously received, or the initial
+value for the session ({{flow-control-initial}}) if no WT_MAX_DATA capsule has
+been received, it MUST close the WebTransport session with a
+WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_DATA capsule defines special intermediary handling, as described in
 {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_DATA
@@ -838,8 +835,9 @@ WT_FLOW_CONTROL_ERROR session error.
 
 If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data
 value that does not increase the Maximum Stream Data value previously received
-for that stream, it MUST close the WebTransport session with a
-WT_FLOW_CONTROL_ERROR session error.
+for that stream, or the stream's initial value ({{flow-control-initial}}) if no
+WT_MAX_STREAM_DATA capsule has been received for it, it MUST close the
+WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAM_DATA capsule defines special intermediary handling, as
 described in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume
@@ -919,8 +917,10 @@ receives such a stream would close the WebTransport session with a
 WT_FLOW_CONTROL_ERROR error.
 
 If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams value
-that does not increase the Maximum Streams value previously received, it MUST
-close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
+that does not increase the Maximum Streams value previously received, or the
+corresponding initial value for the session ({{flow-control-initial}}) if no
+WT_MAX_STREAMS capsule of that type has been received, it MUST close the
+WebTransport session with a WT_FLOW_CONTROL_ERROR session error.
 
 The WT_MAX_STREAMS capsule defines special intermediary handling, as described
 in {{Section 3.2 of HTTP-DATAGRAM}}.  Intermediaries MUST consume WT_MAX_STREAMS

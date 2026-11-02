@@ -265,9 +265,9 @@ A WebTransport session over HTTP/2 is terminated when either endpoint closes the
 stream associated with the CONNECT request that initiated the session.  Before
 closing the stream, either endpoint can send a WT_CLOSE_SESSION capsule
 ({{WT_CLOSE_SESSION_CAPSULE}}) with an application error code and message to
-convey additional information about the reasons for closing the session.  An
-HTTP/2 stream that is reset also terminates the session, without providing an
-application-level signal, though there will be an HTTP/2 error code.
+convey additional information about the reasons for closing the session.
+Resetting the CONNECT stream also terminates the session, without providing
+an application-level signal, though there will be an HTTP/2 error code.
 
 Session errors result in the termination of a session.  This document reserves
 the following HTTP/2 error codes for use with reporting WebTransport errors:

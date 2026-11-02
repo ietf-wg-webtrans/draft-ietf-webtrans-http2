@@ -509,6 +509,14 @@ Table of Contents
    endpoint MUST reject the CONNECT request with a 4xx status code.
    Unknown keys and parameters in the dictionary MUST be ignored.
 
+   The WebTransport-Init header field only includes initial stream data
+   limits.  A WT_MAX_STREAM_DATA capsule applies to a specific stream
+   and can only be sent once that stream exists, so an initial value is
+   needed for a peer to send data on a new stream without waiting for a
+   round trip.  Session-level limits can be provided at the start of a
+   session by sending WT_MAX_DATA and WT_MAX_STREAMS capsules along with
+   the request or response.
+
 4.4.  Flow Control and Intermediaries
 
    WebTransport over HTTP/2 uses several capsules for flow control, and
@@ -1869,23 +1877,25 @@ Index
             Section 6.8, Paragraph 3; Section 6.8, Paragraph 5;
             Section 6.9, Paragraph 2
          WT_MAX_DATA  Section 2, Paragraph 7; Section 4.3.1, Paragraph
-            2.1.1; Section 4.4, Paragraph 1; Section 4.4, Paragraph 2;
-            Section 6.5, Paragraph 1; Section 6.5, Paragraph 3;
-            Section 6.5, Paragraph 6; Section 6.5, Paragraph 7;
-            Section 11.2, Paragraph 4
+            2.1.1; Section 4.3.2, Paragraph 4; Section 4.4, Paragraph 1;
+            Section 4.4, Paragraph 2; Section 6.5, Paragraph 1;
+            Section 6.5, Paragraph 3; Section 6.5, Paragraph 6;
+            Section 6.5, Paragraph 7; Section 11.2, Paragraph 4
          WT_MAX_STREAM_DATA  Section 2, Paragraph 7; Section 4.3.1,
-            Paragraph 2.2.1; Section 4.4, Paragraph 1; Section 4.4,
-            Paragraph 2; Section 6.6, Paragraph 1; Section 6.6,
-            Paragraph 3; Section 6.6, Paragraph 6; Section 6.6,
-            Paragraph 7; Section 6.6, Paragraph 9; Section 11.2,
-            Paragraph 7; Section 11.2, Paragraph 10; Section 11.2,
-            Paragraph 13; Section 11.4, Paragraph 11.4.1
+            Paragraph 2.2.1; Section 4.3.2, Paragraph 4; Section 4.4,
+            Paragraph 1; Section 4.4, Paragraph 2; Section 6.6,
+            Paragraph 1; Section 6.6, Paragraph 3; Section 6.6,
+            Paragraph 6; Section 6.6, Paragraph 7; Section 6.6,
+            Paragraph 9; Section 11.2, Paragraph 7; Section 11.2,
+            Paragraph 10; Section 11.2, Paragraph 13; Section 11.4,
+            Paragraph 11.4.1
          WT_MAX_STREAMS  Section 2, Paragraph 7; Section 4.2, Paragraph
-            1; Section 4.3.1, Paragraph 2.3.1; Section 4.4, Paragraph 1;
-            Section 4.4, Paragraph 2; Section 6.7, Paragraph 1;
-            Section 6.7, Paragraph 2; Section 6.7, Paragraph 4;
-            Section 6.7, Paragraph 10; Section 6.7, Paragraph 11;
-            Section 11.2, Paragraph 16; Section 11.2, Paragraph 19
+            1; Section 4.3.1, Paragraph 2.3.1; Section 4.3.2, Paragraph
+            4; Section 4.4, Paragraph 1; Section 4.4, Paragraph 2;
+            Section 6.7, Paragraph 1; Section 6.7, Paragraph 2;
+            Section 6.7, Paragraph 4; Section 6.7, Paragraph 10;
+            Section 6.7, Paragraph 11; Section 11.2, Paragraph 16;
+            Section 11.2, Paragraph 19
          WT_RESET_STREAM  Section 2, Paragraph 8; Section 6.2, Paragraph
             1; Section 6.2, Paragraph 2; Section 6.2, Paragraph 3;
             Section 6.2, Paragraph 5; Section 6.2, Paragraph 8;

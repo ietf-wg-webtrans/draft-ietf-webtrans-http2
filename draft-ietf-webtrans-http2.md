@@ -336,7 +336,7 @@ mechanisms:
 
 ## Limiting the Number of Streams Within a Session {#flow-control-limit-streams}
 
-The WT_MAX_STREAMS capsule ({{Section 5.6.1 of WEBTRANSPORT-H3}}) allows each
+The WT_MAX_STREAMS capsule ({{Section 5.6.2 of WEBTRANSPORT-H3}}) allows each
 endpoint to limit the number of streams its peer is permitted to open as part of
 a WebTransport session.  There is a separate limit for bidirectional streams and
 for unidirectional streams.  Note that, unlike WebTransport over HTTP/3
@@ -414,7 +414,7 @@ control capsules.
 The `WebTransport-Init` HTTP header field can be used to communicate the initial
 values of the flow control windows, similar to how QUIC uses transport
 parameters.  The `WebTransport-Init` is a Dictionary Structured Field
-({{Section 3.2 of !RFC8941}}).  If the `WebTransport-Init` field cannot be
+({{Section 3.2 of !RFC9651}}).  If the `WebTransport-Init` field cannot be
 parsed correctly or does not have the correct type, the endpoint MUST reject the
 CONNECT request with a 4xx status code.  The following keys are defined for the
 `WebTransport-Init` header field:
@@ -766,7 +766,7 @@ session error, as described in the corresponding sections.
 *[WT_MAX_DATA]: #
 
 An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_DATA (type=0x190B4D3D)
-({{Section 5.4.3 of WEBTRANSPORT-H3}}) is used to inform the peer of the maximum
+({{Section 5.6.4 of WEBTRANSPORT-H3}}) is used to inform the peer of the maximum
 amount of data that can be sent on the WebTransport session as a whole.
 
 ~~~
@@ -865,7 +865,7 @@ the same stream.
 *[WT_MAX_STREAMS]: #
 
 An HTTP capsule {{HTTP-DATAGRAM}} called WT_MAX_STREAMS is defined by
-{{Section 5.6.1 of WEBTRANSPORT-H3}} to inform the peer of the cumulative number
+{{Section 5.6.2 of WEBTRANSPORT-H3}} to inform the peer of the cumulative number
 of streams of a given type it is permitted to open.  A WT_MAX_STREAMS capsule
 with a type of 0x190B4D3F applies to bidirectional streams, and a WT_MAX_STREAMS
 capsule with a type of 0x190B4D40 applies to unidirectional streams.
@@ -936,7 +936,7 @@ SETTINGS_WT_INITIAL_MAX_STREAMS_BIDI.
 *[WT_DATA_BLOCKED]: #
 
 A sender SHOULD send a WT_DATA_BLOCKED capsule (type=0x190B4D41)
-({{Section 5.6.4 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable
+({{Section 5.6.5 of WEBTRANSPORT-H3}}) when it wishes to send data but is unable
 to do so due to WebTransport session-level flow control.  A sender is not
 required to send WT_DATA_BLOCKED capsules, however WT_DATA_BLOCKED capsules can
 be used as input to tuning of flow control algorithms and for debugging
@@ -1013,7 +1013,7 @@ is received for a stream that is not in a valid state.
 *[WT_STREAMS_BLOCKED]: #
 
 A sender SHOULD send a WT_STREAMS_BLOCKED capsule (type=0x190B4D43 or
-0x190B4D44) ({{Section 5.4.2 of WEBTRANSPORT-H3}}) when it wishes to open a
+0x190B4D44) ({{Section 5.6.3 of WEBTRANSPORT-H3}}) when it wishes to open a
 stream but is unable to do so due to the maximum stream limit set by its peer.
 A WT_STREAMS_BLOCKED capsule of type 0x190B4D43 is used to indicate reaching the
 bidirectional stream limit, and a WT_STREAMS_BLOCKED capsule of type 0x190B4D44
@@ -1094,7 +1094,7 @@ datagrams.
 *[WT_CLOSE_SESSION_CAPSULE]: #
 
 WebTransport over HTTP/2 uses the WT_CLOSE_SESSION capsule defined in
-{{Section 5 of WEBTRANSPORT-H3}} to terminate a WebTransport session with an
+{{Section 6 of WEBTRANSPORT-H3}} to terminate a WebTransport session with an
 application error code and message.
 
 WebTransport sessions can be terminated by optionally sending a WT_CLOSE_SESSION
@@ -1147,7 +1147,7 @@ gracefully stop accepting new streams while still finishing processing of
 previously established streams.
 
 WebTransport over HTTP/2 uses the WT_DRAIN_SESSION capsule defined in
-{{Section 4.6 of WEBTRANSPORT-H3}} to gracefully shut down a WebTransport
+{{Section 4.7 of WEBTRANSPORT-H3}} to gracefully shut down a WebTransport
 session.
 
 ~~~

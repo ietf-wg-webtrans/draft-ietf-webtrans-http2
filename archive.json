@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-01T03:53:32.504164+00:00",
+  "timestamp": "2026-11-03T04:58:38.199695+00:00",
   "repo": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
   "labels": [
     {
@@ -3572,15 +3572,15 @@
       "id": "I_kwDODnOl888AAAABMtd-uA",
       "title": "WT_FLOW_CONTROL_ERROR consistency with WebTransport over HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/191",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "AnkshitJain",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "WebTransport over HTTP/3 says that if `WT_MAX_STREAMS` or `WT_MAX_DATA` were received with a value that does not increase the previously established value, session must be closed. \n\n>  If an endpoint receives a WT_MAX_STREAMS capsule that does not increase the Maximum Streams value previously received, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR error code.\n\n> If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value that does not increase the Maximum Data value previously received, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR error code.\n\nWebTransport over HTTP/2 is slightly more lenient and allows equal values (also extends to `WT_MAX_STREAM_DATA`).\n\n> If an endpoint receives a WT_MAX_DATA capsule with a Maximum Data value less than a previously received value, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.\n\n> If an endpoint receives a WT_MAX_STREAM_DATA capsule with a Maximum Stream Data value less than a previously received value, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.\n\n> If an endpoint receives a WT_MAX_STREAMS capsule with a Maximum Streams value less than a previously received value, it MUST close the WebTransport session with a WT_FLOW_CONTROL_ERROR session error.\n\n\nCan we make this consistent? \n\n\nAdditionally, is it allowed to send capsules with values equal to the values from HTTP SETTINGS / WebTransport-Init header or should the capsule values be strictly greater than those values?  ",
       "createdAt": "2026-08-14T03:30:08Z",
-      "updatedAt": "2026-08-16T08:44:15Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T21:44:43Z",
+      "closedAt": "2026-11-02T21:44:43Z",
       "comments": [
         {
           "author": "martenrichter",
@@ -3596,15 +3596,15 @@
       "id": "I_kwDODnOl888AAAABWSBkoQ",
       "title": "Repetitive text in section 3.4",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/192",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The first paragraphs in [section 3.4](datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-session-termination-and-err) appear a bit repetitive to me:\n\n> A WebTransport session over HTTP/2 is terminated when either endpoint closes the stream associated with the CONNECT request that initiated the session.\n> \n> Prior to closing the stream associated with the CONNECT request, either endpoint can send a WT_CLOSE_SESSION capsule with an application error code and message to convey additional information about the reasons for the closure of the session.\n> \n> Session errors result in the termination of a session. Errors can be reported using the WT_CLOSE_SESSION capsule, which includes an error code and an optional explanatory message.\n> \n> An endpoint can terminate a session without sending a WT_CLOSE_SESSION capsule by closing the HTTP/2 stream.\n> \n> An HTTP/2 stream that is reset terminates the session without providing an application-level signal, though there will be an HTTP/2 error code.\n\nIn particular, the third and fourth paragraphs seem to restate what the previous sentences already said. Is it possible to make the text more concise?",
       "createdAt": "2026-10-10T10:11:16Z",
-      "updatedAt": "2026-10-10T10:11:16Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T20:15:43Z",
+      "closedAt": "2026-11-02T20:15:43Z",
       "comments": []
     },
     {
@@ -3612,15 +3612,15 @@
       "id": "I_kwDODnOl888AAAABWSD7tg",
       "title": "Metion WT_FLOW_CONTROL_ERROR in WT_STREAM section",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/193",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Other sections already mention that an endpoint must close the session with WT_FLOW_CONTROL_ERROR if a stream or data limit is exceeded (e.g. in [6.5. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-6.5)[WT_MAX_DATA Capsule](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-wt_max_data-capsule)). It would be handy to briefly mention that in [6.4. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-6.4)[WT_STREAM Capsule](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-wt_stream-capsule) as well, since these limit checks are likely implemented next to the WT_STREAM capsule handling.",
       "createdAt": "2026-10-10T10:16:57Z",
-      "updatedAt": "2026-10-10T10:16:57Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T19:11:30Z",
+      "closedAt": "2026-11-02T19:11:30Z",
       "comments": []
     },
     {
@@ -3628,15 +3628,15 @@
       "id": "I_kwDODnOl888AAAABWSHY5g",
       "title": "Other flow control limits in WebTransport-Init",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/194",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The WebTransport-Init header field ([4.3.2. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-4.3.2)[Flow Control Header Field](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-flow-control-header-field)) defines parameters for the initial flow control limits for unidirectional and bidirectional streams. As far as I understand, these are initial values for the WT_MAX_STREAM_DATA capsule.\n\nWhy are there no parameters to indicate the initial values for WT_MAX_DATA and WT_MAX_STREAMS? This seems inconsistent since these values can be set in a SETTINGS frame. Is that on purpose or has a need for this just not arisen yet?",
       "createdAt": "2026-10-10T10:25:23Z",
-      "updatedAt": "2026-10-10T10:25:23Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T21:07:21Z",
+      "closedAt": "2026-11-02T21:07:21Z",
       "comments": []
     },
     {
@@ -3644,15 +3644,15 @@
       "id": "I_kwDODnOl888AAAABWSLhAg",
       "title": "Clarify bit indicating stream directionality",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/195",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "From [5.2. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-5.2)[WebTransport Streams](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-webtransport-streams):\n\n> WebTransport streams are identified by a numeric value, or stream ID. Stream IDs are only meaningful within the WebTransport session in which they were created. They share the same semantics as QUIC stream IDs, with client initiated streams having even-numbered stream IDs and server-initiated streams having odd-numbered stream IDs. **Similarly, they can be bidirectional or unidirectional, indicated by the second least significant bit of the stream ID.**\n\nThe emphasized sentence doesn't make it super clear which bit value of the second least significant bit indicates which directionality. Can that be clarified, similar to how it's explicitly mentioned in the previous sentence about the bit indicating the initiator? In addition, example values would be helpful as well. This might not be needed by people more familiar with QUIC, but it confused me while reading this document on its own.",
       "createdAt": "2026-10-10T10:35:38Z",
-      "updatedAt": "2026-10-10T10:35:38Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T19:11:18Z",
+      "closedAt": "2026-11-02T19:11:18Z",
       "comments": []
     },
     {
@@ -3660,15 +3660,15 @@
       "id": "I_kwDODnOl888AAAABWSM32w",
       "title": "Missing SETTINGS_WT_ENABLED in examples",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/196",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The examples in [8. ](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#section-8)[Examples](https://datatracker.ietf.org/doc/html/draft-ietf-webtrans-http2#name-examples) are missing SETTINGS_WT_ENABLED in the server's SETTINGS frame, although I think it's necessary to allow the client to open a WebTransport session.",
       "createdAt": "2026-10-10T10:39:02Z",
-      "updatedAt": "2026-10-10T10:39:02Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T21:10:10Z",
+      "closedAt": "2026-11-02T21:10:10Z",
       "comments": []
     },
     {
@@ -3676,15 +3676,15 @@
       "id": "I_kwDODnOl888AAAABWSQ2aw",
       "title": "WT_STREAM_DATA_BLOCKED missing from IANA considerations",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/issues/197",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Acconut",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The WT_STREAM_DATA_BLOCKED capsule type is defined in this document (not in the WT over H3 document), but is missing from the IANA considerations to register this value. As far as I checked, this is the only value missing from the considerations, but it might be worth to double check.",
       "createdAt": "2026-10-10T10:48:41Z",
-      "updatedAt": "2026-10-10T10:48:41Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T19:11:05Z",
+      "closedAt": "2026-11-02T19:11:05Z",
       "comments": []
     }
   ],
@@ -11329,7 +11329,7 @@
       "labels": [],
       "body": "Add text to WT_RESET_STREAM and WT_STOP_SENDING capsule definitions noting that reserved error codes (Section 3.3.1 of OVERVIEW) MUST NOT be sent by applications, but are valid wire values used by the WebTransport implementation.\r\n\r\nSimilar to ietf-wg-webtrans/draft-ietf-webtrans-http3#264.",
       "createdAt": "2026-04-10T19:08:22Z",
-      "updatedAt": "2026-11-01T02:29:59Z",
+      "updatedAt": "2026-11-02T15:58:08Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "57ed9dbc678277a8f2503bb726be4c607e85b58d",
@@ -11340,7 +11340,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> An intermediary converting HTTP/3 resets into `WT_RESET_STREAM` has no rule for codes outside the application range, since the capsule always requires a code. And when a session ends, HTTP/2 closes its streams without any per-stream signal, so nothing says what the application sees for them.\r\n\r\nSeems worth handling",
+          "createdAt": "2026-11-02T15:58:08Z",
+          "updatedAt": "2026-11-02T15:58:08Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDODnOl888AAAABVUynKA",
@@ -12075,156 +12083,448 @@
       "id": "PR_kwDODnOl888AAAABMDW-MQ",
       "title": "Register the WT_STREAM_DATA_BLOCKED capsule type",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/198",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "WT_STREAM_DATA_BLOCKED (0x190B4D42) is defined in this document but was missing from the Capsule Types registrations, and WebTransport over HTTP/3 doesn't register it either. This also uses the registry's \"Reference\" field name for the capsule entries, matching RFC 9297 and the HTTP/3 document.\n\nFixes #197\n",
       "createdAt": "2026-11-01T02:48:35Z",
-      "updatedAt": "2026-11-01T02:48:39Z",
+      "updatedAt": "2026-11-02T19:11:04Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/iana_stream_data_blocked",
       "headRefOid": "32f519099566372ed849d6a2379c44ea415046f7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-11-02T19:11:03Z",
+      "mergedAt": "2026-11-02T19:11:03Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "f60db384d689782f7ecbb01130d5feb48c83d316"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABVhgGdw",
+          "commit": {
+            "abbreviatedOid": "32f5190"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-02T15:58:27Z",
+          "updatedAt": "2026-11-02T15:58:27Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 199,
       "id": "PR_kwDODnOl888AAAABMDXC5A",
       "title": "Spell out which stream ID bits mean what",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/199",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Be more explicit about which value of each of the two low-order bits of a stream ID indicates the initiator and the directionality, as RFC 9000 does, and add a table of the four stream types.\r\n\r\nFixes #195\r\n",
       "createdAt": "2026-11-01T02:48:50Z",
-      "updatedAt": "2026-11-01T02:50:03Z",
+      "updatedAt": "2026-11-02T19:11:16Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/stream_id_bits",
       "headRefOid": "7f2a364e5820b381e6e2826effee619e2d6c10a8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-11-02T19:11:16Z",
+      "mergedAt": "2026-11-02T19:11:16Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "ebff9939f2e142d933f5b3873868e2c60aacff0e"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABVhg-nQ",
+          "commit": {
+            "abbreviatedOid": "7f2a364"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-02T15:59:27Z",
+          "updatedAt": "2026-11-02T15:59:31Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "Without looking at RFC 9000 - is this more or less text / tables than we used there?  Seems useful in any case.",
+              "createdAt": "2026-11-02T15:59:27Z",
+              "updatedAt": "2026-11-02T15:59:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABVj5s0A",
+          "commit": {
+            "abbreviatedOid": "7f2a364"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T19:08:39Z",
+          "updatedAt": "2026-11-02T19:08:39Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "I think it's essentially the [exact same table](https://www.rfc-editor.org/info/rfc9000/#section-2.1-5), so hopefully that helps folks familiar with QUIC.",
+              "createdAt": "2026-11-02T19:08:39Z",
+              "updatedAt": "2026-11-02T19:08:40Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 200,
       "id": "PR_kwDODnOl888AAAABMDXaFA",
       "title": "Point to the flow control errors from the WT_STREAM section",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/200",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Mention the stream, session data, and stream data limits that a WT_STREAM capsule can exceed, and the resulting WT_FLOW_CONTROL_ERROR, where WT_STREAM is defined, since that's where implementations are likely to check them. No requirements change.\n\nFixes #193\n",
       "createdAt": "2026-11-01T02:50:00Z",
-      "updatedAt": "2026-11-01T02:50:04Z",
+      "updatedAt": "2026-11-02T19:11:29Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/wt_stream_flow_control",
       "headRefOid": "e50b073f1e181daea6badb780a81f1720a670fec",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-11-02T19:11:29Z",
+      "mergedAt": "2026-11-02T19:11:29Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "d57314fe1825e346bfa2a52993186b14c4899abf"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABVhhlxg",
+          "commit": {
+            "abbreviatedOid": "e50b073"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-02T16:00:10Z",
+          "updatedAt": "2026-11-02T16:00:10Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 201,
       "id": "PR_kwDODnOl888AAAABMDYMQg",
       "title": "Consolidate the session termination text",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/201",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Merge the opening paragraphs of the Session Termination section that restated each other. This also refers to the six \"stream error\" cases as session errors, which is what the rest of the document calls them, since both mean resetting the CONNECT stream. No requirements change.\n\nFixes #192\n",
       "createdAt": "2026-11-01T02:52:36Z",
-      "updatedAt": "2026-11-01T02:52:39Z",
+      "updatedAt": "2026-11-02T20:15:42Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/session_termination_editorial",
-      "headRefOid": "992aec8f52c11f212ed93c3b92284205c457f1d9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "72cfb1637c04a0229c88efa1d2242b57689d78cc",
+      "closedAt": "2026-11-02T20:15:41Z",
+      "mergedAt": "2026-11-02T20:15:41Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "87c01ffcef1363ae190d826c66a5483c8f6392f1"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABVhilWA",
+          "commit": {
+            "abbreviatedOid": "992aec8"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-02T16:01:22Z",
+          "updatedAt": "2026-11-02T16:03:36Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "Specifically the connect stream, or the enclosing HTTP/2 stream, not just any HTTP/2 stream?",
+              "createdAt": "2026-11-02T16:01:22Z",
+              "updatedAt": "2026-11-02T16:03:37Z"
+            },
+            {
+              "originalPosition": 23,
+              "body": "Having a synthetic session close error here would be useful (e.g. in the reset stream case)",
+              "createdAt": "2026-11-02T16:03:28Z",
+              "updatedAt": "2026-11-02T16:03:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABVkpiOw",
+          "commit": {
+            "abbreviatedOid": "72cfb16"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T20:11:34Z",
+          "updatedAt": "2026-11-02T20:11:34Z",
+          "comments": [
+            {
+              "originalPosition": 23,
+              "body": "It's the CONNECT stream, so I've changed it to \"Resetting the CONNECT stream\". A synthesized session close error to say \"none was provided\" seems reasonable to me, and it seems to go with the reserved session close codes from ietf-wg-webtrans/draft-ietf-webtrans-overview#47. Let's sort that part out on ietf-wg-webtrans/draft-ietf-webtrans-overview#47 with the rest?\n",
+              "createdAt": "2026-11-02T20:11:34Z",
+              "updatedAt": "2026-11-02T20:11:34Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 202,
       "id": "PR_kwDODnOl888AAAABMDYviw",
       "title": "Show SETTINGS_WT_ENABLED in the examples",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/202",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Add SETTINGS_WT_ENABLED to the server's SETTINGS in both examples, since a client needs it before establishing a session. This also uses a serialized origin, including the scheme, in the Origin header field, and notes that the examples leave out the initial flow control limits.\n\nFixes #196\n",
       "createdAt": "2026-11-01T02:54:14Z",
-      "updatedAt": "2026-11-01T02:54:18Z",
+      "updatedAt": "2026-11-02T21:10:09Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/example_settings",
-      "headRefOid": "fe39de9ec685526ef2444ce0e7ef3929e82a792f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "4a6c2a49729cb6ec60041ca2a8c5a77480c0d02e",
+      "closedAt": "2026-11-02T21:10:09Z",
+      "mergedAt": "2026-11-02T21:10:09Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "5b4ed4741edf1ed3b16ad5120302294f3ded0679"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABVhm7hg",
+          "commit": {
+            "abbreviatedOid": "4a6c2a4"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T16:06:23Z",
+          "updatedAt": "2026-11-02T16:06:24Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Or just say that flow control is off in this example.  But I wonder if including the FC values would be more instructive of the complex cases that the examples might be serving to illuminate?\r\n\r\nThese examples have a history that extend back to the time when this protocol used native H2 streams.  I wonder if they are serving a useful function at all anymore?   Does H3 have the equivalent?",
+              "createdAt": "2026-11-02T16:06:23Z",
+              "updatedAt": "2026-11-02T16:06:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABVlQiUA",
+          "commit": {
+            "abbreviatedOid": "4a6c2a4"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T21:04:30Z",
+          "updatedAt": "2026-11-02T21:04:30Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "H2 doesn't have a way to turn flow control off: the initial limits default to 0, so without them neither side could send the stream data in these examples. That's why the note says the limits are omitted rather than off.\n\nGood question on whether we still need the examples, H3 doesn't have anything equivalent. I don't mind keeping them for now and if folks at 127 want them gone, we can remove them.\n",
+              "createdAt": "2026-11-02T21:04:30Z",
+              "updatedAt": "2026-11-02T21:04:30Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 203,
       "id": "PR_kwDODnOl888AAAABMDZUHw",
       "title": "Fix stale section references to WebTransport over HTTP/3",
       "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/203",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Seven references to WebTransport over HTTP/3 pointed at section numbers from an earlier revision of that document. This updates them to match draft-ietf-webtrans-http3-16:\n\n- WT_MAX_STREAMS: 5.6.1 -> 5.6.2 (twice)\n- WT_MAX_DATA: 5.4.3 -> 5.6.4\n- WT_DATA_BLOCKED: 5.6.4 -> 5.6.5\n- WT_STREAMS_BLOCKED: 5.4.2 -> 5.6.3\n- WT_CLOSE_SESSION: 5 -> 6\n- WT_DRAIN_SESSION: 4.6 -> 4.7\n\nIt also cites RFC 9651, which obsoletes RFC 8941, for Structured Fields, as the HTTP/3 document does.\n",
       "createdAt": "2026-11-01T02:55:47Z",
-      "updatedAt": "2026-11-01T02:55:51Z",
+      "updatedAt": "2026-11-02T21:07:06Z",
       "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
       "baseRefName": "main",
       "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
       "headRepository": "ekinnear/draft-ietf-webtrans-http2",
       "headRefName": "ek/stale_references",
       "headRefOid": "cb5d24f87215883b828e60201aca80c74130a417",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-11-02T21:07:05Z",
+      "mergedAt": "2026-11-02T21:07:05Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "750965b5ef47098a2e43b2e2cb038a0b968b8fd7"
+      },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 204,
+      "id": "PR_kwDODnOl888AAAABMRWTnQ",
+      "title": "Explain why WebTransport-Init only includes stream data limits",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/204",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Explain that the `WebTransport-Init` header field only includes initial stream data limits because a WT_MAX_STREAM_DATA capsule can only be sent once its stream exists, while session-level limits can be sent as WT_MAX_DATA and WT_MAX_STREAMS capsules along with the request or response.\n\nFixes #194\n",
+      "createdAt": "2026-11-02T10:03:43Z",
+      "updatedAt": "2026-11-02T21:07:20Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/webtransport_init_rationale",
+      "headRefOid": "3bf7e85645beb23a3a4688aa3da5fbe7ceb3225f",
+      "closedAt": "2026-11-02T21:07:19Z",
+      "mergedAt": "2026-11-02T21:07:19Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "8e7f136bd36bcac7e7f2747cd91202a63f9ab5e1"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 205,
+      "id": "PR_kwDODnOl888AAAABMSVr-g",
+      "title": "Reject flow control capsules that don't increase the limit",
+      "url": "https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http2/pull/205",
+      "state": "MERGED",
+      "author": "ekinnear",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "WebTransport over HTTP/3 treats a WT_MAX_STREAMS or WT_MAX_DATA capsule that does not increase the limit as a flow control error, while this document only rejected capsules that reduce it. This uses the same rule here, including for WT_MAX_STREAM_DATA, and says that the initial values that apply to a session count as previously received, which answers the second question in the issue. A stack that can't send HTTP/2 SETTINGS can still send its limits as capsules, since its initial values default to 0 and its first capsule is then an increase. It also notes that an intermediary re-expressing limits still needs each capsule it sends to increase the limit on that connection.\n\nBecause a draft-15 peer can send a capsule that this draft treats as an error, this draft uses a new SETTINGS_WT_ENABLED codepoint (0x2b67), with an RFC editor note explaining how draft versions change it.\n\nFixes #191\n",
+      "createdAt": "2026-11-02T11:24:10Z",
+      "updatedAt": "2026-11-02T21:44:41Z",
+      "baseRepository": "ietf-wg-webtrans/draft-ietf-webtrans-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9d820ff183477d78d93d604035032742a9a007ad",
+      "headRepository": "ekinnear/draft-ietf-webtrans-http2",
+      "headRefName": "ek/strict_flow_control_increase",
+      "headRefOid": "379c0bfccfa83f11786145f8155670aca9f942db",
+      "closedAt": "2026-11-02T21:44:41Z",
+      "mergedAt": "2026-11-02T21:44:41Z",
+      "mergedBy": "ekinnear",
+      "mergeCommit": {
+        "oid": "06d06a06396a4939becaabed0ecafbec4bf15f2f"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDODnOl888AAAABVhurPw",
+          "commit": {
+            "abbreviatedOid": "fb02579"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T16:15:56Z",
+          "updatedAt": "2026-11-02T16:16:45Z",
+          "comments": [
+            {
+              "originalPosition": 69,
+              "body": "Not sure we need to include \"this draft uses\" when it's below, nor previous draft version mappings, which are in their own documents.  Or you can make a table that gets removed at publication.  It reads awkwardly in the middle of this paragraph.",
+              "createdAt": "2026-11-02T16:15:57Z",
+              "updatedAt": "2026-11-02T16:16:45Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "How is that possible in e.g. this version which says repeating the same flow control max is an error but previously it wasn't?",
+              "createdAt": "2026-11-02T16:16:41Z",
+              "updatedAt": "2026-11-02T16:16:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABVkNxJA",
+          "commit": {
+            "abbreviatedOid": "fb02579"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T19:34:12Z",
+          "updatedAt": "2026-11-02T19:34:12Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "I was thinking you'd need to do the most permissive thing (in this case, not freak out if it repeats), but I guess technically that's not really doing the newer version's behavior, so we should trim that out.",
+              "createdAt": "2026-11-02T19:34:12Z",
+              "updatedAt": "2026-11-02T19:34:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDODnOl888AAAABVkN_rA",
+          "commit": {
+            "abbreviatedOid": "fb02579"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-11-02T19:34:32Z",
+          "updatedAt": "2026-11-02T19:34:33Z",
+          "comments": [
+            {
+              "originalPosition": 69,
+              "body": "Ah yeah good point, didn't really need that in here, we don't have it in H3 either",
+              "createdAt": "2026-11-02T19:34:33Z",
+              "updatedAt": "2026-11-02T19:34:33Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
